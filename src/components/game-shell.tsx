@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import * as Sentry from "@sentry/nextjs";
 import { useGameState } from "@/components/game-provider";
 import { Landing } from "@/components/landing";
 import { QuestionCard } from "@/components/question-card";
@@ -7,6 +9,8 @@ import { ScoreBar } from "@/components/score-bar";
 import { VerdictScreen } from "@/components/verdict-screen";
 import { GraceScreen } from "@/components/grace-screen";
 import { InvitationScreen } from "@/components/invitation-screen";
+import { trackGameAbandoned } from "@/lib/analytics";
+import { QUESTION_CONFIGS } from "@/lib/questions";
 import type { Messages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 
@@ -17,6 +21,32 @@ interface GameShellProps {
 
 export function GameShell({ messages, locale }: GameShellProps) {
   const state = useGameState();
+
+  useEffect(() => {
+    Sentry.addBreadcrumb({
+      category: "game",
+      message: `Phase: ${state.phase}`,
+      level: "info",
+      data: { phase: state.phase, score: state.score },
+    });
+  }, [state.phase, state.score]);
+
+  useEffect(() => {
+    function handleBeforeUnload() {
+      if (state.phase === "playing") {
+        const currentConfig = QUESTION_CONFIGS[state.currentQuestion];
+        trackGameAbandoned(
+          currentConfig?.id ?? 0,
+          state.score,
+          Date.now() - state.startedAt,
+          locale,
+        );
+      }
+    }
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [state.phase, state.currentQuestion, state.score, state.startedAt, locale]);
 
   return (
     <main className="relative min-h-dvh flex flex-col">
