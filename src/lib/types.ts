@@ -60,11 +60,7 @@ export interface Messages {
   invitation: {
     heading: string;
     prayer: string;
-    responses: {
-      prayed: string;
-      thinking: string;
-      dismissed: string;
-    };
+    responses: Record<InvitationResponse, string>;
     resources: Array<{ name: string; url: string }>;
   };
   share: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };

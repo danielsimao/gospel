@@ -42,9 +42,9 @@ export function ShareButtons({ messages, locale }: ShareButtonsProps) {
   }
 
   async function copyLink() {
-    trackShared("copy", locale);
     try {
       await navigator.clipboard.writeText(shareUrl);
+      trackShared("copy", locale);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -54,11 +54,12 @@ export function ShareButtons({ messages, locale }: ShareButtonsProps) {
 
   async function nativeShare() {
     if (!navigator.share) return;
-    trackShared("native", locale);
     try {
       await navigator.share({ url: shareUrl, text: messages.whatsappMessage });
-    } catch {
-      // User cancelled
+      trackShared("native", locale);
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      // Real error — log but don't crash
     }
   }
 

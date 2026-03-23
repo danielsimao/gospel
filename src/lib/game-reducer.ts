@@ -30,6 +30,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
 
     case "ANSWER_QUESTION": {
+      if (state.phase !== "playing") return state;
       const config = QUESTION_CONFIGS[state.currentQuestion];
       if (!config) return state;
 
@@ -55,6 +56,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case "ADVANCE_AFTER_FOLLOWUP": {
+      if (state.phase !== "playing") return state;
       const nextQuestion = state.currentQuestion + 1;
       const isLastQuestion = nextQuestion >= TOTAL_QUESTIONS;
 
@@ -82,6 +84,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
 
     case "SHOW_GRACE":
+      if (state.phase !== "verdict") return state;
       return {
         ...state,
         phase: "grace",
@@ -89,12 +92,14 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
 
     case "SHOW_INVITATION":
+      if (state.phase !== "grace") return state;
       return {
         ...state,
         phase: "invitation",
       };
 
     case "SET_INVITATION_RESPONSE":
+      if (state.phase !== "invitation") return state;
       return {
         ...state,
         invitationResponse: action.response,

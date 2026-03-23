@@ -1,13 +1,21 @@
 import posthog from "posthog-js";
 
+function safeCapture(event: string, properties?: Record<string, unknown>) {
+  try {
+    posthog.capture(event, properties);
+  } catch {
+    // Analytics must never break the app
+  }
+}
+
 export function trackGameStarted(locale: string) {
-  posthog.capture("game_started", {
+  safeCapture("game_started", {
     locale,
-    referral_source: document.referrer || "direct",
-    device_type: /Mobi|Android/i.test(navigator.userAgent) ? "mobile" : "desktop",
-    utm_source: new URLSearchParams(window.location.search).get("utm_source"),
-    utm_medium: new URLSearchParams(window.location.search).get("utm_medium"),
-    utm_campaign: new URLSearchParams(window.location.search).get("utm_campaign"),
+    referral_source: typeof document !== "undefined" ? document.referrer || "direct" : "unknown",
+    device_type: typeof navigator !== "undefined" && /Mobi|Android/i.test(navigator.userAgent) ? "mobile" : "desktop",
+    utm_source: typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("utm_source") : null,
+    utm_medium: typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("utm_medium") : null,
+    utm_campaign: typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("utm_campaign") : null,
   });
 }
 
@@ -18,7 +26,7 @@ export function trackQuestionAnswered(
   scoreAfter: number,
   timeOnQuestion: number,
 ) {
-  posthog.capture("question_answered", {
+  safeCapture("question_answered", {
     questionId,
     commandment,
     answer_type: answerType,
@@ -28,7 +36,7 @@ export function trackQuestionAnswered(
 }
 
 export function trackFollowupShown(questionId: number) {
-  posthog.capture("question_followup_shown", { questionId });
+  safeCapture("question_followup_shown", { questionId });
 }
 
 export function trackGameAbandoned(
@@ -37,7 +45,7 @@ export function trackGameAbandoned(
   totalTime: number,
   locale: string,
 ) {
-  posthog.capture("game_abandoned", {
+  safeCapture("game_abandoned", {
     last_question_id: lastQuestionId,
     score_at_exit: scoreAtExit,
     total_time_ms: totalTime,
@@ -50,7 +58,7 @@ export function trackVerdictReached(
   totalJustify: number,
   totalTime: number,
 ) {
-  posthog.capture("verdict_reached", {
+  safeCapture("verdict_reached", {
     total_honest: totalHonest,
     total_justify: totalJustify,
     total_time_ms: totalTime,
@@ -58,7 +66,7 @@ export function trackVerdictReached(
 }
 
 export function trackGraceViewed(timeSpent: number, scrollDepth: number) {
-  posthog.capture("grace_viewed", {
+  safeCapture("grace_viewed", {
     time_spent_ms: timeSpent,
     scroll_depth_percent: scrollDepth,
   });
@@ -68,19 +76,19 @@ export function trackInvitationResponse(
   response: "prayed" | "thinking" | "dismissed",
   totalTime: number,
 ) {
-  posthog.capture("invitation_response", {
+  safeCapture("invitation_response", {
     response,
     total_time_ms: totalTime,
   });
 }
 
 export function trackResourceClicked(name: string, url: string) {
-  posthog.capture("resource_clicked", { resource_name: name, resource_url: url });
+  safeCapture("resource_clicked", { resource_name: name, resource_url: url });
 }
 
 export function trackShared(
   method: "whatsapp" | "telegram" | "copy" | "native",
   locale: string,
 ) {
-  posthog.capture("shared", { share_method: method, locale });
+  safeCapture("shared", { share_method: method, locale });
 }
