@@ -1,0 +1,107 @@
+{
+  "landing": {
+    "title": "Are you a good person?",
+    "cta": "Find out"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "text": "Have you ever told a lie — even a small one?",
+      "commandment": "You shall not bear false witness",
+      "honestLabel": "Yes, I have",
+      "justifyLabel": "Not really",
+      "followUp": "What about a 'white lie' to spare someone's feelings?"
+    },
+    {
+      "id": 2,
+      "text": "Have you ever taken something that wasn't yours — even something small?",
+      "commandment": "You shall not steal",
+      "honestLabel": "Yes, I have",
+      "justifyLabel": "Nothing significant",
+      "followUp": "Have you ever kept extra change, or downloaded something you didn't pay for?"
+    },
+    {
+      "id": 3,
+      "text": "Have you ever looked at someone with lust?",
+      "commandment": "You shall not commit adultery",
+      "honestLabel": "Yes, I have",
+      "justifyLabel": "I don't think so",
+      "followUp": "Jesus said, 'Whoever looks at a woman to lust for her has already committed adultery with her in his heart.' — Matthew 5:28 (NKJV)"
+    },
+    {
+      "id": 4,
+      "text": "Have you ever been so angry you wished someone harm?",
+      "commandment": "You shall not murder",
+      "honestLabel": "Yes, I have",
+      "justifyLabel": "Never that far",
+      "followUp": "Even a flash of hatred — Jesus said, 'Whoever is angry with his brother without a cause shall be in danger of the judgment.' — Matthew 5:22 (NKJV)"
+    },
+    {
+      "id": 5,
+      "text": "Have you ever used God's name as a curse word?",
+      "commandment": "You shall not take the name of the LORD your God in vain",
+      "honestLabel": "Yes, I have",
+      "justifyLabel": "Not intentionally",
+      "followUp": "Even 'OMG' as an exclamation — using the Creator's name carelessly?"
+    },
+    {
+      "id": 6,
+      "text": "Have you ever wanted something that belonged to someone else?",
+      "commandment": "You shall not covet",
+      "honestLabel": "Yes, I have",
+      "justifyLabel": "That's just normal",
+      "followUp": "A friend's lifestyle, someone's relationship, a coworker's promotion?"
+    },
+    {
+      "id": 7,
+      "text": "Have you ever put something — money, career, relationships — above God?",
+      "commandment": "You shall have no other gods before Me",
+      "honestLabel": "Yes, I have",
+      "justifyLabel": "I don't think about it",
+      "followUp": "If you've spent more time on your phone than thinking about your Creator..."
+    },
+    {
+      "id": 8,
+      "text": "Have you ever failed to honor your parents?",
+      "commandment": "Honor your father and your mother",
+      "honestLabel": "Yes, I have",
+      "justifyLabel": "I've always tried",
+      "followUp": "Even in your heart — resentment, dismissiveness, ingratitude?"
+    }
+  ],
+  "verdict": {
+    "title": "Guilty.",
+    "subtitle": "By God's perfect standard, none of us are good enough."
+  },
+  "grace": {
+    "heading": "But God, being rich in mercy...",
+    "body": "Imagine you're in a courtroom, guilty of a serious crime. The fine is enormous — more than you could ever pay. But then someone steps in and pays your fine in full. The judge can legally let you go — justice has been served.\n\nThat's what God did for you.\n\nTwo thousand years ago, God came to earth in the person of Jesus Christ. He lived a perfect life — the only person who ever could. Then He willingly died on the cross, taking the punishment that we deserve.\n\nHe paid the fine so that God, the just Judge, could dismiss your case. Not because you earned it. Not because you deserved it. But because He loves you.\n\nThree days later, He rose from the dead, defeating death itself.",
+    "scripture": "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.",
+    "scriptureRef": "John 3:16 (NKJV)",
+    "continueLabel": "Continue"
+  },
+  "invitation": {
+    "heading": "What will you do with this?",
+    "prayer": "God, I understand that I have broken Your Law and sinned against You. I am truly sorry. I believe that Jesus Christ died on the cross to pay the penalty for my sins and that He rose again. I turn from my sins and place my trust in Jesus Christ alone for my salvation. Thank You for Your mercy and forgiveness. In Jesus' name, Amen.",
+    "responses": {
+      "prayed": "I prayed this prayer",
+      "thinking": "I want to think about it",
+      "dismissed": "Not for me"
+    },
+    "resources": [
+      { "name": "Learn more at Living Waters", "url": "https://livingwaters.com/" },
+      { "name": "Read the Gospel of John", "url": "https://www.bible.com/bible/114/JHN.1.NKJV" },
+      { "name": "Find a church near you", "url": "https://www.google.com/maps/search/church+near+me" }
+    ]
+  },
+  "share": {
+    "prompt": "Share this with someone",
+    "whatsappMessage": "Are you a good person? Take this test and find out:",
+    "telegramMessage": "Are you a good person? Take this test and find out:",
+    "linkCopied": "Link copied!"
+  },
+  "meta": {
+    "title": "Are You a Good Person? | Take the Test",
+    "description": "Most people think they're good. Find out where you really stand."
+  }
+}

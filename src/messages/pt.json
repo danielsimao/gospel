@@ -1,0 +1,107 @@
+{
+  "landing": {
+    "title": "Tu es uma boa pessoa?",
+    "cta": "Descobre"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "text": "Alguma vez mentiste — mesmo uma mentira pequena?",
+      "commandment": "Nao diras falso testemunho",
+      "honestLabel": "Sim, ja menti",
+      "justifyLabel": "Nada de grave",
+      "followUp": "E uma 'mentirinha' para nao magoar alguem?"
+    },
+    {
+      "id": 2,
+      "text": "Alguma vez tiraste algo que nao era teu — mesmo algo pequeno?",
+      "commandment": "Nao furtaras",
+      "honestLabel": "Sim, ja tirei",
+      "justifyLabel": "Nada significativo",
+      "followUp": "Alguma vez ficaste com troco a mais, ou fizeste download de algo sem pagar?"
+    },
+    {
+      "id": 3,
+      "text": "Alguma vez olhaste para alguem com desejo impuro?",
+      "commandment": "Nao adulteraras",
+      "honestLabel": "Sim, ja olhei",
+      "justifyLabel": "Acho que nao",
+      "followUp": "Jesus disse: 'qualquer que atentar numa mulher para a cobicar, ja em seu coracao cometeu adulterio com ela.' — Mateus 5:28 (ACF)"
+    },
+    {
+      "id": 4,
+      "text": "Alguma vez tiveste tanta raiva que desejaste mal a alguem?",
+      "commandment": "Nao mataras",
+      "honestLabel": "Sim, ja tive",
+      "justifyLabel": "Nunca tanto assim",
+      "followUp": "Mesmo um momento de odio — Jesus disse: 'qualquer que, sem motivo, se encolerizar contra seu irmao, estara sujeito a julgamento.' — Mateus 5:22 (ACF)"
+    },
+    {
+      "id": 5,
+      "text": "Alguma vez usaste o nome de Deus como palavrao?",
+      "commandment": "Nao tomaras o nome do Senhor teu Deus em vao",
+      "honestLabel": "Sim, ja usei",
+      "justifyLabel": "Nao de proposito",
+      "followUp": "Mesmo um 'Ai meu Deus' descuidado — usar o nome do Criador sem reverencia?"
+    },
+    {
+      "id": 6,
+      "text": "Alguma vez desejaste algo que pertencia a outra pessoa?",
+      "commandment": "Nao cobiceras",
+      "honestLabel": "Sim, ja desejei",
+      "justifyLabel": "Isso e normal",
+      "followUp": "O estilo de vida de um amigo, o relacionamento de alguem, a promocao de um colega?"
+    },
+    {
+      "id": 7,
+      "text": "Alguma vez colocaste algo — dinheiro, carreira, relacoes — acima de Deus?",
+      "commandment": "Nao teras outros deuses diante de mim",
+      "honestLabel": "Sim, ja coloquei",
+      "justifyLabel": "Nao penso nisso",
+      "followUp": "Se passaste mais tempo no telemovel do que a pensar no teu Criador..."
+    },
+    {
+      "id": 8,
+      "text": "Alguma vez falhaste em honrar os teus pais?",
+      "commandment": "Honra o teu pai e a tua mae",
+      "honestLabel": "Sim, ja falhei",
+      "justifyLabel": "Sempre tentei",
+      "followUp": "Mesmo no teu coracao — ressentimento, desprezo, ingratidao?"
+    }
+  ],
+  "verdict": {
+    "title": "Culpado.",
+    "subtitle": "Pelo padrao perfeito de Deus, nenhum de nos e suficientemente bom."
+  },
+  "grace": {
+    "heading": "Mas Deus, sendo rico em misericordia...",
+    "body": "Imagina que estas num tribunal, culpado de um crime grave. A multa e enorme — mais do que alguma vez poderias pagar. Mas alguem se levanta e paga a tua multa por inteiro. O juiz pode legalmente deixar-te ir — a justica foi feita.\n\nFoi isso que Deus fez por ti.\n\nHa dois mil anos, Deus veio a terra na pessoa de Jesus Cristo. Ele viveu uma vida perfeita — a unica pessoa que alguma vez conseguiu. Depois, voluntariamente morreu na cruz, tomando sobre Si o castigo que nos mereciamos.\n\nEle pagou a multa para que Deus, o Juiz justo, pudesse absolver o teu caso. Nao porque o mereceste. Nao porque o ganhaste. Mas porque Ele te ama.\n\nTres dias depois, ressuscitou dos mortos, vencendo a propria morte.",
+    "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigenito, para que todo aquele que nele cre nao pereca, mas tenha a vida eterna.",
+    "scriptureRef": "Joao 3:16 (ACF)",
+    "continueLabel": "Continuar"
+  },
+  "invitation": {
+    "heading": "O que vais fazer com isto?",
+    "prayer": "Deus, eu entendo que quebrei a Tua Lei e pequei contra Ti. Estou verdadeiramente arrependido. Creio que Jesus Cristo morreu na cruz para pagar a pena pelos meus pecados e que ressuscitou. Eu abandono os meus pecados e coloco a minha confianca somente em Jesus Cristo para a minha salvacao. Obrigado pela Tua misericordia e perdao. Em nome de Jesus, Amen.",
+    "responses": {
+      "prayed": "Eu fiz esta oracao",
+      "thinking": "Quero pensar sobre isto",
+      "dismissed": "Nao e para mim"
+    },
+    "resources": [
+      { "name": "Saber mais em Living Waters", "url": "https://livingwaters.com/" },
+      { "name": "Ler o Evangelho de Joao", "url": "https://www.bible.com/bible/212/JHN.1.ACF" },
+      { "name": "Encontrar uma igreja perto de ti", "url": "https://www.google.com/maps/search/igreja+perto+de+mim" }
+    ]
+  },
+  "share": {
+    "prompt": "Partilha com alguem",
+    "whatsappMessage": "Tu es uma boa pessoa? Faz este teste e descobre:",
+    "telegramMessage": "Tu es uma boa pessoa? Faz este teste e descobre:",
+    "linkCopied": "Link copiado!"
+  },
+  "meta": {
+    "title": "Tu es uma Boa Pessoa? | Faz o Teste",
+    "description": "A maioria das pessoas pensa que e boa. Descobre onde realmente estas."
+  }
+}
