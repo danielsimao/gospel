@@ -45,12 +45,41 @@ export function trackGameAbandoned(
   totalTime: number,
   locale: string,
 ) {
-  safeCapture("game_abandoned", {
-    last_question_id: lastQuestionId,
-    score_at_exit: scoreAtExit,
-    total_time_ms: totalTime,
-    locale,
-  });
+  // Use sendBeacon for reliability during page unload
+  const payload = {
+    event: "game_abandoned",
+    properties: {
+      last_question_id: lastQuestionId,
+      score_at_exit: scoreAtExit,
+      total_time_ms: totalTime,
+      locale,
+    },
+  };
+
+  try {
+    if (typeof navigator !== "undefined" && navigator.sendBeacon) {
+      const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com";
+      const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+      if (posthogKey) {
+        navigator.sendBeacon(
+          `${posthogHost}/capture/`,
+          JSON.stringify({
+            api_key: posthogKey,
+            event: "game_abandoned",
+            properties: {
+              ...payload.properties,
+              distinct_id: posthog.get_distinct_id?.() || "anonymous",
+            },
+          }),
+        );
+        return;
+      }
+    }
+  } catch {
+    // Fall through to regular capture
+  }
+
+  safeCapture("game_abandoned", payload.properties);
 }
 
 export function trackVerdictReached(

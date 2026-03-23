@@ -105,7 +105,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         invitationResponse: action.response,
       };
 
-    default:
+    default: {
+      const _exhaustive: never = action;
       return state;
+    }
   }
 }
