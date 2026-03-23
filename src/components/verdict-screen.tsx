@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useGameDispatch } from "@/components/game-provider";
 import { CrackOverlay } from "@/components/crack-overlay";
@@ -15,7 +15,12 @@ interface VerdictScreenProps {
 export function VerdictScreen({ messages, state }: VerdictScreenProps) {
   const dispatch = useGameDispatch();
 
+  const hasFired = useRef(false);
+
   useEffect(() => {
+    if (hasFired.current) return;
+    hasFired.current = true;
+
     const totalHonest = state.answers.filter((a) => a.answer === "honest").length;
     const totalJustify = state.answers.filter((a) => a.answer === "justify").length;
     const totalTime = state.completedAt

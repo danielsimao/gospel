@@ -24,7 +24,8 @@ export function GraceScreen({ messages }: GraceScreenProps) {
   useEffect(() => {
     function handleScroll() {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-      const depth = Math.round((scrollTop / (scrollHeight - clientHeight)) * 100);
+      const maxScroll = scrollHeight - clientHeight;
+      const depth = maxScroll > 0 ? Math.round((scrollTop / maxScroll) * 100) : 0;
       if (depth > maxScrollDepth.current) maxScrollDepth.current = depth;
     }
     window.addEventListener("scroll", handleScroll, { passive: true });

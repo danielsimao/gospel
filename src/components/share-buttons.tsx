@@ -18,15 +18,12 @@ interface ShareButtonsProps {
 export function ShareButtons({ messages, locale }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const [canNativeShare, setCanNativeShare] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
 
   useEffect(() => {
     setCanNativeShare("share" in navigator);
-  }, []);
-
-  const shareUrl =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/${locale}`
-      : "";
+    setShareUrl(`${window.location.origin}/${locale}`);
+  }, [locale]);
 
   function shareWhatsApp() {
     trackShared("whatsapp", locale);
@@ -46,9 +43,13 @@ export function ShareButtons({ messages, locale }: ShareButtonsProps) {
 
   async function copyLink() {
     trackShared("copy", locale);
-    await navigator.clipboard.writeText(shareUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard API not available in non-secure context
+    }
   }
 
   async function nativeShare() {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameDispatch } from "@/components/game-provider";
 import { FollowUp } from "@/components/follow-up";
@@ -34,6 +34,7 @@ export function QuestionCard({
   const dispatch = useGameDispatch();
   const [answered, setAnswered] = useState<AnswerType | null>(null);
   const [showFollowUp, setShowFollowUp] = useState(false);
+  const timersRef = useRef<NodeJS.Timeout[]>([]);
 
   const advance = useCallback(() => {
     dispatch({ type: "ADVANCE_AFTER_FOLLOWUP" });
@@ -42,6 +43,10 @@ export function QuestionCard({
   useEffect(() => {
     setAnswered(null);
     setShowFollowUp(false);
+    return () => {
+      timersRef.current.forEach(clearTimeout);
+      timersRef.current = [];
+    };
   }, [questionIndex]);
 
   function handleAnswer(answer: AnswerType) {
@@ -63,17 +68,23 @@ export function QuestionCard({
     );
 
     if (answer === "justify") {
-      setTimeout(() => {
-        setShowFollowUp(true);
-        trackFollowupShown(question.id);
-      }, 800);
-      setTimeout(() => {
-        advance();
-      }, 3500);
+      timersRef.current.push(
+        setTimeout(() => {
+          setShowFollowUp(true);
+          trackFollowupShown(question.id);
+        }, 800),
+      );
+      timersRef.current.push(
+        setTimeout(() => {
+          advance();
+        }, 3500),
+      );
     } else {
-      setTimeout(() => {
-        advance();
-      }, 1200);
+      timersRef.current.push(
+        setTimeout(() => {
+          advance();
+        }, 1200),
+      );
     }
   }
 
