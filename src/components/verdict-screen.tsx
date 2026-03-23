@@ -15,19 +15,18 @@ interface VerdictScreenProps {
 export function VerdictScreen({ messages, state }: VerdictScreenProps) {
   const dispatch = useGameDispatch();
 
-  const hasFired = useRef(false);
+  const hasTracked = useRef(false);
 
   useEffect(() => {
-    if (hasFired.current) return;
-    hasFired.current = true;
-
-    const totalHonest = state.answers.filter((a) => a.answer === "honest").length;
-    const totalJustify = state.answers.filter((a) => a.answer === "justify").length;
-    const totalTime = state.completedAt
-      ? state.completedAt - state.startedAt
-      : Date.now() - state.startedAt;
-
-    trackVerdictReached(totalHonest, totalJustify, totalTime);
+    if (!hasTracked.current) {
+      hasTracked.current = true;
+      const totalHonest = state.answers.filter((a) => a.answer === "honest").length;
+      const totalJustify = state.answers.filter((a) => a.answer === "justify").length;
+      const totalTime = state.completedAt
+        ? state.completedAt - state.startedAt
+        : Date.now() - state.startedAt;
+      trackVerdictReached(totalHonest, totalJustify, totalTime);
+    }
 
     const timer = setTimeout(() => {
       dispatch({ type: "SHOW_GRACE" });
