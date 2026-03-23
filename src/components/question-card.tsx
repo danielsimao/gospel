@@ -77,7 +77,7 @@ export function QuestionCard({
       timersRef.current.push(
         setTimeout(() => {
           advance();
-        }, 3500),
+        }, 6000),
       );
     } else {
       timersRef.current.push(
