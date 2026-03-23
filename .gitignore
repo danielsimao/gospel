@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# playwright / browser automation artifacts
+.playwright-mcp/
+*.png
+*.pdf
+*.webm
