@@ -1,0 +1,283 @@
+# Verdict — The Impossible Standard Game
+
+## Summary
+
+A mobile-first progressive web app that presents the gospel through an interactive game based on Ray Comfort's "Way of the Master" evangelism method. The user attempts to prove they're a "good person" by answering moral questions tied to the Ten Commandments. The game is truthfully unwinnable — no one meets God's perfect standard. When the score hits zero, the screen cracks and the verdict drops: **Guilty.** Then light breaks through — the gospel of grace is presented. Jesus paid the fine.
+
+## Target Audience
+
+- **Primary:** Non-believers receiving a link (cold share via social media/QR/text, or warm follow-up after a conversation)
+- **Context:** Works whether the person has had a prior evangelism conversation or not
+- **Session:** Single sitting, 3-7 minutes. Return visits are a bonus, not required.
+
+## Core Principles
+
+- **Law before Grace** — conviction before comfort (Ray Comfort's core principle)
+- **Truthful, not tricky** — the game isn't rigged unfairly; it reflects God's actual standard of perfection
+- **Faithful to the method's core** but creative in presentation
+- **Maximum impact in one session** — the full gospel is delivered every time
+
+## Ray Comfort Method Mapping
+
+| Ray Comfort Step | App Phase |
+|-----------------|-----------|
+| "Are you a good person?" | Landing — the implicit challenge |
+| Walk through the Commandments | Game — 8 moral questions |
+| "Would you be innocent or guilty?" | Verdict — score hits zero, "Guilty" |
+| God paid the fine through Christ | Grace — light breaks through, gospel message |
+| Call to repentance and faith | Invitation — prayer, resources |
+
+## Game Flow
+
+```
+Landing → Game (rapid-fire moral questions, draining score) → Verdict (zero, screen cracks) → Grace (light breaks through, gospel message) → Invitation (prayer, share, resources)
+```
+
+### Phase 1: Landing
+
+- Full-screen dark background with subtle warm glow
+- Simple question: "Are you a good person?"
+- Single CTA button: "Find out" or "Take the test"
+- No sign-up, no friction — one tap to start
+
+### Phase 2: Game (8 Questions)
+
+**Score System:**
+- Starts at 100 — visualized as a thin, elegant bar at the top
+- Score drains are calibrated so it always reaches zero on or after question 8
+- The bar cannot go up — no way to earn points back
+- The game is truthfully unwinnable because the standard is perfection
+
+**Questions with score values:**
+
+| # | Question | Commandment | Honest drain | Justify drain | Follow-up (if justify) |
+|---|----------|-------------|-------------|--------------|----------------------|
+| 1 | "Have you ever told a lie — even a small one?" | 9th | -12 | -5 | "What about a 'white lie' to spare someone's feelings?" |
+| 2 | "Have you ever taken something that wasn't yours — even something small?" | 8th | -12 | -5 | "Have you ever kept extra change, downloaded something you didn't pay for?" |
+| 3 | "Have you ever looked at someone with lust?" | 7th (Matt 5:28) | -13 | -6 | "Jesus said looking with lust is adultery of the heart." |
+| 4 | "Have you ever been so angry you wished someone harm?" | 6th | -13 | -6 | "Even a flash of hatred — Jesus called that murder of the heart." |
+| 5 | "Have you ever used God's name as a curse word?" | 3rd | -12 | -7 | "Even 'OMG' as an exclamation — using the Creator's name carelessly?" |
+| 6 | "Have you ever wanted something that belonged to someone else?" | 10th | -13 | -7 | "A friend's lifestyle, someone's relationship, a coworker's promotion?" |
+| 7 | "Have you ever put something — money, career, relationships — above God?" | 1st | -13 | -8 | "If you've spent more time on your phone than thinking about your Creator..." |
+| 8 | "Have you ever failed to honor your parents?" | 5th | -12 | -8 | "Even in your heart — resentment, dismissiveness, ingratitude?" |
+
+**Score math:** All honest = 100 points drained (exactly zero). All justify = 52 points drained (score at 48, but the follow-ups make dishonesty increasingly difficult to maintain). Mixed answers always land at or near zero by Q8. If score reaches zero before Q8, remaining questions still play with score fixed at zero — the conviction continues building.
+
+**Follow-up interaction:** When user picks the self-justifying option, a follow-up text appears below the question (inline, not a modal) with a 1.5s delay. After reading, the score drains and the next question auto-advances after 2s.
+
+**Interaction:**
+- Two options per question: honest admission or self-justifying claim
+- Tap to answer (large tap targets, stacked vertically on mobile, side-by-side on desktop)
+- Smooth slide/fade transitions between questions
+- No skip option — every question is part of the journey
+
+**Visual Shift (progressive mood change):**
+- Questions 1-3: Dark neutral background, green score bar, confident tone
+- Questions 4-6: Darker background, bar shifts yellow → orange, slight unease
+- Questions 7-8: Near black, red bar almost empty, bold stark text, conviction
+
+### Phase 3: Verdict
+
+- Score hits zero → screen crack effect (CSS overlay with animated SVG crack pattern radiating from center)
+- **"Guilty."** — large text, pause for weight
+- "By God's perfect standard, none of us are good enough."
+- Brief moment of silence / stillness
+
+### Phase 4: Grace
+
+- Light breaks through the cracks (CSS gradients + blur for volumetric rays)
+- Tone shifts entirely — warm, hopeful
+- "But God, being rich in mercy..."
+- The courtroom fine analogy: a judge who pays your penalty
+- Jesus paid the fine — His death on the cross satisfied God's justice
+- The score bar refills slowly with golden/white light — not from your works, but from His sacrifice
+
+### Phase 5: Invitation
+
+- Clear, dignified explanation of repentance and faith
+- Not a pushy altar call — simple and respectful
+- A prayer the user can pray if they choose
+- Three response options: "I prayed this" / "I want to think about it" / dismiss
+- Links to resources: Living Waters, Bible reading plan, local church finder
+
+### Phase 6: Share
+
+- Native Web Share API on mobile
+- Copy link fallback on desktop
+- "Share this with someone" prompt
+
+## Visual & UI Design
+
+**Aesthetic:** Dark mode base — deep blacks and dark grays. Creates contrast for the dramatic light-breaking-through moment.
+
+| Phase | Background | Score Bar | Typography | Mood |
+|-------|-----------|-----------|------------|------|
+| Landing | Dark + subtle warm glow | N/A | Clean, inviting | Curiosity |
+| Early questions (1-3) | Dark neutral | Green, full | Confident | "I'm doing fine" |
+| Mid questions (4-6) | Slightly darker | Yellow → Orange | Slightly heavier | Unease |
+| Late questions (7-8) | Near black | Red, almost empty | Bold, stark | Conviction |
+| Verdict | Black, screen crack | Empty / shattered | Large, impactful | Weight |
+| Grace | Light through cracks | Refills gold/white | Warm, softer | Hope |
+| Invitation | Warm light, clean | N/A | Clear, readable | Peace |
+
+**Mobile Layout:**
+- Full-screen experience — no nav bar, no distractions
+- Questions centered vertically
+- Score bar fixed at top (thin, elegant)
+- Smooth transitions between questions
+
+**Animations:**
+- Score bar draining with easing (user watches it fall)
+- Gradual background color/mood shifts
+- Screen crack: animated SVG overlay with CSS transforms (no WebGL — keep bundle small)
+- Light rays: CSS conic-gradient with animated opacity for "god rays" effect
+- Score bar golden refill at grace moment
+- All animations respect `prefers-reduced-motion` — fade-only fallbacks
+
+**Typography:**
+- Geist Sans for UI and questions
+- Geist Mono for the score number
+- Larger text on gospel/grace section — most important content gets room
+
+**Sound:** Out of scope for v1. Can be added later with user-gesture activation to comply with mobile autoplay policies.
+
+## Tech Stack
+
+- **Framework:** Next.js (App Router) on Vercel
+- **Styling:** Tailwind CSS + shadcn/ui
+- **Animations:** Framer Motion (score bar, crack effect, light rays)
+- **Analytics:** Vercel Web Analytics + custom events
+- **PWA:** Service worker for offline support (optional v2)
+- **No database** — all game state is client-side
+- **No authentication** — anonymous, frictionless experience
+
+## Data Model
+
+```typescript
+type GamePhase = "landing" | "playing" | "verdict" | "grace" | "invitation" // "grace" includes gospel message; "invitation" includes share/resources
+type AnswerType = "honest" | "justify"
+type InvitationResponse = "prayed" | "thinking" | "dismissed"
+
+interface Answer {
+  questionId: number
+  answer: AnswerType
+  commandment: string
+  scoreChange: number
+}
+
+interface GameState {
+  phase: GamePhase
+  currentQuestion: number
+  score: number // 0-100
+  answers: Answer[]
+  startedAt: number // timestamp
+  completedAt: number | null
+  graceReached: boolean
+  invitationResponse: InvitationResponse | null
+}
+```
+
+## Analytics Events
+
+| Event | Data | Purpose |
+|-------|------|---------|
+| `game_started` | referral source, device type | Traffic source tracking |
+| `question_answered` | questionId, answer type, score after | Drop-off analysis, question impact |
+| `game_abandoned` | last questionId, score at exit | Drop-off tracking |
+| `verdict_reached` | total honest answers, time spent | Completion rate |
+| `grace_viewed` | time spent on grace section | Gospel engagement |
+| `invitation_response` | prayed / thinking / dismissed | Key conversion metric |
+| `resource_clicked` | which resource | Follow-up resonance |
+| `shared` | share method | Viral coefficient |
+
+**No PII collected.** No accounts, no emails, no cookies beyond analytics.
+
+## Component Architecture
+
+**Single-page app** — all phases render within one route (`/`). No client-side routing between phases; state machine drives which phase component renders.
+
+**State management:** `useReducer` with a `GameState` context. No external state library needed — the state is simple and contained.
+
+```
+app/
+├── page.tsx                    # Entry point, wraps GameProvider
+├── layout.tsx                  # Geist fonts, metadata, analytics
+├── components/
+│   ├── game-provider.tsx       # GameState context + useReducer
+│   ├── landing.tsx             # "Are you a good person?" CTA
+│   ├── question-card.tsx       # Single question with two answer buttons
+│   ├── follow-up.tsx           # Inline follow-up for justify answers
+│   ├── score-bar.tsx           # Animated score bar (top of screen)
+│   ├── verdict-screen.tsx      # "Guilty" + crack effect
+│   ├── grace-screen.tsx        # Light rays + gospel message + score refill
+│   ├── invitation-screen.tsx   # Prayer, response buttons, share, resources
+│   └── crack-overlay.tsx       # SVG crack animation overlay
+├── lib/
+│   ├── questions.ts            # Question data (text, commandment, drain values, follow-ups)
+│   ├── game-reducer.ts         # State machine reducer (phase transitions, score calc)
+│   └── analytics.ts            # Analytics event helpers
+└── public/
+    └── og-image.png            # Static OG image for social sharing
+```
+
+## URL & Routing Strategy
+
+Single route (`/`). No deep-linking to individual phases — the experience is sequential. Browser back button navigates away from the app (not between phases). Page refresh resets to landing (game state lives in React state only, not sessionStorage — the experience is short enough that restart is fine).
+
+## Metadata & Social Sharing
+
+- **Title:** "Are You a Good Person? | Take the Test"
+- **Description:** "Most people think they're good. Find out where you really stand."
+- **OG Image:** Static dark-themed image with the question "Are you a good person?" — designed to provoke curiosity
+- **Favicon:** Simple minimal icon
+
+## Accessibility
+
+- All interactive elements are keyboard-accessible (Tab + Enter/Space)
+- Focus management: auto-focus moves to the next question after answering
+- `aria-live="polite"` on score bar for screen reader updates
+- WCAG 2.1 AA contrast ratios for all text (especially important during dark phases)
+- `prefers-reduced-motion`: all animations degrade to simple fades
+- Answer buttons have sufficient size (min 44x44px touch targets)
+
+## Edge Cases & Error Handling
+
+- **Page refresh mid-game:** Resets to landing. The experience is 3-5 minutes — acceptable to restart.
+- **Web Share API unavailable:** Falls back to copy-link button with "Link copied!" toast
+- **Low-end devices:** Framer Motion handles frame dropping gracefully. Crack effect uses CSS/SVG, not WebGL. If animations are too slow, `prefers-reduced-motion` path is simpler.
+- **JavaScript disabled:** Not supported — the app is inherently interactive. A `<noscript>` tag can show a static gospel message as fallback.
+
+## Browser Support
+
+Modern browsers: Chrome 90+, Safari 15+, Firefox 90+, Edge 90+. Mobile Safari and Chrome on Android are the primary targets.
+
+## Acceptance Criteria (v1)
+
+**Must-have:**
+- [ ] Landing screen with CTA
+- [ ] 8 questions with honest/justify paths and follow-ups
+- [ ] Animated score bar that drains and changes color
+- [ ] Verdict screen with crack effect and "Guilty" text
+- [ ] Grace screen with light effect, gospel message, score refill
+- [ ] Invitation screen with prayer, 3 response options, resource links
+- [ ] Share button (Web Share API + copy fallback)
+- [ ] Analytics events for all key interactions
+- [ ] Mobile-first responsive design
+- [ ] OG image and metadata for social sharing
+- [ ] Deployed on Vercel
+
+**Nice-to-have (v1.1):**
+- [ ] Haptic feedback on mobile (navigator.vibrate)
+- [ ] Shareable result card image generation
+- [ ] Sound effects with user toggle
+
+## Content Management
+
+All question text, gospel text, and prayer text are hardcoded in `lib/questions.ts` and component files for v1. If multi-language support is added (Phase 4), these will be extracted to a content layer (JSON files or CMS).
+
+## Future Phases
+
+- **Phase 2:** AI Conversational Experience (Idea 2) — an AI-powered "Good Person Test" conversation
+- **Phase 3:** Shareable result cards / OG images
+- **Phase 4:** Multi-language support
+- **Phase 5:** PWA with offline support
