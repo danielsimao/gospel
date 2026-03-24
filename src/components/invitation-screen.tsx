@@ -1,33 +1,42 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useGameDispatch } from "@/components/game-provider";
 import { ShareButtons } from "@/components/share-buttons";
 import {
   trackInvitationResponse,
   trackResourceClicked,
 } from "@/lib/analytics";
-import type { GameState, InvitationResponse, Messages } from "@/lib/types";
+import type { InvitationResponse, Messages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 
 interface InvitationScreenProps {
   messages: Messages;
   locale: Locale;
-  state: GameState;
+  startedAt: number;
+  invitationResponse: InvitationResponse | null;
+  onResponse: (response: InvitationResponse) => void;
+  shareMessages?: {
+    prompt: string;
+    whatsappMessage: string;
+    telegramMessage: string;
+    linkCopied: string;
+  };
 }
 
 export function InvitationScreen({
   messages,
   locale,
-  state,
+  startedAt,
+  invitationResponse,
+  onResponse,
+  shareMessages,
 }: InvitationScreenProps) {
-  const dispatch = useGameDispatch();
   const { invitation, share } = messages;
 
   function handleResponse(response: InvitationResponse) {
-    const totalTime = Date.now() - state.startedAt;
+    const totalTime = Date.now() - startedAt;
     trackInvitationResponse(response, totalTime);
-    dispatch({ type: "SET_INVITATION_RESPONSE", response });
+    onResponse(response);
   }
 
   function handleResourceClick(name: string, url: string) {
@@ -57,7 +66,7 @@ export function InvitationScreen({
           </p>
         </motion.div>
 
-        {!state.invitationResponse && (
+        {!invitationResponse && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -85,7 +94,7 @@ export function InvitationScreen({
           </motion.div>
         )}
 
-        {state.invitationResponse && (
+        {invitationResponse && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -109,7 +118,7 @@ export function InvitationScreen({
               ))}
             </div>
 
-            <ShareButtons messages={share} locale={locale} />
+            <ShareButtons messages={shareMessages || share} locale={locale} />
           </motion.div>
         )}
       </div>

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import * as Sentry from "@sentry/nextjs";
-import { useGameState } from "@/components/game-provider";
+import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { Landing } from "@/components/landing";
 import { QuestionCard } from "@/components/question-card";
 import { ScoreBar } from "@/components/score-bar";
@@ -21,6 +21,7 @@ interface GameShellProps {
 
 export function GameShell({ messages, locale }: GameShellProps) {
   const state = useGameState();
+  const dispatch = useGameDispatch();
 
   useEffect(() => {
     Sentry.addBreadcrumb({
@@ -77,7 +78,11 @@ export function GameShell({ messages, locale }: GameShellProps) {
         <InvitationScreen
           messages={messages}
           locale={locale}
-          state={state}
+          startedAt={state.startedAt}
+          invitationResponse={state.invitationResponse}
+          onResponse={(response) =>
+            dispatch({ type: "SET_INVITATION_RESPONSE", response })
+          }
         />
       )}
     </main>
