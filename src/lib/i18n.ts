@@ -22,6 +22,17 @@ function validateMessages(messages: unknown, locale: string): Messages {
   if (!m.verdict?.title || !m.grace?.heading || !m.invitation?.prayer || !m.share?.prompt || !m.meta?.title) {
     throw new Error(`[i18n] Missing required content sections for locale "${locale}"`);
   }
+  if (m.chat) {
+    if (!m.chat.landing?.title || !m.chat.landing?.cta) {
+      throw new Error(`[i18n] Missing chat landing content for locale "${locale}"`);
+    }
+    const requiredPrompts = ["intro", "commandments", "conviction", "grace"];
+    for (const stage of requiredPrompts) {
+      if (!m.chat.systemPrompts?.[stage as keyof typeof m.chat.systemPrompts]) {
+        throw new Error(`[i18n] Missing chat system prompt "${stage}" for locale "${locale}"`);
+      }
+    }
+  }
   return m;
 }
 
