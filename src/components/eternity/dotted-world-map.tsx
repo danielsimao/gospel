@@ -1,7 +1,10 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+
+function toSvgX(x: number) { return x * 0.9 - 60; }
+function toSvgY(y: number) { return y * 0.9 - 30; }
 
 // Pre-computed dot coordinates forming world continents
 // Projected from lat/lng to SVG viewBox (800x400), Mercator-like
@@ -146,6 +149,23 @@ interface DeathPulse {
   y: number;
 }
 
+const StaticDots = memo(function StaticDots() {
+  return (
+    <>
+      {CONTINENT_DOTS.map(([x, y], i) => (
+        <circle
+          key={i}
+          cx={toSvgX(x)}
+          cy={toSvgY(y)}
+          r={1.2}
+          fill="white"
+          opacity={0.12}
+        />
+      ))}
+    </>
+  );
+});
+
 export function DottedWorldMap() {
   const [pulses, setPulses] = useState<DeathPulse[]>([]);
   const nextId = useRef(0);
@@ -153,7 +173,6 @@ export function DottedWorldMap() {
 
   const addPulse = useCallback(() => {
     const dot = POPULATED_DOTS[Math.floor(Math.random() * POPULATED_DOTS.length)];
-    // Add slight randomness to position so pulses don't stack exactly
     const x = dot[0] + (Math.random() - 0.5) * 8;
     const y = dot[1] + (Math.random() - 0.5) * 8;
     const id = nextId.current++;
@@ -162,9 +181,7 @@ export function DottedWorldMap() {
   }, []);
 
   useEffect(() => {
-    // Add a pulse every ~550ms (slightly faster than 1 death/sec for visual density)
     intervalRef.current = setInterval(addPulse, 550);
-    // Start with one immediately
     addPulse();
 
     return () => {
@@ -179,26 +196,13 @@ export function DottedWorldMap() {
         className="w-full h-auto"
         aria-hidden="true"
       >
-        {/* Static continent dots */}
-        {CONTINENT_DOTS.map(([x, y], i) => (
-          <circle
-            key={i}
-            cx={x * 0.9 - 60}
-            cy={y * 0.9 - 30}
-            r={1.2}
-            fill="white"
-            opacity={0.12}
-          />
-        ))}
-
-        {/* Death pulse animations */}
+        <StaticDots />
         <AnimatePresence>
           {pulses.map((pulse) => (
             <g key={pulse.id}>
-              {/* Expanding ring */}
               <motion.circle
-                cx={pulse.x * 0.9 - 60}
-                cy={pulse.y * 0.9 - 30}
+                cx={toSvgX(pulse.x)}
+                cy={toSvgY(pulse.y)}
                 r={1.5}
                 fill="none"
                 stroke="#DC2626"
@@ -208,10 +212,9 @@ export function DottedWorldMap() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 2, ease: "easeOut" }}
               />
-              {/* Center dot */}
               <motion.circle
-                cx={pulse.x * 0.9 - 60}
-                cy={pulse.y * 0.9 - 30}
+                cx={toSvgX(pulse.x)}
+                cy={toSvgY(pulse.y)}
                 r={2}
                 fill="#DC2626"
                 initial={{ opacity: 0.9, scale: 1 }}

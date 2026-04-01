@@ -73,7 +73,6 @@ function FadeInSection({
 export function EternityShell({ messages, locale }: EternityShellProps) {
   return (
     <div className="flex flex-col">
-      {/* ── Section 1: Hero — Death Counter + Map ── */}
       <section className="relative flex min-h-dvh flex-col items-center justify-center px-6 py-16">
         <DeathCounter
           prefix={messages.hero.counter}
@@ -93,33 +92,29 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
           {messages.hero.subtitle}
         </motion.p>
 
-        {/* Scroll hint */}
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 3 }}
-          className="absolute bottom-8 flex flex-col items-center gap-2"
+          animate={{ opacity: 1, y: [0, 8, 0] }}
+          transition={{
+            opacity: { duration: 1, delay: 3 },
+            y: { duration: 2, repeat: Infinity, ease: "easeInOut", delay: 3 },
+          }}
+          className="absolute bottom-8"
         >
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            className="text-white/20"
           >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              className="text-white/20"
-            >
-              <path d="M7 13l5 5 5-5M7 6l5 5 5-5" />
-            </svg>
-          </motion.div>
+            <path d="M7 13l5 5 5-5M7 6l5 5 5-5" />
+          </svg>
         </motion.div>
       </section>
 
-      {/* ── Section 2: The Question — "Then What?" ── */}
       <section className="flex min-h-dvh flex-col items-center justify-center px-6 py-20">
         <div className="max-w-xl text-center">
           <FadeInSection>
@@ -147,9 +142,7 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
         </div>
       </section>
 
-      {/* ── Section 3: Grace — The Good News ── */}
       <section className="relative flex min-h-dvh flex-col items-center justify-center px-6 py-20">
-        {/* Gold gradient background */}
         <div className="pointer-events-none absolute inset-0 z-0">
           <motion.div
             initial={{ opacity: 0 }}
@@ -195,7 +188,6 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
         </div>
       </section>
 
-      {/* ── Section 4: Invitation — CTA + Resources ── */}
       <section className="flex min-h-[80dvh] flex-col items-center justify-center px-6 py-20">
         <div className="max-w-lg w-full text-center">
           <FadeInSection>
