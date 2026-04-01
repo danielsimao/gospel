@@ -104,6 +104,42 @@
     "title": "Are You a Good Person? | Take the Test",
     "description": "Most people think they're good. Find out where you really stand."
   },
+  "eternity": {
+    "hero": {
+      "counter": "Since you opened this page,",
+      "counterSuffix": "people have died.",
+      "subtitle": "Every second, almost 2 people step into eternity. Are they ready?"
+    },
+    "question": {
+      "heading": "Then what?",
+      "scripture": "It is appointed for men to die once, but after this the judgment.",
+      "scriptureRef": "Hebrews 9:27 (NKJV)",
+      "body": "If God judged you by the Ten Commandments on Judgment Day — have you ever told a lie? Stolen anything, even something small? Looked at someone with lust? Used God's name as a curse word? By His perfect standard, we are all guilty."
+    },
+    "grace": {
+      "heading": "But God, being rich in mercy...",
+      "body": "Imagine you're in a courtroom, guilty of a serious crime. The fine is enormous — more than you could ever pay. But then someone steps in and pays your fine in full. The judge can legally let you go — justice has been served.\n\nThat's what God did for you.\n\nTwo thousand years ago, God came to earth in the person of Jesus Christ. He lived a perfect life — the only person who ever could. Then He willingly died on the cross, taking the punishment that we deserve.\n\nHe paid the fine so that God, the just Judge, could dismiss your case. Not because you earned it. Not because you deserved it. But because He loves you.\n\nThree days later, He rose from the dead, defeating death itself.",
+      "scripture": "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.",
+      "scriptureRef": "John 3:16 (NKJV)"
+    },
+    "invitation": {
+      "heading": "What will you do with this?",
+      "subtitle": "Eternity is real. The question is — are you ready?",
+      "testCta": "Take the Good Person Test",
+      "chatCta": "Have an Honest Conversation",
+      "resources": [
+        { "name": "Learn more at Living Waters", "url": "https://livingwaters.com/" },
+        { "name": "Read the Gospel of John", "url": "https://www.bible.com/bible/114/JHN.1.NKJV" },
+        { "name": "Find a church near you", "url": "https://www.google.com/maps/search/church+near+me" }
+      ]
+    },
+    "share": {
+      "prompt": "Every Second Counts",
+      "whatsappMessage": "Every second, 2 people step into eternity. Are you ready?",
+      "telegramMessage": "Every second, 2 people step into eternity. Are you ready?",
+      "linkCopied": "Link copied!"
+    }
+  },
   "chat": {
     "landing": {
       "title": "Have a conversation",
