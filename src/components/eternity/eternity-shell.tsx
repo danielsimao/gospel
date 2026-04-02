@@ -221,7 +221,7 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
 
         <div className="mt-10 flex w-full max-w-xs flex-col gap-3">
           <a
-            href={`/${locale}`}
+            href={`/${locale}/test`}
             onClick={() => trackEternityCtaClicked("test")}
             className="group flex min-h-[52px] items-center justify-center rounded-lg border border-[#D4A843]/25 px-6 py-4 text-sm font-medium tracking-wide text-[#D4A843] transition-all duration-300 hover:border-[#D4A843]/50 hover:bg-[#D4A843]/[0.06] hover:shadow-[0_0_30px_rgba(212,168,67,0.08)]"
           >
@@ -253,7 +253,7 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
           ))}
         </div>
 
-        <ShareButtons messages={messages.share} locale={locale} sharePath={`/${locale}/eternity`} />
+        <ShareButtons messages={messages.share} locale={locale} />
       </section>
     </div>
   );
