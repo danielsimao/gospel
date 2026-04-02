@@ -104,6 +104,79 @@
     "title": "Tu es uma Boa Pessoa? | Faz o Teste",
     "description": "A maioria das pessoas pensa que e boa. Descobre onde realmente estas."
   },
+  "eternity": {
+    "hero": {
+      "label": "Hoje",
+      "suffix": "pessoas morreram",
+      "perSecond": "por segundo",
+      "perMinute": "por minuto",
+      "perHour": "por hora",
+      "perDay": "por dia",
+      "scroll": "Desce"
+    },
+    "quiz": {
+      "heading": "Estas preparado para enfrentar Deus?",
+      "subtitle": "Responde honestamente.",
+      "yesLabel": "Sim, ja fiz",
+      "noLabel": "Nao, nunca",
+      "questions": [
+        {
+          "question": "Alguma vez disseste uma mentira?",
+          "yesResponse": "Mesmo uma so. Uma \"mentira piedosa,\" um exagero, uma meia-verdade.",
+          "noResponse": "A serio? Nunca disseste uma unica mentira em toda a tua vida? Isso em si pode ser uma.",
+          "verdict": "Isso faz de ti um mentiroso."
+        },
+        {
+          "question": "Alguma vez roubaste alguma coisa?",
+          "yesResponse": "Independentemente do valor — uma caneta, o tempo de alguem, o credito pelo trabalho de outra pessoa.",
+          "noResponse": "Nunca tiraste nada que nao fosse teu? Nem algo pequeno? Pensa de novo.",
+          "verdict": "Isso faz de ti um ladrao."
+        },
+        {
+          "question": "Alguma vez usaste o nome de Deus como palavrao?",
+          "yesResponse": "Em vez de usar um palavrao qualquer, usaste o nome do Deus que te deu a vida.",
+          "noResponse": "Talvez nao — mas por dois dos Dez Mandamentos, ja admitiste a tua culpa.",
+          "verdict": "Isso faz de ti um blasfemador."
+        }
+      ],
+      "guiltyTitle": "Culpado",
+      "guiltyDesc": "Pela tua propria admissao, es um mentiroso, ladrao e blasfemador.",
+      "scripture": "Porque qualquer que guardar toda a lei, e tropecar num so ponto, tornou-se culpado de todos.",
+      "scriptureRef": "Tiago 2:10 (ACF)",
+      "deathsDuring": "{count} pessoas morreram enquanto respondias a estas perguntas.",
+      "bridgeButton": "Ha alguma esperanca?"
+    },
+    "grace": {
+      "heading": "Mas Deus...",
+      "body1": "Es culpado. O contador de mortes continua a contar — e um desses numeros sera o teu. Mas aqui estao as boas novas: Deus fez-se homem — Jesus Cristo — viveu uma vida perfeita, e voluntariamente morreu na cruz para pagar a multa pelos teus pecados. Depois ressuscitou dos mortos, vencendo a propria morte.",
+      "body2": "Se te arrependeres (abandonares o pecado) e confiares em Jesus Cristo, Deus perdoara todos os pecados que alguma vez cometeste e conceder-te-a a vida eterna. Isto nao se ganha — e um presente gratuito.",
+      "scripture": "Mas Deus prova o seu amor para connosco, em que Cristo morreu por nos, sendo nos ainda pecadores.",
+      "scriptureRef": "Romanos 5:8 (ACF)"
+    },
+    "cta": {
+      "heading": "O que vais fazer?",
+      "subtitle": "O contador continua a contar.",
+      "testCta": "Faz o Teste da Boa Pessoa",
+      "chatCta": "Fala com alguem sobre isto",
+      "resources": [
+        { "name": "Es uma Boa Pessoa? — Living Waters", "url": "https://livingwaters.com/are-you-a-good-person/" },
+        { "name": "needGod.net", "url": "https://needgod.net/" }
+      ]
+    },
+    "share": {
+      "prompt": "Partilha com alguem",
+      "whatsappMessage": "Quantas pessoas morreram desde que abriste esta pagina? Descobre:",
+      "telegramMessage": "Quantas pessoas morreram desde que abriste esta pagina? Descobre:",
+      "linkCopied": "Link copiado!"
+    },
+    "counter": {
+      "label": "pessoas morreram desde que abriste esta pagina"
+    },
+    "meta": {
+      "title": "Cada Segundo Conta | Contador de Mortes",
+      "description": "1.8 pessoas morrem a cada segundo. Estas preparado para enfrentar Deus?"
+    }
+  },
   "chat": {
     "landing": {
       "title": "Tem uma conversa",

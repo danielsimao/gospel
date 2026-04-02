@@ -118,6 +118,36 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Eternity page animations */
+@keyframes eternity-pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+@keyframes eternity-scroll-wheel {
+  0% { transform: translateX(-50%) translateY(0); opacity: 1; }
+  100% { transform: translateX(-50%) translateY(12px); opacity: 0; }
+}
+@keyframes eternity-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+@keyframes eternity-gentle-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212,168,67,0); }
+  50% { box-shadow: 0 0 20px 0 rgba(212,168,67,0.15); }
+}
+@keyframes pulse-ring {
+  0% { r: 2; opacity: 0.8; }
+  100% { r: 14; opacity: 0; }
+}
+@keyframes pulse-dot-fade {
+  0% { opacity: 0.9; r: 2; }
+  100% { opacity: 0; r: 0.6; }
+}
+
+#eternity-container.snap-off {
+  scroll-snap-type: none !important;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

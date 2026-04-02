@@ -104,6 +104,79 @@
     "title": "Are You a Good Person? | Take the Test",
     "description": "Most people think they're good. Find out where you really stand."
   },
+  "eternity": {
+    "hero": {
+      "label": "Today",
+      "suffix": "people have died",
+      "perSecond": "per second",
+      "perMinute": "per minute",
+      "perHour": "per hour",
+      "perDay": "per day",
+      "scroll": "Scroll"
+    },
+    "quiz": {
+      "heading": "Are you ready to face God?",
+      "subtitle": "Answer honestly.",
+      "yesLabel": "Yes, I have",
+      "noLabel": "No, never",
+      "questions": [
+        {
+          "question": "Have you ever told a lie?",
+          "yesResponse": "Even one lie. A \"white lie,\" an exaggeration, a half-truth.",
+          "noResponse": "Really? You've never told a single lie in your entire life? That itself might be one.",
+          "verdict": "That makes you a liar."
+        },
+        {
+          "question": "Have you ever stolen anything?",
+          "yesResponse": "Regardless of the value — a pen, someone's time, credit for someone else's work.",
+          "noResponse": "Never taken anything that wasn't yours? Not even something small? Think again.",
+          "verdict": "That makes you a thief."
+        },
+        {
+          "question": "Have you ever used God's name as a curse word?",
+          "yesResponse": "Instead of using a four-letter word, you used the name of the God who gave you life.",
+          "noResponse": "Perhaps not — but by two of the Ten Commandments, you've already admitted guilt.",
+          "verdict": "That makes you a blasphemer."
+        }
+      ],
+      "guiltyTitle": "Guilty",
+      "guiltyDesc": "By your own admission, you are a lying, thieving blasphemer.",
+      "scripture": "For whoever keeps the whole law and yet stumbles at just one point is guilty of breaking all of it.",
+      "scriptureRef": "James 2:10",
+      "deathsDuring": "{count} people died while you answered these questions.",
+      "bridgeButton": "Is there any hope?"
+    },
+    "grace": {
+      "heading": "But God...",
+      "body1": "You're guilty. The death counter keeps ticking — and one of those numbers will be yours. But here is the good news: God became a man — Jesus Christ — lived a perfect life, and willingly died on the cross to pay the fine for your sins. Then He rose from the dead, defeating death itself.",
+      "body2": "If you repent (turn from sin) and trust in Jesus Christ, God will forgive every sin you've ever committed and grant you eternal life. That's not earned — it's a free gift.",
+      "scripture": "But God demonstrates His own love for us in this: While we were still sinners, Christ died for us.",
+      "scriptureRef": "Romans 5:8"
+    },
+    "cta": {
+      "heading": "What will you do?",
+      "subtitle": "The counter is still ticking.",
+      "testCta": "Take the Good Person Test",
+      "chatCta": "Talk to someone about this",
+      "resources": [
+        { "name": "Are You a Good Person? — Living Waters", "url": "https://livingwaters.com/are-you-a-good-person/" },
+        { "name": "needGod.net", "url": "https://needgod.net/" }
+      ]
+    },
+    "share": {
+      "prompt": "Share this with someone",
+      "whatsappMessage": "How many people have died since you opened this page? Find out:",
+      "telegramMessage": "How many people have died since you opened this page? Find out:",
+      "linkCopied": "Link copied!"
+    },
+    "counter": {
+      "label": "people have died since you opened this page"
+    },
+    "meta": {
+      "title": "Every Second Counts | Death Ticker",
+      "description": "1.8 people die every second. Are you ready to face God?"
+    }
+  },
   "chat": {
     "landing": {
       "title": "Have a conversation",

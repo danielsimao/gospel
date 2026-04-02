@@ -13,17 +13,19 @@ interface ShareButtonsProps {
     linkCopied: string;
   };
   locale: Locale;
+  /** Override the shared URL path. Defaults to `/${locale}`. */
+  sharePath?: string;
 }
 
-export function ShareButtons({ messages, locale }: ShareButtonsProps) {
+export function ShareButtons({ messages, locale, sharePath }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const [canNativeShare, setCanNativeShare] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
 
   useEffect(() => {
     setCanNativeShare("share" in navigator);
-    setShareUrl(`${window.location.origin}/${locale}`);
-  }, [locale]);
+    setShareUrl(`${window.location.origin}${sharePath ?? `/${locale}`}`);
+  }, [locale, sharePath]);
 
   function shareWhatsApp() {
     trackShared("whatsapp", locale);
