@@ -27,6 +27,11 @@ export interface LawQuizMessages {
   scriptureRef: string;
   deathsDuring: string;
   bridgeButton: string;
+  caseLabel: string;
+  questionLabel: string;
+  answeredLabel: string;
+  chipGuilty: string;
+  chipDenied: string;
 }
 
 interface LawQuizProps {
@@ -104,7 +109,7 @@ export function LawQuiz({ messages, onBridgeClick }: LawQuizProps) {
       <div className="flex w-full max-w-md flex-col items-center px-2">
         <div className="mb-3 flex items-center gap-2">
           <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/50">
-            Case
+            {messages.caseLabel}
           </span>
           <span className="font-mono text-[9px] tabular-nums text-red-400/50">
             {String(currentIdx + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
@@ -166,7 +171,7 @@ export function LawQuiz({ messages, onBridgeClick }: LawQuizProps) {
                 <div className="mb-4 flex items-center gap-2">
                   <span className="h-px w-6 bg-red-500/40" />
                   <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/60">
-                    {currentAnswer === null ? "Question" : "Answered"}
+                    {currentAnswer === null ? messages.questionLabel : messages.answeredLabel}
                   </span>
                 </div>
 
@@ -251,7 +256,7 @@ export function LawQuiz({ messages, onBridgeClick }: LawQuizProps) {
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <span className="font-mono text-[9px] uppercase tracking-[1.5px] text-red-400/70">
-                  {answers[i] === "yes" ? "guilty" : "denied"}
+                  {answers[i] === "yes" ? messages.chipGuilty : messages.chipDenied}
                 </span>
               </div>
             );

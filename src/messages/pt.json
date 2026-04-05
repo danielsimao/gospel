@@ -9,6 +9,7 @@
     "caseLabel": "Exame",
     "guiltLabel": "Culpa",
     "counterLabel": "morreram hoje",
+    "liveBadge": "ao vivo",
     "answeredBadge": "Admitiu",
     "justifiedBadge": "Negou",
     "nextLabel": "Seguinte",
@@ -178,7 +179,12 @@
       "scripture": "Porque qualquer que guardar toda a lei, e tropecar num so ponto, tornou-se culpado de todos.",
       "scriptureRef": "Tiago 2:10 (ACF)",
       "deathsDuring": "{count} pessoas morreram enquanto respondias a estas perguntas.",
-      "bridgeButton": "Ha alguma esperanca?"
+      "bridgeButton": "Ha alguma esperanca?",
+      "caseLabel": "Caso",
+      "questionLabel": "Pergunta",
+      "answeredLabel": "Respondido",
+      "chipGuilty": "culpado",
+      "chipDenied": "negou"
     },
     "grace": {
       "heading": "Mas Deus...",
@@ -204,7 +210,8 @@
       "linkCopied": "Link copiado!"
     },
     "counter": {
-      "label": "pessoas morreram desde que abriste esta pagina"
+      "label": "pessoas morreram desde que abriste esta pagina",
+      "liveBadge": "ao vivo"
     },
     "meta": {
       "title": "Cada Segundo Conta | Contador de Mortes",

@@ -5,13 +5,15 @@ import { DeathCounter } from "@/components/eternity/death-counter";
 interface StickyDeathCounterProps {
   /** Label text shown after the counter (e.g., "died today"). */
   label: string;
+  /** Short uppercase text for the live indicator badge (e.g., "live"). */
+  liveBadge: string;
 }
 
 /**
  * Fixed-top emergency-broadcast strip with pulsing live indicator and
  * deaths-today counter. Shared between the eternity ticker and the test game.
  */
-export function StickyDeathCounter({ label }: StickyDeathCounterProps) {
+export function StickyDeathCounter({ label, liveBadge }: StickyDeathCounterProps) {
   return (
     <div className="fixed top-0 left-0 right-0 z-50 border-b border-red-950/40 bg-[#060404]/[0.94] backdrop-blur-xl">
       <div className="flex items-center justify-center gap-2 px-3 py-1.5 sm:gap-3 sm:px-4 sm:py-2">
@@ -22,7 +24,7 @@ export function StickyDeathCounter({ label }: StickyDeathCounterProps) {
             <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.8)]" />
           </span>
           <span className="hidden text-[9px] font-mono font-semibold uppercase tracking-[2px] text-red-400/60 sm:inline">
-            live
+            {liveBadge}
           </span>
         </div>
 

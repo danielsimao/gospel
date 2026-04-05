@@ -42,6 +42,7 @@ export interface EternityMessages {
   };
   counter: {
     label: string;
+    liveBadge: string;
   };
 }
 
@@ -100,7 +101,7 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
 
   return (
     <div className="min-h-dvh overflow-x-hidden bg-[#060404]" id="eternity-container">
-      <StickyDeathCounter label={messages.counter.label} />
+      <StickyDeathCounter label={messages.counter.label} liveBadge={messages.counter.liveBadge} />
 
       {/* Progress dots — hidden on mobile, visible on larger screens */}
       <div className="fixed right-4 top-1/2 z-10 hidden -translate-y-1/2 flex-col gap-3 sm:flex">

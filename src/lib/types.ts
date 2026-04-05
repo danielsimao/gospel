@@ -49,6 +49,7 @@ export interface TestMessages {
   caseLabel: string;
   guiltLabel: string;
   counterLabel: string;
+  liveBadge: string;
   answeredBadge: string;
   justifiedBadge: string;
   nextLabel: string;

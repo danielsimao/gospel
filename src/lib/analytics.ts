@@ -44,6 +44,7 @@ export function trackGameAbandoned(
   scoreAtExit: number,
   totalTime: number,
   locale: string,
+  phase: string = "playing",
 ) {
   // Use sendBeacon for reliability during page unload
   const payload = {
@@ -53,6 +54,7 @@ export function trackGameAbandoned(
       score_at_exit: scoreAtExit,
       total_time_ms: totalTime,
       locale,
+      phase,
     },
   };
 

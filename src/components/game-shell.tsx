@@ -34,20 +34,31 @@ export function GameShell({ messages, locale }: GameShellProps) {
 
   useEffect(() => {
     function handleBeforeUnload() {
-      if (state.phase === "playing") {
-        const currentConfig = QUESTION_CONFIGS[state.currentQuestion];
-        trackGameAbandoned(
-          currentConfig?.id ?? 0,
-          state.score,
-          Date.now() - state.startedAt,
-          locale,
-        );
-      }
+      // Track abandonment for any phase past landing, except when the
+      // invitation has already been answered (that's a completed session).
+      if (state.phase === "landing") return;
+      if (state.phase === "invitation" && state.invitationResponse) return;
+
+      const currentConfig = QUESTION_CONFIGS[state.currentQuestion];
+      trackGameAbandoned(
+        currentConfig?.id ?? 0,
+        state.score,
+        Date.now() - state.startedAt,
+        locale,
+        state.phase,
+      );
     }
 
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [state.phase, state.currentQuestion, state.score, state.startedAt, locale]);
+  }, [
+    state.phase,
+    state.currentQuestion,
+    state.score,
+    state.startedAt,
+    state.invitationResponse,
+    locale,
+  ]);
 
   return (
     <main className="relative min-h-dvh overflow-x-hidden bg-[#060404] flex flex-col">
@@ -55,7 +66,10 @@ export function GameShell({ messages, locale }: GameShellProps) {
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
 
       {/* Sticky death counter */}
-      <StickyDeathCounter label={messages.test.counterLabel} />
+      <StickyDeathCounter
+        label={messages.test.counterLabel}
+        liveBadge={messages.test.liveBadge}
+      />
 
       {/* Content (offset below sticky bar) */}
       <div className="relative z-[1] flex flex-1 flex-col pt-10">

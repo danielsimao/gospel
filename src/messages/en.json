@@ -9,6 +9,7 @@
     "caseLabel": "Examination",
     "guiltLabel": "Guilt",
     "counterLabel": "died today",
+    "liveBadge": "live",
     "answeredBadge": "Admitted",
     "justifiedBadge": "Denied",
     "nextLabel": "Next",
@@ -178,7 +179,12 @@
       "scripture": "For whoever keeps the whole law and yet stumbles at just one point is guilty of breaking all of it.",
       "scriptureRef": "James 2:10",
       "deathsDuring": "{count} people died while you answered these questions.",
-      "bridgeButton": "Is there any hope?"
+      "bridgeButton": "Is there any hope?",
+      "caseLabel": "Case",
+      "questionLabel": "Question",
+      "answeredLabel": "Answered",
+      "chipGuilty": "guilty",
+      "chipDenied": "denied"
     },
     "grace": {
       "heading": "But God...",
@@ -204,7 +210,8 @@
       "linkCopied": "Link copied!"
     },
     "counter": {
-      "label": "people have died since you opened this page"
+      "label": "people have died since you opened this page",
+      "liveBadge": "live"
     },
     "meta": {
       "title": "Every Second Counts | Death Ticker",
