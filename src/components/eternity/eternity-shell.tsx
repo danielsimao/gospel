@@ -152,11 +152,11 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
               <div
                 key={card.key}
                 className={`bg-white/[0.015] px-4 py-4 text-center sm:min-w-[110px] sm:px-6 sm:py-5 ${
-                  idx < RATE_CARDS.length - 1 ? "sm:border-r sm:border-white/[0.04]" : ""
+                  idx < RATE_CARDS.length - 1
+                    ? "sm:border-r sm:border-white/[0.04]"
+                    : ""
                 } ${idx < 2 ? "border-b border-white/[0.04] sm:border-b-0" : ""} ${
                   idx % 2 === 0 ? "border-r border-white/[0.04] sm:border-r-0" : ""
-                } ${idx === 1 ? "sm:border-r sm:border-white/[0.04]" : ""} ${
-                  idx === 2 ? "sm:border-r sm:border-white/[0.04]" : ""
                 }`}
               >
                 <p className="font-mono text-xl font-bold tabular-nums text-red-400/80 sm:text-2xl">

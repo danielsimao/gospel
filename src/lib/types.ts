@@ -53,6 +53,7 @@ export interface TestMessages {
   justifiedBadge: string;
   nextLabel: string;
   seeVerdictLabel: string;
+  commandmentLabel: string;
   verdictLabels: Record<string, string>;
   verdict: {
     prelude: string;
@@ -62,6 +63,7 @@ export interface TestMessages {
     confessionDenied: string;
     confessionBoth: string;
     separator: string;
+    useOxfordComma?: boolean;
     noneLabel: string;
   };
 }
@@ -78,7 +80,7 @@ export interface Messages {
     followUp: string;
   }>;
   verdict: { title: string; subtitle: string };
-  grace: { heading: string; body: string; scripture: string; scriptureRef: string; continueLabel: string };
+  grace: { heading: string; body: string; scripture: string; scriptureRef: string; continueLabel: string; label: string };
   invitation: {
     heading: string;
     prayer: string;

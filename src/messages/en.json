@@ -13,6 +13,7 @@
     "justifiedBadge": "Denied",
     "nextLabel": "Next",
     "seeVerdictLabel": "See verdict",
+    "commandmentLabel": "Commandment",
     "verdictLabels": {
       "9th": "liar",
       "8th": "thief",
@@ -31,6 +32,7 @@
       "confessionDenied": "A {list} — by your evasions.",
       "confessionBoth": "A {admitted} — by your own admission. And a {denied} — by your evasions.",
       "separator": "and",
+      "useOxfordComma": true,
       "noneLabel": "Guilty still."
     }
   },
@@ -109,7 +111,8 @@
     "body": "Imagine you're in a courtroom, guilty of a serious crime. The fine is enormous — more than you could ever pay. But then someone steps in and pays your fine in full. The judge can legally let you go — justice has been served.\n\nThat's what God did for you.\n\nTwo thousand years ago, God came to earth in the person of Jesus Christ. He lived a perfect life — the only person who ever could. Then He willingly died on the cross, taking the punishment that we deserve.\n\nHe paid the fine so that God, the just Judge, could dismiss your case. Not because you earned it. Not because you deserved it. But because He loves you.\n\nThree days later, He rose from the dead, defeating death itself.",
     "scripture": "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.",
     "scriptureRef": "John 3:16 (NKJV)",
-    "continueLabel": "Continue"
+    "continueLabel": "Continue",
+    "label": "Grace"
   },
   "invitation": {
     "heading": "What will you do with this?",

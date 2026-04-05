@@ -2,17 +2,24 @@ import type { Answer, TestMessages } from "./types";
 
 /**
  * Joins a list of labels with commas and a final separator ("and" / "e").
- * ["liar", "thief", "adulterer"] + "and" → "liar, thief, and adulterer"
- * ["liar", "thief"] + "and" → "liar and thief"
- * ["liar"] → "liar"
+ * EN (Oxford comma): ["liar", "thief", "adulterer"] + "and" → "liar, thief, and adulterer"
+ * PT (no serial comma): ["mentiroso", "ladrao", "adultero"] + "e" → "mentiroso, ladrao e adultero"
+ * 2 items: ["liar", "thief"] + "and" → "liar and thief"
+ * 1 item: ["liar"] → "liar"
  */
-function joinWithSeparator(items: string[], separator: string): string {
+function joinWithSeparator(
+  items: string[],
+  separator: string,
+  useOxfordComma: boolean,
+): string {
   if (items.length === 0) return "";
   if (items.length === 1) return items[0]!;
   if (items.length === 2) return `${items[0]} ${separator} ${items[1]}`;
   const head = items.slice(0, -1).join(", ");
   const tail = items[items.length - 1];
-  return `${head}, ${separator} ${tail}`;
+  return useOxfordComma
+    ? `${head}, ${separator} ${tail}`
+    : `${head} ${separator} ${tail}`;
 }
 
 /**
@@ -37,7 +44,7 @@ export function buildConfession(
     }
   }
 
-  const { separator } = messages.verdict;
+  const { separator, useOxfordComma = false } = messages.verdict;
 
   if (honestLabels.length === 0 && justifyLabels.length === 0) {
     return messages.verdict.noneLabel;
@@ -46,18 +53,24 @@ export function buildConfession(
   if (honestLabels.length > 0 && justifyLabels.length === 0) {
     return messages.verdict.confessionAdmitted.replace(
       "{list}",
-      joinWithSeparator(honestLabels, separator),
+      joinWithSeparator(honestLabels, separator, useOxfordComma),
     );
   }
 
   if (honestLabels.length === 0 && justifyLabels.length > 0) {
     return messages.verdict.confessionDenied.replace(
       "{list}",
-      joinWithSeparator(justifyLabels, separator),
+      joinWithSeparator(justifyLabels, separator, useOxfordComma),
     );
   }
 
   return messages.verdict.confessionBoth
-    .replace("{admitted}", joinWithSeparator(honestLabels, separator))
-    .replace("{denied}", joinWithSeparator(justifyLabels, separator));
+    .replace(
+      "{admitted}",
+      joinWithSeparator(honestLabels, separator, useOxfordComma),
+    )
+    .replace(
+      "{denied}",
+      joinWithSeparator(justifyLabels, separator, useOxfordComma),
+    );
 }

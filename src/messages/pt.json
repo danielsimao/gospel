@@ -13,6 +13,7 @@
     "justifiedBadge": "Negou",
     "nextLabel": "Seguinte",
     "seeVerdictLabel": "Ver veredicto",
+    "commandmentLabel": "Mandamento",
     "verdictLabels": {
       "9th": "mentiroso",
       "8th": "ladrao",
@@ -31,6 +32,7 @@
       "confessionDenied": "Um {list} — pelas tuas evasivas.",
       "confessionBoth": "Um {admitted} — pela tua propria confissao. E um {denied} — pelas tuas evasivas.",
       "separator": "e",
+      "useOxfordComma": false,
       "noneLabel": "Culpado na mesma."
     }
   },
@@ -109,7 +111,8 @@
     "body": "Imagina que estas num tribunal, culpado de um crime grave. A multa e enorme — mais do que alguma vez poderias pagar. Mas alguem se levanta e paga a tua multa por inteiro. O juiz pode legalmente deixar-te ir — a justica foi feita.\n\nFoi isso que Deus fez por ti.\n\nHa dois mil anos, Deus veio a terra na pessoa de Jesus Cristo. Ele viveu uma vida perfeita — a unica pessoa que alguma vez conseguiu. Depois, voluntariamente morreu na cruz, tomando sobre Si o castigo que nos mereciamos.\n\nEle pagou a multa para que Deus, o Juiz justo, pudesse absolver o teu caso. Nao porque o mereceste. Nao porque o ganhaste. Mas porque Ele te ama.\n\nTres dias depois, ressuscitou dos mortos, vencendo a propria morte.",
     "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigenito, para que todo aquele que nele cre nao pereca, mas tenha a vida eterna.",
     "scriptureRef": "Joao 3:16 (ACF)",
-    "continueLabel": "Continuar"
+    "continueLabel": "Continuar",
+    "label": "Graca"
   },
   "invitation": {
     "heading": "O que vais fazer com isto?",

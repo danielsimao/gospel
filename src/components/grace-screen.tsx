@@ -12,6 +12,7 @@ interface GraceScreenProps {
     scripture: string;
     scriptureRef: string;
     continueLabel: string;
+    label: string;
   };
 }
 
@@ -65,7 +66,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
           >
             <span className="h-px w-6 bg-[#D4A843]/40" />
             <span className="font-mono text-[9px] uppercase tracking-[3px] text-[#D4A843]/60">
-              Grace
+              {messages.label}
             </span>
             <span className="h-px w-6 bg-[#D4A843]/40" />
           </motion.div>

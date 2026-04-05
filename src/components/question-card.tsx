@@ -158,7 +158,7 @@ export function QuestionCard({
                 <div className="mb-3 flex items-center gap-2">
                   <span className="h-px w-6 bg-red-500/40" />
                   <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/60">
-                    Commandment {roman}
+                    {testMessages.commandmentLabel} {roman}
                   </span>
                 </div>
 
