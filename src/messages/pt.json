@@ -8,13 +8,14 @@
   "test": {
     "caseLabel": "Exame",
     "guiltLabel": "Culpa",
-    "counterLabel": "morreram hoje",
+    "counterLabel": "morreram desde que abriste esta pagina",
     "liveBadge": "ao vivo",
     "answeredBadge": "Admitiu",
     "justifiedBadge": "Negou",
     "nextLabel": "Seguinte",
     "seeVerdictLabel": "Ver veredicto",
     "commandmentLabel": "Mandamento",
+    "backLabel": "Voltar",
     "verdictLabels": {
       "9th": "mentiroso",
       "8th": "ladrao",

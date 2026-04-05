@@ -55,6 +55,7 @@ export interface TestMessages {
   nextLabel: string;
   seeVerdictLabel: string;
   commandmentLabel: string;
+  backLabel: string;
   verdictLabels: Record<string, string>;
   verdict: {
     prelude: string;

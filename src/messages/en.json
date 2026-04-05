@@ -8,13 +8,14 @@
   "test": {
     "caseLabel": "Examination",
     "guiltLabel": "Guilt",
-    "counterLabel": "died today",
+    "counterLabel": "died since you opened this page",
     "liveBadge": "live",
     "answeredBadge": "Admitted",
     "justifiedBadge": "Denied",
     "nextLabel": "Next",
     "seeVerdictLabel": "See verdict",
     "commandmentLabel": "Commandment",
+    "backLabel": "Back",
     "verdictLabels": {
       "9th": "liar",
       "8th": "thief",
