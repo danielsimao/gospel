@@ -45,8 +45,30 @@ export type GameAction =
   | { type: "SHOW_INVITATION" }
   | { type: "SET_INVITATION_RESPONSE"; response: InvitationResponse };
 
+export interface TestMessages {
+  caseLabel: string;
+  guiltLabel: string;
+  counterLabel: string;
+  answeredBadge: string;
+  justifiedBadge: string;
+  nextLabel: string;
+  seeVerdictLabel: string;
+  verdictLabels: Record<string, string>;
+  verdict: {
+    prelude: string;
+    deathLineTemplate: string;
+    bridgeButton: string;
+    confessionAdmitted: string;
+    confessionDenied: string;
+    confessionBoth: string;
+    separator: string;
+    noneLabel: string;
+  };
+}
+
 export interface Messages {
-  landing: { title: string; cta: string };
+  landing: { title: string; cta: string; label: string; subtitle: string };
+  test: TestMessages;
   questions: Array<{
     id: number;
     text: string;

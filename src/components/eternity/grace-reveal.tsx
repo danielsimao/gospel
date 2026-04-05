@@ -40,7 +40,7 @@ export function GraceReveal({ messages }: GraceRevealProps) {
   }, []);
 
   return (
-    <div ref={sectionRef} className="relative max-w-lg text-center">
+    <div ref={sectionRef} className="relative w-full max-w-xs text-center sm:max-w-md md:max-w-lg">
       {/* Warm atmospheric glow */}
       <div
         className="pointer-events-none absolute -inset-32 -z-10 opacity-70"

@@ -22,6 +22,9 @@ function validateMessages(messages: unknown, locale: string): Messages {
   if (!m.verdict?.title || !m.grace?.heading || !m.invitation?.prayer || !m.share?.prompt || !m.meta?.title) {
     throw new Error(`[i18n] Missing required content sections for locale "${locale}"`);
   }
+  if (!m.test?.caseLabel || !m.test?.verdictLabels || !m.test?.verdict?.prelude) {
+    throw new Error(`[i18n] Missing required test content for locale "${locale}"`);
+  }
   if (m.chat) {
     if (!m.chat.landing?.title || !m.chat.landing?.cta) {
       throw new Error(`[i18n] Missing chat landing content for locale "${locale}"`);

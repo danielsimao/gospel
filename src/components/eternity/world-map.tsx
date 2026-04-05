@@ -40,7 +40,7 @@ const StaticGeographies = memo(function StaticGeographies() {
             <Geography
               key={geo.rsmKey}
               geography={geo}
-              fill="rgba(255,255,255,0.06)"
+              fill="rgba(255,255,255,0.12)"
               stroke="none"
               style={{
                 default: { outline: "none" },
@@ -75,24 +75,24 @@ export const WorldMap = memo(function WorldMap() {
     const ring = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     ring.setAttribute("cx", String(x));
     ring.setAttribute("cy", String(y));
-    ring.setAttribute("r", "2");
+    ring.setAttribute("r", "4");
     ring.setAttribute("fill", "none");
     ring.setAttribute("stroke", "#DC2626");
-    ring.setAttribute("stroke-width", "0.8");
-    ring.style.animation = "pulse-ring 2s ease-out forwards";
+    ring.setAttribute("stroke-width", "1.2");
+    ring.style.animation = "pulse-ring 2.5s ease-out forwards";
 
     const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     dot.setAttribute("cx", String(x));
     dot.setAttribute("cy", String(y));
-    dot.setAttribute("r", "2");
+    dot.setAttribute("r", "3.5");
     dot.setAttribute("fill", "#DC2626");
-    dot.style.animation = "pulse-dot-fade 2s ease-out forwards";
+    dot.style.animation = "pulse-dot-fade 2.5s ease-out forwards";
 
     group.appendChild(ring);
     group.appendChild(dot);
     g.appendChild(group);
 
-    setTimeout(() => group.remove(), 2100);
+    setTimeout(() => group.remove(), 2600);
   }, []);
 
   useEffect(() => {

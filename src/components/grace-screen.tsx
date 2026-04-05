@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useGameDispatch } from "@/components/game-provider";
-import { ScoreBar } from "@/components/score-bar";
 import { trackGraceViewed } from "@/lib/analytics";
 
 interface GraceScreenProps {
@@ -29,9 +28,11 @@ export function GraceScreen({ messages }: GraceScreenProps) {
       if (depth > maxScrollDepth.current) maxScrollDepth.current = depth;
     }
     window.addEventListener("scroll", handleScroll, { passive: true });
+    const start = startTime.current;
+    const maxDepth = maxScrollDepth;
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      trackGraceViewed(Date.now() - startTime.current, maxScrollDepth.current);
+      trackGraceViewed(Date.now() - start, maxDepth.current);
     };
   }, []);
 
@@ -43,71 +44,88 @@ export function GraceScreen({ messages }: GraceScreenProps) {
 
   return (
     <div className="relative flex flex-1 flex-col min-h-dvh">
-      <div className="pointer-events-none fixed inset-0 z-0">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.15 }}
-          transition={{ duration: 3 }}
-          className="absolute inset-0"
-          style={{
-            background:
-              "conic-gradient(from 0deg at 50% 40%, transparent 0deg, rgba(212, 168, 67, 0.3) 15deg, transparent 30deg, transparent 60deg, rgba(212, 168, 67, 0.2) 75deg, transparent 90deg, transparent 150deg, rgba(212, 168, 67, 0.25) 165deg, transparent 180deg, transparent 240deg, rgba(212, 168, 67, 0.15) 255deg, transparent 270deg, transparent 330deg, rgba(212, 168, 67, 0.2) 345deg, transparent 360deg)",
-            filter: "blur(40px)",
-          }}
-        />
-      </div>
+      {/* Warm radial glow */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0 opacity-70"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 40%, rgba(212,168,67,0.08) 0%, transparent 70%)",
+          filter: "blur(40px)",
+        }}
+      />
 
-      <ScoreBar score={100} isRefilling />
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-20 text-center sm:px-6 sm:py-24">
+        <div className="max-w-lg w-full">
+          {/* Label */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="mb-4 flex items-center justify-center gap-2"
+          >
+            <span className="h-px w-6 bg-[#D4A843]/40" />
+            <span className="font-mono text-[9px] uppercase tracking-[3px] text-[#D4A843]/60">
+              Grace
+            </span>
+            <span className="h-px w-6 bg-[#D4A843]/40" />
+          </motion.div>
 
-      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 py-16 text-center max-w-2xl mx-auto">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="text-3xl font-bold text-[#D4A843] sm:text-4xl"
-        >
-          {messages.heading}
-        </motion.h2>
+          {/* Heading */}
+          <motion.h2
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl md:text-5xl"
+            style={{ textShadow: "0 0 60px rgba(212,168,67,0.2)" }}
+          >
+            {messages.heading}
+          </motion.h2>
 
-        <div className="mt-10 space-y-6 text-left">
-          {paragraphs.map((paragraph, i) => (
-            <motion.p
-              key={i}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 1.5 + i * 0.4 }}
-              className="text-base leading-relaxed text-white/80 sm:text-lg"
-            >
-              {paragraph}
-            </motion.p>
-          ))}
+          {/* Body paragraphs */}
+          <div className="mt-8 space-y-5 text-left">
+            {paragraphs.map((paragraph, i) => (
+              <motion.p
+                key={i}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.9 + i * 0.3 }}
+                className="text-[15px] leading-[1.8] text-white/65 sm:text-base"
+              >
+                {paragraph}
+              </motion.p>
+            ))}
+          </div>
+
+          {/* Scripture */}
+          <motion.blockquote
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.9 + paragraphs.length * 0.3 }}
+            className="mt-8 border-l border-[#D4A843]/30 pl-4 text-left"
+          >
+            <p className="text-[15px] italic leading-[1.8] text-white/60 sm:text-base">
+              &ldquo;{messages.scripture}&rdquo;
+            </p>
+            <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-[#D4A843]/50">
+              {messages.scriptureRef}
+            </p>
+          </motion.blockquote>
+
+          {/* Continue button */}
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              duration: 0.8,
+              delay: 0.9 + paragraphs.length * 0.3 + 0.6,
+            }}
+            onClick={handleContinue}
+            whileTap={{ scale: 0.97 }}
+            className="mt-10 rounded-xl border border-[#D4A843]/30 px-7 py-3.5 text-sm font-medium tracking-wide text-[#D4A843] transition-all duration-300 hover:border-[#D4A843]/60 hover:bg-[#D4A843]/[0.06] min-h-[48px]"
+          >
+            {messages.continueLabel} &rarr;
+          </motion.button>
         </div>
-
-        <motion.blockquote
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.5 + paragraphs.length * 0.4 + 0.5 }}
-          className="mt-10 border-l-2 border-[#D4A843] pl-4 text-left"
-        >
-          <p className="text-base italic text-white/70 sm:text-lg">
-            &ldquo;{messages.scripture}&rdquo;
-          </p>
-          <p className="mt-2 text-sm text-white/40">{messages.scriptureRef}</p>
-        </motion.blockquote>
-
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{
-            duration: 0.8,
-            delay: 1.5 + paragraphs.length * 0.4 + 1.5,
-          }}
-          onClick={handleContinue}
-          whileTap={{ scale: 0.97 }}
-          className="mt-12 rounded-full border border-[#D4A843]/40 px-8 py-4 text-lg font-medium text-[#D4A843] transition-colors hover:bg-[#D4A843]/5 active:bg-[#D4A843]/10 min-h-[44px]"
-        >
-          {messages.continueLabel} &rarr;
-        </motion.button>
       </div>
     </div>
   );

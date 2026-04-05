@@ -1,7 +1,38 @@
 {
   "landing": {
     "title": "Tu es uma boa pessoa?",
-    "cta": "Descobre"
+    "cta": "Comecar exame",
+    "label": "Exame",
+    "subtitle": "Dez mandamentos. Oito perguntas. Um veredicto."
+  },
+  "test": {
+    "caseLabel": "Exame",
+    "guiltLabel": "Culpa",
+    "counterLabel": "morreram hoje",
+    "answeredBadge": "Admitiu",
+    "justifiedBadge": "Negou",
+    "nextLabel": "Seguinte",
+    "seeVerdictLabel": "Ver veredicto",
+    "verdictLabels": {
+      "9th": "mentiroso",
+      "8th": "ladrao",
+      "7th": "adultero",
+      "6th": "assassino de coracao",
+      "3rd": "blasfemo",
+      "10th": "cobicoso",
+      "1st": "idolatra",
+      "5th": "desonrador"
+    },
+    "verdict": {
+      "prelude": "O veredicto",
+      "deathLineTemplate": "{count} pessoas morreram enquanto respondias a estas perguntas.",
+      "bridgeButton": "Ha alguma esperanca?",
+      "confessionAdmitted": "Um {list} — pela tua propria confissao.",
+      "confessionDenied": "Um {list} — pelas tuas evasivas.",
+      "confessionBoth": "Um {admitted} — pela tua propria confissao. E um {denied} — pelas tuas evasivas.",
+      "separator": "e",
+      "noneLabel": "Culpado na mesma."
+    }
   },
   "questions": [
     {

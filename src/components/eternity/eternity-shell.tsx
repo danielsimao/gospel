@@ -7,6 +7,7 @@ import { WorldMap } from "./world-map";
 import { LawQuiz, type LawQuizMessages } from "./law-quiz";
 import { GraceReveal, type GraceMessages } from "./grace-reveal";
 import { ShareButtons } from "@/components/share-buttons";
+import { StickyDeathCounter } from "@/components/shared/sticky-death-counter";
 import type { Locale } from "@/lib/i18n";
 import {
   trackEternityViewed,
@@ -65,7 +66,6 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
     trackEternityViewed(locale);
   }, [locale]);
 
-  // Track scroll depth via IntersectionObserver
   useEffect(() => {
     const sectionIds = ["eternity-hero", "eternity-law", "eternity-grace", "eternity-cta"];
     const observer = new IntersectionObserver(
@@ -83,7 +83,7 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
           }
         });
       },
-      { threshold: 0.5 },
+      { threshold: 0.3 },
     );
 
     sectionIds.forEach((id) => {
@@ -99,16 +99,11 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
   }, []);
 
   return (
-    <div className="snap-y snap-mandatory h-dvh overflow-y-auto bg-[#060404]" id="eternity-container">
-      {/* Sticky counter — thin, tense, always present */}
-      <div className="fixed top-0 left-0 right-0 z-10 flex items-center justify-center gap-3 border-b border-red-900/20 bg-[#060404]/90 px-6 py-2 backdrop-blur-xl">
-        <span className="h-1.5 w-1.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.7)] animate-[eternity-pulse-dot_2s_ease-in-out_infinite]" />
-        <DeathCounter className="font-mono text-sm font-semibold tabular-nums text-red-400/90 tracking-wide" />
-        <span className="text-[10px] tracking-widest uppercase text-white/20">{messages.counter.label}</span>
-      </div>
+    <div className="min-h-dvh overflow-x-hidden bg-[#060404]" id="eternity-container">
+      <StickyDeathCounter label={messages.counter.label} />
 
-      {/* Progress dots — minimal vertical rail */}
-      <div className="fixed right-4 top-1/2 z-10 flex -translate-y-1/2 flex-col gap-3">
+      {/* Progress dots — hidden on mobile, visible on larger screens */}
+      <div className="fixed right-4 top-1/2 z-10 hidden -translate-y-1/2 flex-col gap-3 sm:flex">
         {[0, 1, 2, 3].map((i) => (
           <button
             key={i}
@@ -131,46 +126,50 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
       {/* ═══════════════ SECTION 1: HERO ═══════════════ */}
       <section
         id="eternity-hero"
-        className="relative flex min-h-dvh snap-start snap-always flex-col items-center justify-center px-6 pt-20 pb-16"
+        className="relative flex min-h-[100svh] flex-col items-center justify-center px-4 pt-16 pb-20 sm:px-6 sm:pt-20"
       >
         {/* Subtle radial vignette */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
 
-        <div className="relative z-[1] flex flex-col items-center">
-          <p className="text-[10px] font-mono uppercase tracking-[5px] text-white/20">
+        <div className="relative z-[1] flex w-full flex-col items-center">
+          <p className="text-[9px] font-mono uppercase tracking-[4px] text-white/20 sm:text-[10px] sm:tracking-[5px]">
             {messages.hero.label}
           </p>
 
           <DeathCounter
             fromMidnight
-            className="mt-5 font-mono text-7xl font-black tabular-nums tracking-tighter text-red-500 sm:text-8xl md:text-9xl"
+            className="mt-4 font-mono text-5xl font-black tabular-nums tracking-tighter text-red-500 sm:mt-5 sm:text-7xl md:text-8xl lg:text-9xl"
             style={{ textShadow: "0 0 80px rgba(239,68,68,0.25), 0 4px 60px rgba(0,0,0,0.8)" }}
           />
 
-          <p className="mt-3 text-base tracking-wide text-white/40 sm:text-lg">
+          <p className="mt-2 text-sm tracking-wide text-white/40 sm:mt-3 sm:text-base">
             {messages.hero.suffix}
           </p>
 
-          {/* Rate cards — horizontal strip */}
-          <div className="mt-14 flex flex-wrap justify-center gap-px rounded-lg border border-white/[0.04] overflow-hidden">
+          {/* Rate cards — 2×2 grid on mobile, single row on desktop */}
+          <div className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/[0.04] sm:mt-14 sm:flex sm:flex-wrap sm:justify-center">
             {RATE_CARDS.map((card, idx) => (
               <div
                 key={card.key}
-                className={`min-w-[110px] bg-white/[0.015] px-6 py-5 text-center ${
-                  idx < RATE_CARDS.length - 1 ? "border-r border-white/[0.04]" : ""
+                className={`bg-white/[0.015] px-4 py-4 text-center sm:min-w-[110px] sm:px-6 sm:py-5 ${
+                  idx < RATE_CARDS.length - 1 ? "sm:border-r sm:border-white/[0.04]" : ""
+                } ${idx < 2 ? "border-b border-white/[0.04] sm:border-b-0" : ""} ${
+                  idx % 2 === 0 ? "border-r border-white/[0.04] sm:border-r-0" : ""
+                } ${idx === 1 ? "sm:border-r sm:border-white/[0.04]" : ""} ${
+                  idx === 2 ? "sm:border-r sm:border-white/[0.04]" : ""
                 }`}
               >
-                <p className="font-mono text-2xl font-bold tabular-nums text-red-400/80">
+                <p className="font-mono text-xl font-bold tabular-nums text-red-400/80 sm:text-2xl">
                   {card.value}
                 </p>
-                <p className="mt-1 text-[9px] font-mono uppercase tracking-[2px] text-white/25">
+                <p className="mt-1 text-[8px] font-mono uppercase tracking-[1.5px] text-white/25 sm:text-[9px] sm:tracking-[2px]">
                   {messages.hero[card.key]}
                 </p>
               </div>
             ))}
           </div>
 
-          <div className="mt-14 w-full max-w-2xl opacity-60">
+          <div className="mt-8 w-full sm:mt-14 sm:max-w-2xl">
             <WorldMap />
           </div>
         </div>
@@ -180,12 +179,12 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.5, delay: 2.5 }}
-          className="absolute bottom-10 flex flex-col items-center gap-2"
+          className="absolute bottom-6 flex flex-col items-center gap-1.5 sm:bottom-10 sm:gap-2"
         >
-          <div className="relative h-8 w-5 rounded-full border border-white/15">
-            <span className="absolute left-1/2 top-1.5 h-1.5 w-[2px] -translate-x-1/2 rounded-full bg-white/25 animate-[eternity-scroll-wheel_2s_ease-in-out_infinite]" />
+          <div className="relative h-7 w-4 rounded-full border border-white/15 sm:h-8 sm:w-5">
+            <span className="absolute left-1/2 top-1 h-1.5 w-[2px] -translate-x-1/2 rounded-full bg-white/25 animate-[eternity-scroll-wheel_2s_ease-in-out_infinite] sm:top-1.5" />
           </div>
-          <span className="text-[9px] font-mono uppercase tracking-[3px] text-white/15">
+          <span className="text-[8px] font-mono uppercase tracking-[3px] text-white/15 sm:text-[9px]">
             {messages.hero.scroll}
           </span>
         </motion.div>
@@ -194,7 +193,7 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
       {/* ═══════════════ SECTION 2: LAW QUIZ ═══════════════ */}
       <section
         id="eternity-law"
-        className="flex min-h-dvh snap-start snap-always flex-col items-center justify-center px-6 py-24"
+        className="flex min-h-[100svh] flex-col items-center justify-center px-4 py-16 sm:px-6 sm:py-24"
         style={{
           background: "linear-gradient(180deg, #060404 0%, #0a0606 50%, #060404 100%)",
         }}
@@ -206,7 +205,7 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
       <section
         ref={graceRef}
         id="eternity-grace"
-        className="relative flex min-h-dvh snap-start snap-always flex-col items-center justify-center px-6 py-24"
+        className="relative flex min-h-[100svh] flex-col items-center justify-center px-4 py-16 sm:px-6 sm:py-24"
       >
         <GraceReveal messages={messages.grace} />
       </section>
@@ -214,31 +213,23 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
       {/* ═══════════════ SECTION 4: CTA ═══════════════ */}
       <section
         id="eternity-cta"
-        className="flex min-h-[80dvh] snap-start snap-always flex-col items-center justify-center px-6 py-24"
+        className="flex min-h-[80svh] flex-col items-center justify-center px-4 py-16 sm:px-6 sm:py-24"
       >
-        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{messages.cta.heading}</h2>
-        <p className="mt-3 text-sm tracking-wide text-white/40">{messages.cta.subtitle}</p>
+        <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">{messages.cta.heading}</h2>
+        <p className="mt-2 text-xs tracking-wide text-white/40 sm:mt-3 sm:text-sm">{messages.cta.subtitle}</p>
 
-        <div className="mt-10 flex w-full max-w-xs flex-col gap-3">
+        <div className="mt-8 flex w-full max-w-xs flex-col gap-3 sm:mt-10">
           <a
             href={`/${locale}/test`}
             onClick={() => trackEternityCtaClicked("test")}
-            className="group flex min-h-[52px] items-center justify-center rounded-lg border border-[#D4A843]/25 px-6 py-4 text-sm font-medium tracking-wide text-[#D4A843] transition-all duration-300 hover:border-[#D4A843]/50 hover:bg-[#D4A843]/[0.06] hover:shadow-[0_0_30px_rgba(212,168,67,0.08)]"
+            className="group flex min-h-[48px] items-center justify-center rounded-lg border border-[#D4A843]/25 px-5 py-3.5 text-sm font-medium tracking-wide text-[#D4A843] transition-all duration-300 hover:border-[#D4A843]/50 hover:bg-[#D4A843]/[0.06] sm:min-h-[52px] sm:px-6 sm:py-4"
           >
             {messages.cta.testCta}
             <span className="ml-2 transition-transform group-hover:translate-x-1">&rarr;</span>
           </a>
-          <a
-            href={`/${locale}/chat`}
-            onClick={() => trackEternityCtaClicked("chat")}
-            className="group flex min-h-[52px] items-center justify-center rounded-lg border border-white/[0.08] px-6 py-4 text-sm font-medium tracking-wide text-white/50 transition-all duration-300 hover:border-white/15 hover:bg-white/[0.03]"
-          >
-            {messages.cta.chatCta}
-            <span className="ml-2 transition-transform group-hover:translate-x-1">&rarr;</span>
-          </a>
         </div>
 
-        <div className="mt-8 flex w-full max-w-xs flex-col gap-2">
+        <div className="mt-6 flex w-full max-w-xs flex-col gap-2 sm:mt-8">
           {messages.cta.resources.map((resource) => (
             <a
               key={resource.url}

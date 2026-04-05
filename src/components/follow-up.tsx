@@ -8,13 +8,13 @@ interface FollowUpProps {
 
 export function FollowUp({ text }: FollowUpProps) {
   return (
-    <motion.p
+    <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.3 }}
-      className="mt-6 text-sm text-white/60 italic max-w-sm"
+      transition={{ duration: 0.6, delay: 0.2 }}
+      className="mt-4 border-l border-red-800/40 pl-3 max-w-sm"
     >
-      {text}
-    </motion.p>
+      <p className="text-xs leading-relaxed text-white/45 italic">{text}</p>
+    </motion.div>
   );
 }

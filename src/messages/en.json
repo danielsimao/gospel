@@ -1,7 +1,38 @@
 {
   "landing": {
     "title": "Are you a good person?",
-    "cta": "Find out"
+    "cta": "Begin examination",
+    "label": "Examination",
+    "subtitle": "Ten commandments. Eight questions. One verdict."
+  },
+  "test": {
+    "caseLabel": "Examination",
+    "guiltLabel": "Guilt",
+    "counterLabel": "died today",
+    "answeredBadge": "Admitted",
+    "justifiedBadge": "Denied",
+    "nextLabel": "Next",
+    "seeVerdictLabel": "See verdict",
+    "verdictLabels": {
+      "9th": "liar",
+      "8th": "thief",
+      "7th": "adulterer",
+      "6th": "murderer at heart",
+      "3rd": "blasphemer",
+      "10th": "coveter",
+      "1st": "idolater",
+      "5th": "dishonorer"
+    },
+    "verdict": {
+      "prelude": "The verdict",
+      "deathLineTemplate": "{count} people died while you answered these questions.",
+      "bridgeButton": "Is there any hope?",
+      "confessionAdmitted": "A {list} — by your own admission.",
+      "confessionDenied": "A {list} — by your evasions.",
+      "confessionBoth": "A {admitted} — by your own admission. And a {denied} — by your evasions.",
+      "separator": "and",
+      "noneLabel": "Guilty still."
+    }
   },
   "questions": [
     {
