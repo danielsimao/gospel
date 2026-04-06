@@ -184,15 +184,22 @@
       "caseLabel": "Case",
       "questionLabel": "Question",
       "answeredLabel": "Answered",
+      "nextLabel": "Next",
       "chipGuilty": "guilty",
       "chipDenied": "denied"
     },
     "grace": {
-      "heading": "But God...",
-      "body1": "You're guilty. The death counter keeps ticking — and one of those numbers will be yours. But here is the good news: God became a man — Jesus Christ — lived a perfect life, and willingly died on the cross to pay the fine for your sins. Then He rose from the dead, defeating death itself.",
-      "body2": "If you repent (turn from sin) and trust in Jesus Christ, God will forgive every sin you've ever committed and grant you eternal life. That's not earned — it's a free gift.",
+      "heading": "But God…",
+      "beats": [
+        "You're guilty. The fine is eternal.",
+        "Someone paid it in full.",
+        "Jesus Christ — God in flesh — lived the life you couldn't, died the death you deserved, and rose.",
+        "Turn from sin. Trust in Him. Live."
+      ],
+      "tapContinue": "Tap to continue",
       "scripture": "But God demonstrates His own love for us in this: While we were still sinners, Christ died for us.",
-      "scriptureRef": "Romans 5:8"
+      "scriptureRef": "Romans 5:8",
+      "testCta": "Take the test"
     },
     "cta": {
       "heading": "What will you do?",

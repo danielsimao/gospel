@@ -208,7 +208,7 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
         id="eternity-grace"
         className="relative flex min-h-[100svh] flex-col items-center justify-center px-4 py-16 sm:px-6 sm:py-24"
       >
-        <GraceReveal messages={messages.grace} />
+        <GraceReveal messages={messages.grace} locale={locale} />
       </section>
 
       {/* ═══════════════ SECTION 4: CTA ═══════════════ */}
@@ -218,17 +218,6 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
       >
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">{messages.cta.heading}</h2>
         <p className="mt-2 text-xs tracking-wide text-white/40 sm:mt-3 sm:text-sm">{messages.cta.subtitle}</p>
-
-        <div className="mt-8 flex w-full max-w-xs flex-col gap-3 sm:mt-10">
-          <a
-            href={`/${locale}/test`}
-            onClick={() => trackEternityCtaClicked("test")}
-            className="group flex min-h-[48px] items-center justify-center rounded-lg border border-[#D4A843]/25 px-5 py-3.5 text-sm font-medium tracking-wide text-[#D4A843] transition-all duration-300 hover:border-[#D4A843]/50 hover:bg-[#D4A843]/[0.06] sm:min-h-[52px] sm:px-6 sm:py-4"
-          >
-            {messages.cta.testCta}
-            <span className="ml-2 transition-transform group-hover:translate-x-1">&rarr;</span>
-          </a>
-        </div>
 
         <div className="mt-6 flex w-full max-w-xs flex-col gap-2 sm:mt-8">
           {messages.cta.resources.map((resource) => (

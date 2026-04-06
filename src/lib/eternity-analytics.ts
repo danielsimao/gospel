@@ -39,3 +39,11 @@ export function trackEternityShared(method: "whatsapp" | "telegram" | "copy" | "
 export function trackScrollDepth(section: number) {
   safeCapture("eternity_scroll_depth", { furthest_section: section });
 }
+
+export function trackGraceBeatRevealed(beatIndex: number) {
+  safeCapture("eternity_grace_beat_revealed", { beat_index: beatIndex });
+}
+
+export function trackGraceCtaClicked() {
+  safeCapture("eternity_grace_cta_clicked");
+}

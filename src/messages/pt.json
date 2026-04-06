@@ -184,15 +184,22 @@
       "caseLabel": "Caso",
       "questionLabel": "Pergunta",
       "answeredLabel": "Respondido",
+      "nextLabel": "Seguinte",
       "chipGuilty": "culpado",
       "chipDenied": "negou"
     },
     "grace": {
-      "heading": "Mas Deus...",
-      "body1": "Es culpado. O contador de mortes continua a contar — e um desses numeros sera o teu. Mas aqui estao as boas novas: Deus fez-se homem — Jesus Cristo — viveu uma vida perfeita, e voluntariamente morreu na cruz para pagar a multa pelos teus pecados. Depois ressuscitou dos mortos, vencendo a propria morte.",
-      "body2": "Se te arrependeres (abandonares o pecado) e confiares em Jesus Cristo, Deus perdoara todos os pecados que alguma vez cometeste e conceder-te-a a vida eterna. Isto nao se ganha — e um presente gratuito.",
-      "scripture": "Mas Deus prova o seu amor para connosco, em que Cristo morreu por nos, sendo nos ainda pecadores.",
-      "scriptureRef": "Romanos 5:8 (ACF)"
+      "heading": "Mas Deus…",
+      "beats": [
+        "És culpado. A multa é eterna.",
+        "Alguém a pagou na totalidade.",
+        "Jesus Cristo — Deus em carne — viveu a vida que não conseguiste, morreu a morte que merecias, e ressuscitou.",
+        "Abandona o pecado. Confia n'Ele. Vive."
+      ],
+      "tapContinue": "Toca para continuar",
+      "scripture": "Mas Deus prova o seu amor para connosco, em que Cristo morreu por nós, sendo nós ainda pecadores.",
+      "scriptureRef": "Romanos 5:8 (ACF)",
+      "testCta": "Faz o teste"
     },
     "cta": {
       "heading": "O que vais fazer?",

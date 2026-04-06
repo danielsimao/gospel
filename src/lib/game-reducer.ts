@@ -105,6 +105,48 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         invitationResponse: action.response,
       };
 
+    case "HYDRATE_ANSWERS": {
+      if (state.phase !== "landing") return state;
+
+      let score = INITIAL_SCORE;
+      const hydratedAnswers = action.answers.map((a) => {
+        const config = QUESTION_CONFIGS.find((c) => c.id === a.questionId);
+        const drain = config
+          ? a.answer === "honest"
+            ? config.honestDrain
+            : config.justifyDrain
+          : 0;
+        score = Math.max(0, score - drain);
+        return {
+          questionId: a.questionId,
+          answer: a.answer,
+          commandment: config?.commandment ?? "",
+          scoreChange: -drain,
+          timeOnQuestion: 0,
+        };
+      });
+
+      const answeredIds = new Set(action.answers.map((a) => a.questionId));
+      let startQuestion = 0;
+      for (let i = 0; i < QUESTION_CONFIGS.length; i++) {
+        if (!answeredIds.has(QUESTION_CONFIGS[i].id)) {
+          startQuestion = i;
+          break;
+        }
+        startQuestion = i + 1;
+      }
+
+      return {
+        ...state,
+        phase: "playing",
+        score,
+        answers: hydratedAnswers,
+        currentQuestion: Math.min(startQuestion, TOTAL_QUESTIONS),
+        startedAt: Date.now(),
+        questionStartedAt: Date.now(),
+      };
+    }
+
     default: {
       const _exhaustive: never = action;
       return state;

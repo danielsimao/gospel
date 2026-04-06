@@ -7,6 +7,7 @@ import {
   trackGuiltyShown,
   trackBridgeClicked,
 } from "@/lib/eternity-analytics";
+import { writeQuizAnswer } from "@/lib/quiz-storage";
 
 interface QuizQuestion {
   question: string;
@@ -30,6 +31,7 @@ export interface LawQuizMessages {
   caseLabel: string;
   questionLabel: string;
   answeredLabel: string;
+  nextLabel: string;
   chipGuilty: string;
   chipDenied: string;
 }
@@ -56,49 +58,44 @@ export function LawQuiz({ messages, onBridgeClick }: LawQuizProps) {
 
   const total = messages.questions.length;
   const answeredCount = answers.filter((a) => a !== null).length;
-  const isComplete = answeredCount === total;
 
   const handleAnswer = useCallback(
     (choice: "yes" | "no") => {
       if (startTime.current === null) startTime.current = Date.now();
-
       const idx = currentIdx;
       trackQuizAnswered(idx, choice);
       const newAnswers = [...answers];
       newAnswers[idx] = choice;
       setAnswers(newAnswers);
-
-      const totalAnswered = newAnswers.filter((a) => a !== null).length;
-
-      if (totalAnswered === total) {
-        // Wait for response animation then show verdict
-        setTimeout(() => {
-          setShowGuilty(true);
-          trackGuiltyShown();
-          setTimeout(() => {
-            guiltyRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-          }, 100);
-        }, 1400);
-
-        setTimeout(() => {
-          const elapsed = (Date.now() - (startTime.current ?? Date.now())) / 1000;
-          setDeathsDuring(Math.floor(elapsed * DEATHS_PER_SECOND));
-          setShowSummary(true);
-        }, 2600);
-
-        setTimeout(() => {
-          setShowBridge(true);
-          setTimeout(() => {
-            bridgeRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-          }, 100);
-        }, 3800);
-      } else {
-        // Advance to next question after showing response briefly
-        setTimeout(() => setCurrentIdx(idx + 1), 1400);
-      }
+      writeQuizAnswer(idx, choice);
     },
-    [answers, currentIdx, total],
+    [answers, currentIdx],
   );
+
+  const handleNext = useCallback(() => {
+    if (answeredCount === total) {
+      setShowGuilty(true);
+      trackGuiltyShown();
+      setTimeout(() => {
+        guiltyRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 100);
+
+      setTimeout(() => {
+        const elapsed = (Date.now() - (startTime.current ?? Date.now())) / 1000;
+        setDeathsDuring(Math.floor(elapsed * DEATHS_PER_SECOND));
+        setShowSummary(true);
+      }, 1200);
+
+      setTimeout(() => {
+        setShowBridge(true);
+        setTimeout(() => {
+          bridgeRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 100);
+      }, 2400);
+    } else {
+      setCurrentIdx(currentIdx + 1);
+    }
+  }, [answeredCount, total, currentIdx]);
 
   const currentQuestion = messages.questions[currentIdx];
   const currentAnswer = answers[currentIdx];
@@ -152,7 +149,7 @@ export function LawQuiz({ messages, onBridgeClick }: LawQuizProps) {
       {/* Question card — single, swaps */}
       <div className="relative mt-6 w-full max-w-xs sm:max-w-sm" style={{ minHeight: "280px" }}>
         <AnimatePresence mode="wait">
-          {!isComplete && (
+          {!showGuilty && (
             <motion.div
               key={currentIdx}
               initial={{ opacity: 0, x: 20 }}
@@ -229,6 +226,16 @@ export function LawQuiz({ messages, onBridgeClick }: LawQuizProps) {
                           </p>
                         </motion.div>
                       )}
+                      <motion.button
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 0.6 }}
+                        onClick={handleNext}
+                        className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.02] px-4 py-3 text-sm font-medium tracking-wide text-red-400/70 transition-all hover:border-red-900/40 hover:bg-red-950/20 hover:text-red-300 min-h-[48px]"
+                      >
+                        <span>{messages.nextLabel}</span>
+                        <span>&rarr;</span>
+                      </motion.button>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -239,7 +246,7 @@ export function LawQuiz({ messages, onBridgeClick }: LawQuizProps) {
       </div>
 
       {/* Answered chips — compact history */}
-      {answeredCount > 0 && !isComplete && (
+      {answeredCount > 0 && !showGuilty && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
