@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useReducer, useEffect, type Dispatch } from "react";
 import { gameReducer, initialGameState } from "@/lib/game-reducer";
-import type { GameState, GameAction, AnswerType } from "@/lib/types";
+import type { GameState, GameAction } from "@/lib/types";
 import { readQuizAnswers } from "@/lib/quiz-storage";
 import { QUESTION_CONFIGS } from "@/lib/questions";
 
@@ -30,11 +30,11 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       .filter(([id]) => validIds.has(Number(id)))
       .map(([id, answer]) => ({
         questionId: Number(id),
-        answer: answer as AnswerType,
+        answer,
       }));
 
     if (answers.length > 0) {
-      dispatch({ type: "HYDRATE_ANSWERS", answers, startAt: Date.now() });
+      dispatch({ type: "HYDRATE_ANSWERS", answers });
     }
   }, []);
 

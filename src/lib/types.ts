@@ -44,7 +44,7 @@ export type GameAction =
   | { type: "SHOW_GRACE" }
   | { type: "SHOW_INVITATION" }
   | { type: "SET_INVITATION_RESPONSE"; response: InvitationResponse }
-  | { type: "HYDRATE_ANSWERS"; answers: Array<{ questionId: number; answer: AnswerType }>; startAt: number };
+  | { type: "HYDRATE_ANSWERS"; answers: Array<{ questionId: number; answer: AnswerType }> };
 
 export interface TestMessages {
   caseLabel: string;

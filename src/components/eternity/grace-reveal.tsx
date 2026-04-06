@@ -11,7 +11,7 @@ import type { Locale } from "@/lib/i18n";
 
 export interface GraceMessages {
   heading: string;
-  beats: string[];
+  beats: [string, string, string, string];
   tapContinue: string;
   scripture: string;
   scriptureRef: string;
@@ -104,7 +104,7 @@ export function GraceReveal({ messages, locale }: GraceRevealProps) {
               className="border-t border-white/[0.04] py-4 first:border-t-0 first:pt-0"
             >
               <p className="mb-2 font-mono text-[8px] uppercase tracking-[2.5px] text-[#D4A843]/45">
-                {["I", "II", "III", "IV"][i]}
+                {["I", "II", "III", "IV", "V", "VI"][i] ?? String(i + 1)}
               </p>
               <p
                 className={`text-lg font-semibold leading-snug sm:text-xl ${

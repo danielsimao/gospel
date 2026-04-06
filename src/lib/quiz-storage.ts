@@ -1,3 +1,5 @@
+import type { AnswerType } from "./types";
+
 const STORAGE_KEY = "gospel-quiz-answers";
 
 /**
@@ -6,26 +8,42 @@ const STORAGE_KEY = "gospel-quiz-answers";
  */
 const MINI_QUIZ_TO_TEST_ID = [1, 2, 5] as const;
 
-export type StoredAnswers = Record<string, "yes" | "no" | "honest" | "justify">;
+const VALID_ANSWER_TYPES = new Set<string>(["honest", "justify"]);
+
+export type StoredAnswers = Record<string, AnswerType>;
 
 export function readQuizAnswers(): StoredAnswers {
+  if (typeof window === "undefined") return {};
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return {};
-    return JSON.parse(raw) as StoredAnswers;
-  } catch {
+    const parsed: unknown = JSON.parse(raw);
+    if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) return {};
+    const result: StoredAnswers = {};
+    for (const [key, value] of Object.entries(parsed)) {
+      if (VALID_ANSWER_TYPES.has(value as string)) {
+        result[key] = value as AnswerType;
+      }
+    }
+    return result;
+  } catch (error) {
+    console.warn("[quiz-storage] Failed to read quiz answers:", error);
     return {};
   }
 }
 
 export function writeQuizAnswer(miniQuizIndex: number, answer: "yes" | "no"): void {
   const testId = MINI_QUIZ_TO_TEST_ID[miniQuizIndex];
-  if (testId === undefined) return;
+  if (testId === undefined) {
+    console.warn(`[quiz-storage] No test ID mapping for mini quiz index ${miniQuizIndex}`);
+    return;
+  }
+  if (typeof window === "undefined") return;
   try {
     const current = readQuizAnswers();
     current[String(testId)] = answer === "yes" ? "honest" : "justify";
     localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
-  } catch {
-    // localStorage unavailable (SSR, private browsing) — silently skip
+  } catch (error) {
+    console.warn("[quiz-storage] Failed to write quiz answer:", error);
   }
 }
