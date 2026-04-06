@@ -57,10 +57,18 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
     case "ADVANCE_AFTER_FOLLOWUP": {
       if (state.phase !== "playing") return state;
-      const nextQuestion = state.currentQuestion + 1;
-      const isLastQuestion = nextQuestion >= TOTAL_QUESTIONS;
 
-      if (isLastQuestion) {
+      // Skip over questions already in state.answers (hydrated from mini quiz)
+      const answeredIds = new Set(state.answers.map((a) => a.questionId));
+      let nextQuestion = state.currentQuestion + 1;
+      while (
+        nextQuestion < TOTAL_QUESTIONS &&
+        answeredIds.has(QUESTION_CONFIGS[nextQuestion].id)
+      ) {
+        nextQuestion++;
+      }
+
+      if (nextQuestion >= TOTAL_QUESTIONS) {
         return {
           ...state,
           phase: "verdict",
