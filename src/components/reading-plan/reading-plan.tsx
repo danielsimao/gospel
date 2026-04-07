@@ -28,6 +28,8 @@ interface ReadingPlanMessages {
   allCompleteBody: string;
   continueReadingLink: string;
   continueReadingLabel: string;
+  deeperLabel: string;
+  deeperLink: string;
   days: DayMessages[];
 }
 
@@ -148,6 +150,15 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
           >
             {messages.continueReadingLabel} &rarr;
           </a>
+          <div className="mt-6">
+            <p className="text-sm text-white/35">{messages.deeperLabel}</p>
+            <a
+              href={`/${locale}/learn/who-is-jesus`}
+              className="mt-2 inline-flex items-center text-sm text-[#D4A843]/70 transition-colors hover:text-[#D4A843]"
+            >
+              {messages.deeperLink} →
+            </a>
+          </div>
         </motion.div>
       )}
     </div>

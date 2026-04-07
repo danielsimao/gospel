@@ -183,6 +183,8 @@
     "allCompleteBody": "You've finished the 7-day plan. But this is just the beginning — keep reading, keep praying, keep growing. The Gospel of John has 21 chapters. Why not keep going?",
     "continueReadingLink": "https://www.bible.com/bible/114/JHN.8.NKJV",
     "continueReadingLabel": "Continue reading John",
+    "deeperLabel": "Want to go deeper?",
+    "deeperLink": "Explore the foundations of what you've been reading.",
     "days": [
       {
         "title": "The Beginning",
@@ -246,6 +248,175 @@
         "keyVerseRef": "John 20:29 (NKJV)",
         "reflection": "Thomas doubted. Jesus didn't reject him — He showed up. If you have doubts, bring them to God. He's not afraid of your questions. The resurrection is the foundation of everything — if Jesus rose, then everything He said is true.",
         "prayer": "Risen Lord, strengthen my faith. When doubts come, remind me that You are alive and that Your promises are sure. Help me to live boldly for You. Amen."
+      }
+    ]
+  },
+  "learn": {
+    "label": "Learn",
+    "ctaHeading": "Ready to examine yourself?",
+    "ctaButton": "Take the test",
+    "nextLabel": "Next",
+    "prevLabel": "Previous",
+    "topics": [
+      {
+        "slug": "who-is-jesus",
+        "title": "Who is Jesus?",
+        "subtitle": "More than a good teacher.",
+        "metaDescription": "Who was Jesus of Nazareth? Explore the evidence for His deity, humanity, and what it means for you.",
+        "sections": [
+          {
+            "heading": "More than a good teacher",
+            "body": "Most people are happy to call Jesus a good teacher. But Jesus didn't leave that option open. He claimed to be God — not a god, not godlike, but God Himself. 'I and My Father are one' (John 10:30).\n\nC.S. Lewis put it simply: a man who said the sort of things Jesus said would not be a great moral teacher. He would either be a lunatic, a liar, or He would be exactly who He claimed to be — the Lord.\n\nThe people who heard Him understood exactly what He was claiming. They picked up stones to kill Him for blasphemy. You don't stone someone for saying 'be kind to your neighbour.'",
+            "scripture": "I and My Father are one.",
+            "scriptureRef": "John 10:30 (NKJV)"
+          },
+          {
+            "heading": "The Word made flesh",
+            "body": "The Gospel of John opens with a staggering claim: 'In the beginning was the Word, and the Word was with God, and the Word was God.' And then: 'The Word became flesh and dwelt among us.'\n\nBefore Bethlehem, before the manger, before Mary — Jesus existed eternally as God. He wasn't created. He was the Creator who stepped into His own creation. The hands that shaped the universe let themselves be nailed to a cross.",
+            "scripture": "And the Word became flesh and dwelt among us, and we beheld His glory, the glory as of the only begotten of the Father, full of grace and truth.",
+            "scriptureRef": "John 1:14 (NKJV)"
+          },
+          {
+            "heading": "What He did",
+            "body": "Jesus lived the only sinless life in human history. He healed the sick, gave sight to the blind, and raised the dead. He had authority over nature, disease, demons, and death itself.\n\nBut He didn't come primarily to heal or teach. He came to die. He told His disciples repeatedly that He would be handed over, crucified, and rise on the third day. His death was not an accident or a tragedy — it was the plan from the beginning.",
+            "scripture": "Who, being in the form of God, did not consider it robbery to be equal with God, but made Himself of no reputation, taking the form of a bondservant, and coming in the likeness of men.",
+            "scriptureRef": "Philippians 2:6-7 (NKJV)"
+          },
+          {
+            "heading": "Why it matters to you",
+            "body": "If Jesus is who He said He is — God in the flesh — then everything He said carries the weight of divine authority. When He said 'I am the way, the truth, and the life. No one comes to the Father except through Me,' He wasn't offering one option among many. He was stating a fact.\n\nIf He rose from the dead (and the evidence is compelling), then His claims are validated. Death could not hold Him. And if death could not hold Him, then His promise of eternal life to all who trust in Him is not wishful thinking — it's the most reliable promise ever made.",
+            "scripture": "Jesus said to him, 'I am the way, the truth, and the life. No one comes to the Father except through Me.'",
+            "scriptureRef": "John 14:6 (NKJV)"
+          }
+        ]
+      },
+      {
+        "slug": "what-is-sin",
+        "title": "What is Sin?",
+        "subtitle": "Why God's standard matters — and why none of us meet it.",
+        "metaDescription": "What does the Bible mean by 'sin'? Understand God's moral standard and why every person falls short.",
+        "sections": [
+          {
+            "heading": "God's standard",
+            "body": "The Ten Commandments are not suggestions. They are God's moral law — a perfect reflection of His character. They tell us what is right and what is wrong, not based on culture or opinion, but based on the nature of God Himself.\n\nYou shall not lie. You shall not steal. You shall not commit adultery. You shall not covet. You shall have no other gods before Me. These aren't arbitrary rules — they reveal what a holy God requires of the beings He created in His image.",
+            "scripture": "For whoever shall keep the whole law, and yet stumble in one point, he is guilty of all.",
+            "scriptureRef": "James 2:10 (NKJV)"
+          },
+          {
+            "heading": "It's not just murder and theft",
+            "body": "Jesus raised the bar impossibly high. He said that anger without cause is the same as murder in God's eyes. That looking at someone with lust is the same as adultery. That hating your brother makes you a murderer at heart.\n\nSin is not just what you do — it's what you think, what you desire, what you harbour in secret. God doesn't just see your actions. He sees your heart. And by that standard, every single one of us is guilty.",
+            "scripture": "But I say to you that whoever looks at a woman to lust for her has already committed adultery with her in his heart.",
+            "scriptureRef": "Matthew 5:28 (NKJV)"
+          },
+          {
+            "heading": "Everyone has sinned",
+            "body": "Romans 3:23 does not say 'some have sinned' or 'really bad people have sinned.' It says all. Every human being who has ever lived — except Jesus — has broken God's Law.\n\nThis is not about being 'good enough.' It's about being perfect — because that is God's standard. And none of us are. Not the religious leader, not the moral philosopher, not the person who volunteers every weekend. All have sinned.",
+            "scripture": "For all have sinned and fall short of the glory of God.",
+            "scriptureRef": "Romans 3:23 (NKJV)"
+          },
+          {
+            "heading": "The consequence",
+            "body": "Sin is not a minor infraction. It is cosmic treason against the Creator of the universe. And the penalty is not a slap on the wrist — it is death. Not just physical death, but eternal separation from God.\n\nThis is the reality that makes the gospel urgent. If sin had no consequence, there would be no need for a Saviour. But sin does have a consequence. And it is permanent. That is why what comes next — what God did about it — is the best news you will ever hear.",
+            "scripture": "For the wages of sin is death, but the gift of God is eternal life in Christ Jesus our Lord.",
+            "scriptureRef": "Romans 6:23 (NKJV)"
+          }
+        ]
+      },
+      {
+        "slug": "why-the-cross",
+        "title": "Why the Cross?",
+        "subtitle": "How justice and mercy meet at Calvary.",
+        "metaDescription": "Why did Jesus have to die on the cross? Understand how God's justice and love come together in the crucifixion.",
+        "sections": [
+          {
+            "heading": "The problem",
+            "body": "God faces what seems like an impossible dilemma. He is perfectly just — He cannot ignore sin, sweep it under the rug, or pretend it didn't happen. A good judge doesn't let guilty criminals walk free.\n\nBut God is also perfectly loving. He does not want anyone to perish. He created you, knows you, and loves you. So how can a just God forgive guilty sinners without compromising His justice?",
+            "scripture": "He is the Rock, His work is perfect; for all His ways are justice, a God of truth and without injustice; righteous and upright is He.",
+            "scriptureRef": "Deuteronomy 32:4 (NKJV)"
+          },
+          {
+            "heading": "The courtroom",
+            "body": "Imagine you're standing before a judge, guilty of a serious crime. The fine is enormous — far more than you could ever pay. Justice demands payment. You're about to be sentenced.\n\nBut then someone walks into the courtroom, opens their wallet, and pays your fine in full. Every penny. The judge can now legally dismiss your case — not because he's overlooking justice, but because justice has been satisfied. The fine has been paid.\n\nThat is what happened on the cross.",
+            "scripture": "But He was wounded for our transgressions, He was bruised for our iniquities; the chastisement for our peace was upon Him, and by His stripes we are healed.",
+            "scriptureRef": "Isaiah 53:5 (NKJV)"
+          },
+          {
+            "heading": "What happened on the cross",
+            "body": "On the cross, Jesus took upon Himself the punishment that every human being deserves. He absorbed the full wrath of God against sin — not His own sin (He had none), but ours.\n\nGod 'made Him who knew no sin to be sin for us.' The sinless One became the sin-bearer. He experienced the full weight of divine judgment so that we wouldn't have to. This is not a metaphor. This is substitution — He died in your place.",
+            "scripture": "For He made Him who knew no sin to be sin for us, that we might become the righteousness of God in Him.",
+            "scriptureRef": "2 Corinthians 5:21 (NKJV)"
+          },
+          {
+            "heading": "It is finished",
+            "body": "Jesus' last words on the cross were not 'I am defeated.' They were 'It is finished.' In Greek, the word is tetelestai — a legal and commercial term meaning 'paid in full.'\n\nThe debt is settled. There is nothing you can add to what Christ has done. You cannot earn salvation by being good, going to church, or doing charitable works. Those are good things — but they are not payment. The payment has already been made. All that remains is for you to receive it.",
+            "scripture": "So when Jesus had received the sour wine, He said, 'It is finished!' And bowing His head, He gave up His spirit.",
+            "scriptureRef": "John 19:30 (NKJV)"
+          }
+        ]
+      },
+      {
+        "slug": "what-is-repentance",
+        "title": "What is Repentance?",
+        "subtitle": "More than feeling sorry — a complete change of direction.",
+        "metaDescription": "What does it really mean to repent? Learn the biblical definition of repentance and what it looks like in practice.",
+        "sections": [
+          {
+            "heading": "Not just feeling sorry",
+            "body": "Judas felt sorry for betraying Jesus. He was so filled with regret that he returned the thirty pieces of silver and hanged himself. But the Bible never calls that repentance. It calls it remorse.\n\nRemorse is feeling bad about the consequences of sin. Repentance is feeling grieved about the sin itself — because it offends a holy God. Remorse says 'I wish I hadn't been caught.' Repentance says 'I was wrong, and I want to change.'",
+            "scripture": "For godly sorrow produces repentance leading to salvation, not to be regretted; but the sorrow of the world produces death.",
+            "scriptureRef": "2 Corinthians 7:10 (NKJV)"
+          },
+          {
+            "heading": "Turn and trust",
+            "body": "Repentance has two parts. First, you turn FROM sin — not just the sins you're comfortable admitting, but the whole orientation of your life away from God. Second, you turn TO God — placing your trust in Jesus Christ and His finished work on the cross.\n\nIt's not about cleaning yourself up before coming to God. You come as you are — broken, guilty, empty-handed. And He receives you. Repentance is not a prerequisite for grace. It is the response to grace.",
+            "scripture": "Repent therefore and be converted, that your sins may be blotted out, so that times of refreshing may come from the presence of the Lord.",
+            "scriptureRef": "Acts 3:19 (NKJV)"
+          },
+          {
+            "heading": "What it looks like",
+            "body": "Repentance is not perfection. It is a new direction. A repentant person still stumbles, still fails, still sins. But they fall forward. They get back up. They hate what they used to love and love what they used to ignore.\n\nThink of the prodigal son. He didn't clean himself up before going home. He came covered in pig filth, reeking of failure. And his father ran to him, embraced him, and restored him. That is the picture of repentance — coming home, just as you are.",
+            "scripture": "And he arose and came to his father. But when he was still a great way off, his father saw him and had compassion, and ran and fell on his neck and kissed him.",
+            "scriptureRef": "Luke 15:20 (NKJV)"
+          },
+          {
+            "heading": "It's a gift",
+            "body": "Here is the most surprising thing about repentance: even the ability to repent is a gift from God. You cannot manufacture it. You cannot work it up through willpower or religious effort.\n\nIf you feel a pull toward God right now — a desire to turn, to change, to come home — that is not coming from you. That is God drawing you to Himself. Don't resist it. Ask Him for the gift of repentance, and He will give it.",
+            "scripture": "When they heard these things they became silent; and they glorified God, saying, 'Then God has also granted to the Gentiles repentance to life.'",
+            "scriptureRef": "Acts 11:18 (NKJV)"
+          }
+        ]
+      },
+      {
+        "slug": "what-happens-when-i-die",
+        "title": "What Happens When I Die?",
+        "subtitle": "The question everyone asks — and the Bible's answer.",
+        "metaDescription": "What happens after death? Explore what the Bible says about eternity, judgment, heaven, hell, and the hope that changes everything.",
+        "sections": [
+          {
+            "heading": "The appointment",
+            "body": "The Bible is blunt about death. It is not a mystery to be avoided or a topic to dance around. 'It is appointed for men to die once, but after this the judgment.' Not if — when. Not maybe — certainly.\n\nEvery culture, every religion, every philosophy has tried to answer the question of what comes after death. Reincarnation, annihilation, wishful vagueness. But the Bible gives a clear, unambiguous answer: you die once, and then you face God.",
+            "scripture": "And as it is appointed for men to die once, but after this the judgment.",
+            "scriptureRef": "Hebrews 9:27 (NKJV)"
+          },
+          {
+            "heading": "Two destinations",
+            "body": "Jesus spoke more about hell than anyone else in the Bible. He described it as a place of outer darkness, weeping, and gnashing of teeth — eternal separation from God and everything good.\n\nHe also spoke about heaven — the presence of God, where there is no more death, no more pain, no more tears. A place prepared for those who belong to Him.\n\nThere is no middle ground. No purgatory, no second chance after death, no cosmic do-over. Two roads, two destinations. And the road you're on is determined by what you do with Jesus.",
+            "scripture": "And these will go away into everlasting punishment, but the righteous into eternal life.",
+            "scriptureRef": "Matthew 25:46 (NKJV)"
+          },
+          {
+            "heading": "The death counter is real",
+            "body": "1.8 people die every second. That's not a statistic designed to frighten you — it's a reality designed to wake you up. The death counter on this site isn't a gimmick. It's a mirror.\n\nEvery one of those numbers was a person — with a name, a family, hopes, fears. And every one of them has now stepped into eternity. One of those numbers, someday, will be yours. The only question is: are you ready?",
+            "scripture": "So teach us to number our days, that we may gain a heart of wisdom.",
+            "scriptureRef": "Psalm 90:12 (NKJV)"
+          },
+          {
+            "heading": "But there is hope",
+            "body": "God does not want anyone to perish. He is 'not willing that any should perish but that all should come to repentance.' He made a way — the cross. Jesus bridged the gap between a holy God and sinful humanity.\n\nThe question is not whether God has provided a way. He has. The question is whether you will take it. Trust in Jesus Christ. Turn from sin. Receive the gift of eternal life. The counter is still ticking — but it doesn't have to be a countdown to judgment. It can be a countdown to coming home.",
+            "scripture": "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.",
+            "scriptureRef": "John 3:16 (NKJV)"
+          }
+        ]
       }
     ]
   },

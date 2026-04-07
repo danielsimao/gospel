@@ -183,6 +183,8 @@
     "allCompleteBody": "Terminaste o plano de 7 dias. Mas isto é apenas o começo — continua a ler, a orar e a crescer. O Evangelho de João tem 21 capítulos. Porque não continuar?",
     "continueReadingLink": "https://www.bible.com/bible/212/JHN.8.ARC",
     "continueReadingLabel": "Continuar a ler João",
+    "deeperLabel": "Queres ir mais fundo?",
+    "deeperLink": "Explora os fundamentos do que tens lido.",
     "days": [
       {
         "title": "O Princípio",
@@ -246,6 +248,175 @@
         "keyVerseRef": "João 20:29 (ARC)",
         "reflection": "Tomé duvidou. Jesus não o rejeitou — apareceu-lhe. Se tens dúvidas, leva-as a Deus. Ele não tem medo das tuas perguntas. A ressurreição é o fundamento de tudo — se Jesus ressuscitou, então tudo o que Ele disse é verdade.",
         "prayer": "Senhor ressuscitado, fortalece a minha fé. Quando as dúvidas vierem, lembra-me de que estás vivo e que as Tuas promessas são seguras. Ajuda-me a viver corajosamente para Ti. Amém."
+      }
+    ]
+  },
+  "learn": {
+    "label": "Aprender",
+    "ctaHeading": "Pronto para te examinares?",
+    "ctaButton": "Faz o teste",
+    "nextLabel": "Seguinte",
+    "prevLabel": "Anterior",
+    "topics": [
+      {
+        "slug": "who-is-jesus",
+        "title": "Quem é Jesus?",
+        "subtitle": "Mais do que um bom mestre.",
+        "metaDescription": "Quem foi Jesus de Nazaré? Explora as evidências da Sua divindade, humanidade, e o que isso significa para ti.",
+        "sections": [
+          {
+            "heading": "Mais do que um bom mestre",
+            "body": "A maioria das pessoas aceita chamar Jesus de bom mestre. Mas Jesus não deixou essa opção em aberto. Ele afirmou ser Deus — não um deus, não divino, mas o próprio Deus. 'Eu e o Pai somos um' (João 10:30).\n\nC.S. Lewis colocou a questão de forma simples: um homem que disse o tipo de coisas que Jesus disse não seria um grande mestre de moral. Seria um lunático, um mentiroso, ou seria exatamente quem afirmou ser — o Senhor.\n\nAs pessoas que O ouviram entenderam perfeitamente o que Ele estava a afirmar. Pegaram em pedras para O matar por blasfémia. Não se apedreja alguém por dizer 'sede bondosos para o vosso próximo.'",
+            "scripture": "Eu e o Pai somos um.",
+            "scriptureRef": "João 10:30 (ARC)"
+          },
+          {
+            "heading": "O Verbo feito carne",
+            "body": "O Evangelho de João começa com uma afirmação extraordinária: 'No princípio era o Verbo, e o Verbo estava com Deus, e o Verbo era Deus.' E depois: 'E o Verbo se fez carne, e habitou entre nós.'\n\nAntes de Belém, antes da manjedoura, antes de Maria — Jesus existia eternamente como Deus. Não foi criado. Foi o Criador que entrou na Sua própria criação. As mãos que moldaram o universo deixaram-se pregar numa cruz.",
+            "scripture": "E o Verbo se fez carne, e habitou entre nós, e vimos a sua glória, como a glória do unigénito do Pai, cheio de graça e de verdade.",
+            "scriptureRef": "João 1:14 (ARC)"
+          },
+          {
+            "heading": "O que Ele fez",
+            "body": "Jesus viveu a única vida sem pecado da história da humanidade. Curou doentes, deu vista aos cegos e ressuscitou mortos. Tinha autoridade sobre a natureza, as doenças, os demónios e a própria morte.\n\nMas Ele não veio principalmente para curar ou ensinar. Veio para morrer. Disse repetidamente aos Seus discípulos que seria entregue, crucificado e que ressuscitaria ao terceiro dia. A Sua morte não foi um acidente nem uma tragédia — foi o plano desde o princípio.",
+            "scripture": "Que, sendo em forma de Deus, não teve por usurpação ser igual a Deus, mas esvaziou-se a si mesmo, tomando a forma de servo, fazendo-se semelhante aos homens.",
+            "scriptureRef": "Filipenses 2:6-7 (ARC)"
+          },
+          {
+            "heading": "Porque é que isto importa para ti",
+            "body": "Se Jesus é quem disse ser — Deus em carne — então tudo o que Ele disse carrega o peso da autoridade divina. Quando disse 'Eu sou o caminho, e a verdade e a vida; ninguém vem ao Pai, senão por mim,' não estava a oferecer uma opção entre muitas. Estava a afirmar um facto.\n\nSe Ele ressuscitou dos mortos (e as evidências são convincentes), então as Suas afirmações estão validadas. A morte não O conseguiu reter. E se a morte não O conseguiu reter, então a Sua promessa de vida eterna a todos os que confiam n'Ele não é um desejo piedoso — é a promessa mais fiável alguma vez feita.",
+            "scripture": "Disse-lhe Jesus: Eu sou o caminho, e a verdade e a vida; ninguém vem ao Pai, senão por mim.",
+            "scriptureRef": "João 14:6 (ARC)"
+          }
+        ]
+      },
+      {
+        "slug": "what-is-sin",
+        "title": "O que é o Pecado?",
+        "subtitle": "Porque é que o padrão de Deus importa — e porque nenhum de nós o cumpre.",
+        "metaDescription": "O que a Bíblia quer dizer com 'pecado'? Compreende o padrão moral de Deus e porque toda a pessoa fica aquém.",
+        "sections": [
+          {
+            "heading": "O padrão de Deus",
+            "body": "Os Dez Mandamentos não são sugestões. São a lei moral de Deus — um reflexo perfeito do Seu carácter. Dizem-nos o que é certo e o que é errado, não com base em cultura ou opinião, mas com base na natureza do próprio Deus.\n\nNão mentirás. Não roubarás. Não cometerás adultério. Não cobiçarás. Não terás outros deuses diante de mim. Estas não são regras arbitrárias — revelam o que um Deus santo exige dos seres que criou à Sua imagem.",
+            "scripture": "Porque qualquer que guardar toda a lei, e tropeçar num só ponto, tornou-se culpado de todos.",
+            "scriptureRef": "Tiago 2:10 (ARC)"
+          },
+          {
+            "heading": "Não é só homicídio e roubo",
+            "body": "Jesus elevou o padrão a um nível impossível. Disse que a ira sem causa é o mesmo que homicídio aos olhos de Deus. Que olhar para alguém com desejo é o mesmo que adultério. Que odiar o teu irmão faz de ti um assassino no coração.\n\nO pecado não é apenas o que fazes — é o que pensas, o que desejas, o que alimentas em segredo. Deus não vê apenas as tuas acções. Vê o teu coração. E por esse padrão, cada um de nós é culpado.",
+            "scripture": "Eu, porém, vos digo, que qualquer que atentar numa mulher para a cobiçar, já em seu coração cometeu adultério com ela.",
+            "scriptureRef": "Mateus 5:28 (ARC)"
+          },
+          {
+            "heading": "Todos pecaram",
+            "body": "Romanos 3:23 não diz 'alguns pecaram' ou 'pessoas realmente más pecaram.' Diz todos. Todo o ser humano que alguma vez viveu — excepto Jesus — quebrou a Lei de Deus.\n\nIsto não é sobre ser 'suficientemente bom.' É sobre ser perfeito — porque esse é o padrão de Deus. E nenhum de nós é. Nem o líder religioso, nem o filósofo moral, nem a pessoa que faz voluntariado todos os fins de semana. Todos pecaram.",
+            "scripture": "Porque todos pecaram e destituídos estão da glória de Deus.",
+            "scriptureRef": "Romanos 3:23 (ARC)"
+          },
+          {
+            "heading": "A consequência",
+            "body": "O pecado não é uma infracção menor. É traição cósmica contra o Criador do universo. E a penalidade não é uma palmadinha no pulso — é a morte. Não apenas a morte física, mas a separação eterna de Deus.\n\nEsta é a realidade que torna o evangelho urgente. Se o pecado não tivesse consequência, não haveria necessidade de um Salvador. Mas o pecado tem consequência. E é permanente. É por isso que o que vem a seguir — o que Deus fez a respeito — é a melhor notícia que alguma vez ouvirás.",
+            "scripture": "Porque o salário do pecado é a morte, mas o dom gratuito de Deus é a vida eterna, por Cristo Jesus nosso Senhor.",
+            "scriptureRef": "Romanos 6:23 (ARC)"
+          }
+        ]
+      },
+      {
+        "slug": "why-the-cross",
+        "title": "Porquê a Cruz?",
+        "subtitle": "Como a justiça e a misericórdia se encontram no Calvário.",
+        "metaDescription": "Porque é que Jesus teve de morrer na cruz? Compreende como a justiça e o amor de Deus se encontram na crucificação.",
+        "sections": [
+          {
+            "heading": "O problema",
+            "body": "Deus enfrenta o que parece ser um dilema impossível. Ele é perfeitamente justo — não pode ignorar o pecado, varrê-lo para debaixo do tapete ou fingir que não aconteceu. Um bom juiz não deixa criminosos culpados sair em liberdade.\n\nMas Deus também é perfeitamente amoroso. Não quer que ninguém pereça. Criou-te, conhece-te e ama-te. Então como pode um Deus justo perdoar pecadores culpados sem comprometer a Sua justiça?",
+            "scripture": "Ele é a Rocha, cuja obra é perfeita, porque todos os seus caminhos são justos; Deus é a verdade, e não há nele injustiça; justo e recto é.",
+            "scriptureRef": "Deuteronómio 32:4 (ARC)"
+          },
+          {
+            "heading": "O tribunal",
+            "body": "Imagina que estás perante um juiz, culpado de um crime grave. A multa é enorme — muito mais do que alguma vez poderias pagar. A justiça exige pagamento. Estás prestes a ser condenado.\n\nMas então alguém entra no tribunal, abre a carteira e paga a tua multa na totalidade. Cada cêntimo. O juiz pode agora legalmente arquivar o teu caso — não porque está a ignorar a justiça, mas porque a justiça foi satisfeita. A multa foi paga.\n\nFoi isto que aconteceu na cruz.",
+            "scripture": "Mas ele foi ferido pelas nossas transgressões, e moído pelas nossas iniquidades; o castigo que nos traz a paz estava sobre ele, e pelas suas pisaduras fomos sarados.",
+            "scriptureRef": "Isaías 53:5 (ARC)"
+          },
+          {
+            "heading": "O que aconteceu na cruz",
+            "body": "Na cruz, Jesus tomou sobre Si o castigo que todo o ser humano merece. Absorveu a ira completa de Deus contra o pecado — não o Seu próprio pecado (não tinha nenhum), mas o nosso.\n\nDeus 'àquele que não conheceu pecado, o fez pecado por nós.' O Sem Pecado tornou-se o portador do pecado. Experimentou o peso total do juízo divino para que nós não tivéssemos de o fazer. Isto não é uma metáfora. É substituição — Ele morreu no teu lugar.",
+            "scripture": "Àquele que não conheceu pecado, o fez pecado por nós; para que nele fôssemos feitos justiça de Deus.",
+            "scriptureRef": "2 Coríntios 5:21 (ARC)"
+          },
+          {
+            "heading": "Está consumado",
+            "body": "As últimas palavras de Jesus na cruz não foram 'Estou derrotado.' Foram 'Está consumado.' Em grego, a palavra é tetelestai — um termo legal e comercial que significa 'pago na totalidade.'\n\nA dívida está saldada. Não há nada que possas acrescentar ao que Cristo fez. Não podes ganhar a salvação sendo bom, indo à igreja ou fazendo obras de caridade. Essas são coisas boas — mas não são pagamento. O pagamento já foi feito. Tudo o que resta é recebê-lo.",
+            "scripture": "E, quando Jesus tomou o vinagre, disse: Está consumado. E, inclinando a cabeça, entregou o espírito.",
+            "scriptureRef": "João 19:30 (ARC)"
+          }
+        ]
+      },
+      {
+        "slug": "what-is-repentance",
+        "title": "O que é o Arrependimento?",
+        "subtitle": "Mais do que sentir pena — uma mudança completa de direcção.",
+        "metaDescription": "O que significa realmente arrepender-se? Aprende a definição bíblica de arrependimento e como se manifesta na prática.",
+        "sections": [
+          {
+            "heading": "Não é só sentir pena",
+            "body": "Judas sentiu pena por ter traído Jesus. Ficou tão cheio de remorso que devolveu as trinta moedas de prata e enforcou-se. Mas a Bíblia nunca chama a isso arrependimento. Chama-lhe remorso.\n\nRemorso é sentir-se mal com as consequências do pecado. Arrependimento é sentir-se afligido com o pecado em si — porque ofende um Deus santo. Remorso diz 'quem me dera não ter sido apanhado.' Arrependimento diz 'estava errado e quero mudar.'",
+            "scripture": "Porque a tristeza segundo Deus opera arrependimento para a salvação, da qual ninguém se arrepende; mas a tristeza do mundo opera a morte.",
+            "scriptureRef": "2 Coríntios 7:10 (ARC)"
+          },
+          {
+            "heading": "Virar e confiar",
+            "body": "O arrependimento tem duas partes. Primeiro, viras-te DO pecado — não apenas dos pecados que te é confortável admitir, mas de toda a orientação da tua vida afastada de Deus. Segundo, viras-te PARA Deus — colocando a tua confiança em Jesus Cristo e na Sua obra consumada na cruz.\n\nNão se trata de te limpares antes de vires a Deus. Vens como estás — quebrado, culpado, de mãos vazias. E Ele recebe-te. O arrependimento não é um pré-requisito para a graça. É a resposta à graça.",
+            "scripture": "Arrependei-vos, pois, e convertei-vos, para que sejam apagados os vossos pecados, e venham assim os tempos do refrigério pela presença do Senhor.",
+            "scriptureRef": "Actos 3:19 (ARC)"
+          },
+          {
+            "heading": "Como se manifesta",
+            "body": "O arrependimento não é perfeição. É uma nova direcção. Uma pessoa arrependida ainda tropeça, ainda falha, ainda peca. Mas cai para a frente. Levanta-se. Odeia o que costumava amar e ama o que costumava ignorar.\n\nPensa no filho pródigo. Não se limpou antes de voltar a casa. Veio coberto de imundície de porcos, a cheirar a fracasso. E o seu pai correu ao seu encontro, abraçou-o e restaurou-o. Esta é a imagem do arrependimento — voltar a casa, tal como estás.",
+            "scripture": "E, levantando-se, foi para seu pai; e, quando ainda estava longe, viu-o seu pai, e se moveu de íntima compaixão e, correndo, lançou-se-lhe ao pescoço e o beijou.",
+            "scriptureRef": "Lucas 15:20 (ARC)"
+          },
+          {
+            "heading": "É um dom",
+            "body": "Aqui está a coisa mais surpreendente sobre o arrependimento: até a capacidade de te arrependeres é um dom de Deus. Não podes fabricá-lo. Não podes produzi-lo por força de vontade ou esforço religioso.\n\nSe sentes um impulso em direcção a Deus neste momento — um desejo de virar, de mudar, de voltar a casa — isso não vem de ti. É Deus a atrair-te a Si mesmo. Não resistas. Pede-Lhe o dom do arrependimento, e Ele dá-to.",
+            "scripture": "E, ouvindo estas coisas, apaziguaram-se, e glorificaram a Deus, dizendo: Na verdade até aos gentios deu Deus o arrependimento para a vida.",
+            "scriptureRef": "Actos 11:18 (ARC)"
+          }
+        ]
+      },
+      {
+        "slug": "what-happens-when-i-die",
+        "title": "O que Acontece Quando Eu Morrer?",
+        "subtitle": "A pergunta que todos fazem — e a resposta da Bíblia.",
+        "metaDescription": "O que acontece depois da morte? Explora o que a Bíblia diz sobre a eternidade, o juízo, o céu, o inferno e a esperança que muda tudo.",
+        "sections": [
+          {
+            "heading": "A marcação",
+            "body": "A Bíblia é directa sobre a morte. Não é um mistério a evitar ou um tema para contornar. 'E, como aos homens está ordenado morrerem uma vez, vindo depois disso o juízo.' Não se — quando. Não talvez — certamente.\n\nTodas as culturas, todas as religiões, todas as filosofias tentaram responder à pergunta sobre o que vem depois da morte. Reencarnação, aniquilação, vagueza esperançosa. Mas a Bíblia dá uma resposta clara e inequívoca: morres uma vez, e depois enfrentas Deus.",
+            "scripture": "E, como aos homens está ordenado morrerem uma vez, vindo depois disso o juízo.",
+            "scriptureRef": "Hebreus 9:27 (ARC)"
+          },
+          {
+            "heading": "Dois destinos",
+            "body": "Jesus falou mais sobre o inferno do que qualquer outra pessoa na Bíblia. Descreveu-o como um lugar de trevas exteriores, choro e ranger de dentes — separação eterna de Deus e de tudo o que é bom.\n\nTambém falou sobre o céu — a presença de Deus, onde não há mais morte, nem dor, nem lágrimas. Um lugar preparado para aqueles que Lhe pertencem.\n\nNão há meio-termo. Não há purgatório, nem segunda oportunidade depois da morte, nem recomeço cósmico. Dois caminhos, dois destinos. E o caminho em que estás é determinado pelo que fazes com Jesus.",
+            "scripture": "E irão estes para o tormento eterno, mas os justos para a vida eterna.",
+            "scriptureRef": "Mateus 25:46 (ARC)"
+          },
+          {
+            "heading": "O contador de mortes é real",
+            "body": "1,8 pessoas morrem a cada segundo. Isso não é uma estatística feita para te assustar — é uma realidade feita para te despertar. O contador de mortes neste site não é um truque. É um espelho.\n\nCada um daqueles números era uma pessoa — com um nome, uma família, esperanças, medos. E cada uma delas já entrou na eternidade. Um desses números, algum dia, será o teu. A única pergunta é: estás preparado?",
+            "scripture": "Ensina-nos a contar os nossos dias, de tal maneira que alcancemos coração sábio.",
+            "scriptureRef": "Salmo 90:12 (ARC)"
+          },
+          {
+            "heading": "Mas há esperança",
+            "body": "Deus não quer que ninguém pereça. Ele 'não quer que alguns se percam, senão que todos venham a arrepender-se.' Fez um caminho — a cruz. Jesus fez a ponte entre um Deus santo e a humanidade pecadora.\n\nA pergunta não é se Deus providenciou um caminho. Providenciou. A pergunta é se tu o vais aceitar. Confia em Jesus Cristo. Abandona o pecado. Recebe o dom da vida eterna. O contador continua a contar — mas não tem de ser uma contagem decrescente para o juízo. Pode ser uma contagem decrescente para voltar a casa.",
+            "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigénito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.",
+            "scriptureRef": "João 3:16 (ARC)"
+          }
+        ]
       }
     ]
   },
