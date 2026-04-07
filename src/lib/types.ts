@@ -91,6 +91,7 @@ export interface Messages {
     resources: Array<{ name: string; url: string }>;
   };
   share: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
+  nextSteps?: { cta: string; dismissedReturn: string };
   meta: { title: string; description: string };
   chat?: ChatMessages;
 }

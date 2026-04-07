@@ -101,6 +101,23 @@ export function InvitationScreen({
             transition={{ duration: 0.6 }}
             className="mt-8"
           >
+            {invitationResponse !== "dismissed" && (
+              <a
+                href={`/${locale}/next-steps?track=${invitationResponse === "prayed" ? "prayed" : "thinking"}`}
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-[#D4A843]/35 bg-[#D4A843]/[0.04] px-6 py-3.5 text-base font-semibold tracking-wide text-[#D4A843] shadow-[0_0_24px_rgba(212,168,67,0.08)] transition-all hover:border-[#D4A843]/50 hover:bg-[#D4A843]/[0.08] min-h-[48px]"
+              >
+                {messages.nextSteps?.cta ?? "What now?"} <span aria-hidden="true">→</span>
+              </a>
+            )}
+
+            {invitationResponse === "dismissed" && messages.nextSteps?.dismissedReturn && (
+              <p className="text-center text-sm text-white/30">
+                <a href={`/${locale}/reading-plan`} className="underline transition-colors hover:text-white/50">
+                  {messages.nextSteps.dismissedReturn}
+                </a>
+              </p>
+            )}
+
             <div className="flex flex-col gap-2 mt-6">
               {invitation.resources.map((resource) => (
                 <a

@@ -136,6 +136,119 @@
     "telegramMessage": "Are you a good person? Take this test and find out:",
     "linkCopied": "Link copied!"
   },
+  "nextSteps": {
+    "cta": "What now?",
+    "dismissedReturn": "Changed your mind? The reading plan is always open.",
+    "trackA": {
+      "welcome": "Something just changed.",
+      "whatHappened": "You acknowledged that you've broken God's Law. You placed your trust in Jesus Christ — the One who paid the fine for your sins on the cross and rose from the dead.\n\nIf you meant that prayer sincerely, God has forgiven every sin you've ever committed and granted you eternal life. Not because you earned it — but because He loves you.\n\n\"Therefore, if anyone is in Christ, he is a new creation; old things have passed away; behold, all things have become new.\" — 2 Corinthians 5:17 (NKJV)",
+      "readHeading": "Read",
+      "readBody": "Start with the Gospel of John — it's the best place to meet Jesus for the first time. Or follow our 7-day reading plan.",
+      "readLink": "https://www.bible.com/bible/114/JHN.1.NKJV",
+      "readLinkLabel": "Read John 1",
+      "readPlanLabel": "Start the 7-day plan",
+      "prayHeading": "Pray",
+      "prayBody": "Talk to God like a Father. He's listening.",
+      "prayPrompt": "God, thank You for forgiving me. Help me to understand what You've done for me. Guide me as I read Your Word. Give me the courage to turn from sin and follow You. In Jesus' name, Amen.",
+      "communityHeading": "Find Community",
+      "communityBody": "You weren't meant to do this alone. Find a Bible-believing church where you can grow.",
+      "communityLink": "https://www.9marks.org/church-search/",
+      "communityLinkLabel": "Search for a church",
+      "shareHeading": "Share Your Decision",
+      "shareMessage": "I just made a decision that changes everything:"
+    },
+    "trackB": {
+      "acknowledgment": "That's honest. Here are some things worth thinking about.",
+      "reflections": [
+        "If what you heard today is true, what would that change for you?",
+        "Have you ever considered that the discomfort you feel might be your conscience agreeing with God's standard?",
+        "What would it take for you to investigate this further?"
+      ],
+      "readingHeading": "One thing to read",
+      "readingBody": "When you're ready, read John chapter 3. It's a conversation between Jesus and a man who had questions just like yours.",
+      "readingLink": "https://www.bible.com/bible/114/JHN.3.NKJV",
+      "readingLinkLabel": "Read John 3",
+      "readingPlanLabel": "7-day reading plan",
+      "comeBack": "This site will be here whenever you're ready. Bookmark it, or start the reading plan when the time is right."
+    }
+  },
+  "readingPlan": {
+    "heading": "7-Day Reading Plan",
+    "subtitle": "A week in the Gospel of John — meeting Jesus for yourself.",
+    "progressLabel": "Day {current} of {total}",
+    "dayLabel": "Day",
+    "markReadLabel": "Mark as read",
+    "completedLabel": "Completed",
+    "allCompleteHeading": "Well done.",
+    "allCompleteBody": "You've finished the 7-day plan. But this is just the beginning — keep reading, keep praying, keep growing. The Gospel of John has 21 chapters. Why not keep going?",
+    "continueReadingLink": "https://www.bible.com/bible/114/JHN.8.NKJV",
+    "continueReadingLabel": "Continue reading John",
+    "days": [
+      {
+        "title": "The Beginning",
+        "passage": "John 1:1-18",
+        "passageUrl": "https://www.bible.com/bible/114/JHN.1.NKJV",
+        "keyVerse": "And the Word became flesh and dwelt among us, and we beheld His glory, the glory as of the only begotten of the Father, full of grace and truth.",
+        "keyVerseRef": "John 1:14 (NKJV)",
+        "reflection": "Before Jesus was born in Bethlehem, He existed eternally as God. He wasn't created — He was the Creator who stepped into His creation. The same God whose Law convicted you is the God who became a man to save you.",
+        "prayer": "God, help me to understand who Jesus really is — not just a good teacher, but the Word made flesh. Open my eyes as I read. Amen."
+      },
+      {
+        "title": "Born Again",
+        "passage": "John 3:1-21",
+        "passageUrl": "https://www.bible.com/bible/114/JHN.3.NKJV",
+        "keyVerse": "Jesus answered and said to him, 'Most assuredly, I say to you, unless one is born again, he cannot see the kingdom of God.'",
+        "keyVerseRef": "John 3:3 (NKJV)",
+        "reflection": "Nicodemus was a religious leader — a 'good person' by anyone's standard. But Jesus told him that being good wasn't enough. You need a completely new start. That's what happened when you trusted Christ — you were born again.",
+        "prayer": "Lord, thank You for giving me a new beginning. Help me to live as someone who has been born again — not trying to earn Your love, but resting in it. Amen."
+      },
+      {
+        "title": "Living Water",
+        "passage": "John 4:1-26",
+        "passageUrl": "https://www.bible.com/bible/114/JHN.4.NKJV",
+        "keyVerse": "Jesus answered and said to her, 'Whoever drinks of this water will thirst again, but whoever drinks of the water that I shall give him will never thirst.'",
+        "keyVerseRef": "John 4:13-14 (NKJV)",
+        "reflection": "Jesus met this woman at her lowest — ashamed, alone, avoiding others. He didn't condemn her. He offered her something that would satisfy forever. He meets you the same way — wherever you are, however you feel.",
+        "prayer": "Jesus, I've tried to fill my life with things that don't last. Be my living water. Satisfy the thirst that nothing else can. Amen."
+      },
+      {
+        "title": "The Good Shepherd",
+        "passage": "John 10:1-18",
+        "passageUrl": "https://www.bible.com/bible/114/JHN.10.NKJV",
+        "keyVerse": "I am the good shepherd. The good shepherd gives His life for the sheep.",
+        "keyVerseRef": "John 10:11 (NKJV)",
+        "reflection": "A hired hand runs when danger comes. But Jesus — the Good Shepherd — willingly laid down His life. Nobody took it from Him. He chose the cross because He chose you.",
+        "prayer": "Good Shepherd, thank You for not running when it cost You everything. Help me to hear Your voice and follow where You lead. Amen."
+      },
+      {
+        "title": "The Way",
+        "passage": "John 14:1-14",
+        "passageUrl": "https://www.bible.com/bible/114/JHN.14.NKJV",
+        "keyVerse": "Jesus said to him, 'I am the way, the truth, and the life. No one comes to the Father except through Me.'",
+        "keyVerseRef": "John 14:6 (NKJV)",
+        "reflection": "This is the most exclusive and the most inclusive claim ever made. Exclusive — there's only one way. Inclusive — anyone can take it. Jesus didn't say 'I'll show you the way.' He said 'I AM the way.'",
+        "prayer": "Lord, in a world of many voices and many paths, give me confidence that You are the way. Help me to trust You even when I don't understand. Amen."
+      },
+      {
+        "title": "The Vine",
+        "passage": "John 15:1-17",
+        "passageUrl": "https://www.bible.com/bible/114/JHN.15.NKJV",
+        "keyVerse": "I am the vine, you are the branches. He who abides in Me, and I in him, bears much fruit; for without Me you can do nothing.",
+        "keyVerseRef": "John 15:5 (NKJV)",
+        "reflection": "The Christian life isn't about trying harder. It's about staying connected. A branch doesn't strain to produce fruit — it just stays attached to the vine. Your job is to abide. Stay close. Read. Pray. Trust.",
+        "prayer": "Jesus, teach me what it means to abide in You — not to perform for You, but to remain in Your love and let You work through me. Amen."
+      },
+      {
+        "title": "Risen",
+        "passage": "John 20:1-31",
+        "passageUrl": "https://www.bible.com/bible/114/JHN.20.NKJV",
+        "keyVerse": "Jesus said to him, 'Thomas, because you have seen Me, you have believed. Blessed are those who have not seen and yet have believed.'",
+        "keyVerseRef": "John 20:29 (NKJV)",
+        "reflection": "Thomas doubted. Jesus didn't reject him — He showed up. If you have doubts, bring them to God. He's not afraid of your questions. The resurrection is the foundation of everything — if Jesus rose, then everything He said is true.",
+        "prayer": "Risen Lord, strengthen my faith. When doubts come, remind me that You are alive and that Your promises are sure. Help me to live boldly for You. Amen."
+      }
+    ]
+  },
   "meta": {
     "title": "Are You a Good Person? | Take the Test",
     "description": "Most people think they're good. Find out where you really stand."
