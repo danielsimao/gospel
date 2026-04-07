@@ -20,14 +20,16 @@ export function readProgress(): ReadingProgress {
   }
 }
 
-export function markDayRead(day: number): void {
-  if (typeof window === "undefined") return;
+export function markDayRead(day: number): boolean {
+  if (typeof window === "undefined") return false;
   try {
     const current = readProgress();
     current[String(day)] = true;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+    return true;
   } catch (error) {
     console.warn("[reading-storage] Failed to write progress:", error);
+    return false;
   }
 }
 

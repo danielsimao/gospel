@@ -57,7 +57,8 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
   }
 
   const handleMarkRead = useCallback((day: number) => {
-    markDayRead(day);
+    const success = markDayRead(day);
+    if (!success) return;
     setProgress(prev => {
       const updated = { ...prev, [String(day)]: true };
       const newCount = getCompletedCount(updated, totalDays);

@@ -17,6 +17,10 @@ export default async function ReadingPlanPage({ params }: Props) {
   const messages = await import(`@/messages/${locale}.json`);
   const data = messages.default;
 
+  if (!data.readingPlan) {
+    throw new Error(`[reading-plan] Missing "readingPlan" key in ${locale}.json`);
+  }
+
   return (
     <main className="min-h-dvh bg-[#060404] text-white">
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />

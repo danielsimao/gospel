@@ -15,9 +15,18 @@ export default async function NextStepsPage({ params, searchParams }: Props) {
   const messages = await import(`@/messages/${locale}.json`);
   const data = messages.default;
 
+  if (!data.nextSteps) {
+    throw new Error(`[next-steps] Missing "nextSteps" key in ${locale}.json`);
+  }
+
+  const resolvedTrack = track === "thinking" ? "thinking" as const : "prayed" as const;
+  if (track && track !== "prayed" && track !== "thinking") {
+    console.warn(`[next-steps] Unexpected track param: "${track}", defaulting to "prayed"`);
+  }
+
   return (
     <NextStepsClient
-      track={track === "thinking" ? "thinking" : "prayed"}
+      track={resolvedTrack}
       nextStepsMessages={data.nextSteps}
       shareMessages={data.share}
       locale={locale as Locale}
