@@ -216,32 +216,52 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
         id="eternity-cta"
         className="flex min-h-[80svh] flex-col items-center justify-center px-4 py-16 sm:px-6 sm:py-24"
       >
-        <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">{messages.cta.heading}</h2>
-        <p className="mt-2 text-xs tracking-wide text-white/40 sm:mt-3 sm:text-sm">{messages.cta.subtitle}</p>
+        {/* Glass hero card */}
+        <div className="w-full max-w-sm rounded-2xl border border-white/[0.08] bg-white/[0.02] px-6 py-10 text-center backdrop-blur-sm sm:max-w-md sm:px-10 sm:py-12">
+          <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            {messages.cta.heading.split(" ").map((word, i, arr) =>
+              i === arr.length - 1 ? (
+                <span key={i} className="text-[#D4A843]"> {word}</span>
+              ) : i === 0 ? (
+                <span key={i}>{word}</span>
+              ) : (
+                <span key={i}> {word}</span>
+              ),
+            )}
+          </h2>
+          <p className="mt-2 text-xs tracking-wide text-white/45 sm:text-sm">{messages.cta.subtitle}</p>
 
-        <div className="mt-8 flex w-full max-w-xs flex-col gap-3 sm:mt-10">
+          {/* Primary CTA */}
           <a
             href={`/${locale}/test`}
             onClick={() => trackEternityCtaClicked("test")}
-            className="group flex min-h-[48px] items-center justify-center rounded-lg border border-[#D4A843]/25 px-5 py-3.5 text-sm font-medium tracking-wide text-[#D4A843] transition-all duration-300 hover:border-[#D4A843]/50 hover:bg-[#D4A843]/[0.06] sm:min-h-[52px] sm:px-6 sm:py-4"
+            className="group mt-8 flex min-h-[52px] w-full items-center justify-center rounded-xl border border-[#D4A843]/30 px-6 py-4 text-[15px] font-semibold tracking-wide text-[#D4A843] transition-all duration-300 hover:border-[#D4A843]/50 hover:shadow-[0_0_32px_rgba(212,168,67,0.1)] sm:min-h-[56px]"
+            style={{
+              background: "linear-gradient(135deg, rgba(212,168,67,0.12) 0%, rgba(212,168,67,0.04) 100%)",
+            }}
           >
             {messages.cta.testCta}
             <span className="ml-2 transition-transform group-hover:translate-x-1">&rarr;</span>
           </a>
-          <a
-            href={`/${locale}/learn/who-is-jesus`}
-            onClick={() => trackEternityCtaClicked("resource", "learn")}
-            className="flex min-h-[44px] items-center justify-center rounded-lg border border-[#D4A843]/15 px-5 py-3 text-sm tracking-wide text-[#D4A843]/70 transition-all hover:border-[#D4A843]/30 hover:text-[#D4A843]"
-          >
-            {messages.cta.learnCta} &rarr;
-          </a>
-          <a
-            href={`/${locale}/reading-plan`}
-            onClick={() => trackEternityCtaClicked("resource", "reading-plan")}
-            className="flex min-h-[44px] items-center justify-center rounded-lg border border-white/[0.06] px-5 py-3 text-sm tracking-wide text-white/40 transition-all hover:border-white/[0.12] hover:text-white/60"
-          >
-            {messages.cta.readingPlanCta} &rarr;
-          </a>
+
+          {/* Secondary links */}
+          <div className="mt-5 flex items-center justify-center gap-6">
+            <a
+              href={`/${locale}/learn/who-is-jesus`}
+              onClick={() => trackEternityCtaClicked("resource", "learn")}
+              className="text-sm text-white/45 transition-colors hover:text-white/70"
+            >
+              {messages.cta.learnCta}
+            </a>
+            <span className="text-white/15">·</span>
+            <a
+              href={`/${locale}/reading-plan`}
+              onClick={() => trackEternityCtaClicked("resource", "reading-plan")}
+              className="text-sm text-white/45 transition-colors hover:text-white/70"
+            >
+              {messages.cta.readingPlanCta}
+            </a>
+          </div>
         </div>
 
         <ShareButtons messages={messages.share} locale={locale} />
