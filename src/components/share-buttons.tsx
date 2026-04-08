@@ -66,7 +66,7 @@ export function ShareButtons({ messages, locale, sharePath }: ShareButtonsProps)
   }
 
   return (
-    <div className="mt-8">
+    <div className="mt-8 text-center">
       <p className="text-sm text-white/40 mb-4">{messages.prompt}</p>
       <div className="flex items-center justify-center gap-4">
         <button
