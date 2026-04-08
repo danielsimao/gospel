@@ -34,7 +34,7 @@ export function StickyDeathCounter({ label, liveBadge }: StickyDeathCounterProps
         {/* Counter + label — truncate to prevent overflow */}
         <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
           <DeathCounter className="shrink-0 font-mono text-[13px] font-bold tabular-nums text-red-400 tracking-wider sm:text-sm" />
-          <span className="truncate text-[9px] tracking-wide text-white/25 sm:text-[10px] sm:tracking-widest">
+          <span className="truncate text-[9px] tracking-wide text-white/40 sm:text-[10px] sm:tracking-widest">
             {label}
           </span>
         </div>

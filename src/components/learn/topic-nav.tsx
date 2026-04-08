@@ -34,7 +34,7 @@ export function TopicNav({ slug, locale, prevLabel, nextLabel, prevTopic, nextTo
             onClick={() => trackTopicNavClicked(slug, "prev", locale)}
             className="text-sm text-white/40 transition-colors hover:text-white/60"
           >
-            <span className="block font-mono text-[10px] uppercase tracking-[2px] text-white/25">{prevLabel}</span>
+            <span className="block font-mono text-[10px] uppercase tracking-[2px] text-white/40">{prevLabel}</span>
             ← {prevTopic.title}
           </a>
         ) : (
@@ -46,7 +46,7 @@ export function TopicNav({ slug, locale, prevLabel, nextLabel, prevTopic, nextTo
             onClick={() => trackTopicNavClicked(slug, "next", locale)}
             className="text-right text-sm text-white/40 transition-colors hover:text-white/60"
           >
-            <span className="block font-mono text-[10px] uppercase tracking-[2px] text-white/25">{nextLabel}</span>
+            <span className="block font-mono text-[10px] uppercase tracking-[2px] text-white/40">{nextLabel}</span>
             {nextTopic.title} →
           </a>
         ) : (

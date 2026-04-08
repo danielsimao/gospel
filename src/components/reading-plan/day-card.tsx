@@ -64,7 +64,7 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
         <p className="text-sm italic leading-[1.8] text-white/50">
           &ldquo;{messages.keyVerse}&rdquo;
         </p>
-        <p className="mt-1 font-mono text-[9px] uppercase tracking-widest text-[#D4A843]/35">
+        <p className="mt-1 font-mono text-[9px] uppercase tracking-widest text-[#D4A843]/50">
           {messages.keyVerseRef}
         </p>
       </blockquote>
