@@ -28,7 +28,7 @@
     },
     "verdict": {
       "prelude": "The verdict",
-      "deathLineTemplate": "{count} people died while you answered these questions.",
+      "deathLineTemplate": "people died while you answered these questions.",
       "bridgeButton": "Is there any hope?",
       "confessionAdmitted": "A {list} — by your own admission.",
       "confessionDenied": "A {list} — by your evasions.",
@@ -122,13 +122,21 @@
     "scripture": "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.",
     "scriptureRef": "John 3:16 (NKJV)",
     "continueLabel": "Continue",
-    "label": "Grace"
+    "label": "Grace",
+    "beatsHeading": "But God\u2026",
+    "beats": [
+      "You're guilty. The fine is eternal.",
+      "Someone paid it in full.",
+      "Jesus Christ \u2014 God in flesh \u2014 lived the life you couldn't, died the death you deserved, and rose.",
+      "Turn from sin. Trust in Him. Live."
+    ],
+    "tapContinue": "Tap to continue"
   },
   "invitation": {
     "heading": "What will you do with this?",
-    "prayer": "God, I understand that I have broken Your Law and sinned against You. I am truly sorry. I believe that Jesus Christ died on the cross to pay the penalty for my sins and that He rose again. I turn from my sins and place my trust in Jesus Christ alone for my salvation. Thank You for Your mercy and forgiveness. In Jesus' name, Amen.",
+    "prayer": "Today you heard the verdict — you've broken God's Law, and the penalty is death. But you also heard the good news: Jesus Christ paid that fine in full on the cross and rose from the dead.\n\nThe Bible says, 'Repent, and believe in the gospel' (Mark 1:15, NKJV). That means two things:\n\nFirst, repent — turn away from your sin. Not just feel sorry about it, but make a decision to forsake it.\n\nSecond, trust in Jesus Christ — not in your own goodness, not in religion, not in a prayer — but in the One who died in your place and rose again.\n\nThink of it like this: if you're on a plane that's about to crash, you don't just 'believe' in the parachute — you put it on. Put on the Lord Jesus Christ. Turn from sin and trust in Him alone.",
     "responses": {
-      "prayed": "I prayed this prayer",
+      "prayed": "I will repent and trust in Christ",
       "thinking": "I want to think about it",
       "dismissed": "Not for me"
     },
@@ -149,7 +157,7 @@
     "dismissedReturn": "Changed your mind? The reading plan is always open.",
     "trackA": {
       "welcome": "Something just changed.",
-      "whatHappened": "You acknowledged that you've broken God's Law. You placed your trust in Jesus Christ — the One who paid the fine for your sins on the cross and rose from the dead.\n\nIf you meant that prayer sincerely, God has forgiven every sin you've ever committed and granted you eternal life. Not because you earned it — but because He loves you.\n\n\"Therefore, if anyone is in Christ, he is a new creation; old things have passed away; behold, all things have become new.\" — 2 Corinthians 5:17 (NKJV)",
+      "whatHappened": "You acknowledged that you've broken God's Law. And you've made the decision to repent — to turn from your sin — and to place your trust in Jesus Christ alone.\n\nIf you've genuinely repented and trusted in the Saviour, God has forgiven every sin you've ever committed and granted you eternal life. Not because you earned it — but because of what Christ did on the cross.\n\n\"Therefore, if anyone is in Christ, he is a new creation; old things have passed away; behold, all things have become new.\" — 2 Corinthians 5:17 (NKJV)",
       "readHeading": "Read",
       "readBody": "Start with the Gospel of John — it's the best place to meet Jesus for the first time. Or follow our 7-day reading plan.",
       "readLink": "https://www.bible.com/bible/114/JHN.1.NKJV",
@@ -433,6 +441,11 @@
     "title": "Are You a Good Person? | Take the Test",
     "description": "Most people think they're good. Find out where you really stand."
   },
+  "home": {
+    "provocativeQuestion": "If you died today, how would you stand before God?",
+    "ctaButton": "Face the court",
+    "secondaryLink": "Not ready? Learn more"
+  },
   "eternity": {
     "hero": {
       "label": "Today",
@@ -440,72 +453,7 @@
       "perSecond": "per second",
       "perMinute": "per minute",
       "perHour": "per hour",
-      "perDay": "per day",
-      "scroll": "Scroll"
-    },
-    "quiz": {
-      "heading": "Are you ready to face God?",
-      "subtitle": "Answer honestly.",
-      "yesLabel": "Yes, I have",
-      "noLabel": "No, never",
-      "questions": [
-        {
-          "question": "Have you ever told a lie?",
-          "yesResponse": "Even one lie. A \"white lie,\" an exaggeration, a half-truth.",
-          "noResponse": "Really? You've never told a single lie in your entire life? That itself might be one.",
-          "verdict": "That makes you a liar."
-        },
-        {
-          "question": "Have you ever stolen anything?",
-          "yesResponse": "Regardless of the value — a pen, someone's time, credit for someone else's work.",
-          "noResponse": "Never taken anything that wasn't yours? Not even something small? Think again.",
-          "verdict": "That makes you a thief."
-        },
-        {
-          "question": "Have you ever used God's name as a curse word?",
-          "yesResponse": "Instead of using a four-letter word, you used the name of the God who gave you life.",
-          "noResponse": "Perhaps not — but by two of the Ten Commandments, you've already admitted guilt.",
-          "verdict": "That makes you a blasphemer."
-        }
-      ],
-      "guiltyTitle": "Guilty",
-      "guiltyDesc": "By your own admission, you are a lying, thieving blasphemer.",
-      "scripture": "For whoever keeps the whole law and yet stumbles at just one point is guilty of breaking all of it.",
-      "scriptureRef": "James 2:10",
-      "deathsDuring": "{count} people died while you answered these questions.",
-      "bridgeButton": "Is there any hope?",
-      "caseLabel": "Case",
-      "questionLabel": "Question",
-      "answeredLabel": "Answered",
-      "nextLabel": "Next",
-      "chipGuilty": "guilty",
-      "chipDenied": "denied"
-    },
-    "grace": {
-      "heading": "But God…",
-      "beats": [
-        "You're guilty. The fine is eternal.",
-        "Someone paid it in full.",
-        "Jesus Christ — God in flesh — lived the life you couldn't, died the death you deserved, and rose.",
-        "Turn from sin. Trust in Him. Live."
-      ],
-      "tapContinue": "Tap to continue",
-      "scripture": "But God demonstrates His own love for us in this: While we were still sinners, Christ died for us.",
-      "scriptureRef": "Romans 5:8",
-      "testCta": "Take the test"
-    },
-    "cta": {
-      "heading": "What will you do?",
-      "subtitle": "The counter is still ticking.",
-      "testCta": "Take the Good Person Test",
-      "learnCta": "Learn more",
-      "readingPlanCta": "Start the reading plan"
-    },
-    "share": {
-      "prompt": "Share this with someone",
-      "whatsappMessage": "How many people have died since you opened this page? Find out:",
-      "telegramMessage": "How many people have died since you opened this page? Find out:",
-      "linkCopied": "Link copied!"
+      "perDay": "per day"
     },
     "counter": {
       "label": "people have died since you opened this page",

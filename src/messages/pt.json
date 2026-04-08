@@ -28,7 +28,7 @@
     },
     "verdict": {
       "prelude": "O veredicto",
-      "deathLineTemplate": "{count} pessoas morreram enquanto respondias a estas perguntas.",
+      "deathLineTemplate": "pessoas morreram enquanto respondias a estas perguntas.",
       "bridgeButton": "Ha alguma esperanca?",
       "confessionAdmitted": "Um {list} — pela tua propria confissao.",
       "confessionDenied": "Um {list} — pelas tuas evasivas.",
@@ -122,15 +122,23 @@
     "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigenito, para que todo aquele que nele cre nao pereca, mas tenha a vida eterna.",
     "scriptureRef": "Joao 3:16 (ACF)",
     "continueLabel": "Continuar",
-    "label": "Graca"
+    "label": "Graca",
+    "beatsHeading": "Mas Deus\u2026",
+    "beats": [
+      "\u00c9s culpado. A multa \u00e9 eterna.",
+      "Algu\u00e9m a pagou na totalidade.",
+      "Jesus Cristo \u2014 Deus em carne \u2014 viveu a vida que n\u00e3o conseguiste, morreu a morte que merecias, e ressuscitou.",
+      "Abandona o pecado. Confia n'Ele. Vive."
+    ],
+    "tapContinue": "Toca para continuar"
   },
   "invitation": {
     "heading": "O que vais fazer com isto?",
-    "prayer": "Deus, eu entendo que quebrei a Tua Lei e pequei contra Ti. Estou verdadeiramente arrependido. Creio que Jesus Cristo morreu na cruz para pagar a pena pelos meus pecados e que ressuscitou. Eu abandono os meus pecados e coloco a minha confianca somente em Jesus Cristo para a minha salvacao. Obrigado pela Tua misericordia e perdao. Em nome de Jesus, Amen.",
+    "prayer": "Hoje ouviste o veredicto — quebraste a Lei de Deus, e a pena é a morte. Mas também ouviste as boas novas: Jesus Cristo pagou essa multa na totalidade na cruz e ressuscitou dos mortos.\n\nA Bíblia diz: «Arrependei-vos e crede no Evangelho» (Marcos 1:15, ACF). Isso significa duas coisas:\n\nPrimeiro, arrepende-te — abandona o teu pecado. Não apenas sentir pena, mas tomar a decisão de o deixar.\n\nSegundo, confia em Jesus Cristo — não na tua bondade, não na religião, não numa oração — mas n'Aquele que morreu no teu lugar e ressuscitou.\n\nPensa assim: se estás num avião prestes a cair, não basta «acreditar» no paraquedas — tens de o vestir. Veste o Senhor Jesus Cristo. Abandona o pecado e confia só n'Ele.",
     "responses": {
-      "prayed": "Eu fiz esta oracao",
+      "prayed": "Vou arrepender-me e confiar em Cristo",
       "thinking": "Quero pensar sobre isto",
-      "dismissed": "Nao e para mim"
+      "dismissed": "Não é para mim"
     },
     "resources": [
       { "name": "Saber mais em Living Waters", "url": "https://livingwaters.com/" },
@@ -149,7 +157,7 @@
     "dismissedReturn": "Mudaste de ideias? O plano de leitura está sempre aberto.",
     "trackA": {
       "welcome": "Algo acabou de mudar.",
-      "whatHappened": "Reconheceste que quebraste a Lei de Deus. Colocaste a tua confiança em Jesus Cristo — Aquele que pagou a multa pelos teus pecados na cruz e ressuscitou dos mortos.\n\nSe fizeste essa oração com sinceridade, Deus perdoou todos os pecados que alguma vez cometeste e concedeu-te a vida eterna. Não porque o mereceste — mas porque Ele te ama.\n\n\"Assim que, se alguém está em Cristo, nova criatura é; as coisas velhas já passaram; eis que tudo se fez novo.\" — 2 Coríntios 5:17 (ACF)",
+      "whatHappened": "Reconheceste que quebraste a Lei de Deus. E tomaste a decisão de te arrepender — de abandonar o teu pecado — e de colocar a tua confiança somente em Jesus Cristo.\n\nSe te arrependeste genuinamente e confiaste no Salvador, Deus perdoou todos os pecados que alguma vez cometeste e concedeu-te a vida eterna. Não porque o mereceste — mas por causa do que Cristo fez na cruz.\n\n\"Assim que, se alguém está em Cristo, nova criatura é; as coisas velhas já passaram; eis que tudo se fez novo.\" — 2 Coríntios 5:17 (ACF)",
       "readHeading": "Lê",
       "readBody": "Começa pelo Evangelho de João — é o melhor lugar para conhecer Jesus pela primeira vez. Ou segue o nosso plano de leitura de 7 dias.",
       "readLink": "https://www.bible.com/bible/212/JHN.1.ARC",
@@ -433,6 +441,11 @@
     "title": "Tu es uma Boa Pessoa? | Faz o Teste",
     "description": "A maioria das pessoas pensa que e boa. Descobre onde realmente estas."
   },
+  "home": {
+    "provocativeQuestion": "Se morresses hoje, como estarias perante Deus?",
+    "ctaButton": "Enfrenta o tribunal",
+    "secondaryLink": "Ainda não? Sabe mais"
+  },
   "eternity": {
     "hero": {
       "label": "Hoje",
@@ -440,72 +453,7 @@
       "perSecond": "por segundo",
       "perMinute": "por minuto",
       "perHour": "por hora",
-      "perDay": "por dia",
-      "scroll": "Desce"
-    },
-    "quiz": {
-      "heading": "Estas preparado para enfrentar Deus?",
-      "subtitle": "Responde honestamente.",
-      "yesLabel": "Sim, ja fiz",
-      "noLabel": "Nao, nunca",
-      "questions": [
-        {
-          "question": "Alguma vez disseste uma mentira?",
-          "yesResponse": "Mesmo uma so. Uma \"mentira piedosa,\" um exagero, uma meia-verdade.",
-          "noResponse": "A serio? Nunca disseste uma unica mentira em toda a tua vida? Isso em si pode ser uma.",
-          "verdict": "Isso faz de ti um mentiroso."
-        },
-        {
-          "question": "Alguma vez roubaste alguma coisa?",
-          "yesResponse": "Independentemente do valor — uma caneta, o tempo de alguem, o credito pelo trabalho de outra pessoa.",
-          "noResponse": "Nunca tiraste nada que nao fosse teu? Nem algo pequeno? Pensa de novo.",
-          "verdict": "Isso faz de ti um ladrao."
-        },
-        {
-          "question": "Alguma vez usaste o nome de Deus como palavrao?",
-          "yesResponse": "Em vez de usar um palavrao qualquer, usaste o nome do Deus que te deu a vida.",
-          "noResponse": "Talvez nao — mas por dois dos Dez Mandamentos, ja admitiste a tua culpa.",
-          "verdict": "Isso faz de ti um blasfemador."
-        }
-      ],
-      "guiltyTitle": "Culpado",
-      "guiltyDesc": "Pela tua propria admissao, es um mentiroso, ladrao e blasfemador.",
-      "scripture": "Porque qualquer que guardar toda a lei, e tropecar num so ponto, tornou-se culpado de todos.",
-      "scriptureRef": "Tiago 2:10 (ACF)",
-      "deathsDuring": "{count} pessoas morreram enquanto respondias a estas perguntas.",
-      "bridgeButton": "Ha alguma esperanca?",
-      "caseLabel": "Caso",
-      "questionLabel": "Pergunta",
-      "answeredLabel": "Respondido",
-      "nextLabel": "Seguinte",
-      "chipGuilty": "culpado",
-      "chipDenied": "negou"
-    },
-    "grace": {
-      "heading": "Mas Deus…",
-      "beats": [
-        "És culpado. A multa é eterna.",
-        "Alguém a pagou na totalidade.",
-        "Jesus Cristo — Deus em carne — viveu a vida que não conseguiste, morreu a morte que merecias, e ressuscitou.",
-        "Abandona o pecado. Confia n'Ele. Vive."
-      ],
-      "tapContinue": "Toca para continuar",
-      "scripture": "Mas Deus prova o seu amor para connosco, em que Cristo morreu por nós, sendo nós ainda pecadores.",
-      "scriptureRef": "Romanos 5:8 (ACF)",
-      "testCta": "Faz o teste"
-    },
-    "cta": {
-      "heading": "O que vais fazer?",
-      "subtitle": "O contador continua a contar.",
-      "testCta": "Faz o Teste da Boa Pessoa",
-      "learnCta": "Saber mais",
-      "readingPlanCta": "Começar o plano de leitura"
-    },
-    "share": {
-      "prompt": "Partilha com alguem",
-      "whatsappMessage": "Quantas pessoas morreram desde que abriste esta pagina? Descobre:",
-      "telegramMessage": "Quantas pessoas morreram desde que abriste esta pagina? Descobre:",
-      "linkCopied": "Link copiado!"
+      "perDay": "por dia"
     },
     "counter": {
       "label": "pessoas morreram desde que abriste esta pagina",

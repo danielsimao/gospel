@@ -58,15 +58,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "ADVANCE_AFTER_FOLLOWUP": {
       if (state.phase !== "playing") return state;
 
-      // Skip over questions already in state.answers (hydrated from mini quiz)
-      const answeredIds = new Set(state.answers.map((a) => a.questionId));
-      let nextQuestion = state.currentQuestion + 1;
-      while (
-        nextQuestion < TOTAL_QUESTIONS &&
-        answeredIds.has(QUESTION_CONFIGS[nextQuestion].id)
-      ) {
-        nextQuestion++;
-      }
+      const nextQuestion = state.currentQuestion + 1;
 
       if (nextQuestion >= TOTAL_QUESTIONS) {
         return {
@@ -112,48 +104,6 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         invitationResponse: action.response,
       };
-
-    case "HYDRATE_ANSWERS": {
-      if (state.phase !== "landing") return state;
-
-      let score = INITIAL_SCORE;
-      const hydratedAnswers = action.answers.map((a) => {
-        const config = QUESTION_CONFIGS.find((c) => c.id === a.questionId);
-        const drain = config
-          ? a.answer === "honest"
-            ? config.honestDrain
-            : config.justifyDrain
-          : 0;
-        score = Math.max(0, score - drain);
-        return {
-          questionId: a.questionId,
-          answer: a.answer,
-          commandment: config?.commandment ?? "",
-          scoreChange: -drain,
-          timeOnQuestion: 0,
-        };
-      });
-
-      const answeredIds = new Set(action.answers.map((a) => a.questionId));
-      let startQuestion = 0;
-      for (let i = 0; i < QUESTION_CONFIGS.length; i++) {
-        if (!answeredIds.has(QUESTION_CONFIGS[i].id)) {
-          startQuestion = i;
-          break;
-        }
-        startQuestion = i + 1;
-      }
-
-      return {
-        ...state,
-        phase: "playing",
-        score,
-        answers: hydratedAnswers,
-        currentQuestion: Math.min(startQuestion, TOTAL_QUESTIONS),
-        startedAt: Date.now(),
-        questionStartedAt: Date.now(),
-      };
-    }
 
     default: {
       const _exhaustive: never = action;

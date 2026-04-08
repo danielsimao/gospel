@@ -1,14 +1,24 @@
 import { notFound } from "next/navigation";
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
-import { EternityShell } from "@/components/eternity/eternity-shell";
-import type { EternityMessages } from "@/components/eternity/eternity-shell";
+import { HomeShell } from "@/components/home-shell";
+import type { HomeMessages } from "@/lib/types";
 import type { Metadata } from "next";
 
 type Props = {
   params: Promise<{ locale: string }>;
 };
 
-interface EternityJson extends EternityMessages {
+interface HomeData {
+  hero: {
+    label: string;
+    suffix: string;
+    perSecond: string;
+    perMinute: string;
+    perHour: string;
+    perDay: string;
+  };
+  counter: { label: string; liveBadge: string };
+  home: HomeMessages;
   meta: { title: string; description: string };
 }
 
@@ -16,15 +26,21 @@ export function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
 }
 
-async function getEternityData(locale: Locale): Promise<EternityJson> {
+async function getHomeData(locale: Locale): Promise<HomeData> {
   const messages = await import(`@/messages/${locale}.json`);
-  return messages.default.eternity as EternityJson;
+  const data = messages.default;
+  return {
+    hero: data.eternity.hero,
+    counter: data.eternity.counter,
+    home: data.home,
+    meta: data.eternity.meta,
+  };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   if (!isValidLocale(locale)) return {};
-  const data = await getEternityData(locale as Locale);
+  const data = await getHomeData(locale as Locale);
 
   return {
     title: data.meta.title,
@@ -40,7 +56,14 @@ export default async function HomePage({ params }: Props) {
   const { locale } = await params;
   if (!isValidLocale(locale)) notFound();
 
-  const data = await getEternityData(locale as Locale);
+  const data = await getHomeData(locale as Locale);
 
-  return <EternityShell messages={data} locale={locale as Locale} />;
+  return (
+    <HomeShell
+      hero={data.hero}
+      counter={data.counter}
+      home={data.home}
+      locale={locale as Locale}
+    />
+  );
 }

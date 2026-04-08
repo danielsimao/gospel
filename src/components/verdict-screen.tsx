@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useGameDispatch } from "@/components/game-provider";
 import { trackVerdictReached } from "@/lib/analytics";
 import { buildConfession } from "@/lib/confession";
@@ -88,61 +88,50 @@ export function VerdictScreen({
           {messages.title.replace(/\.$/, "")}
         </motion.p>
 
-        {/* Dynamic confession prose */}
-        <AnimatePresence>
-          {showConfession && (
-            <motion.p
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="mt-5 max-w-sm text-sm leading-relaxed text-white/55"
-            >
-              {confession}
-            </motion.p>
-          )}
-        </AnimatePresence>
+        {/* Dynamic confession prose — always in DOM, opacity animated */}
+        <motion.p
+          initial={false}
+          animate={{ opacity: showConfession ? 1 : 0 }}
+          transition={{ duration: 0.8 }}
+          className="mt-5 max-w-sm text-sm leading-relaxed text-white/55"
+          aria-hidden={!showConfession}
+        >
+          {confession}
+        </motion.p>
 
-        {/* Death line */}
-        <AnimatePresence>
-          {showDeathLine && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              className="mt-8 w-full max-w-xs border-t border-b border-red-500/15 py-5 sm:max-w-sm"
-            >
-              <p className="font-mono text-3xl font-extrabold tabular-nums text-red-500 sm:text-4xl">
-                {deathCount.toLocaleString()}
-              </p>
-              <p className="mt-2 text-[11px] italic leading-relaxed text-white/40 sm:text-xs">
-                {testMessages.verdict.deathLineTemplate.replace(
-                  "{count}",
-                  deathCount.toLocaleString(),
-                )}
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Death line — always in DOM, opacity animated */}
+        <motion.div
+          initial={false}
+          animate={{ opacity: showDeathLine ? 1 : 0 }}
+          transition={{ duration: 0.8 }}
+          className="mt-8 w-full max-w-xs border-t border-b border-red-500/15 py-5 sm:max-w-sm"
+          aria-hidden={!showDeathLine}
+        >
+          <p className="font-mono text-3xl font-extrabold tabular-nums text-red-500 sm:text-4xl">
+            {deathCount.toLocaleString()}
+          </p>
+          <p className="mt-2 text-[11px] italic leading-relaxed text-white/40 sm:text-xs">
+            {testMessages.verdict.deathLineTemplate}
+          </p>
+        </motion.div>
 
-        {/* Bridge button */}
-        <AnimatePresence>
-          {showBridge && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              className="mt-8"
-            >
-              <button
-                onClick={handleBridgeClick}
-                className="rounded-xl border border-[#D4A843]/25 px-7 py-3.5 text-sm font-medium tracking-wide text-[#D4A843]/80 transition-all duration-500 hover:border-[#D4A843]/50 hover:bg-[#D4A843]/[0.06] hover:text-[#D4A843] min-h-[48px]"
-                style={{ animation: "eternity-gentle-pulse 3s ease-in-out infinite" }}
-              >
-                {testMessages.verdict.bridgeButton} &darr;
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Bridge button — always in DOM, opacity animated */}
+        <motion.div
+          initial={false}
+          animate={{ opacity: showBridge ? 1 : 0 }}
+          transition={{ duration: 0.8 }}
+          className="mt-8"
+          aria-hidden={!showBridge}
+        >
+          <button
+            onClick={handleBridgeClick}
+            disabled={!showBridge}
+            className="rounded-xl border border-[#D4A843]/25 px-7 py-3.5 text-sm font-medium tracking-wide text-[#D4A843]/80 transition-all duration-500 hover:border-[#D4A843]/50 hover:bg-[#D4A843]/[0.06] hover:text-[#D4A843] min-h-[48px]"
+            style={{ animation: showBridge ? "eternity-gentle-pulse 3s ease-in-out infinite" : "none" }}
+          >
+            {testMessages.verdict.bridgeButton} &darr;
+          </button>
+        </motion.div>
       </div>
     </div>
   );

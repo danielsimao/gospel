@@ -22,7 +22,7 @@ export function TopBarWrapper({ locale, homeLabel }: TopBarWrapperProps) {
   if (hidden) return null;
   return (
     <>
-      <TopBar locale={locale} homeLabel={homeLabel} />
+      <TopBar locale={locale} homeLabel={homeLabel} currentPath={pathname} />
       {/* Spacer to push content below the fixed bar */}
       <div className="h-10" />
     </>

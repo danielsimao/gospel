@@ -43,8 +43,13 @@ export type GameAction =
   | { type: "SHOW_VERDICT" }
   | { type: "SHOW_GRACE" }
   | { type: "SHOW_INVITATION" }
-  | { type: "SET_INVITATION_RESPONSE"; response: InvitationResponse }
-  | { type: "HYDRATE_ANSWERS"; answers: Array<{ questionId: number; answer: AnswerType }> };
+  | { type: "SET_INVITATION_RESPONSE"; response: InvitationResponse };
+
+export interface HomeMessages {
+  provocativeQuestion: string;
+  ctaButton: string;
+  secondaryLink: string;
+}
 
 export interface TestMessages {
   caseLabel: string;
@@ -84,7 +89,17 @@ export interface Messages {
     honestFollowUp: string;
   }>;
   verdict: { title: string; subtitle: string };
-  grace: { heading: string; body: string; scripture: string; scriptureRef: string; continueLabel: string; label: string };
+  grace: {
+    heading: string;
+    body: string;
+    scripture: string;
+    scriptureRef: string;
+    continueLabel: string;
+    label: string;
+    beatsHeading: string;
+    beats: [string, string, string, string];
+    tapContinue: string;
+  };
   invitation: {
     heading: string;
     prayer: string;

@@ -5,10 +5,15 @@ import type { Locale } from "@/lib/i18n";
 interface TopBarProps {
   locale: Locale;
   homeLabel: string;
+  currentPath: string;
 }
 
-export function TopBar({ locale, homeLabel }: TopBarProps) {
+export function TopBar({ locale, homeLabel, currentPath }: TopBarProps) {
   const otherLocale = locale === "en" ? "pt" : "en";
+  const otherLocalePath = currentPath.replace(
+    new RegExp(`^/${locale}(?=/|$)`),
+    `/${otherLocale}`,
+  );
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 border-b border-white/[0.04] bg-[#060404]/90 backdrop-blur-md">
@@ -28,11 +33,11 @@ export function TopBar({ locale, homeLabel }: TopBarProps) {
             <>
               <span className="font-bold text-white/50">EN</span>
               <span className="text-white/15">·</span>
-              <a href={`/${otherLocale}`} className="text-white/30 transition-colors hover:text-white/55">PT</a>
+              <a href={otherLocalePath} className="text-white/30 transition-colors hover:text-white/55">PT</a>
             </>
           ) : (
             <>
-              <a href={`/${otherLocale}`} className="text-white/30 transition-colors hover:text-white/55">EN</a>
+              <a href={otherLocalePath} className="text-white/30 transition-colors hover:text-white/55">EN</a>
               <span className="text-white/15">·</span>
               <span className="font-bold text-white/50">PT</span>
             </>

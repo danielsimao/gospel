@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useGameDispatch } from "@/components/game-provider";
 import { trackGraceViewed } from "@/lib/analytics";
+import {
+  trackGraceRevealed,
+  trackGraceBeatRevealed,
+} from "@/lib/eternity-analytics";
 
 interface GraceScreenProps {
   messages: {
@@ -13,6 +17,9 @@ interface GraceScreenProps {
     scriptureRef: string;
     continueLabel: string;
     label: string;
+    beatsHeading: string;
+    beats: [string, string, string, string];
+    tapContinue: string;
   };
 }
 
@@ -21,6 +28,11 @@ export function GraceScreen({ messages }: GraceScreenProps) {
   const startTime = useRef(Date.now());
   const maxScrollDepth = useRef(0);
 
+  const [revealedCount, setRevealedCount] = useState(0);
+  const allBeatsRevealed = revealedCount >= messages.beats.length;
+  const [showBody, setShowBody] = useState(false);
+
+  // Track scroll depth + time
   useEffect(() => {
     function handleScroll() {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
@@ -36,6 +48,30 @@ export function GraceScreen({ messages }: GraceScreenProps) {
       trackGraceViewed(Date.now() - start, maxDepth.current);
     };
   }, []);
+
+  // Track grace phase entry + auto-reveal beat 1
+  useEffect(() => {
+    trackGraceRevealed();
+    const timer = setTimeout(() => {
+      setRevealedCount(1);
+      trackGraceBeatRevealed(0);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Show body after all beats revealed
+  useEffect(() => {
+    if (!allBeatsRevealed) return;
+    const timer = setTimeout(() => setShowBody(true), 800);
+    return () => clearTimeout(timer);
+  }, [allBeatsRevealed]);
+
+  const handleTapContinue = useCallback(() => {
+    if (revealedCount >= messages.beats.length) return;
+    const nextBeat = revealedCount;
+    trackGraceBeatRevealed(nextBeat);
+    setRevealedCount(nextBeat + 1);
+  }, [revealedCount, messages.beats.length]);
 
   function handleContinue() {
     dispatch({ type: "SHOW_INVITATION" });
@@ -71,7 +107,9 @@ export function GraceScreen({ messages }: GraceScreenProps) {
             <span className="h-px w-6 bg-[#D4A843]/40" />
           </motion.div>
 
-          {/* Heading */}
+          {/* === Movement 1: Beats === */}
+
+          {/* Beats heading */}
           <motion.h2
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -79,53 +117,122 @@ export function GraceScreen({ messages }: GraceScreenProps) {
             className="text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl md:text-5xl"
             style={{ textShadow: "0 0 60px rgba(212,168,67,0.2)" }}
           >
-            {messages.heading}
+            {messages.beatsHeading}
           </motion.h2>
 
-          {/* Body paragraphs */}
-          <div className="mt-8 space-y-5 text-left">
-            {paragraphs.map((paragraph, i) => (
-              <motion.p
-                key={i}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.9 + i * 0.3 }}
-                className="text-[15px] leading-[1.8] text-white/65 sm:text-base"
-              >
-                {paragraph}
-              </motion.p>
-            ))}
+          {/* Beats */}
+          <div className="mt-10 text-left">
+            {messages.beats.map((text, i) => {
+              const isRevealed = i < revealedCount;
+              const isActive = i === revealedCount - 1;
+              const isGold = i === 2 || i === 3;
+
+              if (!isRevealed) return null;
+
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{
+                    opacity: isActive ? 1 : 0.32,
+                    y: 0,
+                  }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="border-t border-white/[0.04] py-4 first:border-t-0 first:pt-0"
+                >
+                  <p className="mb-2 font-mono text-[8px] uppercase tracking-[2.5px] text-[#D4A843]/45">
+                    {["I", "II", "III", "IV"][i]}
+                  </p>
+                  <p
+                    className={`text-lg font-semibold leading-snug sm:text-xl ${
+                      isGold ? "text-[#D4A843]" : "text-white/95"
+                    }`}
+                  >
+                    {text}
+                  </p>
+                </motion.div>
+              );
+            })}
           </div>
 
-          {/* Scripture */}
-          <motion.blockquote
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.9 + paragraphs.length * 0.3 }}
-            className="mt-8 border-l border-[#D4A843]/30 pl-4 text-left"
-          >
-            <p className="text-[15px] italic leading-[1.8] text-white/60 sm:text-base">
-              &ldquo;{messages.scripture}&rdquo;
-            </p>
-            <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-[#D4A843]/50">
-              {messages.scriptureRef}
-            </p>
-          </motion.blockquote>
+          {/* Tap to continue pill */}
+          <AnimatePresence>
+            {revealedCount > 0 && !allBeatsRevealed && (
+              <motion.button
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.4, delay: 0.6 }}
+                onClick={handleTapContinue}
+                className="mx-auto mt-6 flex items-center justify-center gap-2 rounded-lg border border-[#D4A843]/22 px-6 py-3 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70 transition-all hover:border-[#D4A843]/40 hover:bg-[#D4A843]/[0.05] min-h-[48px]"
+                style={{
+                  animation: "eternity-gentle-pulse 2.4s ease-in-out infinite",
+                }}
+              >
+                {messages.tapContinue}{" "}
+                <span aria-hidden="true">&darr;</span>
+              </motion.button>
+            )}
+          </AnimatePresence>
 
-          {/* Continue button */}
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{
-              duration: 0.8,
-              delay: 0.9 + paragraphs.length * 0.3 + 0.6,
-            }}
-            onClick={handleContinue}
-            whileTap={{ scale: 0.97 }}
-            className="mt-10 rounded-xl border border-[#D4A843]/30 px-7 py-3.5 text-sm font-medium tracking-wide text-[#D4A843] transition-all duration-300 hover:border-[#D4A843]/60 hover:bg-[#D4A843]/[0.06] min-h-[48px]"
-          >
-            {messages.continueLabel} &rarr;
-          </motion.button>
+          {/* === Movement 2: Body + Scripture + Continue === */}
+          <AnimatePresence>
+            {showBody && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+              >
+                {/* Body paragraphs */}
+                <div className="mt-10 space-y-5 text-left">
+                  {paragraphs.map((paragraph, i) => (
+                    <motion.p
+                      key={i}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.8, delay: i * 0.3 }}
+                      className="text-[15px] leading-[1.8] text-white/65 sm:text-base"
+                    >
+                      {paragraph}
+                    </motion.p>
+                  ))}
+                </div>
+
+                {/* Scripture */}
+                <motion.blockquote
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.8,
+                    delay: paragraphs.length * 0.3,
+                  }}
+                  className="mt-8 border-l border-[#D4A843]/30 pl-4 text-left"
+                >
+                  <p className="text-[15px] italic leading-[1.8] text-white/60 sm:text-base">
+                    &ldquo;{messages.scripture}&rdquo;
+                  </p>
+                  <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-[#D4A843]/50">
+                    {messages.scriptureRef}
+                  </p>
+                </motion.blockquote>
+
+                {/* Continue button */}
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{
+                    duration: 0.8,
+                    delay: paragraphs.length * 0.3 + 0.6,
+                  }}
+                  onClick={handleContinue}
+                  whileTap={{ scale: 0.97 }}
+                  className="mt-10 rounded-xl border border-[#D4A843]/30 px-7 py-3.5 text-sm font-medium tracking-wide text-[#D4A843] transition-all duration-300 hover:border-[#D4A843]/60 hover:bg-[#D4A843]/[0.06] min-h-[48px]"
+                >
+                  {messages.continueLabel} &rarr;
+                </motion.button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>

@@ -47,17 +47,26 @@ export function QuestionCard({
 }: QuestionCardProps) {
   const dispatch = useGameDispatch();
   const state = useGameState();
-  const [answered, setAnswered] = useState<AnswerType | null>(null);
-  const [showFollowUp, setShowFollowUp] = useState(false);
+  const [cardState, setCardState] = useState<{
+    questionIndex: number;
+    answered: AnswerType | null;
+    showFollowUp: boolean;
+  }>({
+    questionIndex,
+    answered: null,
+    showFollowUp: false,
+  });
   const timersRef = useRef<NodeJS.Timeout[]>([]);
+  const answered =
+    cardState.questionIndex === questionIndex ? cardState.answered : null;
+  const showFollowUp =
+    cardState.questionIndex === questionIndex ? cardState.showFollowUp : false;
 
   const advance = useCallback(() => {
     dispatch({ type: "ADVANCE_AFTER_FOLLOWUP" });
   }, [dispatch]);
 
   useEffect(() => {
-    setAnswered(null);
-    setShowFollowUp(false);
     const timers = timersRef.current;
     return () => {
       timers.forEach(clearTimeout);
@@ -68,7 +77,11 @@ export function QuestionCard({
   function handleAnswer(answer: AnswerType) {
     if (answered) return;
 
-    setAnswered(answer);
+    setCardState({
+      questionIndex,
+      answered: answer,
+      showFollowUp: false,
+    });
     dispatch({ type: "ANSWER_QUESTION", answer });
 
     const config = QUESTION_CONFIGS[questionIndex];
@@ -88,7 +101,11 @@ export function QuestionCard({
     if (answer === "justify") {
       timersRef.current.push(
         setTimeout(() => {
-          setShowFollowUp(true);
+          setCardState((currentState) =>
+            currentState.questionIndex === questionIndex
+              ? { ...currentState, showFollowUp: true }
+              : currentState,
+          );
           trackFollowupShown(question.id);
         }, 600),
       );
@@ -102,6 +119,7 @@ export function QuestionCard({
   const ordinal = config?.commandment ?? "";
   const roman = COMMANDMENT_ROMAN[ordinal] ?? ordinal;
   const isLastQuestion = questionIndex >= TOTAL_QUESTIONS - 1;
+  const canShowVerdictShortcut = state.answers.length >= 3 && !isLastQuestion;
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-4 py-6 sm:px-6">
@@ -176,30 +194,51 @@ export function QuestionCard({
                 {/* Buttons */}
                 <AnimatePresence mode="wait">
                   {!answered ? (
-                    <motion.div
-                      key="buttons"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="mt-5 flex gap-2"
-                    >
-                      <button
-                        onClick={() => handleAnswer("honest")}
-                        className="group relative flex-1 overflow-hidden rounded-xl border border-red-700/40 bg-red-950/40 px-4 py-3 text-sm font-semibold tracking-wide text-red-300 transition-all duration-300 hover:border-red-600/60 hover:bg-red-900/40 min-h-[48px]"
+                    <>
+                      <motion.div
+                        key="buttons"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="mt-5 flex gap-2"
                       >
-                        <span className="relative z-10">
-                          {question.honestLabel}
-                        </span>
-                        <span className="absolute inset-0 bg-gradient-to-r from-red-900/0 via-red-700/20 to-red-900/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                      </button>
-                      <button
-                        onClick={() => handleAnswer("justify")}
-                        className="flex-1 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 text-sm font-medium tracking-wide text-white/50 transition-all hover:border-white/15 hover:bg-white/[0.04] hover:text-white/70 min-h-[48px]"
-                      >
-                        {question.justifyLabel}
-                      </button>
-                    </motion.div>
+                        <button
+                          onClick={() => handleAnswer("honest")}
+                          className="group relative flex-1 overflow-hidden rounded-xl border border-red-700/40 bg-red-950/40 px-4 py-3 text-sm font-semibold tracking-wide text-red-300 transition-all duration-300 hover:border-red-600/60 hover:bg-red-900/40 min-h-[48px]"
+                        >
+                          <span className="relative z-10">
+                            {question.honestLabel}
+                          </span>
+                          <span className="absolute inset-0 bg-gradient-to-r from-red-900/0 via-red-700/20 to-red-900/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                        </button>
+                        <button
+                          onClick={() => handleAnswer("justify")}
+                          className="flex-1 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 text-sm font-medium tracking-wide text-white/50 transition-all hover:border-white/15 hover:bg-white/[0.04] hover:text-white/70 min-h-[48px]"
+                        >
+                          {question.justifyLabel}
+                        </button>
+                      </motion.div>
+                      {canShowVerdictShortcut && (
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.3, delay: 0.1 }}
+                          className="mt-3 flex justify-end"
+                        >
+                          <button
+                            onClick={() => dispatch({ type: "SHOW_VERDICT" })}
+                            className="group flex items-center gap-1.5 rounded-xl border border-red-900/25 bg-red-950/15 px-3 py-2.5 transition-all hover:border-red-700/40 hover:bg-red-950/30 min-h-[44px]"
+                          >
+                            <span className="h-1.5 w-1.5 rounded-full bg-red-500/60 transition-colors group-hover:bg-red-500" />
+                            <span className="font-mono text-[10px] uppercase tracking-[1.5px] text-red-400/70 transition-colors group-hover:text-red-300">
+                              {testMessages.seeVerdictLabel}
+                            </span>
+                          </button>
+                        </motion.div>
+                      )}
+                    </>
                   ) : (
                     <motion.div
                       key="response"
@@ -262,7 +301,7 @@ export function QuestionCard({
                             &rarr;
                           </span>
                         </button>
-                        {questionIndex >= 3 && !isLastQuestion && (
+                        {canShowVerdictShortcut && (
                           <button
                             onClick={() => dispatch({ type: "SHOW_VERDICT" })}
                             className="group flex items-center gap-1.5 rounded-xl border border-red-900/25 bg-red-950/15 px-3 py-2.5 transition-all hover:border-red-700/40 hover:bg-red-950/30 min-h-[44px]"
