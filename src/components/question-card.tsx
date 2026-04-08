@@ -248,13 +248,17 @@ export function QuestionCard({
         {/* Skip to verdict — visible after 3 questions */}
         {questionIndex >= 3 && !answered && (
           <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.8 }}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 1.2 }}
             onClick={() => dispatch({ type: "SHOW_VERDICT" })}
-            className="mt-4 font-mono text-[10px] uppercase tracking-[2px] text-white/30 transition-colors hover:text-white/50"
+            className="group mt-6 flex items-center gap-2 rounded-lg border border-red-900/25 bg-red-950/15 px-5 py-2.5 transition-all hover:border-red-700/40 hover:bg-red-950/30"
           >
-            {testMessages.seeVerdictLabel} &rarr;
+            <span className="h-1.5 w-1.5 rounded-full bg-red-500/60 transition-colors group-hover:bg-red-500" />
+            <span className="font-mono text-[11px] uppercase tracking-[1.5px] text-red-400/70 transition-colors group-hover:text-red-300">
+              {testMessages.seeVerdictLabel}
+            </span>
+            <span className="text-red-400/40 transition-all group-hover:translate-x-0.5 group-hover:text-red-400/70">&rarr;</span>
           </motion.button>
         )}
 
