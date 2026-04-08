@@ -81,6 +81,7 @@ export interface Messages {
     honestLabel: string;
     justifyLabel: string;
     followUp: string;
+    honestFollowUp: string;
   }>;
   verdict: { title: string; subtitle: string };
   grace: { heading: string; body: string; scripture: string; scriptureRef: string; continueLabel: string; label: string };

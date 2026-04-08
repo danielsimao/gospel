@@ -17,6 +17,7 @@ interface QuestionCardProps {
     honestLabel: string;
     justifyLabel: string;
     followUp: string;
+    honestFollowUp: string;
   };
   questionIndex: number;
   score: number;
@@ -207,36 +208,72 @@ export function QuestionCard({
                       transition={{ duration: 0.4, delay: 0.1 }}
                       className="mt-4"
                     >
-                      <div className="flex items-center gap-2 border-t border-red-900/30 pt-3">
-                        <span className="h-1 w-1 rounded-full bg-red-500" />
-                        <p className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-red-400/80">
-                          {answered === "honest"
-                            ? testMessages.answeredBadge
-                            : testMessages.justifiedBadge}
-                        </p>
-                      </div>
-                      {showFollowUp && <FollowUp text={question.followUp} />}
+                      {answered === "honest" ? (
+                        <>
+                          {/* Verdict word */}
+                          <div className="flex items-center gap-2 border-t border-red-900/30 pt-3">
+                            <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                            <p className="font-mono text-[11px] font-bold uppercase tracking-[2px] text-red-400">
+                              {testMessages.verdictLabels[config?.commandment ?? ""] ?? testMessages.answeredBadge}
+                            </p>
+                          </div>
+                          {/* Honest follow-up text */}
+                          <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.4, delay: 0.3 }}
+                            className="mt-2.5 text-[13px] italic leading-relaxed text-white/45"
+                          >
+                            {question.honestFollowUp}
+                          </motion.p>
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex items-center gap-2 border-t border-red-900/30 pt-3">
+                            <span className="h-1 w-1 rounded-full bg-red-500" />
+                            <p className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-red-400/80">
+                              {testMessages.justifiedBadge}
+                            </p>
+                          </div>
+                          {showFollowUp && <FollowUp text={question.followUp} />}
+                        </>
+                      )}
 
-                      {/* Next button */}
-                      <motion.button
+                      {/* Action buttons */}
+                      <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{
                           duration: 0.4,
-                          delay: answered === "justify" ? 1.2 : 0.4,
+                          delay: answered === "justify" ? 1.2 : 0.5,
                         }}
-                        onClick={advance}
-                        className="group mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-white/[0.12] bg-white/[0.03] px-4 py-2.5 text-xs font-medium tracking-wide text-white/60 transition-all hover:border-white/20 hover:bg-white/[0.06] hover:text-white/85 min-h-[44px]"
+                        className="mt-4 flex gap-2"
                       >
-                        <span>
-                          {isLastQuestion
-                            ? testMessages.seeVerdictLabel
-                            : testMessages.nextLabel}
-                        </span>
-                        <span className="transition-transform group-hover:translate-x-0.5">
-                          &rarr;
-                        </span>
-                      </motion.button>
+                        <button
+                          onClick={advance}
+                          className="group flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/[0.12] bg-white/[0.03] px-4 py-2.5 text-xs font-medium tracking-wide text-white/60 transition-all hover:border-white/20 hover:bg-white/[0.06] hover:text-white/85 min-h-[44px]"
+                        >
+                          <span>
+                            {isLastQuestion
+                              ? testMessages.seeVerdictLabel
+                              : testMessages.nextLabel}
+                          </span>
+                          <span className="transition-transform group-hover:translate-x-0.5">
+                            &rarr;
+                          </span>
+                        </button>
+                        {questionIndex >= 3 && !isLastQuestion && (
+                          <button
+                            onClick={() => dispatch({ type: "SHOW_VERDICT" })}
+                            className="group flex items-center gap-1.5 rounded-xl border border-red-900/25 bg-red-950/15 px-3 py-2.5 transition-all hover:border-red-700/40 hover:bg-red-950/30 min-h-[44px]"
+                          >
+                            <span className="h-1.5 w-1.5 rounded-full bg-red-500/60 transition-colors group-hover:bg-red-500" />
+                            <span className="font-mono text-[10px] uppercase tracking-[1.5px] text-red-400/70 transition-colors group-hover:text-red-300">
+                              {testMessages.seeVerdictLabel}
+                            </span>
+                          </button>
+                        )}
+                      </motion.div>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -244,23 +281,6 @@ export function QuestionCard({
             </motion.div>
           </AnimatePresence>
         </div>
-
-        {/* Skip to verdict — visible after 3 questions */}
-        {questionIndex >= 3 && !answered && (
-          <motion.button
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.2 }}
-            onClick={() => dispatch({ type: "SHOW_VERDICT" })}
-            className="group mt-6 flex items-center gap-2 rounded-lg border border-red-900/25 bg-red-950/15 px-5 py-2.5 transition-all hover:border-red-700/40 hover:bg-red-950/30"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-red-500/60 transition-colors group-hover:bg-red-500" />
-            <span className="font-mono text-[11px] uppercase tracking-[1.5px] text-red-400/70 transition-colors group-hover:text-red-300">
-              {testMessages.seeVerdictLabel}
-            </span>
-            <span className="text-red-400/40 transition-all group-hover:translate-x-0.5 group-hover:text-red-400/70">&rarr;</span>
-          </motion.button>
-        )}
 
         {/* Answered chips history */}
         {state.answers.length > 0 && (

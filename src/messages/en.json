@@ -45,7 +45,8 @@
       "commandment": "You shall not bear false witness",
       "honestLabel": "Yes, I have",
       "justifyLabel": "Not really",
-      "followUp": "What about a 'white lie' to spare someone's feelings?"
+      "followUp": "What about a 'white lie' to spare someone's feelings?",
+      "honestFollowUp": "Even one lie. A 'white lie,' an exaggeration, a half-truth — by God's standard, that makes you a liar."
     },
     {
       "id": 2,
@@ -53,7 +54,8 @@
       "commandment": "You shall not steal",
       "honestLabel": "Yes, I have",
       "justifyLabel": "Nothing significant",
-      "followUp": "Have you ever kept extra change, or downloaded something you didn't pay for?"
+      "followUp": "Have you ever kept extra change, or downloaded something you didn't pay for?",
+      "honestFollowUp": "Regardless of value — a pen, someone's time, credit for work that wasn't yours. The value doesn't matter. The act does."
     },
     {
       "id": 3,
@@ -61,7 +63,8 @@
       "commandment": "You shall not commit adultery",
       "honestLabel": "Yes, I have",
       "justifyLabel": "I don't think so",
-      "followUp": "Jesus said, 'Whoever looks at a woman to lust for her has already committed adultery with her in his heart.' — Matthew 5:28 (NKJV)"
+      "followUp": "Jesus said, 'Whoever looks at a woman to lust for her has already committed adultery with her in his heart.' — Matthew 5:28 (NKJV)",
+      "honestFollowUp": "Jesus said that looking with lust is adultery of the heart. Not by culture's standard — by God's."
     },
     {
       "id": 4,
@@ -69,7 +72,8 @@
       "commandment": "You shall not murder",
       "honestLabel": "Yes, I have",
       "justifyLabel": "Never that far",
-      "followUp": "Even a flash of hatred — Jesus said, 'Whoever is angry with his brother without a cause shall be in danger of the judgment.' — Matthew 5:22 (NKJV)"
+      "followUp": "Even a flash of hatred — Jesus said, 'Whoever is angry with his brother without a cause shall be in danger of the judgment.' — Matthew 5:22 (NKJV)",
+      "honestFollowUp": "Jesus equated unjust anger with murder. The hatred in your heart is enough."
     },
     {
       "id": 5,
@@ -77,7 +81,8 @@
       "commandment": "You shall not take the name of the LORD your God in vain",
       "honestLabel": "Yes, I have",
       "justifyLabel": "Not intentionally",
-      "followUp": "Even 'OMG' as an exclamation — using the Creator's name carelessly?"
+      "followUp": "Even 'OMG' as an exclamation — using the Creator's name carelessly?",
+      "honestFollowUp": "You used the name of the God who gave you life as a throwaway word. That is blasphemy."
     },
     {
       "id": 6,
@@ -85,7 +90,8 @@
       "commandment": "You shall not covet",
       "honestLabel": "Yes, I have",
       "justifyLabel": "That's just normal",
-      "followUp": "A friend's lifestyle, someone's relationship, a coworker's promotion?"
+      "followUp": "A friend's lifestyle, someone's relationship, a coworker's promotion?",
+      "honestFollowUp": "Coveting reveals a heart that says 'what God has given me is not enough.' It's ingratitude made personal."
     },
     {
       "id": 7,
@@ -93,7 +99,8 @@
       "commandment": "You shall have no other gods before Me",
       "honestLabel": "Yes, I have",
       "justifyLabel": "I don't think about it",
-      "followUp": "If you've spent more time on your phone than thinking about your Creator..."
+      "followUp": "If you've spent more time on your phone than thinking about your Creator...",
+      "honestFollowUp": "Anything you love, trust, or serve more than God is an idol. It doesn't have to be a statue."
     },
     {
       "id": 8,
@@ -101,7 +108,8 @@
       "commandment": "Honor your father and your mother",
       "honestLabel": "Yes, I have",
       "justifyLabel": "I've always tried",
-      "followUp": "Even in your heart — resentment, dismissiveness, ingratitude?"
+      "followUp": "Even in your heart — resentment, dismissiveness, ingratitude?",
+      "honestFollowUp": "Not just outward obedience — God sees the resentment, the eye-rolls, the dismissiveness in your heart."
     }
   ],
   "verdict": {

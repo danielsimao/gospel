@@ -45,7 +45,8 @@
       "commandment": "Nao diras falso testemunho",
       "honestLabel": "Sim, ja menti",
       "justifyLabel": "Nada de grave",
-      "followUp": "E uma 'mentirinha' para nao magoar alguem?"
+      "followUp": "E uma 'mentirinha' para nao magoar alguem?",
+      "honestFollowUp": "Mesmo uma só mentira. Uma 'mentirinha piedosa,' um exagero, uma meia-verdade — pelo padrão de Deus, isso faz de ti um mentiroso."
     },
     {
       "id": 2,
@@ -53,7 +54,8 @@
       "commandment": "Nao furtaras",
       "honestLabel": "Sim, ja tirei",
       "justifyLabel": "Nada significativo",
-      "followUp": "Alguma vez ficaste com troco a mais, ou fizeste download de algo sem pagar?"
+      "followUp": "Alguma vez ficaste com troco a mais, ou fizeste download de algo sem pagar?",
+      "honestFollowUp": "Independentemente do valor — uma caneta, o tempo de alguém, o crédito pelo trabalho de outro. O valor não importa. O acto importa."
     },
     {
       "id": 3,
@@ -61,7 +63,8 @@
       "commandment": "Nao adulteraras",
       "honestLabel": "Sim, ja olhei",
       "justifyLabel": "Acho que nao",
-      "followUp": "Jesus disse: 'qualquer que atentar numa mulher para a cobicar, ja em seu coracao cometeu adulterio com ela.' — Mateus 5:28 (ACF)"
+      "followUp": "Jesus disse: 'qualquer que atentar numa mulher para a cobicar, ja em seu coracao cometeu adulterio com ela.' — Mateus 5:28 (ACF)",
+      "honestFollowUp": "Jesus disse que olhar com desejo é adultério no coração. Não pelo padrão da cultura — pelo padrão de Deus."
     },
     {
       "id": 4,
@@ -69,7 +72,8 @@
       "commandment": "Nao mataras",
       "honestLabel": "Sim, ja tive",
       "justifyLabel": "Nunca tanto assim",
-      "followUp": "Mesmo um momento de odio — Jesus disse: 'qualquer que, sem motivo, se encolerizar contra seu irmao, estara sujeito a julgamento.' — Mateus 5:22 (ACF)"
+      "followUp": "Mesmo um momento de odio — Jesus disse: 'qualquer que, sem motivo, se encolerizar contra seu irmao, estara sujeito a julgamento.' — Mateus 5:22 (ACF)",
+      "honestFollowUp": "Jesus equiparou a ira injusta ao homicídio. O ódio no teu coração é suficiente."
     },
     {
       "id": 5,
@@ -77,7 +81,8 @@
       "commandment": "Nao tomaras o nome do Senhor teu Deus em vao",
       "honestLabel": "Sim, ja usei",
       "justifyLabel": "Nao de proposito",
-      "followUp": "Mesmo um 'Ai meu Deus' descuidado — usar o nome do Criador sem reverencia?"
+      "followUp": "Mesmo um 'Ai meu Deus' descuidado — usar o nome do Criador sem reverencia?",
+      "honestFollowUp": "Usaste o nome do Deus que te deu vida como uma palavra descartável. Isso é blasfémia."
     },
     {
       "id": 6,
@@ -85,7 +90,8 @@
       "commandment": "Nao cobiceras",
       "honestLabel": "Sim, ja desejei",
       "justifyLabel": "Isso e normal",
-      "followUp": "O estilo de vida de um amigo, o relacionamento de alguem, a promocao de um colega?"
+      "followUp": "O estilo de vida de um amigo, o relacionamento de alguem, a promocao de um colega?",
+      "honestFollowUp": "Cobiçar revela um coração que diz 'o que Deus me deu não é suficiente.' É ingratidão tornada pessoal."
     },
     {
       "id": 7,
@@ -93,7 +99,8 @@
       "commandment": "Nao teras outros deuses diante de mim",
       "honestLabel": "Sim, ja coloquei",
       "justifyLabel": "Nao penso nisso",
-      "followUp": "Se passaste mais tempo no telemovel do que a pensar no teu Criador..."
+      "followUp": "Se passaste mais tempo no telemovel do que a pensar no teu Criador...",
+      "honestFollowUp": "Qualquer coisa que ames, confies ou sirvas mais do que Deus é um ídolo. Não tem de ser uma estátua."
     },
     {
       "id": 8,
@@ -101,7 +108,8 @@
       "commandment": "Honra o teu pai e a tua mae",
       "honestLabel": "Sim, ja falhei",
       "justifyLabel": "Sempre tentei",
-      "followUp": "Mesmo no teu coracao — ressentimento, desprezo, ingratidao?"
+      "followUp": "Mesmo no teu coracao — ressentimento, desprezo, ingratidao?",
+      "honestFollowUp": "Não é apenas obediência exterior — Deus vê o ressentimento, os revirar de olhos, o desprezo no teu coração."
     }
   ],
   "verdict": {
