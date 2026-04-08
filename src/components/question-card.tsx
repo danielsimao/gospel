@@ -245,6 +245,19 @@ export function QuestionCard({
           </AnimatePresence>
         </div>
 
+        {/* Skip to verdict — visible after 3 questions */}
+        {questionIndex >= 3 && !answered && (
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.8 }}
+            onClick={() => dispatch({ type: "SHOW_VERDICT" })}
+            className="mt-4 font-mono text-[10px] uppercase tracking-[2px] text-white/30 transition-colors hover:text-white/50"
+          >
+            {testMessages.seeVerdictLabel} &rarr;
+          </motion.button>
+        )}
+
         {/* Answered chips history */}
         {state.answers.length > 0 && (
           <motion.div
