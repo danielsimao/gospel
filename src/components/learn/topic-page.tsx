@@ -47,7 +47,12 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, prevLab
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         >
-          <p className="font-mono text-[9px] uppercase tracking-[4px] text-[#D4A843]/50">{label}</p>
+          <a
+            href={`/${locale}/learn`}
+            className="mb-4 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[2px] text-white/40 transition-colors hover:text-white/60"
+          >
+            <span aria-hidden="true">&larr;</span> {label}
+          </a>
           <h1
             className="mt-3 text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl md:text-5xl"
             style={{ textShadow: "0 0 60px rgba(212,168,67,0.2)" }}
