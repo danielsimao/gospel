@@ -1,8 +1,9 @@
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { notFound } from "next/navigation";
-import { isValidLocale, getMessages } from "@/lib/i18n";
+import { isValidLocale, getMessages, type Locale } from "@/lib/i18n";
 import { Providers } from "@/components/providers";
+import { FooterWrapper } from "@/components/shared/footer-wrapper";
 import type { Metadata } from "next";
 
 type Props = {
@@ -36,6 +37,14 @@ export default async function LocaleLayout({ params, children }: Props) {
   const { locale } = await params;
   if (!isValidLocale(locale)) notFound();
 
+  const allMessages = await import(`@/messages/${locale}.json`);
+  const data = allMessages.default;
+  const footerMessages = data.footer;
+  const learnTopics = (data.learn?.topics ?? []).map((t: { slug: string; title: string }) => ({
+    slug: t.slug,
+    title: t.title,
+  }));
+
   return (
     <html lang={locale} className="dark">
       <body
@@ -49,7 +58,16 @@ export default async function LocaleLayout({ params, children }: Props) {
             <p>Porque Deus amou o mundo de tal maneira que deu o seu Filho unigenito, para que todo aquele que nele cre nao pereca, mas tenha a vida eterna. — Joao 3:16</p>
           </div>
         </noscript>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          {footerMessages && (
+            <FooterWrapper
+              messages={footerMessages}
+              learnTopics={learnTopics}
+              locale={locale as Locale}
+            />
+          )}
+        </Providers>
       </body>
     </html>
   );

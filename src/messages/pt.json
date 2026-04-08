@@ -489,11 +489,8 @@
       "heading": "O que vais fazer?",
       "subtitle": "O contador continua a contar.",
       "testCta": "Faz o Teste da Boa Pessoa",
-      "chatCta": "Fala com alguem sobre isto",
-      "resources": [
-        { "name": "Es uma Boa Pessoa? — Living Waters", "url": "https://livingwaters.com/are-you-a-good-person/" },
-        { "name": "needGod.net", "url": "https://needgod.net/" }
-      ]
+      "learnCta": "Saber mais",
+      "readingPlanCta": "Começar o plano de leitura"
     },
     "share": {
       "prompt": "Partilha com alguem",
@@ -536,5 +533,23 @@
       "whatsappMessage": "Tem uma conversa honesta sobre a vida e a moralidade:",
       "telegramMessage": "Tem uma conversa honesta sobre a vida e a moralidade:"
     }
+  },
+  "footer": {
+    "exploreLabel": "Explorar",
+    "learnLabel": "Aprender",
+    "growLabel": "Crescer",
+    "homeLink": "Início",
+    "testLink": "Faz o Teste",
+    "chatLink": "Chat",
+    "readingPlanLink": "Plano de Leitura de 7 Dias",
+    "nextStepsLink": "Próximos Passos",
+    "churchLink": "Encontra uma Igreja",
+    "churchUrl": "https://maps.app.goo.gl/NMMMdeJa5H5BR5Vp9",
+    "livingWatersLink": "És uma Boa Pessoa? — Living Waters",
+    "livingWatersUrl": "https://livingwaters.com/are-you-a-good-person/",
+    "needGodLink": "needGod.net",
+    "needGodUrl": "https://needgod.net/",
+    "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigénito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.",
+    "scriptureRef": "João 3:16 (ARC)"
   }
 }

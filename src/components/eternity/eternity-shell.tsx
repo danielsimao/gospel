@@ -31,8 +31,8 @@ export interface EternityMessages {
     heading: string;
     subtitle: string;
     testCta: string;
-    chatCta: string;
-    resources: Array<{ name: string; url: string }>;
+    learnCta: string;
+    readingPlanCta: string;
   };
   share: {
     prompt: string;
@@ -219,19 +219,29 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
         <h2 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">{messages.cta.heading}</h2>
         <p className="mt-2 text-xs tracking-wide text-white/40 sm:mt-3 sm:text-sm">{messages.cta.subtitle}</p>
 
-        <div className="mt-6 flex w-full max-w-xs flex-col gap-2 sm:mt-8">
-          {messages.cta.resources.map((resource) => (
-            <a
-              key={resource.url}
-              href={resource.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackEternityCtaClicked("resource", resource.name)}
-              className="rounded border border-white/[0.04] px-4 py-2.5 text-xs tracking-wide text-white/30 transition-colors hover:border-white/[0.08] hover:text-white/50"
-            >
-              {resource.name} &rarr;
-            </a>
-          ))}
+        <div className="mt-8 flex w-full max-w-xs flex-col gap-3 sm:mt-10">
+          <a
+            href={`/${locale}/test`}
+            onClick={() => trackEternityCtaClicked("test")}
+            className="group flex min-h-[48px] items-center justify-center rounded-lg border border-[#D4A843]/25 px-5 py-3.5 text-sm font-medium tracking-wide text-[#D4A843] transition-all duration-300 hover:border-[#D4A843]/50 hover:bg-[#D4A843]/[0.06] sm:min-h-[52px] sm:px-6 sm:py-4"
+          >
+            {messages.cta.testCta}
+            <span className="ml-2 transition-transform group-hover:translate-x-1">&rarr;</span>
+          </a>
+          <a
+            href={`/${locale}/learn/who-is-jesus`}
+            onClick={() => trackEternityCtaClicked("resource", "learn")}
+            className="flex min-h-[44px] items-center justify-center rounded-lg border border-[#D4A843]/15 px-5 py-3 text-sm tracking-wide text-[#D4A843]/70 transition-all hover:border-[#D4A843]/30 hover:text-[#D4A843]"
+          >
+            {messages.cta.learnCta} &rarr;
+          </a>
+          <a
+            href={`/${locale}/reading-plan`}
+            onClick={() => trackEternityCtaClicked("resource", "reading-plan")}
+            className="flex min-h-[44px] items-center justify-center rounded-lg border border-white/[0.06] px-5 py-3 text-sm tracking-wide text-white/40 transition-all hover:border-white/[0.12] hover:text-white/60"
+          >
+            {messages.cta.readingPlanCta} &rarr;
+          </a>
         </div>
 
         <ShareButtons messages={messages.share} locale={locale} />

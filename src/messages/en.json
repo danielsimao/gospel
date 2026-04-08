@@ -489,11 +489,8 @@
       "heading": "What will you do?",
       "subtitle": "The counter is still ticking.",
       "testCta": "Take the Good Person Test",
-      "chatCta": "Talk to someone about this",
-      "resources": [
-        { "name": "Are You a Good Person? — Living Waters", "url": "https://livingwaters.com/are-you-a-good-person/" },
-        { "name": "needGod.net", "url": "https://needgod.net/" }
-      ]
+      "learnCta": "Learn more",
+      "readingPlanCta": "Start the reading plan"
     },
     "share": {
       "prompt": "Share this with someone",
@@ -536,5 +533,23 @@
       "whatsappMessage": "Have an honest conversation about life and morality:",
       "telegramMessage": "Have an honest conversation about life and morality:"
     }
+  },
+  "footer": {
+    "exploreLabel": "Explore",
+    "learnLabel": "Learn",
+    "growLabel": "Grow",
+    "homeLink": "Home",
+    "testLink": "Take the Test",
+    "chatLink": "Chat",
+    "readingPlanLink": "7-Day Reading Plan",
+    "nextStepsLink": "Next Steps",
+    "churchLink": "Find a Church",
+    "churchUrl": "https://www.9marks.org/church-search/",
+    "livingWatersLink": "Are You a Good Person? — Living Waters",
+    "livingWatersUrl": "https://livingwaters.com/are-you-a-good-person/",
+    "needGodLink": "needGod.net",
+    "needGodUrl": "https://needgod.net/",
+    "scripture": "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.",
+    "scriptureRef": "John 3:16 (NKJV)"
   }
 }
