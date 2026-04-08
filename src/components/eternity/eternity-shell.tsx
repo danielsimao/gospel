@@ -247,7 +247,7 @@ export function EternityShell({ messages, locale }: EternityShellProps) {
           {/* Secondary links */}
           <div className="mt-5 flex items-center justify-center gap-6">
             <a
-              href={`/${locale}/learn/who-is-jesus`}
+              href={`/${locale}/learn`}
               onClick={() => trackEternityCtaClicked("resource", "learn")}
               className="text-sm text-white/45 transition-colors hover:text-white/70"
             >

@@ -18,7 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   for (const locale of SUPPORTED_LOCALES) {
     // Static pages
-    const staticPages = ["", "/test", "/chat", "/reading-plan", "/next-steps"];
+    const staticPages = ["", "/test", "/chat", "/reading-plan", "/next-steps", "/learn"];
     for (const page of staticPages) {
       entries.push({
         url: `${BASE_URL}/${locale}${page}`,
