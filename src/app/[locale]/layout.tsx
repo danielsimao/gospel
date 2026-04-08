@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { isValidLocale, getMessages, type Locale } from "@/lib/i18n";
 import { Providers } from "@/components/providers";
 import { FooterWrapper } from "@/components/shared/footer-wrapper";
+import { TopBarWrapper } from "@/components/shared/top-bar-wrapper";
 import type { Metadata } from "next";
 
 type Props = {
@@ -59,6 +60,7 @@ export default async function LocaleLayout({ params, children }: Props) {
           </div>
         </noscript>
         <Providers>
+          <TopBarWrapper locale={locale as Locale} homeLabel={footerMessages?.homeLink ?? "Home"} />
           {children}
           {footerMessages && (
             <FooterWrapper
