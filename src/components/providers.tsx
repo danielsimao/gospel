@@ -1,30 +1,52 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect, useRef } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
-import { PostHogProvider } from "posthog-js/react";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
-function PostHogInit() {
+function PostHogPageviewTracker() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const lastTrackedUrlRef = useRef<string | null>(null);
+  const search = searchParams.toString();
+
   useEffect(() => {
-    if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
-      posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
-        api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",
-        person_profiles: "identified_only",
-        capture_pageview: false,
-        capture_pageleave: true,
-      });
+    if (!process.env.NEXT_PUBLIC_POSTHOG_KEY || typeof window === "undefined") {
+      return;
     }
-  }, []);
+
+    const url = search ? `${window.location.origin}${pathname}?${search}` : `${window.location.origin}${pathname}`;
+
+    if (lastTrackedUrlRef.current === url) {
+      return;
+    }
+
+    lastTrackedUrlRef.current = url;
+
+    try {
+      posthog.capture("$pageview", {
+        $current_url: url,
+        pathname,
+      });
+    } catch {
+      // Analytics must never break the app
+    }
+  }, [pathname, search]);
+
   return null;
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <PostHogProvider client={posthog}>
-      <PostHogInit />
+    <>
+      <Suspense fallback={null}>
+        <PostHogPageviewTracker />
+      </Suspense>
       <Analytics />
+      <SpeedInsights />
       {children}
-    </PostHogProvider>
+    </>
   );
 }
