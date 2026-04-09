@@ -40,6 +40,13 @@ export default async function LearnPage({ params }: Props) {
     <LearnHub
       label={learn.label}
       subtitle={learn.hubSubtitle}
+      progressLabel={learn.progressLabel}
+      completedLabel={learn.completedLabel}
+      allCompleteHeading={learn.allCompleteHeading}
+      allCompleteTestCta={learn.allCompleteTestCta}
+      allCompleteReadingCta={learn.allCompleteReadingCta}
+      allCompleteShareCta={learn.allCompleteShareCta}
+      shareMessages={messages.default.share}
       topics={learn.topics}
       locale={locale as Locale}
     />

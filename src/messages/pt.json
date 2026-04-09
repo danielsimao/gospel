@@ -285,6 +285,13 @@
   "learn": {
     "label": "Aprender",
     "hubSubtitle": "Explora os fundamentos do evangelho — um tema de cada vez.",
+    "progressLabel": "{completed} de {total}",
+    "completedLabel": "Lido",
+    "allTopicsLabel": "Todos os temas",
+    "allCompleteHeading": "Exploraste todos os fundamentos.",
+    "allCompleteTestCta": "Pronto para te examinares?",
+    "allCompleteReadingCta": "Continuar com o plano de leitura",
+    "allCompleteShareCta": "Partilha com alguém",
     "ctaHeading": "Pronto para te examinares?",
     "ctaButton": "Faz o teste",
     "completedCtaHeading": "Continua a tua jornada",
@@ -302,7 +309,13 @@
             "heading": "Mais do que um bom mestre",
             "body": "A maioria das pessoas aceita chamar Jesus de bom mestre. Mas Jesus não deixou essa opção em aberto. Ele afirmou ser Deus — não um deus, não divino, mas o próprio Deus. 'Eu e o Pai somos um' (João 10:30).\n\nC.S. Lewis colocou a questão de forma simples: um homem que disse o tipo de coisas que Jesus disse não seria um grande mestre de moral. Seria um lunático, um mentiroso, ou seria exatamente quem afirmou ser — o Senhor.\n\nAs pessoas que O ouviram entenderam perfeitamente o que Ele estava a afirmar. Pegaram em pedras para O matar por blasfémia. Não se apedreja alguém por dizer 'sede bondosos para o vosso próximo.'",
             "scripture": "Eu e o Pai somos um.",
-            "scriptureRef": "João 10:30 (ARC)"
+            "scriptureRef": "João 10:30 (ARC)",
+            "quiz": {
+              "question": "Se Jesus afirmou ser Deus, quais são as únicas opções lógicas?",
+              "options": ["Era um grande professor de moral", "Era um lunático, um mentiroso, ou é o Senhor", "Estava a falar metaforicamente"],
+              "correct": 1,
+              "reveal": "Um simples professor não afirma ser Deus. Ou era delirante, estava a enganar deliberadamente, ou estava a dizer a verdade. C.S. Lewis chamou-lhe o trilema 'Senhor, Mentiroso ou Lunático' — não há quarta opção."
+            }
           },
           {
             "heading": "O Verbo feito carne",
@@ -320,7 +333,13 @@
             "heading": "Porque é que isto importa para ti",
             "body": "Se Jesus é quem disse ser — Deus em carne — então tudo o que Ele disse carrega o peso da autoridade divina. Quando disse 'Eu sou o caminho, e a verdade e a vida; ninguém vem ao Pai, senão por mim,' não estava a oferecer uma opção entre muitas. Estava a afirmar um facto.\n\nSe Ele ressuscitou dos mortos (e as evidências são convincentes), então as Suas afirmações estão validadas. A morte não O conseguiu reter. E se a morte não O conseguiu reter, então a Sua promessa de vida eterna a todos os que confiam n'Ele não é um desejo piedoso — é a promessa mais fiável alguma vez feita.",
             "scripture": "Disse-lhe Jesus: Eu sou o caminho, e a verdade e a vida; ninguém vem ao Pai, senão por mim.",
-            "scriptureRef": "João 14:6 (ARC)"
+            "scriptureRef": "João 14:6 (ARC)",
+            "quiz": {
+              "question": "Se Jesus verdadeiramente ressuscitou dos mortos, o que significa isso sobre as Suas afirmações?",
+              "options": ["São inspiradoras mas inverificáveis", "São validadas — Ele é quem disse ser", "Não muda nada"],
+              "correct": 1,
+              "reveal": "A ressurreição é a prova definitiva. Se a morte não O pôde reter, então a Sua promessa de vida eterna é a promessa mais fiável alguma vez feita."
+            }
           }
         ]
       },
@@ -334,7 +353,13 @@
             "heading": "O padrão de Deus",
             "body": "Os Dez Mandamentos não são sugestões. São a lei moral de Deus — um reflexo perfeito do Seu carácter. Dizem-nos o que é certo e o que é errado, não com base em cultura ou opinião, mas com base na natureza do próprio Deus.\n\nNão mentirás. Não roubarás. Não cometerás adultério. Não cobiçarás. Não terás outros deuses diante de mim. Estas não são regras arbitrárias — revelam o que um Deus santo exige dos seres que criou à Sua imagem.",
             "scripture": "Porque qualquer que guardar toda a lei, e tropeçar num só ponto, tornou-se culpado de todos.",
-            "scriptureRef": "Tiago 2:10 (ARC)"
+            "scriptureRef": "Tiago 2:10 (ARC)",
+            "quiz": {
+              "question": "Segundo Tiago 2:10, quantos mandamentos precisas de quebrar para seres culpado?",
+              "options": ["Todos os dez", "A maioria deles", "Apenas um"],
+              "correct": 2,
+              "reveal": "Apenas um. 'Qualquer que guardar toda a lei, e tropeçar num só ponto, tornou-se culpado de todos.' O padrão de Deus é a perfeição, não a melhoria."
+            }
           },
           {
             "heading": "Não é só homicídio e roubo",
@@ -346,7 +371,13 @@
             "heading": "Todos pecaram",
             "body": "Romanos 3:23 não diz 'alguns pecaram' ou 'pessoas realmente más pecaram.' Diz todos. Todo o ser humano que alguma vez viveu — excepto Jesus — quebrou a Lei de Deus.\n\nIsto não é sobre ser 'suficientemente bom.' É sobre ser perfeito — porque esse é o padrão de Deus. E nenhum de nós é. Nem o líder religioso, nem o filósofo moral, nem a pessoa que faz voluntariado todos os fins de semana. Todos pecaram.",
             "scripture": "Porque todos pecaram e destituídos estão da glória de Deus.",
-            "scriptureRef": "Romanos 3:23 (ARC)"
+            "scriptureRef": "Romanos 3:23 (ARC)",
+            "quiz": {
+              "question": "Segundo o padrão de Deus, quão bom precisas de ser para entrar no céu?",
+              "options": ["Melhor do que a maioria das pessoas", "Bom o suficiente para superar o mau", "Perfeito"],
+              "correct": 2,
+              "reveal": "Perfeito. O padrão de Deus não é 'bom o suficiente' — é perfeição moral. E 'todos pecaram e destituídos estão da glória de Deus.' É por isso que precisamos de um Salvador."
+            }
           },
           {
             "heading": "A consequência",
@@ -372,7 +403,13 @@
             "heading": "O tribunal",
             "body": "Imagina que estás perante um juiz, culpado de um crime grave. A multa é enorme — muito mais do que alguma vez poderias pagar. A justiça exige pagamento. Estás prestes a ser condenado.\n\nMas então alguém entra no tribunal, abre a carteira e paga a tua multa na totalidade. Cada cêntimo. O juiz pode agora legalmente arquivar o teu caso — não porque está a ignorar a justiça, mas porque a justiça foi satisfeita. A multa foi paga.\n\nFoi isto que aconteceu na cruz.",
             "scripture": "Mas ele foi ferido pelas nossas transgressões, e moído pelas nossas iniquidades; o castigo que nos traz a paz estava sobre ele, e pelas suas pisaduras fomos sarados.",
-            "scriptureRef": "Isaías 53:5 (ARC)"
+            "scriptureRef": "Isaías 53:5 (ARC)",
+            "quiz": {
+              "question": "Na analogia do tribunal, porque é que o juiz pode legalmente deixar-te ir?",
+              "options": ["Porque decidiu ignorar os teus crimes", "Porque alguém pagou a tua multa na totalidade", "Porque prometeste ser melhor"],
+              "correct": 1,
+              "reveal": "A justiça foi satisfeita — não ignorada. Alguém pagou a pena que devias. Isto é expiação substitutiva: Cristo tomou o teu castigo para que Deus pudesse legalmente perdoar-te."
+            }
           },
           {
             "heading": "O que aconteceu na cruz",
@@ -384,7 +421,13 @@
             "heading": "Está consumado",
             "body": "As últimas palavras de Jesus na cruz não foram 'Estou derrotado.' Foram 'Está consumado.' Em grego, a palavra é tetelestai — um termo legal e comercial que significa 'pago na totalidade.'\n\nA dívida está saldada. Não há nada que possas acrescentar ao que Cristo fez. Não podes ganhar a salvação sendo bom, indo à igreja ou fazendo obras de caridade. Essas são coisas boas — mas não são pagamento. O pagamento já foi feito. Tudo o que resta é recebê-lo.",
             "scripture": "E, quando Jesus tomou o vinagre, disse: Está consumado. E, inclinando a cabeça, entregou o espírito.",
-            "scriptureRef": "João 19:30 (ARC)"
+            "scriptureRef": "João 19:30 (ARC)",
+            "quiz": {
+              "question": "O que significa 'Está consumado' (tetelestai)?",
+              "options": ["'Eu desisto'", "'Pago na totalidade'", "'O início'"],
+              "correct": 1,
+              "reveal": "Tetelestai era um termo legal e comercial que significava 'pago na totalidade.' A dívida do pecado está liquidada. Não há nada que possas acrescentar ao que Cristo fez."
+            }
           }
         ]
       },
@@ -398,13 +441,25 @@
             "heading": "Não é só sentir pena",
             "body": "Judas sentiu pena por ter traído Jesus. Ficou tão cheio de remorso que devolveu as trinta moedas de prata e enforcou-se. Mas a Bíblia nunca chama a isso arrependimento. Chama-lhe remorso.\n\nRemorso é sentir-se mal com as consequências do pecado. Arrependimento é sentir-se afligido com o pecado em si — porque ofende um Deus santo. Remorso diz 'quem me dera não ter sido apanhado.' Arrependimento diz 'estava errado e quero mudar.'",
             "scripture": "Porque a tristeza segundo Deus opera arrependimento para a salvação, da qual ninguém se arrepende; mas a tristeza do mundo opera a morte.",
-            "scriptureRef": "2 Coríntios 7:10 (ARC)"
+            "scriptureRef": "2 Coríntios 7:10 (ARC)",
+            "quiz": {
+              "question": "Qual é a diferença entre remorso e arrependimento?",
+              "options": ["São a mesma coisa", "O remorso lamenta as consequências; o arrependimento lamenta o pecado em si", "O arrependimento é um remorso mais forte"],
+              "correct": 1,
+              "reveal": "Judas teve remorso — lamentou o que aconteceu. Mas o arrependimento é tristeza segundo Deus que leva à mudança. 'Eu estava errado e quero abandonar isso.'"
+            }
           },
           {
             "heading": "Virar e confiar",
             "body": "O arrependimento tem duas partes. Primeiro, viras-te DO pecado — não apenas dos pecados que te é confortável admitir, mas de toda a orientação da tua vida afastada de Deus. Segundo, viras-te PARA Deus — colocando a tua confiança em Jesus Cristo e na Sua obra consumada na cruz.\n\nNão se trata de te limpares antes de vires a Deus. Vens como estás — quebrado, culpado, de mãos vazias. E Ele recebe-te. O arrependimento não é um pré-requisito para a graça. É a resposta à graça.",
             "scripture": "Arrependei-vos, pois, e convertei-vos, para que sejam apagados os vossos pecados, e venham assim os tempos do refrigério pela presença do Senhor.",
-            "scriptureRef": "Actos 3:19 (ARC)"
+            "scriptureRef": "Actos 3:19 (ARC)",
+            "quiz": {
+              "question": "Precisas de te endireitar antes de vir a Deus?",
+              "options": ["Sim — precisas de estar pronto primeiro", "Não — vens tal como estás", "Só para pecados graves"],
+              "correct": 1,
+              "reveal": "Vens tal como estás — quebrado, culpado, de mãos vazias. O arrependimento não é um pré-requisito para a graça. É a resposta à graça."
+            }
           },
           {
             "heading": "Como se manifesta",
@@ -436,7 +491,13 @@
             "heading": "Dois destinos",
             "body": "Jesus falou mais sobre o inferno do que qualquer outra pessoa na Bíblia. Descreveu-o como um lugar de trevas exteriores, choro e ranger de dentes — separação eterna de Deus e de tudo o que é bom.\n\nTambém falou sobre o céu — a presença de Deus, onde não há mais morte, nem dor, nem lágrimas. Um lugar preparado para aqueles que Lhe pertencem.\n\nNão há meio-termo. Não há purgatório, nem segunda oportunidade depois da morte, nem recomeço cósmico. Dois caminhos, dois destinos. E o caminho em que estás é determinado pelo que fazes com Jesus.",
             "scripture": "E irão estes para o tormento eterno, mas os justos para a vida eterna.",
-            "scriptureRef": "Mateus 25:46 (ARC)"
+            "scriptureRef": "Mateus 25:46 (ARC)",
+            "quiz": {
+              "question": "Segundo a Bíblia, existe um meio-termo entre o céu e o inferno?",
+              "options": ["Sim — purgatório ou uma segunda oportunidade", "Não — dois destinos, sem meio-termo", "Depende de como viveste"],
+              "correct": 1,
+              "reveal": "Sem meio-termo. Sem purgatório, sem segunda oportunidade após a morte. Dois caminhos, dois destinos — e o caminho é determinado pelo que fazes com Jesus."
+            }
           },
           {
             "heading": "O contador de mortes é real",
@@ -448,7 +509,13 @@
             "heading": "Mas há esperança",
             "body": "Deus não quer que ninguém pereça. Ele 'não quer que alguns se percam, senão que todos venham a arrepender-se.' Fez um caminho — a cruz. Jesus fez a ponte entre um Deus santo e a humanidade pecadora.\n\nA pergunta não é se Deus providenciou um caminho. Providenciou. A pergunta é se tu o vais aceitar. Confia em Jesus Cristo. Abandona o pecado. Recebe o dom da vida eterna. O contador continua a contar — mas não tem de ser uma contagem decrescente para o juízo. Pode ser uma contagem decrescente para voltar a casa.",
             "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigénito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.",
-            "scriptureRef": "João 3:16 (ARC)"
+            "scriptureRef": "João 3:16 (ARC)",
+            "quiz": {
+              "question": "Deus providenciou um caminho para ser salvo do juízo?",
+              "options": ["Não — temos de nos salvar a nós mesmos", "Sim — através de Jesus Cristo e da cruz", "Apenas para certas pessoas"],
+              "correct": 1,
+              "reveal": "Deus fez um caminho. A questão não é se Ele o providenciou — providenciou. A questão é se tu o vais aceitar. Confia em Cristo. Abandona o pecado. Recebe a vida eterna."
+            }
           }
         ]
       }
@@ -461,7 +528,23 @@
   "home": {
     "provocativeQuestion": "Se morresses hoje, como estarias perante Deus?",
     "ctaButton": "Enfrenta o tribunal",
-    "secondaryLink": "Ainda não? Sabe mais"
+    "secondaryLink": "Ainda não? Sabe mais",
+    "returningQuestion": "O contador continua a contar. O que vais fazer com o que sabes?",
+    "readingPlanCta": "Começar o plano de leitura",
+    "learnCta": "Ir mais fundo",
+    "retakeCta": "Fazer o teste outra vez",
+    "sharePrompt": "Partilha com alguém",
+    "facts": [
+      "No ano passado, 56 milhões de pessoas morreram em todo o mundo.",
+      "As doenças cardíacas matam 17,9 milhões de pessoas por ano.",
+      "A cada 40 segundos, alguém morre por suicídio.",
+      "Mais pessoas morreram hoje do que vivem na maioria das vilas.",
+      "A esperança média de vida é 73 anos. E depois?",
+      "150.000 pessoas que acordaram ontem não acordaram hoje.",
+      "O cancro reclama 10 milhões de vidas por ano.",
+      "Acidentes rodoviários matam 1,35 milhões de pessoas anualmente.",
+      "Não tens o amanhã garantido."
+    ]
   },
   "eternity": {
     "hero": {

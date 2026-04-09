@@ -1,15 +1,18 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { DeathCounter } from "@/components/eternity/death-counter";
+import { RotatingFacts } from "@/components/eternity/rotating-facts";
 import { WorldMap } from "@/components/eternity/world-map";
 import { StickyDeathCounter } from "@/components/shared/sticky-death-counter";
+import { ShareButtons } from "@/components/share-buttons";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import {
   trackHomeViewed,
   trackHomeCtaClicked,
   trackHomeSecondaryClicked,
 } from "@/lib/eternity-analytics";
+import type { HomeMessages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 
 interface HeroMessages {
@@ -24,7 +27,8 @@ interface HeroMessages {
 interface HomeShellProps {
   hero: HeroMessages;
   counter: { label: string; liveBadge: string };
-  home: { provocativeQuestion: string; ctaButton: string; secondaryLink: string };
+  home: HomeMessages;
+  share: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
   locale: Locale;
 }
 
@@ -35,9 +39,14 @@ const RATE_CARDS = [
   { value: "155,000", key: "perDay" },
 ] as const;
 
-export function HomeShell({ hero, counter, home, locale }: HomeShellProps) {
+export function HomeShell({ hero, counter, home, share, locale }: HomeShellProps) {
+  const [testCompleted, setTestCompleted] = useState(false);
+
   useEffect(() => {
     trackHomeViewed(locale);
+    try {
+      setTestCompleted(localStorage.getItem("test_completed") === "1");
+    } catch {}
   }, [locale]);
 
   return (
@@ -94,30 +103,73 @@ export function HomeShell({ hero, counter, home, locale }: HomeShellProps) {
             ))}
           </div>
 
+          {/* Rotating facts — news ticker */}
+          {home.facts.length > 0 && (
+            <div className="mt-8 w-full max-w-md sm:mt-10">
+              <RotatingFacts facts={home.facts} />
+            </div>
+          )}
+
           {/* World map */}
-          <div className="mt-8 w-full sm:mt-14 sm:max-w-2xl">
+          <div className="mt-6 w-full sm:mt-10 sm:max-w-2xl">
             <WorldMap />
           </div>
 
-          {/* Provocative question */}
-          <h2 className="mt-10 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-14 sm:text-3xl md:text-4xl">
-            {home.provocativeQuestion}
-          </h2>
+          {/* === Bottom CTA section — adapts based on test completion === */}
+          {testCompleted ? (
+            <>
+              {/* Returning visitor */}
+              <h2 className="mt-10 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-14 sm:text-3xl md:text-4xl">
+                {home.returningQuestion}
+              </h2>
 
-          {/* Primary CTA */}
-          <a href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
-            <Button variant="gold" size="lg" mist>
-              {home.ctaButton}
-              <ButtonArrow />
-            </Button>
-          </a>
+              {/* Primary: Reading plan */}
+              <a href={`/${locale}/reading-plan`} onClick={() => trackHomeCtaClicked()} className="mt-8">
+                <Button variant="gold" size="lg" mist>
+                  {home.readingPlanCta}
+                  <ButtonArrow />
+                </Button>
+              </a>
 
-          {/* Secondary link */}
-          <a href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-4">
-            <Button variant="text">
-              {home.secondaryLink}
-            </Button>
-          </a>
+              {/* Secondary actions — grouped as a row */}
+              <div className="mt-6 flex items-center gap-3 text-xs">
+                <a href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="text-white/35 transition-colors hover:text-white/60">
+                  {home.learnCta}
+                </a>
+                <span className="text-white/10">·</span>
+                <a href={`/${locale}/test`} className="text-white/35 transition-colors hover:text-white/60">
+                  {home.retakeCta}
+                </a>
+              </div>
+
+              {/* Share */}
+              <div className="mt-10">
+                <ShareButtons messages={share} locale={locale} sharePath="/test" />
+              </div>
+            </>
+          ) : (
+            <>
+              {/* New visitor */}
+              <h2 className="mt-10 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-14 sm:text-3xl md:text-4xl">
+                {home.provocativeQuestion}
+              </h2>
+
+              {/* Primary CTA */}
+              <a href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
+                <Button variant="gold" size="lg" mist>
+                  {home.ctaButton}
+                  <ButtonArrow />
+                </Button>
+              </a>
+
+              {/* Secondary link */}
+              <a href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-4">
+                <Button variant="text">
+                  {home.secondaryLink}
+                </Button>
+              </a>
+            </>
+          )}
         </div>
       </section>
     </div>

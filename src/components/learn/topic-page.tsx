@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { motion } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
 import { TopicSection } from "./topic-section";
 import { TopicNav } from "./topic-nav";
 import { trackTopicPageViewed } from "@/lib/learn-analytics";
@@ -11,6 +12,12 @@ interface SectionMessages {
   body: string;
   scripture: string;
   scriptureRef: string;
+  quiz?: {
+    question: string;
+    options: string[];
+    correct: number;
+    reveal: string;
+  };
 }
 
 interface TopicMessages {
@@ -28,13 +35,14 @@ interface TopicPageProps {
   ctaButton: string;
   completedCtaHeading?: string;
   completedCtaButton?: string;
+  allTopicsLabel?: string;
   prevLabel: string;
   nextLabel: string;
   prevTopic: { slug: string; title: string } | null;
   nextTopic: { slug: string; title: string } | null;
 }
 
-export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, prevLabel, nextLabel, prevTopic, nextTopic }: TopicPageProps) {
+export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, allTopicsLabel, prevLabel, nextLabel, prevTopic, nextTopic }: TopicPageProps) {
   useEffect(() => {
     trackTopicPageViewed(topic.slug, locale);
   }, [topic.slug, locale]);
@@ -49,7 +57,13 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         >
-          <p className="font-mono text-[9px] uppercase tracking-[4px] text-[#D4A843]/50">{label}</p>
+          <a
+            href={`/${locale}/learn`}
+            className="group mb-6 inline-flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[2px] text-white/40 transition-all hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03] hover:text-[#D4A843]/70"
+          >
+            <ArrowLeft className="size-3 transition-transform group-hover:-translate-x-0.5" />
+            {label}
+          </a>
           <h1
             className="mt-3 text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl md:text-5xl"
             style={{ textShadow: "0 0 60px rgba(212,168,67,0.2)" }}
@@ -70,6 +84,8 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
               index={i}
               slug={topic.slug}
               locale={locale}
+              quiz={section.quiz}
+              isLast={i === topic.sections.length - 1}
             />
           ))}
         </div>
@@ -85,6 +101,7 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
           ctaButton={ctaButton}
           completedCtaHeading={completedCtaHeading}
           completedCtaButton={completedCtaButton}
+          allTopicsLabel={allTopicsLabel}
         />
       </article>
     </main>

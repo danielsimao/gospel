@@ -21,6 +21,7 @@ interface LearnData {
   ctaButton: string;
   completedCtaHeading?: string;
   completedCtaButton?: string;
+  allTopicsLabel?: string;
   nextLabel: string;
   prevLabel: string;
   topics: TopicData[];
@@ -72,8 +73,10 @@ export default async function LearnTopicPage({ params }: Props) {
   if (topicIndex === -1) notFound();
 
   const topic = data.topics[topicIndex];
-  const prevTopic = topicIndex > 0 ? { slug: data.topics[topicIndex - 1].slug, title: data.topics[topicIndex - 1].title } : null;
-  const nextTopic = topicIndex < data.topics.length - 1 ? { slug: data.topics[topicIndex + 1].slug, title: data.topics[topicIndex + 1].title } : null;
+  const prevIndex = topicIndex > 0 ? topicIndex - 1 : data.topics.length - 1;
+  const nextIndex = topicIndex < data.topics.length - 1 ? topicIndex + 1 : 0;
+  const prevTopic = { slug: data.topics[prevIndex].slug, title: data.topics[prevIndex].title };
+  const nextTopic = { slug: data.topics[nextIndex].slug, title: data.topics[nextIndex].title };
 
   return (
     <TopicPage
@@ -84,6 +87,7 @@ export default async function LearnTopicPage({ params }: Props) {
       ctaButton={data.ctaButton}
       completedCtaHeading={data.completedCtaHeading}
       completedCtaButton={data.completedCtaButton}
+      allTopicsLabel={data.allTopicsLabel}
       prevLabel={data.prevLabel}
       nextLabel={data.nextLabel}
       prevTopic={prevTopic}

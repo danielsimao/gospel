@@ -2,7 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { SectionQuiz } from "./section-quiz";
+import { markTopicCompleted } from "@/lib/learn-progress-storage";
 import { trackTopicSectionReached } from "@/lib/learn-analytics";
+
+interface QuizData {
+  question: string;
+  options: string[];
+  correct: number;
+  reveal: string;
+}
 
 interface TopicSectionProps {
   heading: string;
@@ -12,9 +21,11 @@ interface TopicSectionProps {
   index: number;
   slug: string;
   locale: string;
+  quiz?: QuizData;
+  isLast?: boolean;
 }
 
-export function TopicSection({ heading, body, scripture, scriptureRef, index, slug, locale }: TopicSectionProps) {
+export function TopicSection({ heading, body, scripture, scriptureRef, index, slug, locale, quiz, isLast }: TopicSectionProps) {
   const [revealed, setRevealed] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -27,6 +38,7 @@ export function TopicSection({ heading, body, scripture, scriptureRef, index, sl
         if (entry.isIntersecting) {
           setRevealed(true);
           trackTopicSectionReached(slug, index, locale);
+          if (isLast) markTopicCompleted(slug);
           observer.disconnect();
         }
       },
@@ -58,6 +70,15 @@ export function TopicSection({ heading, body, scripture, scriptureRef, index, sl
             </p>
           ))}
         </div>
+
+        {/* Quiz — between body and scripture */}
+        {quiz && (
+          <SectionQuiz
+            quiz={quiz}
+            topicSlug={slug}
+            sectionIndex={index}
+          />
+        )}
 
         <blockquote className="mt-6 border-l border-[#D4A843]/30 pl-5">
           <p className="text-[15px] italic leading-[1.85] text-white/55 sm:text-base">

@@ -49,6 +49,12 @@ export interface HomeMessages {
   provocativeQuestion: string;
   ctaButton: string;
   secondaryLink: string;
+  returningQuestion: string;
+  readingPlanCta: string;
+  learnCta: string;
+  retakeCta: string;
+  sharePrompt: string;
+  facts: string[];
 }
 
 export interface TestMessages {

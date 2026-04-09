@@ -8,6 +8,13 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
+interface ShareMessages {
+  prompt: string;
+  whatsappMessage: string;
+  telegramMessage: string;
+  linkCopied: string;
+}
+
 interface HomeData {
   hero: {
     label: string;
@@ -19,6 +26,7 @@ interface HomeData {
   };
   counter: { label: string; liveBadge: string };
   home: HomeMessages;
+  share: ShareMessages;
   meta: { title: string; description: string };
 }
 
@@ -33,6 +41,7 @@ async function getHomeData(locale: Locale): Promise<HomeData> {
     hero: data.eternity.hero,
     counter: data.eternity.counter,
     home: data.home,
+    share: data.share,
     meta: data.eternity.meta,
   };
 }
@@ -63,6 +72,7 @@ export default async function HomePage({ params }: Props) {
       hero={data.hero}
       counter={data.counter}
       home={data.home}
+      share={data.share}
       locale={locale as Locale}
     />
   );
