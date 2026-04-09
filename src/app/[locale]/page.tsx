@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
 import { HomeShell } from "@/components/home-shell";
+import { StructuredData } from "@/components/structured-data";
+import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
 import type { HomeMessages } from "@/lib/types";
 import type { Metadata } from "next";
 
@@ -51,14 +53,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!isValidLocale(locale)) return {};
   const data = await getHomeData(locale as Locale);
 
-  return {
+  return buildPageMetadata({
+    locale,
     title: data.meta.title,
     description: data.meta.description,
-    openGraph: {
-      title: data.meta.title,
-      description: data.meta.description,
-    },
-  };
+  });
 }
 
 export default async function HomePage({ params }: Props) {
@@ -66,13 +65,21 @@ export default async function HomePage({ params }: Props) {
   if (!isValidLocale(locale)) notFound();
 
   const data = await getHomeData(locale as Locale);
+  const webPageSchema = buildWebPageSchema({
+    locale,
+    title: data.meta.title,
+    description: data.meta.description,
+  });
 
   return (
-    <HomeShell
-      hero={data.hero}
-      home={data.home}
-      share={data.share}
-      locale={locale as Locale}
-    />
+    <>
+      <StructuredData data={webPageSchema} />
+      <HomeShell
+        hero={data.hero}
+        home={data.home}
+        share={data.share}
+        locale={locale as Locale}
+      />
+    </>
   );
 }

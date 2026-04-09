@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { isValidLocale, getMessages, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
 import { ChatShell } from "@/components/chat/chat-shell";
+import { StructuredData } from "@/components/structured-data";
+import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
 import type { Metadata } from "next";
 
 type Props = {
@@ -17,14 +19,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const messages = await getMessages(locale);
   if (!messages.chat) return {};
 
-  return {
+  return buildPageMetadata({
+    locale,
+    path: "/chat",
     title: messages.chat.meta.title,
     description: messages.chat.meta.description,
-    openGraph: {
-      title: messages.chat.meta.title,
-      description: messages.chat.meta.description,
-    },
-  };
+  });
 }
 
 export default async function ChatPage({ params }: Props) {
@@ -40,5 +40,17 @@ export default async function ChatPage({ params }: Props) {
     );
   }
 
-  return <ChatShell messages={messages} chatMessages={messages.chat} locale={locale as Locale} />;
+  const webPageSchema = buildWebPageSchema({
+    locale,
+    path: "/chat",
+    title: messages.chat.meta.title,
+    description: messages.chat.meta.description,
+  });
+
+  return (
+    <>
+      <StructuredData data={webPageSchema} />
+      <ChatShell messages={messages} chatMessages={messages.chat} locale={locale as Locale} />
+    </>
+  );
 }

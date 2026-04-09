@@ -116,9 +116,9 @@ export function HomeShell({ hero, home, share, locale }: HomeShellProps) {
           {testCompleted ? (
             <>
               {/* Returning visitor */}
-              <h2 className="mt-10 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-14 sm:text-3xl md:text-4xl">
+              <h1 className="mt-10 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-14 sm:text-3xl md:text-4xl">
                 {home.returningQuestion}
-              </h2>
+              </h1>
 
               {/* Primary: Reading plan */}
               <Link href={`/${locale}/reading-plan`} onClick={() => trackHomeCtaClicked()} className="mt-8">
@@ -147,9 +147,9 @@ export function HomeShell({ hero, home, share, locale }: HomeShellProps) {
           ) : (
             <>
               {/* New visitor */}
-              <h2 className="mt-10 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-14 sm:text-3xl md:text-4xl">
+              <h1 className="mt-10 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-14 sm:text-3xl md:text-4xl">
                 {home.provocativeQuestion}
-              </h2>
+              </h1>
 
               {/* Primary CTA */}
               <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">

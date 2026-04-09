@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
 import { LearnHub } from "@/components/learn/learn-hub";
+import { StructuredData } from "@/components/structured-data";
+import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
 import type { Metadata } from "next";
 
 type Props = {
@@ -19,10 +21,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const learn = messages.default.learn;
   if (!learn) return {};
 
-  return {
-    title: learn.label,
+  return buildPageMetadata({
+    locale,
+    path: "/learn",
+    title: `${learn.label} | ${messages.default.meta.title}`,
     description: learn.hubSubtitle,
-  };
+  });
 }
 
 export default async function LearnPage({ params }: Props) {
@@ -36,19 +40,30 @@ export default async function LearnPage({ params }: Props) {
     throw new Error(`[learn] Missing "learn" key in ${locale}.json`);
   }
 
+  const title = `${learn.label} | ${messages.default.meta.title}`;
+  const webPageSchema = buildWebPageSchema({
+    locale,
+    path: "/learn",
+    title,
+    description: learn.hubSubtitle,
+  });
+
   return (
-    <LearnHub
-      label={learn.label}
-      subtitle={learn.hubSubtitle}
-      progressLabel={learn.progressLabel}
-      completedLabel={learn.completedLabel}
-      allCompleteHeading={learn.allCompleteHeading}
-      allCompleteTestCta={learn.allCompleteTestCta}
-      allCompleteReadingCta={learn.allCompleteReadingCta}
-      allCompleteShareCta={learn.allCompleteShareCta}
-      shareMessages={messages.default.share}
-      topics={learn.topics}
-      locale={locale as Locale}
-    />
+    <>
+      <StructuredData data={webPageSchema} />
+      <LearnHub
+        label={learn.label}
+        subtitle={learn.hubSubtitle}
+        progressLabel={learn.progressLabel}
+        completedLabel={learn.completedLabel}
+        allCompleteHeading={learn.allCompleteHeading}
+        allCompleteTestCta={learn.allCompleteTestCta}
+        allCompleteReadingCta={learn.allCompleteReadingCta}
+        allCompleteShareCta={learn.allCompleteShareCta}
+        shareMessages={messages.default.share}
+        topics={learn.topics}
+        locale={locale as Locale}
+      />
+    </>
   );
 }

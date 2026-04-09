@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
 import { TopicPage } from "@/components/learn/topic-page";
+import { StructuredData } from "@/components/structured-data";
+import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
 import type { Metadata } from "next";
 
 type Props = {
@@ -54,14 +56,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const topic = data.topics.find((t) => t.slug === slug);
   if (!topic) return {};
 
-  return {
+  return buildPageMetadata({
+    locale,
+    path: `/learn/${slug}`,
     title: topic.title,
     description: topic.metaDescription,
-    openGraph: {
-      title: topic.title,
-      description: topic.metaDescription,
-    },
-  };
+  });
 }
 
 export default async function LearnTopicPage({ params }: Props) {
@@ -73,25 +73,34 @@ export default async function LearnTopicPage({ params }: Props) {
   if (topicIndex === -1) notFound();
 
   const topic = data.topics[topicIndex];
+  const webPageSchema = buildWebPageSchema({
+    locale,
+    path: `/learn/${slug}`,
+    title: topic.title,
+    description: topic.metaDescription,
+  });
   const prevIndex = topicIndex > 0 ? topicIndex - 1 : data.topics.length - 1;
   const nextIndex = topicIndex < data.topics.length - 1 ? topicIndex + 1 : 0;
   const prevTopic = { slug: data.topics[prevIndex].slug, title: data.topics[prevIndex].title };
   const nextTopic = { slug: data.topics[nextIndex].slug, title: data.topics[nextIndex].title };
 
   return (
-    <TopicPage
-      topic={topic}
-      locale={locale}
-      label={data.label}
-      ctaHeading={data.ctaHeading}
-      ctaButton={data.ctaButton}
-      completedCtaHeading={data.completedCtaHeading}
-      completedCtaButton={data.completedCtaButton}
-      allTopicsLabel={data.allTopicsLabel}
-      prevLabel={data.prevLabel}
-      nextLabel={data.nextLabel}
-      prevTopic={prevTopic}
-      nextTopic={nextTopic}
-    />
+    <>
+      <StructuredData data={webPageSchema} />
+      <TopicPage
+        topic={topic}
+        locale={locale}
+        label={data.label}
+        ctaHeading={data.ctaHeading}
+        ctaButton={data.ctaButton}
+        completedCtaHeading={data.completedCtaHeading}
+        completedCtaButton={data.completedCtaButton}
+        allTopicsLabel={data.allTopicsLabel}
+        prevLabel={data.prevLabel}
+        nextLabel={data.nextLabel}
+        prevTopic={prevTopic}
+        nextTopic={nextTopic}
+      />
+    </>
   );
 }

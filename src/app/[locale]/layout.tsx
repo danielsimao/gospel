@@ -6,6 +6,8 @@ import { Providers } from "@/components/providers";
 import { FooterWrapper } from "@/components/shared/footer-wrapper";
 import { TopBarWrapper } from "@/components/shared/top-bar-wrapper";
 import { DeathCounterWrapper } from "@/components/shared/death-counter-wrapper";
+import { StructuredData } from "@/components/structured-data";
+import { buildSiteSchema } from "@/lib/seo";
 import type { Metadata } from "next";
 
 type Props = {
@@ -42,6 +44,7 @@ export default async function LocaleLayout({ params, children }: Props) {
   const allMessages = await import(`@/messages/${locale}.json`);
   const data = allMessages.default;
   const footerMessages = data.footer;
+  const siteSchema = buildSiteSchema();
   const learnTopics = (data.learn?.topics ?? []).map((t: { slug: string; title: string }) => ({
     slug: t.slug,
     title: t.title,
@@ -60,6 +63,7 @@ export default async function LocaleLayout({ params, children }: Props) {
             <p>Porque Deus amou o mundo de tal maneira que deu o seu Filho unigenito, para que todo aquele que nele cre nao pereca, mas tenha a vida eterna. — Joao 3:16</p>
           </div>
         </noscript>
+        <StructuredData data={siteSchema} />
         <Providers>
           <TopBarWrapper locale={locale as Locale} />
           <DeathCounterWrapper
