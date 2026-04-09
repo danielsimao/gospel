@@ -23,7 +23,7 @@ export function StickyDeathCounter({ label, liveBadge }: StickyDeathCounterProps
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-40" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.8)]" />
           </span>
-          <span className="hidden text-[9px] font-mono font-semibold uppercase tracking-[2px] text-red-400/60 sm:inline">
+          <span className="hidden text-[9px] font-mono font-semibold uppercase tracking-[2px] text-red-400/75 sm:inline">
             {liveBadge}
           </span>
         </div>
@@ -34,7 +34,7 @@ export function StickyDeathCounter({ label, liveBadge }: StickyDeathCounterProps
         {/* Counter + label — truncate to prevent overflow */}
         <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
           <DeathCounter className="shrink-0 font-mono text-[13px] font-bold tabular-nums text-red-400 tracking-wider sm:text-sm" />
-          <span className="truncate text-[9px] tracking-wide text-white/40 sm:text-[10px] sm:tracking-widest">
+          <span className="truncate text-[9px] tracking-wide text-white/60 sm:text-[10px] sm:tracking-widest">
             {label}
           </span>
         </div>

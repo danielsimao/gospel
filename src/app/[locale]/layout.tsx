@@ -5,6 +5,7 @@ import { isValidLocale, getMessages, type Locale } from "@/lib/i18n";
 import { Providers } from "@/components/providers";
 import { FooterWrapper } from "@/components/shared/footer-wrapper";
 import { TopBarWrapper } from "@/components/shared/top-bar-wrapper";
+import { DeathCounterWrapper } from "@/components/shared/death-counter-wrapper";
 import type { Metadata } from "next";
 
 type Props = {
@@ -60,7 +61,11 @@ export default async function LocaleLayout({ params, children }: Props) {
           </div>
         </noscript>
         <Providers>
-          <TopBarWrapper locale={locale as Locale} homeLabel={footerMessages?.homeLink ?? "Home"} />
+          <TopBarWrapper locale={locale as Locale} />
+          <DeathCounterWrapper
+            label={data.eternity?.counter?.label ?? ""}
+            liveBadge={data.eternity?.counter?.liveBadge ?? ""}
+          />
           {children}
           {footerMessages && (
             <FooterWrapper

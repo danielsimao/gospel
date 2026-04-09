@@ -71,7 +71,7 @@ export function LearnHub({ label, subtitle, progressLabel, completedLabel, allCo
 
       <div className="relative z-[1] mx-auto max-w-lg px-4 py-16 sm:px-6 sm:py-24">
         <div className="animate-[fadeInUp_0.8s_ease-out_both]">
-          <p className="font-mono text-[9px] uppercase tracking-[4px] text-[#D4A843]/50">{label}</p>
+          <p className="font-mono text-[9px] uppercase tracking-[4px] text-[#D4A843]/70">{label}</p>
           <h1
             className="mt-3 text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl"
             style={{ textShadow: "0 0 60px rgba(212,168,67,0.2)" }}
@@ -84,7 +84,7 @@ export function LearnHub({ label, subtitle, progressLabel, completedLabel, allCo
         {completedCount > 0 && (
           <div className="mt-6 animate-[fadeInUp_0.5s_ease-out_both]" style={{ animationDelay: "200ms" }}>
             <div className="mb-2 flex items-center justify-between">
-              <span className="font-mono text-[10px] uppercase tracking-[2px] text-[#D4A843]/50">
+              <span className="font-mono text-[10px] uppercase tracking-[2px] text-[#D4A843]/70">
                 {progress}
               </span>
             </div>
@@ -131,12 +131,12 @@ export function LearnHub({ label, subtitle, progressLabel, completedLabel, allCo
                 style={{ animationDelay: `${300 + i * 100}ms` }}
               >
                 <div className="flex items-center gap-4">
-                  <span className="font-mono text-[10px] tabular-nums text-[#D4A843]/40">
+                  <span className="font-mono text-[10px] tabular-nums text-[#D4A843]/70">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <div>
                     <p className="text-[15px] font-semibold text-white/85 sm:text-base">{topic.title}</p>
-                    <p className="mt-0.5 text-xs text-white/40">{topic.subtitle}</p>
+                    <p className="mt-0.5 text-xs text-white/60">{topic.subtitle}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -147,7 +147,7 @@ export function LearnHub({ label, subtitle, progressLabel, completedLabel, allCo
                       </svg>
                     </span>
                   )}
-                  <span className="text-white/25 transition-all group-hover:translate-x-1 group-hover:text-[#D4A843]/60">
+                  <span className="text-white/50 transition-all group-hover:translate-x-1 group-hover:text-[#D4A843]/70">
                     &rarr;
                   </span>
                 </div>

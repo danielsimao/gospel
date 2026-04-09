@@ -42,7 +42,7 @@ export function ChatInput({ onSend, placeholder, sendLabel, disabled = false }: 
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           disabled={disabled}
-          className="flex-1 rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder-white/30 outline-none focus:border-white/20 min-h-[44px] disabled:opacity-50"
+          className="flex-1 rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder-white/60 outline-none focus:border-white/20 min-h-[44px] disabled:opacity-50"
           autoComplete="off"
         />
         <button

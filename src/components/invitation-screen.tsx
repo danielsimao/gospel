@@ -88,7 +88,7 @@ export function InvitationScreen({
               </p>
             )}
             {invitationResponse === "thinking" && (
-              <p className="text-base text-white/50">
+              <p className="text-base text-white/60">
                 {invitation.thinkingEncouragement}
               </p>
             )}
@@ -104,7 +104,7 @@ export function InvitationScreen({
             )}
 
             {invitationResponse === "dismissed" && messages.nextSteps?.dismissedReturn && (
-              <p className="text-center text-sm text-white/30">
+              <p className="text-center text-sm text-white/60">
                 <Link href={`/${locale}/reading-plan`} className="underline transition-colors hover:text-white/50">
                   {messages.nextSteps.dismissedReturn}
                 </Link>

@@ -41,7 +41,7 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
             transition={{ duration: 0.8, delay: 0.5 + i * 0.3 }}
             className="border-l border-white/10 pl-5"
           >
-            <p className="text-[15px] leading-relaxed text-white/55 sm:text-base italic">{question}</p>
+            <p className="text-[15px] leading-relaxed text-white/60 sm:text-base italic">{question}</p>
           </motion.div>
         ))}
       </div>
@@ -53,13 +53,13 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
         className="mt-12 rounded-xl border border-white/10 bg-white/[0.02] p-5"
       >
         <h3 className="text-sm font-semibold tracking-wide text-white/70">{messages.readingHeading}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-white/45">{messages.readingBody}</p>
+        <p className="mt-2 text-sm leading-relaxed text-white/60">{messages.readingBody}</p>
         <a
           href={messages.readingLink}
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => trackNextStepsActionClicked("read", "thinking")}
-          className="mt-3 inline-flex items-center rounded-lg border border-white/15 px-4 py-2 text-xs font-medium text-white/50 transition-colors hover:bg-white/5 min-h-[44px]"
+          className="mt-3 inline-flex items-center rounded-lg border border-white/15 px-4 py-2 text-xs font-medium text-white/60 transition-colors hover:bg-white/5 min-h-[44px]"
         >
           {messages.readingLinkLabel} &rarr;
         </a>
@@ -71,11 +71,11 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
         transition={{ duration: 0.8, delay: 0.5 + (messages.reflections.length + 1) * 0.3 }}
         className="mt-10 text-center"
       >
-        <p className="text-sm leading-relaxed text-white/35">{messages.comeBack}</p>
+        <p className="text-sm leading-relaxed text-white/60">{messages.comeBack}</p>
         <a
           href={`/${locale}/reading-plan`}
           onClick={() => trackNextStepsActionClicked("reading_plan", "thinking")}
-          className="mt-4 inline-flex items-center text-sm text-white/40 transition-colors hover:text-white/60"
+          className="mt-4 inline-flex items-center text-sm text-white/60 transition-colors hover:text-white/60"
         >
           {messages.readingPlanLabel} &rarr;
         </a>

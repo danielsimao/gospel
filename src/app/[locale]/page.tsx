@@ -70,7 +70,6 @@ export default async function HomePage({ params }: Props) {
   return (
     <HomeShell
       hero={data.hero}
-      counter={data.counter}
       home={data.home}
       share={data.share}
       locale={locale as Locale}

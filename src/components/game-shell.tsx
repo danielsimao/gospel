@@ -9,7 +9,6 @@ import { QuestionCard } from "@/components/question-card";
 import { VerdictScreen } from "@/components/verdict-screen";
 import { GraceScreen } from "@/components/grace-screen";
 import { InvitationScreen } from "@/components/invitation-screen";
-import { StickyDeathCounter } from "@/components/shared/sticky-death-counter";
 import { trackGameAbandoned } from "@/lib/analytics";
 import { QUESTION_CONFIGS } from "@/lib/questions";
 import type { Messages } from "@/lib/types";
@@ -71,23 +70,15 @@ export function GameShell({ messages, locale }: GameShellProps) {
       {/* Radial vignette */}
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
 
-      {/* Sticky death counter */}
-      <StickyDeathCounter
-        label={messages.test.counterLabel}
-        liveBadge={messages.test.liveBadge}
-      />
-
-      {/* Back link — visible once past landing */}
-      {state.phase !== "landing" && (
-        <Link
+      {/* Back link — always visible */}
+      <Link
           href={`/${locale}`}
           aria-label={messages.test.backLabel}
-          className="fixed left-3 top-14 z-50 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/35 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/60 sm:left-4 sm:top-16 sm:text-[10px]"
+          className="fixed left-3 top-12 z-40 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/60 sm:left-4 sm:top-14 sm:text-[10px]"
         >
           <span aria-hidden="true">&larr;</span>
           <span>{messages.test.backLabel}</span>
         </Link>
-      )}
 
       {/* Content (offset below sticky bar) */}
       <div className="relative z-[1] flex flex-1 flex-col pt-10">

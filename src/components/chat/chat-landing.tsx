@@ -19,7 +19,7 @@ export function ChatLanding({ messages, onStart }: ChatLandingProps) {
         {messages.title}
       </h1>
 
-      <p className="mt-4 text-lg text-white/50 max-w-md">
+      <p className="mt-4 text-lg text-white/60 max-w-md">
         {messages.subtitle}
       </p>
 

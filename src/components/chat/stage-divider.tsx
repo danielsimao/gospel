@@ -15,7 +15,7 @@ export function StageDivider({ text }: StageDividerProps) {
       className="flex items-center justify-center py-4"
     >
       <div className="h-px flex-1 bg-white/10" />
-      <span className="px-4 text-xs text-white/35">{text}</span>
+      <span className="px-4 text-xs text-white/60">{text}</span>
       <div className="h-px flex-1 bg-white/10" />
     </motion.div>
   );

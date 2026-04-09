@@ -14,7 +14,7 @@ export function FollowUp({ text }: FollowUpProps) {
       transition={{ duration: 0.6, delay: 0.2 }}
       className="mt-4 border-l border-red-800/40 pl-3 max-w-sm"
     >
-      <p className="text-xs leading-relaxed text-white/45 italic">{text}</p>
+      <p className="text-xs leading-relaxed text-white/60 italic">{text}</p>
     </motion.div>
   );
 }

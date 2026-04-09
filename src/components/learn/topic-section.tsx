@@ -84,7 +84,7 @@ export function TopicSection({ heading, body, scripture, scriptureRef, index, sl
           <p className="text-[15px] italic leading-[1.85] text-white/55 sm:text-base">
             &ldquo;{scripture}&rdquo;
           </p>
-          <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-[#D4A843]/40">
+          <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-[#D4A843]/70">
             {scriptureRef}
           </p>
         </blockquote>

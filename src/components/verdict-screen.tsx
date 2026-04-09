@@ -70,7 +70,7 @@ export function VerdictScreen({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
-          className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/50"
+          className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75"
         >
           {testMessages.verdict.prelude}
         </motion.p>
@@ -111,7 +111,7 @@ export function VerdictScreen({
           <p className="font-mono text-3xl font-extrabold tabular-nums text-red-500 sm:text-4xl">
             {deathCount.toLocaleString()}
           </p>
-          <p className="mt-2 text-[11px] italic leading-relaxed text-white/40 sm:text-xs">
+          <p className="mt-2 text-[11px] italic leading-relaxed text-white/60 sm:text-xs">
             {testMessages.verdict.deathLineTemplate}
           </p>
         </motion.div>

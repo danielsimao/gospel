@@ -28,7 +28,7 @@
     },
     "verdict": {
       "prelude": "The verdict",
-      "deathLineTemplate": "people died while you answered these questions.",
+      "deathLineTemplate": "people died while you answered. You could be next.",
       "bridgeButton": "Is there any hope?",
       "confessionAdmitted": "A {list} — by your own admission.",
       "confessionDenied": "A {list} — by your evasions.",

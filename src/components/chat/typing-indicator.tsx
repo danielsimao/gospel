@@ -9,7 +9,7 @@ interface TypingIndicatorProps {
 export function TypingIndicator({ label }: TypingIndicatorProps) {
   return (
     <div className="flex justify-start">
-      <div className="flex items-center gap-2 px-4 py-3 text-white/40">
+      <div className="flex items-center gap-2 px-4 py-3 text-white/60">
         <div className="flex gap-1">
           {[0, 1, 2].map((i) => (
             <motion.span

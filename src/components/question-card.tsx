@@ -127,10 +127,10 @@ export function QuestionCard({
       <div className="flex w-full max-w-md flex-col items-center">
         {/* Case header */}
         <div className="mb-3 flex items-center gap-2">
-          <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/50">
+          <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
             {testMessages.caseLabel}
           </span>
-          <span className="font-mono text-[9px] tabular-nums text-red-400/50">
+          <span className="font-mono text-[9px] tabular-nums text-red-400/75">
             {String(displayIndex).padStart(2, "0")} /{" "}
             {String(TOTAL_QUESTIONS).padStart(2, "0")}
           </span>
@@ -138,7 +138,7 @@ export function QuestionCard({
 
         {/* Guilt rail */}
         <div className="flex w-full max-w-xs items-center gap-2.5 sm:max-w-sm">
-          <span className="font-mono text-[9px] uppercase tracking-[2px] text-white/30">
+          <span className="font-mono text-[9px] uppercase tracking-[2px] text-white/50">
             {testMessages.guiltLabel}
           </span>
           <div className="relative h-[2px] flex-1 overflow-hidden rounded-full bg-white/[0.04]">
@@ -170,20 +170,20 @@ export function QuestionCard({
             >
               <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.03] to-white/[0.01] p-6 sm:p-7">
                 {/* Corner index badge */}
-                <div className="absolute right-4 top-4 font-mono text-[10px] tabular-nums text-white/15">
+                <div className="absolute right-4 top-4 font-mono text-[10px] tabular-nums text-white/50">
                   {String(displayIndex).padStart(2, "0")}
                 </div>
 
                 {/* Commandment accent */}
                 <div className="mb-3 flex items-center gap-2">
                   <span className="h-px w-6 bg-red-500/40" />
-                  <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/60">
+                  <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
                     {testMessages.commandmentLabel} {roman}
                   </span>
                 </div>
 
                 {/* Commandment scripture (from i18n) */}
-                <p className="mb-3 font-mono text-[10px] uppercase tracking-[1.5px] text-white/30">
+                <p className="mb-3 font-mono text-[10px] uppercase tracking-[1.5px] text-white/50">
                   {question.commandment}
                 </p>
 
@@ -250,7 +250,7 @@ export function QuestionCard({
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.4, delay: 0.3 }}
-                            className="mt-2.5 text-[13px] italic leading-relaxed text-white/45"
+                            className="mt-2.5 text-[13px] italic leading-relaxed text-white/60"
                           >
                             {question.honestFollowUp}
                           </motion.p>
@@ -276,6 +276,12 @@ export function QuestionCard({
                           delay: answered === "justify" ? 1.2 : 0.5,
                         }}
                         className="mt-4 flex gap-2"
+                        onAnimationComplete={() => {
+                          // Scroll the Next button into view after it fades in
+                          const el = document.querySelector('[data-slot="action-buttons"]');
+                          el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                        }}
+                        data-slot="action-buttons"
                       >
                         <Button variant="ghost" size="sm" onClick={advance} className="flex-1">
                           {isLastQuestion
@@ -320,7 +326,7 @@ export function QuestionCard({
                       : "border-red-900/40 bg-red-950/25"
                   }`}
                 >
-                  <span className="font-mono text-[9px] tabular-nums text-red-400/45">
+                  <span className="font-mono text-[9px] tabular-nums text-red-400/75">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="font-mono text-[10px] lowercase italic text-red-400/85">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { readQuizAnswer, writeQuizAnswer } from "@/lib/learn-quiz-storage";
 
@@ -30,8 +30,8 @@ function QuizOption({
   const styles = {
     idle: "border-white/[0.08] bg-white/[0.02] text-white/55 hover:border-white/15 hover:bg-white/[0.04] hover:text-white/75",
     correct: "border-[#D4A843]/40 bg-[#D4A843]/[0.06] text-[#D4A843]",
-    "wrong-selected": "border-white/[0.08] bg-white/[0.02] text-white/40",
-    wrong: "border-white/[0.04] bg-transparent text-white/25",
+    "wrong-selected": "border-white/[0.08] bg-white/[0.02] text-white/60",
+    wrong: "border-white/[0.04] bg-transparent text-white/50",
   };
 
   return (
@@ -51,6 +51,7 @@ function QuizOption({
 
 export function SectionQuiz({ quiz, topicSlug, sectionIndex }: SectionQuizProps) {
   const [selected, setSelected] = useState<number | null>(null);
+  const quizRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setSelected(readQuizAnswer(topicSlug, sectionIndex));
@@ -62,6 +63,10 @@ export function SectionQuiz({ quiz, topicSlug, sectionIndex }: SectionQuizProps)
     if (answered) return;
     setSelected(index);
     writeQuizAnswer(topicSlug, sectionIndex, index);
+    // Scroll quiz into view so the reveal is visible
+    setTimeout(() => {
+      quizRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 200);
   }
 
   function getState(i: number): "idle" | "correct" | "wrong-selected" | "wrong" {
@@ -72,11 +77,11 @@ export function SectionQuiz({ quiz, topicSlug, sectionIndex }: SectionQuizProps)
   }
 
   return (
-    <div className="mt-8 rounded-xl border border-white/[0.06] bg-white/[0.015] p-5 sm:p-6">
+    <div ref={quizRef} className="mt-8 rounded-xl border border-white/[0.06] bg-white/[0.015] p-5 sm:p-6">
       {/* Label */}
       <div className="mb-3 flex items-center gap-2">
         <span className="h-px w-4 bg-[#D4A843]/30" />
-        <span className="font-mono text-[9px] uppercase tracking-[2.5px] text-[#D4A843]/50">
+        <span className="font-mono text-[9px] uppercase tracking-[2.5px] text-[#D4A843]/70">
           Reflect
         </span>
       </div>

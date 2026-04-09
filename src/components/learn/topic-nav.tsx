@@ -47,9 +47,9 @@ export function TopicNav({ slug, locale, prevLabel, nextLabel, prevTopic, nextTo
             <Link
               href={`/${locale}/learn/${prevTopic.slug}`}
               onClick={() => trackTopicNavClicked(slug, "prev", locale)}
-              className="group max-w-[40%] text-sm text-white/40 transition-colors hover:text-white/60"
+              className="group max-w-[40%] text-sm text-white/70 transition-colors hover:text-white/60"
             >
-              <span className="block font-mono text-[10px] uppercase tracking-[2px] text-white/30 group-hover:text-white/40">{prevLabel}</span>
+              <span className="block font-mono text-[10px] uppercase tracking-[2px] text-white/60 group-hover:text-white/70">{prevLabel}</span>
               <span className="mt-1 block">← {prevTopic.title}</span>
             </Link>
           ) : (
@@ -59,9 +59,9 @@ export function TopicNav({ slug, locale, prevLabel, nextLabel, prevTopic, nextTo
             <Link
               href={`/${locale}/learn/${nextTopic.slug}`}
               onClick={() => trackTopicNavClicked(slug, "next", locale)}
-              className="group max-w-[40%] text-right text-sm text-white/40 transition-colors hover:text-white/60"
+              className="group max-w-[40%] text-right text-sm text-white/70 transition-colors hover:text-white/60"
             >
-              <span className="block font-mono text-[10px] uppercase tracking-[2px] text-white/30 group-hover:text-white/40">{nextLabel}</span>
+              <span className="block font-mono text-[10px] uppercase tracking-[2px] text-white/60 group-hover:text-white/70">{nextLabel}</span>
               <span className="mt-1 block">{nextTopic.title} →</span>
             </Link>
           ) : (
@@ -74,7 +74,7 @@ export function TopicNav({ slug, locale, prevLabel, nextLabel, prevTopic, nextTo
           <div className="mt-5 text-center">
             <Link
               href={`/${locale}/learn`}
-              className="inline-flex items-center gap-1.5 text-xs text-white/25 transition-colors hover:text-white/45"
+              className="inline-flex items-center gap-1.5 text-xs text-white/50 transition-colors hover:text-white/70"
             >
               ← {allTopicsLabel}
             </Link>
@@ -85,7 +85,7 @@ export function TopicNav({ slug, locale, prevLabel, nextLabel, prevTopic, nextTo
       {/* ── CTA: the parting call-to-action ── */}
       {cta && (
         <div className="mt-12 text-center">
-          <p className="text-sm text-white/35">{cta.heading}</p>
+          <p className="text-sm text-white/60">{cta.heading}</p>
           <Link href={cta.href} onClick={() => trackTopicCtaClicked(slug, locale)} className="mt-3 inline-block">
             <Button variant="gold" mist>
               {cta.button}

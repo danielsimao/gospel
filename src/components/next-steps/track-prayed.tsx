@@ -71,7 +71,7 @@ export function TrackPrayed({ messages, shareMessages, locale }: TrackPrayedProp
           className="rounded-xl border border-[#D4A843]/20 bg-[#D4A843]/[0.02] p-5"
         >
           <h3 className="text-sm font-semibold tracking-wide text-[#D4A843]">{messages.readHeading}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-white/50">{messages.readBody}</p>
+          <p className="mt-2 text-sm leading-relaxed text-white/60">{messages.readBody}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <a href={messages.readLink} target="_blank" rel="noopener noreferrer" onClick={() => trackNextStepsActionClicked("read", "prayed")}>
               <Button variant="gold" size="sm">
@@ -96,8 +96,8 @@ export function TrackPrayed({ messages, shareMessages, locale }: TrackPrayedProp
           className="rounded-xl border border-[#D4A843]/20 bg-[#D4A843]/[0.02] p-5"
         >
           <h3 className="text-sm font-semibold tracking-wide text-[#D4A843]">{messages.prayHeading}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-white/50">{messages.prayBody}</p>
-          <blockquote className="mt-3 border-l border-[#D4A843]/30 pl-4 text-sm italic leading-relaxed text-white/45">
+          <p className="mt-2 text-sm leading-relaxed text-white/60">{messages.prayBody}</p>
+          <blockquote className="mt-3 border-l border-[#D4A843]/30 pl-4 text-sm italic leading-relaxed text-white/60">
             {messages.prayPrompt}
           </blockquote>
         </motion.div>
@@ -110,7 +110,7 @@ export function TrackPrayed({ messages, shareMessages, locale }: TrackPrayedProp
           className="rounded-xl border border-[#D4A843]/20 bg-[#D4A843]/[0.02] p-5"
         >
           <h3 className="text-sm font-semibold tracking-wide text-[#D4A843]">{messages.communityHeading}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-white/50">{messages.communityBody}</p>
+          <p className="mt-2 text-sm leading-relaxed text-white/60">{messages.communityBody}</p>
           <a href={messages.communityLink} target="_blank" rel="noopener noreferrer" onClick={() => trackNextStepsActionClicked("community", "prayed")} className="mt-3 inline-block">
             <Button variant="gold" size="sm">
               {messages.communityLinkLabel}
@@ -126,7 +126,7 @@ export function TrackPrayed({ messages, shareMessages, locale }: TrackPrayedProp
         transition={stagger(paragraphs.length + 3)}
         className="mt-12"
       >
-        <p className="text-center text-sm text-white/30">{messages.shareHeading}</p>
+        <p className="text-center text-sm text-white/60">{messages.shareHeading}</p>
         <ShareButtons
           messages={{ ...shareMessages, whatsappMessage: messages.shareMessage, telegramMessage: messages.shareMessage }}
           locale={locale}

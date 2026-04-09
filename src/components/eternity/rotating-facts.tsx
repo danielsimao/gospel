@@ -29,7 +29,7 @@ export function RotatingFacts({ facts, interval = 6000 }: RotatingFactsProps) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -12 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute inset-x-0 text-center text-xs tracking-wide text-white/30 sm:text-sm"
+          className="absolute inset-x-0 text-center text-xs tracking-wide text-white/60 sm:text-sm"
         >
           {facts[index]}
         </motion.p>

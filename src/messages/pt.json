@@ -28,7 +28,7 @@
     },
     "verdict": {
       "prelude": "O veredicto",
-      "deathLineTemplate": "pessoas morreram enquanto respondias a estas perguntas.",
+      "deathLineTemplate": "pessoas morreram enquanto respondias. Tu podes ser o pr\u00f3ximo.",
       "bridgeButton": "Ha alguma esperanca?",
       "confessionAdmitted": "Um {list} — pela tua propria confissao.",
       "confessionDenied": "Um {list} — pelas tuas evasivas.",

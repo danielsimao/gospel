@@ -57,14 +57,14 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
       {/* Header — always visible */}
       <div className="flex w-full items-center justify-between p-5 sm:p-6">
         <div className="flex items-center gap-3">
-          <span className="font-mono text-[10px] uppercase tracking-[2px] text-[#D4A843]/50">
+          <span className="font-mono text-[10px] uppercase tracking-[2px] text-[#D4A843]/70">
             {dayLabel} {day}
           </span>
           <h3 className="text-base font-semibold text-white/90 sm:text-lg">{messages.title}</h3>
         </div>
         <div className="flex items-center gap-2">
           {isCompleted && (
-            <span className="font-mono text-[9px] uppercase tracking-[2px] text-[#D4A843]/50">
+            <span className="font-mono text-[9px] uppercase tracking-[2px] text-[#D4A843]/70">
               {completedLabel}
             </span>
           )}
@@ -72,7 +72,7 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
             animate={{ rotate: isCurrent ? 180 : 0 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           >
-            <ChevronDown className="size-4 text-white/30" />
+            <ChevronDown className="size-4 text-white/50" />
           </motion.div>
         </div>
       </div>
@@ -102,18 +102,18 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
               </a>
 
               <blockquote className="mt-4 border-l border-[#D4A843]/30 pl-4">
-                <p className="text-sm italic leading-[1.8] text-white/50">
+                <p className="text-sm italic leading-[1.8] text-white/60">
                   &ldquo;{messages.keyVerse}&rdquo;
                 </p>
-                <p className="mt-1 font-mono text-[9px] uppercase tracking-widest text-[#D4A843]/50">
+                <p className="mt-1 font-mono text-[9px] uppercase tracking-widest text-[#D4A843]/70">
                   {messages.keyVerseRef}
                 </p>
               </blockquote>
 
-              <p className="mt-4 text-sm leading-relaxed text-white/50">{messages.reflection}</p>
+              <p className="mt-4 text-sm leading-relaxed text-white/60">{messages.reflection}</p>
 
               <div className="mt-4 rounded-lg bg-white/[0.02] p-3">
-                <p className="text-sm italic leading-relaxed text-white/40">{messages.prayer}</p>
+                <p className="text-sm italic leading-relaxed text-white/60">{messages.prayer}</p>
               </div>
 
               {!isCompleted && (

@@ -40,8 +40,8 @@ const frontColorVariants = cva("", {
     variant: {
       gold: "bg-gradient-to-b from-[#1a1408] to-[#110d05] border border-[#D4A843]/35 text-[#D4A843]",
       red: "bg-gradient-to-b from-[#1a0808] to-[#120505] border border-red-500/35 text-red-300",
-      ghost: "bg-gradient-to-b from-[#0e0c0c] to-[#0a0808] border border-white/12 text-white/55",
-      text: "bg-transparent border-none text-white/30 font-medium",
+      ghost: "bg-gradient-to-b from-[#0e0c0c] to-[#0a0808] border border-white/12 text-white/60",
+      text: "bg-transparent border-none text-white/60 font-medium",
     },
   },
   defaultVariants: { variant: "gold" },

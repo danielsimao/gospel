@@ -5,7 +5,6 @@ import Link from "next/link";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { RotatingFacts } from "@/components/eternity/rotating-facts";
 import { WorldMap } from "@/components/eternity/world-map";
-import { StickyDeathCounter } from "@/components/shared/sticky-death-counter";
 import { ShareButtons } from "@/components/share-buttons";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import {
@@ -27,7 +26,6 @@ interface HeroMessages {
 
 interface HomeShellProps {
   hero: HeroMessages;
-  counter: { label: string; liveBadge: string };
   home: HomeMessages;
   share: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
   locale: Locale;
@@ -40,7 +38,7 @@ const RATE_CARDS = [
   { value: "155,000", key: "perDay" },
 ] as const;
 
-export function HomeShell({ hero, counter, home, share, locale }: HomeShellProps) {
+export function HomeShell({ hero, home, share, locale }: HomeShellProps) {
   const [testCompleted, setTestCompleted] = useState(false);
 
   useEffect(() => {
@@ -52,15 +50,13 @@ export function HomeShell({ hero, counter, home, share, locale }: HomeShellProps
 
   return (
     <div className="min-h-dvh overflow-x-hidden bg-[#060404]">
-      <StickyDeathCounter label={counter.label} liveBadge={counter.liveBadge} />
-
-      <section className="relative flex min-h-[100svh] flex-col items-center justify-center px-4 pt-20 pb-12 sm:px-6 sm:pt-24 sm:pb-16">
+      <section className="relative flex min-h-[100svh] flex-col items-center justify-center px-4 pt-16 pb-12 sm:px-6 sm:pt-20 sm:pb-16">
         {/* Radial vignette */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
 
         <div className="relative z-[1] flex w-full flex-col items-center">
           {/* Label */}
-          <p className="font-mono text-[9px] uppercase tracking-[4px] text-white/20 sm:text-[10px] sm:tracking-[5px]">
+          <p className="font-mono text-[9px] uppercase tracking-[4px] text-white/50 sm:text-[10px] sm:tracking-[5px]">
             {hero.label}
           </p>
 
@@ -75,7 +71,7 @@ export function HomeShell({ hero, counter, home, share, locale }: HomeShellProps
           />
 
           {/* Suffix */}
-          <p className="mt-2 text-sm tracking-wide text-white/40 sm:mt-3 sm:text-base">
+          <p className="mt-2 text-sm tracking-wide text-white/60 sm:mt-3 sm:text-base">
             {hero.suffix}
           </p>
 
@@ -97,7 +93,7 @@ export function HomeShell({ hero, counter, home, share, locale }: HomeShellProps
                 <p className="font-mono text-xl font-bold tabular-nums text-red-400/80 sm:text-2xl">
                   {card.value}
                 </p>
-                <p className="mt-1 font-mono text-[8px] uppercase tracking-[1.5px] text-white/25 sm:text-[9px] sm:tracking-[2px]">
+                <p className="mt-1 font-mono text-[8px] uppercase tracking-[1.5px] text-white/50 sm:text-[9px] sm:tracking-[2px]">
                   {hero[card.key]}
                 </p>
               </div>
@@ -134,11 +130,11 @@ export function HomeShell({ hero, counter, home, share, locale }: HomeShellProps
 
               {/* Secondary actions — grouped as a row */}
               <div className="mt-6 flex items-center gap-3 text-xs">
-                <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="text-white/35 transition-colors hover:text-white/60">
+                <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="text-white/70 transition-colors hover:text-white/60">
                   {home.learnCta}
                 </Link>
-                <span className="text-white/10">·</span>
-                <Link href={`/${locale}/test`} className="text-white/35 transition-colors hover:text-white/60">
+                <span className="text-white/50">·</span>
+                <Link href={`/${locale}/test`} className="text-white/70 transition-colors hover:text-white/60">
                   {home.retakeCta}
                 </Link>
               </div>

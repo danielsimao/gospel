@@ -34,7 +34,7 @@ export function Landing({ messages, locale }: LandingProps) {
         className="flex items-center gap-2"
       >
         <span className="h-px w-6 bg-red-500/40" />
-        <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/60">
+        <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
           {messages.label}
         </span>
         <span className="h-px w-6 bg-red-500/40" />
@@ -55,7 +55,7 @@ export function Landing({ messages, locale }: LandingProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.6 }}
-        className="mt-4 max-w-sm text-xs italic text-white/35 sm:text-sm"
+        className="mt-4 max-w-sm text-xs italic text-white/60 sm:text-sm"
       >
         {messages.subtitle}
       </motion.p>

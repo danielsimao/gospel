@@ -90,7 +90,7 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
         >
           {messages.heading}
         </h1>
-        <p className="mt-2 text-sm text-white/40">{messages.subtitle}</p>
+        <p className="mt-2 text-sm text-white/60">{messages.subtitle}</p>
       </motion.div>
 
       <motion.div
@@ -100,7 +100,7 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
         className="mt-6"
       >
         <div className="mb-2 flex items-center justify-between">
-          <span className="font-mono text-[10px] uppercase tracking-[2px] text-[#D4A843]/50">
+          <span className="font-mono text-[10px] uppercase tracking-[2px] text-[#D4A843]/70">
             {progressLabel}
           </span>
         </div>
@@ -142,7 +142,7 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
           className="mt-10 text-center"
         >
           <h2 className="text-2xl font-bold text-[#D4A843]">{messages.allCompleteHeading}</h2>
-          <p className="mt-3 text-sm leading-relaxed text-white/50">{messages.allCompleteBody}</p>
+          <p className="mt-3 text-sm leading-relaxed text-white/60">{messages.allCompleteBody}</p>
           <a href={messages.continueReadingLink} target="_blank" rel="noopener noreferrer" className="mt-4 inline-block">
             <Button variant="gold" size="sm">
               {messages.continueReadingLabel}
@@ -150,7 +150,7 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
             </Button>
           </a>
           <div className="mt-6">
-            <p className="text-sm text-white/35">{messages.deeperLabel}</p>
+            <p className="text-sm text-white/60">{messages.deeperLabel}</p>
             <a
               href={`/${locale}/learn/who-is-jesus`}
               className="mt-2 inline-flex items-center text-sm text-[#D4A843]/70 transition-colors hover:text-[#D4A843]"

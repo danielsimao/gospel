@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, createRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameDispatch } from "@/components/game-provider";
 import { Button, ButtonArrow } from "@/components/ui/button";
@@ -29,6 +29,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
 
   const [revealedCount, setRevealedCount] = useState(0);
   const allBeatsRevealed = revealedCount >= messages.beats.length;
+  const beatRefs = useRef(messages.beats.map(() => createRef<HTMLDivElement>()));
 
   // Track scroll depth + time
   useEffect(() => {
@@ -62,6 +63,10 @@ export function GraceScreen({ messages }: GraceScreenProps) {
     const nextBeat = revealedCount;
     trackGraceBeatRevealed(nextBeat);
     setRevealedCount(nextBeat + 1);
+    // Scroll to the newly revealed beat after a short delay for the animation
+    setTimeout(() => {
+      beatRefs.current[nextBeat]?.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
   }, [revealedCount, messages.beats.length]);
 
   function handleContinue() {
@@ -121,6 +126,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
               return (
                 <motion.div
                   key={i}
+                  ref={beatRefs.current[i]}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{
                     opacity: isActive ? 1 : 0.32,
@@ -129,7 +135,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
                   transition={{ duration: 0.5, ease: "easeOut" }}
                   className="border-t border-white/[0.04] py-4 first:border-t-0 first:pt-0"
                 >
-                  <p className="mb-2 font-mono text-[8px] uppercase tracking-[2.5px] text-[#D4A843]/45">
+                  <p className="mb-2 font-mono text-[8px] uppercase tracking-[2.5px] text-[#D4A843]/70">
                     {ROMAN[i] ?? String(i + 1)}
                   </p>
                   <p
@@ -139,7 +145,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
                   >
                     {beat.headline}
                   </p>
-                  <p className="mt-2 text-[13px] leading-relaxed text-white/40 sm:text-sm">
+                  <p className="mt-2 text-[13px] leading-relaxed text-white/60 sm:text-sm">
                     {beat.subtitle}
                   </p>
                 </motion.div>
@@ -184,7 +190,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
                   <p className="text-[15px] italic leading-[1.8] text-white/60 sm:text-base">
                     &ldquo;{messages.scripture}&rdquo;
                   </p>
-                  <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-[#D4A843]/50">
+                  <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-[#D4A843]/70">
                     {messages.scriptureRef}
                   </p>
                 </motion.blockquote>

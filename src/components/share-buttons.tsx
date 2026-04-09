@@ -67,7 +67,7 @@ export function ShareButtons({ messages, locale, sharePath }: ShareButtonsProps)
 
   return (
     <div className="mt-8 text-center">
-      <p className="text-sm text-white/40 mb-4">{messages.prompt}</p>
+      <p className="text-sm text-white/60 mb-4">{messages.prompt}</p>
       <div className="flex items-center justify-center gap-4">
         <button
           onClick={shareWhatsApp}
@@ -127,7 +127,7 @@ export function ShareButtons({ messages, locale, sharePath }: ShareButtonsProps)
         <motion.p
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-3 text-sm text-white/40"
+          className="mt-3 text-sm text-white/60"
         >
           {messages.linkCopied}
         </motion.p>
