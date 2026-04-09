@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { ShareButtons } from "@/components/share-buttons";
 import { isTopicCompleted } from "@/lib/learn-progress-storage";
@@ -123,7 +124,7 @@ export function LearnHub({ label, subtitle, progressLabel, completedLabel, allCo
           {topics.map((topic, i) => {
             const isDone = completed.has(topic.slug);
             return (
-              <a
+              <Link
                 key={topic.slug}
                 href={`/${locale}/learn/${topic.slug}`}
                 className="group flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.015] px-5 py-4 transition-all hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.02] sm:px-6 sm:py-5 animate-[fadeInUp_0.5s_ease-out_both]"
@@ -150,7 +151,7 @@ export function LearnHub({ label, subtitle, progressLabel, completedLabel, allCo
                     &rarr;
                   </span>
                 </div>
-              </a>
+              </Link>
             );
           })}
         </div>

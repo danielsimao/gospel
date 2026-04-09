@@ -9,17 +9,9 @@ interface TopBarWrapperProps {
   homeLabel: string;
 }
 
-/** Pages that have their own fixed-top element (death counter, back link). */
-const HIDDEN_PATTERNS = [
-  /^\/[a-z]{2}$/, // home: /en, /pt
-  /^\/[a-z]{2}\/test$/, // test: /en/test, /pt/test
-];
-
 export function TopBarWrapper({ locale, homeLabel }: TopBarWrapperProps) {
   const pathname = usePathname();
-  const hidden = HIDDEN_PATTERNS.some((pattern) => pattern.test(pathname));
 
-  if (hidden) return null;
   return (
     <>
       <TopBar locale={locale} homeLabel={homeLabel} currentPath={pathname} />

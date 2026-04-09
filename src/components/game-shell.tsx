@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import * as Sentry from "@sentry/nextjs";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { Landing } from "@/components/landing";
@@ -78,14 +79,14 @@ export function GameShell({ messages, locale }: GameShellProps) {
 
       {/* Back link — visible once past landing */}
       {state.phase !== "landing" && (
-        <a
+        <Link
           href={`/${locale}`}
           aria-label={messages.test.backLabel}
-          className="fixed left-3 top-8 z-50 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/35 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/60 sm:left-4 sm:top-10 sm:text-[10px]"
+          className="fixed left-3 top-14 z-50 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/35 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/60 sm:left-4 sm:top-16 sm:text-[10px]"
         >
           <span aria-hidden="true">&larr;</span>
           <span>{messages.test.backLabel}</span>
-        </a>
+        </Link>
       )}
 
       {/* Content (offset below sticky bar) */}

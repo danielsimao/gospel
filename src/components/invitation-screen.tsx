@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { ShareButtons } from "@/components/share-buttons";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import {
@@ -94,19 +95,19 @@ export function InvitationScreen({
 
             {/* What now? CTA */}
             {invitationResponse !== "dismissed" && (
-              <a href={`/${locale}/next-steps?track=${invitationResponse === "prayed" ? "prayed" : "thinking"}`} className="mt-6 block">
+              <Link href={`/${locale}/next-steps?track=${invitationResponse === "prayed" ? "prayed" : "thinking"}`} className="mt-6 block">
                 <Button variant="gold" mist className="w-full">
                   {messages.nextSteps?.cta ?? "What now?"}
                   <ButtonArrow />
                 </Button>
-              </a>
+              </Link>
             )}
 
             {invitationResponse === "dismissed" && messages.nextSteps?.dismissedReturn && (
               <p className="text-center text-sm text-white/30">
-                <a href={`/${locale}/reading-plan`} className="underline transition-colors hover:text-white/50">
+                <Link href={`/${locale}/reading-plan`} className="underline transition-colors hover:text-white/50">
                   {messages.nextSteps.dismissedReturn}
-                </a>
+                </Link>
               </p>
             )}
 

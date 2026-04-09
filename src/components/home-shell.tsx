@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { RotatingFacts } from "@/components/eternity/rotating-facts";
 import { WorldMap } from "@/components/eternity/world-map";
@@ -53,7 +54,7 @@ export function HomeShell({ hero, counter, home, share, locale }: HomeShellProps
     <div className="min-h-dvh overflow-x-hidden bg-[#060404]">
       <StickyDeathCounter label={counter.label} liveBadge={counter.liveBadge} />
 
-      <section className="relative flex min-h-[100svh] flex-col items-center justify-center px-4 pt-16 pb-12 sm:px-6 sm:pt-20 sm:pb-16">
+      <section className="relative flex min-h-[100svh] flex-col items-center justify-center px-4 pt-20 pb-12 sm:px-6 sm:pt-24 sm:pb-16">
         {/* Radial vignette */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
 
@@ -124,22 +125,22 @@ export function HomeShell({ hero, counter, home, share, locale }: HomeShellProps
               </h2>
 
               {/* Primary: Reading plan */}
-              <a href={`/${locale}/reading-plan`} onClick={() => trackHomeCtaClicked()} className="mt-8">
+              <Link href={`/${locale}/reading-plan`} onClick={() => trackHomeCtaClicked()} className="mt-8">
                 <Button variant="gold" size="lg" mist>
                   {home.readingPlanCta}
                   <ButtonArrow />
                 </Button>
-              </a>
+              </Link>
 
               {/* Secondary actions — grouped as a row */}
               <div className="mt-6 flex items-center gap-3 text-xs">
-                <a href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="text-white/35 transition-colors hover:text-white/60">
+                <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="text-white/35 transition-colors hover:text-white/60">
                   {home.learnCta}
-                </a>
+                </Link>
                 <span className="text-white/10">·</span>
-                <a href={`/${locale}/test`} className="text-white/35 transition-colors hover:text-white/60">
+                <Link href={`/${locale}/test`} className="text-white/35 transition-colors hover:text-white/60">
                   {home.retakeCta}
-                </a>
+                </Link>
               </div>
 
               {/* Share */}
@@ -155,19 +156,19 @@ export function HomeShell({ hero, counter, home, share, locale }: HomeShellProps
               </h2>
 
               {/* Primary CTA */}
-              <a href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
+              <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
                 <Button variant="gold" size="lg" mist>
                   {home.ctaButton}
                   <ButtonArrow />
                 </Button>
-              </a>
+              </Link>
 
               {/* Secondary link */}
-              <a href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-4">
+              <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-4">
                 <Button variant="text">
                   {home.secondaryLink}
                 </Button>
-              </a>
+              </Link>
             </>
           )}
         </div>

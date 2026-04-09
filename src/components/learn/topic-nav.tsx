@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { readProgress, getCompletedCount } from "@/lib/reading-storage";
 import { trackTopicCtaClicked, trackTopicNavClicked } from "@/lib/learn-analytics";
@@ -43,26 +44,26 @@ export function TopicNav({ slug, locale, prevLabel, nextLabel, prevTopic, nextTo
       <div className="border-t border-white/[0.06] pt-6">
         <div className="flex items-start justify-between">
           {prevTopic ? (
-            <a
+            <Link
               href={`/${locale}/learn/${prevTopic.slug}`}
               onClick={() => trackTopicNavClicked(slug, "prev", locale)}
               className="group max-w-[40%] text-sm text-white/40 transition-colors hover:text-white/60"
             >
               <span className="block font-mono text-[10px] uppercase tracking-[2px] text-white/30 group-hover:text-white/40">{prevLabel}</span>
               <span className="mt-1 block">← {prevTopic.title}</span>
-            </a>
+            </Link>
           ) : (
             <div />
           )}
           {nextTopic ? (
-            <a
+            <Link
               href={`/${locale}/learn/${nextTopic.slug}`}
               onClick={() => trackTopicNavClicked(slug, "next", locale)}
               className="group max-w-[40%] text-right text-sm text-white/40 transition-colors hover:text-white/60"
             >
               <span className="block font-mono text-[10px] uppercase tracking-[2px] text-white/30 group-hover:text-white/40">{nextLabel}</span>
               <span className="mt-1 block">{nextTopic.title} →</span>
-            </a>
+            </Link>
           ) : (
             <div />
           )}
@@ -71,12 +72,12 @@ export function TopicNav({ slug, locale, prevLabel, nextLabel, prevTopic, nextTo
         {/* All topics — centered below prev/next */}
         {allTopicsLabel && (
           <div className="mt-5 text-center">
-            <a
+            <Link
               href={`/${locale}/learn`}
               className="inline-flex items-center gap-1.5 text-xs text-white/25 transition-colors hover:text-white/45"
             >
               ← {allTopicsLabel}
-            </a>
+            </Link>
           </div>
         )}
       </div>
@@ -85,12 +86,12 @@ export function TopicNav({ slug, locale, prevLabel, nextLabel, prevTopic, nextTo
       {cta && (
         <div className="mt-12 text-center">
           <p className="text-sm text-white/35">{cta.heading}</p>
-          <a href={cta.href} onClick={() => trackTopicCtaClicked(slug, locale)} className="mt-3 inline-block">
+          <Link href={cta.href} onClick={() => trackTopicCtaClicked(slug, locale)} className="mt-3 inline-block">
             <Button variant="gold" mist>
               {cta.button}
               <ButtonArrow />
             </Button>
-          </a>
+          </Link>
         </div>
       )}
     </nav>
