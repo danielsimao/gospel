@@ -137,25 +137,14 @@ export function QuestionCard({
         </div>
 
         {/* Guilt rail */}
-        <div className="flex w-full max-w-xs items-center gap-2.5 sm:max-w-sm">
-          <span className="font-mono text-[9px] uppercase tracking-[2px] text-white/50">
-            {testMessages.guiltLabel}
-          </span>
-          <div className="relative h-[2px] flex-1 overflow-hidden rounded-full bg-white/[0.04]">
+        <div className="w-full max-w-xs sm:max-w-sm">
+          <div className="relative h-[2px] overflow-hidden rounded-full bg-white/[0.04]">
             <motion.div
               className="absolute inset-y-0 left-0 bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]"
               animate={{ width: `${guilt}%` }}
               transition={{ duration: 0.8, ease: "easeOut" }}
             />
           </div>
-          <motion.span
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 0.6 }}
-            key={guilt}
-            className="min-w-[26px] text-right font-mono text-[11px] font-bold tabular-nums text-red-400"
-          >
-            {guilt}
-          </motion.span>
         </div>
 
         {/* Question card */}
@@ -169,11 +158,6 @@ export function QuestionCard({
               transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
             >
               <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.03] to-white/[0.01] p-6 sm:p-7">
-                {/* Corner index badge */}
-                <div className="absolute right-4 top-4 font-mono text-[10px] tabular-nums text-white/50">
-                  {String(displayIndex).padStart(2, "0")}
-                </div>
-
                 {/* Commandment accent */}
                 <div className="mb-3 flex items-center gap-2">
                   <span className="h-px w-6 bg-red-500/40" />
