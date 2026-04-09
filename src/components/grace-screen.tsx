@@ -11,14 +11,12 @@ import {
 
 interface GraceScreenProps {
   messages: {
-    heading: string;
-    body: string;
     scripture: string;
     scriptureRef: string;
     continueLabel: string;
     label: string;
     beatsHeading: string;
-    beats: [string, string, string, string];
+    beats: Array<{ headline: string; subtitle: string }>;
     tapContinue: string;
   };
 }
@@ -30,7 +28,6 @@ export function GraceScreen({ messages }: GraceScreenProps) {
 
   const [revealedCount, setRevealedCount] = useState(0);
   const allBeatsRevealed = revealedCount >= messages.beats.length;
-  const [showBody, setShowBody] = useState(false);
 
   // Track scroll depth + time
   useEffect(() => {
@@ -59,13 +56,6 @@ export function GraceScreen({ messages }: GraceScreenProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Show body after all beats revealed
-  useEffect(() => {
-    if (!allBeatsRevealed) return;
-    const timer = setTimeout(() => setShowBody(true), 800);
-    return () => clearTimeout(timer);
-  }, [allBeatsRevealed]);
-
   const handleTapContinue = useCallback(() => {
     if (revealedCount >= messages.beats.length) return;
     const nextBeat = revealedCount;
@@ -77,7 +67,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
     dispatch({ type: "SHOW_INVITATION" });
   }
 
-  const paragraphs = messages.body.split("\n\n");
+  const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
 
   return (
     <div className="relative flex flex-1 flex-col min-h-dvh">
@@ -107,8 +97,6 @@ export function GraceScreen({ messages }: GraceScreenProps) {
             <span className="h-px w-6 bg-[#D4A843]/40" />
           </motion.div>
 
-          {/* === Movement 1: Beats === */}
-
           {/* Beats heading */}
           <motion.h2
             initial={{ opacity: 0, y: 16 }}
@@ -122,10 +110,10 @@ export function GraceScreen({ messages }: GraceScreenProps) {
 
           {/* Beats */}
           <div className="mt-10 text-left">
-            {messages.beats.map((text, i) => {
+            {messages.beats.map((beat, i) => {
               const isRevealed = i < revealedCount;
               const isActive = i === revealedCount - 1;
-              const isGold = i === 2 || i === 3;
+              const isGold = i >= 2;
 
               if (!isRevealed) return null;
 
@@ -141,14 +129,17 @@ export function GraceScreen({ messages }: GraceScreenProps) {
                   className="border-t border-white/[0.04] py-4 first:border-t-0 first:pt-0"
                 >
                   <p className="mb-2 font-mono text-[8px] uppercase tracking-[2.5px] text-[#D4A843]/45">
-                    {["I", "II", "III", "IV"][i]}
+                    {ROMAN[i] ?? String(i + 1)}
                   </p>
                   <p
                     className={`text-lg font-semibold leading-snug sm:text-xl ${
                       isGold ? "text-[#D4A843]" : "text-white/95"
                     }`}
                   >
-                    {text}
+                    {beat.headline}
+                  </p>
+                  <p className="mt-2 text-[13px] leading-relaxed text-white/40 sm:text-sm">
+                    {beat.subtitle}
                   </p>
                 </motion.div>
               );
@@ -175,37 +166,18 @@ export function GraceScreen({ messages }: GraceScreenProps) {
             )}
           </AnimatePresence>
 
-          {/* === Movement 2: Body + Scripture + Continue === */}
+          {/* Scripture + Continue — after all beats */}
           <AnimatePresence>
-            {showBody && (
+            {allBeatsRevealed && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.8 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
               >
-                {/* Body paragraphs */}
-                <div className="mt-10 space-y-5 text-left">
-                  {paragraphs.map((paragraph, i) => (
-                    <motion.p
-                      key={i}
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.8, delay: i * 0.3 }}
-                      className="text-[15px] leading-[1.8] text-white/65 sm:text-base"
-                    >
-                      {paragraph}
-                    </motion.p>
-                  ))}
-                </div>
-
-                {/* Scripture */}
                 <motion.blockquote
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.8,
-                    delay: paragraphs.length * 0.3,
-                  }}
+                  transition={{ duration: 0.8, delay: 0.6 }}
                   className="mt-8 border-l border-[#D4A843]/30 pl-4 text-left"
                 >
                   <p className="text-[15px] italic leading-[1.8] text-white/60 sm:text-base">
@@ -216,14 +188,10 @@ export function GraceScreen({ messages }: GraceScreenProps) {
                   </p>
                 </motion.blockquote>
 
-                {/* Continue button */}
                 <motion.button
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{
-                    duration: 0.8,
-                    delay: paragraphs.length * 0.3 + 0.6,
-                  }}
+                  transition={{ duration: 0.8, delay: 1.2 }}
                   onClick={handleContinue}
                   whileTap={{ scale: 0.97 }}
                   className="mt-10 rounded-xl border border-[#D4A843]/30 px-7 py-3.5 text-sm font-medium tracking-wide text-[#D4A843] transition-all duration-300 hover:border-[#D4A843]/60 hover:bg-[#D4A843]/[0.06] min-h-[48px]"

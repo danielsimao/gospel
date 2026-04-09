@@ -117,24 +117,39 @@
     "subtitle": "Pelo padrao perfeito de Deus, nenhum de nos e suficientemente bom."
   },
   "grace": {
-    "heading": "Mas Deus, sendo rico em misericordia...",
-    "body": "Imagina que estas num tribunal, culpado de um crime grave. A multa e enorme — mais do que alguma vez poderias pagar. Mas alguem se levanta e paga a tua multa por inteiro. O juiz pode legalmente deixar-te ir — a justica foi feita.\n\nFoi isso que Deus fez por ti.\n\nHa dois mil anos, Deus veio a terra na pessoa de Jesus Cristo. Ele viveu uma vida perfeita — a unica pessoa que alguma vez conseguiu. Depois, voluntariamente morreu na cruz, tomando sobre Si o castigo que nos mereciamos.\n\nEle pagou a multa para que Deus, o Juiz justo, pudesse absolver o teu caso. Nao porque o mereceste. Nao porque o ganhaste. Mas porque Ele te ama.\n\nTres dias depois, ressuscitou dos mortos, vencendo a propria morte.",
-    "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigenito, para que todo aquele que nele cre nao pereca, mas tenha a vida eterna.",
-    "scriptureRef": "Joao 3:16 (ACF)",
+    "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unig\u00e9nito, para que todo aquele que nele cr\u00ea n\u00e3o pere\u00e7a, mas tenha a vida eterna.",
+    "scriptureRef": "Jo\u00e3o 3:16 (ACF)",
     "continueLabel": "Continuar",
-    "label": "Graca",
+    "label": "Gra\u00e7a",
     "beatsHeading": "Mas Deus\u2026",
     "beats": [
-      "\u00c9s culpado. A multa \u00e9 eterna.",
-      "Algu\u00e9m a pagou na totalidade.",
-      "Jesus Cristo \u2014 Deus em carne \u2014 viveu a vida que n\u00e3o conseguiste, morreu a morte que merecias, e ressuscitou.",
-      "Abandona o pecado. Confia n'Ele. Vive."
+      {
+        "headline": "\u00c9s culpado. A multa \u00e9 eterna.",
+        "subtitle": "Quebraste a Lei de Deus \u2014 n\u00e3o uma vez, mas repetidamente. E a pena pelo pecado n\u00e3o \u00e9 uma multa que possas pagar. \u00c9 a morte."
+      },
+      {
+        "headline": "Imagina que est\u00e1s perante um Juiz justo. N\u00e3o podes pagar. A justi\u00e7a exige a morte.",
+        "subtitle": "Um bom juiz n\u00e3o pode deixar um criminoso culpado sair livre. E Deus \u00e9 o supremo bom Juiz. A tua culpa tem de ser respondida."
+      },
+      {
+        "headline": "Mas algu\u00e9m entra no tribunal e paga a tua multa por inteiro.",
+        "subtitle": "Cada c\u00eantimo. O juiz pode agora legalmente absolver o teu caso \u2014 n\u00e3o porque est\u00e1 a ignorar a justi\u00e7a, mas porque a justi\u00e7a foi satisfeita."
+      },
+      {
+        "headline": "Jesus Cristo \u2014 Deus em carne \u2014 viveu a vida que n\u00e3o conseguiste, morreu a morte que merecias, e ressuscitou.",
+        "subtitle": "H\u00e1 dois mil anos, o Criador entrou na Sua cria\u00e7\u00e3o. Viveu perfeitamente, tomou o teu castigo na cruz, e tr\u00eas dias depois venceu a pr\u00f3pria morte."
+      },
+      {
+        "headline": "Arrepende-te \u2014 abandona o teu pecado. Confia s\u00f3 em Cristo. Deus vai perdoar-te e conceder-te a vida eterna.",
+        "subtitle": "N\u00e3o se trata de uma ora\u00e7\u00e3o ou de ser religioso. Trata-se de abandonar o pecado e colocar a tua confian\u00e7a n'Aquele que pagou tudo."
+      }
     ],
     "tapContinue": "Toca para continuar"
   },
   "invitation": {
     "heading": "O que vais fazer com isto?",
-    "prayer": "Hoje ouviste o veredicto — quebraste a Lei de Deus, e a pena é a morte. Mas também ouviste as boas novas: Jesus Cristo pagou essa multa na totalidade na cruz e ressuscitou dos mortos.\n\nA Bíblia diz: «Arrependei-vos e crede no Evangelho» (Marcos 1:15, ACF). Isso significa duas coisas:\n\nPrimeiro, arrepende-te — abandona o teu pecado. Não apenas sentir pena, mas tomar a decisão de o deixar.\n\nSegundo, confia em Jesus Cristo — não na tua bondade, não na religião, não numa oração — mas n'Aquele que morreu no teu lugar e ressuscitou.\n\nPensa assim: se estás num avião prestes a cair, não basta «acreditar» no paraquedas — tens de o vestir. Veste o Senhor Jesus Cristo. Abandona o pecado e confia só n'Ele.",
+    "prayedEncouragement": "Hoje \u00e9 o in\u00edcio.",
+    "thinkingEncouragement": "N\u00e3o tenhas pressa. Isto estar\u00e1 aqui quando estiveres pronto.",
     "responses": {
       "prayed": "Vou arrepender-me e confiar em Cristo",
       "thinking": "Quero pensar sobre isto",

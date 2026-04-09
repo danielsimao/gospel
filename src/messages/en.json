@@ -117,24 +117,39 @@
     "subtitle": "By God's perfect standard, none of us are good enough."
   },
   "grace": {
-    "heading": "But God, being rich in mercy...",
-    "body": "Imagine you're in a courtroom, guilty of a serious crime. The fine is enormous — more than you could ever pay. But then someone steps in and pays your fine in full. The judge can legally let you go — justice has been served.\n\nThat's what God did for you.\n\nTwo thousand years ago, God came to earth in the person of Jesus Christ. He lived a perfect life — the only person who ever could. Then He willingly died on the cross, taking the punishment that we deserve.\n\nHe paid the fine so that God, the just Judge, could dismiss your case. Not because you earned it. Not because you deserved it. But because He loves you.\n\nThree days later, He rose from the dead, defeating death itself.",
     "scripture": "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.",
     "scriptureRef": "John 3:16 (NKJV)",
     "continueLabel": "Continue",
     "label": "Grace",
     "beatsHeading": "But God\u2026",
     "beats": [
-      "You're guilty. The fine is eternal.",
-      "Someone paid it in full.",
-      "Jesus Christ \u2014 God in flesh \u2014 lived the life you couldn't, died the death you deserved, and rose.",
-      "Turn from sin. Trust in Him. Live."
+      {
+        "headline": "You're guilty. The fine is eternal.",
+        "subtitle": "You've broken God's Law \u2014 not once, but repeatedly. And the penalty for sin is not a fine you can pay. It's death."
+      },
+      {
+        "headline": "Imagine standing before a just Judge. You can't pay. Justice demands death.",
+        "subtitle": "A good judge can't let a guilty criminal walk free. And God is the ultimate good Judge. Your guilt must be answered for."
+      },
+      {
+        "headline": "But someone steps into the courtroom and pays your fine in full.",
+        "subtitle": "Every penny. The judge can now legally dismiss your case \u2014 not because he's overlooking justice, but because justice has been satisfied."
+      },
+      {
+        "headline": "Jesus Christ \u2014 God in flesh \u2014 lived the life you couldn't, died the death you deserved, and rose.",
+        "subtitle": "Two thousand years ago, the Creator entered His creation. He lived perfectly, took your punishment on the cross, and three days later conquered death itself."
+      },
+      {
+        "headline": "Repent \u2014 turn from your sin. Trust in Christ alone. God will forgive you and grant you eternal life.",
+        "subtitle": "This isn't about a prayer or being religious. It's about turning from sin and placing your trust in the One who paid it all."
+      }
     ],
     "tapContinue": "Tap to continue"
   },
   "invitation": {
     "heading": "What will you do with this?",
-    "prayer": "Today you heard the verdict — you've broken God's Law, and the penalty is death. But you also heard the good news: Jesus Christ paid that fine in full on the cross and rose from the dead.\n\nThe Bible says, 'Repent, and believe in the gospel' (Mark 1:15, NKJV). That means two things:\n\nFirst, repent — turn away from your sin. Not just feel sorry about it, but make a decision to forsake it.\n\nSecond, trust in Jesus Christ — not in your own goodness, not in religion, not in a prayer — but in the One who died in your place and rose again.\n\nThink of it like this: if you're on a plane that's about to crash, you don't just 'believe' in the parachute — you put it on. Put on the Lord Jesus Christ. Turn from sin and trust in Him alone.",
+    "prayedEncouragement": "Today is the beginning.",
+    "thinkingEncouragement": "Take your time. This will be here when you're ready.",
     "responses": {
       "prayed": "I will repent and trust in Christ",
       "thinking": "I want to think about it",

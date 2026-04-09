@@ -19,7 +19,7 @@ function validateMessages(messages: unknown, locale: string): Messages {
       `[i18n] Expected ${TOTAL_QUESTIONS} questions for locale "${locale}", got ${m.questions?.length ?? 0}`,
     );
   }
-  if (!m.verdict?.title || !m.grace?.heading || !m.invitation?.prayer || !m.share?.prompt || !m.meta?.title) {
+  if (!m.verdict?.title || !m.grace?.beatsHeading || !m.invitation?.heading || !m.share?.prompt || !m.meta?.title) {
     throw new Error(`[i18n] Missing required content sections for locale "${locale}"`);
   }
   if (!m.test?.caseLabel || !m.test?.verdictLabels || !m.test?.verdict?.prelude) {

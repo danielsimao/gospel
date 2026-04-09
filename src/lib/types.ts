@@ -90,19 +90,18 @@ export interface Messages {
   }>;
   verdict: { title: string; subtitle: string };
   grace: {
-    heading: string;
-    body: string;
     scripture: string;
     scriptureRef: string;
     continueLabel: string;
     label: string;
     beatsHeading: string;
-    beats: [string, string, string, string];
+    beats: Array<{ headline: string; subtitle: string }>;
     tapContinue: string;
   };
   invitation: {
     heading: string;
-    prayer: string;
+    prayedEncouragement: string;
+    thinkingEncouragement: string;
     responses: Record<InvitationResponse, string>;
     resources: Array<{ name: string; url: string }>;
   };
