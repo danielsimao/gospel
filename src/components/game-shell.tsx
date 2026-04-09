@@ -30,6 +30,11 @@ export function GameShell({ messages, locale }: GameShellProps) {
       level: "info",
       data: { phase: state.phase, score: state.score },
     });
+
+    // Persist test completion so other pages (learn) can check
+    if (state.phase === "verdict" || state.phase === "grace" || state.phase === "invitation") {
+      try { localStorage.setItem("test_completed", "1"); } catch {}
+    }
   }, [state.phase, state.score]);
 
   useEffect(() => {

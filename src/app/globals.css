@@ -118,6 +118,16 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Button mist glow */
+@keyframes mist-breathe {
+  0%, 100% { opacity: 0; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+@keyframes mist-breathe-hover {
+  0%, 100% { opacity: 0.4; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
 /* Eternity page animations */
 @keyframes eternity-pulse-dot {
   0%, 100% { opacity: 1; }

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useGameDispatch } from "@/components/game-provider";
+import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackGameStarted } from "@/lib/analytics";
 import type { Locale } from "@/lib/i18n";
 
@@ -60,19 +61,17 @@ export function Landing({ messages, locale }: LandingProps) {
       </motion.p>
 
       {/* CTA */}
-      <motion.button
+      <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.8 }}
-        onClick={handleStart}
-        whileTap={{ scale: 0.97 }}
-        className="group mt-10 rounded-xl border border-red-500/30 bg-red-950/20 px-7 py-3.5 text-sm font-medium tracking-wide text-red-300 transition-all duration-300 hover:border-red-500/60 hover:bg-red-950/40 hover:text-red-200 min-h-[48px]"
+        className="mt-10"
       >
-        {messages.cta}
-        <span className="ml-2 transition-transform group-hover:translate-x-1">
-          &rarr;
-        </span>
-      </motion.button>
+        <Button variant="red" mist onClick={handleStart}>
+          {messages.cta}
+          <ButtonArrow />
+        </Button>
+      </motion.div>
     </motion.div>
   );
 }

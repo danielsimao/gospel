@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameDispatch } from "@/components/game-provider";
+import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackGraceViewed } from "@/lib/analytics";
 import {
   trackGraceRevealed,
@@ -149,20 +150,20 @@ export function GraceScreen({ messages }: GraceScreenProps) {
           {/* Tap to continue pill */}
           <AnimatePresence>
             {revealedCount > 0 && !allBeatsRevealed && (
-              <motion.button
+              <motion.div
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4, delay: 0.6 }}
-                onClick={handleTapContinue}
-                className="mx-auto mt-6 flex items-center justify-center gap-2 rounded-lg border border-[#D4A843]/22 px-6 py-3 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70 transition-all hover:border-[#D4A843]/40 hover:bg-[#D4A843]/[0.05] min-h-[48px]"
-                style={{
-                  animation: "eternity-gentle-pulse 2.4s ease-in-out infinite",
-                }}
+                className="mt-6 flex justify-center"
               >
-                {messages.tapContinue}{" "}
-                <span aria-hidden="true">&darr;</span>
-              </motion.button>
+                <Button variant="gold" size="sm" mist onClick={handleTapContinue}>
+                  <span className="font-mono text-[10px] uppercase tracking-[2.5px]">
+                    {messages.tapContinue}
+                  </span>
+                  <ButtonArrow direction="down" />
+                </Button>
+              </motion.div>
             )}
           </AnimatePresence>
 
@@ -188,16 +189,17 @@ export function GraceScreen({ messages }: GraceScreenProps) {
                   </p>
                 </motion.blockquote>
 
-                <motion.button
+                <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.8, delay: 1.2 }}
-                  onClick={handleContinue}
-                  whileTap={{ scale: 0.97 }}
-                  className="mt-10 rounded-xl border border-[#D4A843]/30 px-7 py-3.5 text-sm font-medium tracking-wide text-[#D4A843] transition-all duration-300 hover:border-[#D4A843]/60 hover:bg-[#D4A843]/[0.06] min-h-[48px]"
+                  className="mt-10"
                 >
-                  {messages.continueLabel} &rarr;
-                </motion.button>
+                  <Button variant="gold" mist onClick={handleContinue}>
+                    {messages.continueLabel}
+                    <ButtonArrow />
+                  </Button>
+                </motion.div>
               </motion.div>
             )}
           </AnimatePresence>

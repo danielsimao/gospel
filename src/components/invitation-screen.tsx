@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ShareButtons } from "@/components/share-buttons";
+import { Button, ButtonArrow } from "@/components/ui/button";
 import {
   trackInvitationResponse,
 } from "@/lib/analytics";
@@ -57,26 +58,17 @@ export function InvitationScreen({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-10 flex flex-col gap-3"
+            className="mt-10 flex flex-col items-center gap-3"
           >
-            <button
-              onClick={() => handleResponse("prayed")}
-              className="rounded-lg border border-[#D4A843]/30 px-6 py-4 text-base font-medium text-[#D4A843] transition-colors hover:bg-[#D4A843]/5 active:bg-[#D4A843]/10 min-h-[44px]"
-            >
+            <Button variant="gold" mist onClick={() => handleResponse("prayed")} className="w-full max-w-sm">
               {invitation.responses.prayed}
-            </button>
-            <button
-              onClick={() => handleResponse("thinking")}
-              className="rounded-lg border border-white/20 px-6 py-4 text-base font-medium text-white/60 transition-colors hover:bg-white/5 active:bg-white/10 min-h-[44px]"
-            >
+            </Button>
+            <Button variant="ghost" onClick={() => handleResponse("thinking")} className="w-full max-w-sm">
               {invitation.responses.thinking}
-            </button>
-            <button
-              onClick={() => handleResponse("dismissed")}
-              className="px-6 py-3 text-sm text-white/30 transition-colors hover:text-white/50 min-h-[44px]"
-            >
+            </Button>
+            <Button variant="text" onClick={() => handleResponse("dismissed")}>
               {invitation.responses.dismissed}
-            </button>
+            </Button>
           </motion.div>
         )}
 
@@ -102,11 +94,11 @@ export function InvitationScreen({
 
             {/* What now? CTA */}
             {invitationResponse !== "dismissed" && (
-              <a
-                href={`/${locale}/next-steps?track=${invitationResponse === "prayed" ? "prayed" : "thinking"}`}
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg border border-[#D4A843]/35 bg-[#D4A843]/[0.04] px-6 py-3.5 text-base font-semibold tracking-wide text-[#D4A843] shadow-[0_0_24px_rgba(212,168,67,0.08)] transition-all hover:border-[#D4A843]/50 hover:bg-[#D4A843]/[0.08] min-h-[48px]"
-              >
-                {messages.nextSteps?.cta ?? "What now?"} <span aria-hidden="true">&rarr;</span>
+              <a href={`/${locale}/next-steps?track=${invitationResponse === "prayed" ? "prayed" : "thinking"}`} className="mt-6 block">
+                <Button variant="gold" mist className="w-full">
+                  {messages.nextSteps?.cta ?? "What now?"}
+                  <ButtonArrow />
+                </Button>
               </a>
             )}
 

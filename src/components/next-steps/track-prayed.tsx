@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ShareButtons } from "@/components/share-buttons";
+import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
 import type { Locale } from "@/lib/i18n";
 
@@ -72,21 +73,17 @@ export function TrackPrayed({ messages, shareMessages, locale }: TrackPrayedProp
           <h3 className="text-sm font-semibold tracking-wide text-[#D4A843]">{messages.readHeading}</h3>
           <p className="mt-2 text-sm leading-relaxed text-white/50">{messages.readBody}</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <a
-              href={messages.readLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackNextStepsActionClicked("read", "prayed")}
-              className="flex items-center rounded-lg border border-[#D4A843]/30 px-4 py-2 text-xs font-medium text-[#D4A843] transition-colors hover:bg-[#D4A843]/[0.06] min-h-[44px]"
-            >
-              {messages.readLinkLabel} &rarr;
+            <a href={messages.readLink} target="_blank" rel="noopener noreferrer" onClick={() => trackNextStepsActionClicked("read", "prayed")}>
+              <Button variant="gold" size="sm">
+                {messages.readLinkLabel}
+                <ButtonArrow />
+              </Button>
             </a>
-            <a
-              href={`/${locale}/reading-plan`}
-              onClick={() => trackNextStepsActionClicked("reading_plan", "prayed")}
-              className="flex items-center rounded-lg border border-white/10 px-4 py-2 text-xs font-medium text-white/50 transition-colors hover:bg-white/5 min-h-[44px]"
-            >
-              {messages.readPlanLabel} &rarr;
+            <a href={`/${locale}/reading-plan`} onClick={() => trackNextStepsActionClicked("reading_plan", "prayed")}>
+              <Button variant="ghost" size="sm">
+                {messages.readPlanLabel}
+                <ButtonArrow />
+              </Button>
             </a>
           </div>
         </motion.div>
@@ -114,14 +111,11 @@ export function TrackPrayed({ messages, shareMessages, locale }: TrackPrayedProp
         >
           <h3 className="text-sm font-semibold tracking-wide text-[#D4A843]">{messages.communityHeading}</h3>
           <p className="mt-2 text-sm leading-relaxed text-white/50">{messages.communityBody}</p>
-          <a
-            href={messages.communityLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackNextStepsActionClicked("community", "prayed")}
-            className="mt-3 inline-flex items-center rounded-lg border border-[#D4A843]/30 px-4 py-2 text-xs font-medium text-[#D4A843] transition-colors hover:bg-[#D4A843]/[0.06] min-h-[44px]"
-          >
-            {messages.communityLinkLabel} &rarr;
+          <a href={messages.communityLink} target="_blank" rel="noopener noreferrer" onClick={() => trackNextStepsActionClicked("community", "prayed")} className="mt-3 inline-block">
+            <Button variant="gold" size="sm">
+              {messages.communityLinkLabel}
+              <ButtonArrow />
+            </Button>
           </a>
         </motion.div>
       </div>

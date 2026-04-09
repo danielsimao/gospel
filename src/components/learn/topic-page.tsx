@@ -26,13 +26,15 @@ interface TopicPageProps {
   label: string;
   ctaHeading: string;
   ctaButton: string;
+  completedCtaHeading?: string;
+  completedCtaButton?: string;
   prevLabel: string;
   nextLabel: string;
   prevTopic: { slug: string; title: string } | null;
   nextTopic: { slug: string; title: string } | null;
 }
 
-export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, prevLabel, nextLabel, prevTopic, nextTopic }: TopicPageProps) {
+export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, prevLabel, nextLabel, prevTopic, nextTopic }: TopicPageProps) {
   useEffect(() => {
     trackTopicPageViewed(topic.slug, locale);
   }, [topic.slug, locale]);
@@ -81,6 +83,8 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, prevLab
           nextTopic={nextTopic}
           ctaHeading={ctaHeading}
           ctaButton={ctaButton}
+          completedCtaHeading={completedCtaHeading}
+          completedCtaButton={completedCtaButton}
         />
       </article>
     </main>

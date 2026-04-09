@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameDispatch, useGameState } from "@/components/game-provider";
 import { FollowUp } from "@/components/follow-up";
+import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackQuestionAnswered, trackFollowupShown } from "@/lib/analytics";
 import { QUESTION_CONFIGS, TOTAL_QUESTIONS } from "@/lib/questions";
 import type { AnswerType, TestMessages } from "@/lib/types";
@@ -203,21 +204,12 @@ export function QuestionCard({
                         transition={{ duration: 0.3 }}
                         className="mt-5 flex gap-2"
                       >
-                        <button
-                          onClick={() => handleAnswer("honest")}
-                          className="group relative flex-1 overflow-hidden rounded-xl border border-red-700/40 bg-red-950/40 px-4 py-3 text-sm font-semibold tracking-wide text-red-300 transition-all duration-300 hover:border-red-600/60 hover:bg-red-900/40 min-h-[48px]"
-                        >
-                          <span className="relative z-10">
-                            {question.honestLabel}
-                          </span>
-                          <span className="absolute inset-0 bg-gradient-to-r from-red-900/0 via-red-700/20 to-red-900/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                        </button>
-                        <button
-                          onClick={() => handleAnswer("justify")}
-                          className="flex-1 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 text-sm font-medium tracking-wide text-white/50 transition-all hover:border-white/15 hover:bg-white/[0.04] hover:text-white/70 min-h-[48px]"
-                        >
+                        <Button variant="red" size="sm" onClick={() => handleAnswer("honest")} className="flex-1">
+                          {question.honestLabel}
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => handleAnswer("justify")} className="flex-1">
                           {question.justifyLabel}
-                        </button>
+                        </Button>
                       </motion.div>
                       {canShowVerdictShortcut && (
                         <motion.div
@@ -227,15 +219,12 @@ export function QuestionCard({
                           transition={{ duration: 0.3, delay: 0.1 }}
                           className="mt-3 flex justify-end"
                         >
-                          <button
-                            onClick={() => dispatch({ type: "SHOW_VERDICT" })}
-                            className="group flex items-center gap-1.5 rounded-xl border border-red-900/25 bg-red-950/15 px-3 py-2.5 transition-all hover:border-red-700/40 hover:bg-red-950/30 min-h-[44px]"
-                          >
-                            <span className="h-1.5 w-1.5 rounded-full bg-red-500/60 transition-colors group-hover:bg-red-500" />
-                            <span className="font-mono text-[10px] uppercase tracking-[1.5px] text-red-400/70 transition-colors group-hover:text-red-300">
+                          <Button variant="red" size="sm" onClick={() => dispatch({ type: "SHOW_VERDICT" })}>
+                            <span className="h-1.5 w-1.5 rounded-full bg-red-500/60" />
+                            <span className="font-mono text-[10px] uppercase tracking-[1.5px]">
                               {testMessages.seeVerdictLabel}
                             </span>
-                          </button>
+                          </Button>
                         </motion.div>
                       )}
                     </>
@@ -288,29 +277,19 @@ export function QuestionCard({
                         }}
                         className="mt-4 flex gap-2"
                       >
-                        <button
-                          onClick={advance}
-                          className="group flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/[0.12] bg-white/[0.03] px-4 py-2.5 text-xs font-medium tracking-wide text-white/60 transition-all hover:border-white/20 hover:bg-white/[0.06] hover:text-white/85 min-h-[44px]"
-                        >
-                          <span>
-                            {isLastQuestion
-                              ? testMessages.seeVerdictLabel
-                              : testMessages.nextLabel}
-                          </span>
-                          <span className="transition-transform group-hover:translate-x-0.5">
-                            &rarr;
-                          </span>
-                        </button>
+                        <Button variant="ghost" size="sm" onClick={advance} className="flex-1">
+                          {isLastQuestion
+                            ? testMessages.seeVerdictLabel
+                            : testMessages.nextLabel}
+                          <ButtonArrow />
+                        </Button>
                         {canShowVerdictShortcut && (
-                          <button
-                            onClick={() => dispatch({ type: "SHOW_VERDICT" })}
-                            className="group flex items-center gap-1.5 rounded-xl border border-red-900/25 bg-red-950/15 px-3 py-2.5 transition-all hover:border-red-700/40 hover:bg-red-950/30 min-h-[44px]"
-                          >
-                            <span className="h-1.5 w-1.5 rounded-full bg-red-500/60 transition-colors group-hover:bg-red-500" />
-                            <span className="font-mono text-[10px] uppercase tracking-[1.5px] text-red-400/70 transition-colors group-hover:text-red-300">
+                          <Button variant="red" size="sm" onClick={() => dispatch({ type: "SHOW_VERDICT" })}>
+                            <span className="h-1.5 w-1.5 rounded-full bg-red-500/60" />
+                            <span className="font-mono text-[10px] uppercase tracking-[1.5px]">
                               {testMessages.seeVerdictLabel}
                             </span>
-                          </button>
+                          </Button>
                         )}
                       </motion.div>
                     </motion.div>

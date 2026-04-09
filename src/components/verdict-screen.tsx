@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useGameDispatch } from "@/components/game-provider";
+import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackVerdictReached } from "@/lib/analytics";
 import { buildConfession } from "@/lib/confession";
 import type { GameState, TestMessages } from "@/lib/types";
@@ -123,14 +124,15 @@ export function VerdictScreen({
           className="mt-8"
           aria-hidden={!showBridge}
         >
-          <button
+          <Button
+            variant="gold"
+            mist={showBridge}
             onClick={handleBridgeClick}
             disabled={!showBridge}
-            className="rounded-xl border border-[#D4A843]/25 px-7 py-3.5 text-sm font-medium tracking-wide text-[#D4A843]/80 transition-all duration-500 hover:border-[#D4A843]/50 hover:bg-[#D4A843]/[0.06] hover:text-[#D4A843] min-h-[48px]"
-            style={{ animation: showBridge ? "eternity-gentle-pulse 3s ease-in-out infinite" : "none" }}
           >
-            {testMessages.verdict.bridgeButton} &darr;
-          </button>
+            {testMessages.verdict.bridgeButton}
+            <ButtonArrow direction="down" />
+          </Button>
         </motion.div>
       </div>
     </div>

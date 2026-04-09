@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { DayCard } from "./day-card";
+import { Button, ButtonArrow } from "@/components/ui/button";
 import { readProgress, markDayRead, getCompletedCount } from "@/lib/reading-storage";
 import { trackReadingPlanViewed, trackReadingPlanDayCompleted, trackReadingPlanCompleted } from "@/lib/discipleship-analytics";
 import type { Locale } from "@/lib/i18n";
@@ -142,13 +143,11 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
         >
           <h2 className="text-2xl font-bold text-[#D4A843]">{messages.allCompleteHeading}</h2>
           <p className="mt-3 text-sm leading-relaxed text-white/50">{messages.allCompleteBody}</p>
-          <a
-            href={messages.continueReadingLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-4 inline-flex items-center rounded-lg border border-[#D4A843]/30 px-5 py-2.5 text-sm font-medium text-[#D4A843] transition-colors hover:bg-[#D4A843]/[0.06] min-h-[44px]"
-          >
-            {messages.continueReadingLabel} &rarr;
+          <a href={messages.continueReadingLink} target="_blank" rel="noopener noreferrer" className="mt-4 inline-block">
+            <Button variant="gold" size="sm">
+              {messages.continueReadingLabel}
+              <ButtonArrow />
+            </Button>
           </a>
           <div className="mt-6">
             <p className="text-sm text-white/35">{messages.deeperLabel}</p>

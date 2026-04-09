@@ -8,6 +8,7 @@ import { ChatLanding } from "@/components/chat/chat-landing";
 import { ChatMessages } from "@/components/chat/chat-messages";
 import { ChatInput } from "@/components/chat/chat-input";
 import { InvitationScreen } from "@/components/invitation-screen";
+import { Button, ButtonArrow } from "@/components/ui/button";
 import {
   trackChatStarted,
   trackChatMessageSent,
@@ -247,12 +248,10 @@ export function ChatShell({ messages, chatMessages, locale }: ChatShellProps) {
       {showContinueButton && !isStreaming && (
         <div className="px-4 pb-2">
           <div className="max-w-2xl mx-auto">
-            <button
-              onClick={handleManualAdvance}
-              className="w-full rounded-lg border border-white/10 px-4 py-3 text-sm text-white/50 transition-colors hover:bg-white/5"
-            >
-              Continue &rarr;
-            </button>
+            <Button variant="ghost" onClick={handleManualAdvance} className="w-full">
+              Continue
+              <ButtonArrow />
+            </Button>
           </div>
         </div>
       )}

@@ -19,6 +19,8 @@ interface LearnData {
   label: string;
   ctaHeading: string;
   ctaButton: string;
+  completedCtaHeading?: string;
+  completedCtaButton?: string;
   nextLabel: string;
   prevLabel: string;
   topics: TopicData[];
@@ -80,6 +82,8 @@ export default async function LearnTopicPage({ params }: Props) {
       label={data.label}
       ctaHeading={data.ctaHeading}
       ctaButton={data.ctaButton}
+      completedCtaHeading={data.completedCtaHeading}
+      completedCtaButton={data.completedCtaButton}
       prevLabel={data.prevLabel}
       nextLabel={data.nextLabel}
       prevTopic={prevTopic}

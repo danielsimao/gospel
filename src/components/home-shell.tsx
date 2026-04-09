@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { WorldMap } from "@/components/eternity/world-map";
 import { StickyDeathCounter } from "@/components/shared/sticky-death-counter";
+import { Button, ButtonArrow } from "@/components/ui/button";
 import {
   trackHomeViewed,
   trackHomeCtaClicked,
@@ -104,28 +105,18 @@ export function HomeShell({ hero, counter, home, locale }: HomeShellProps) {
           </h2>
 
           {/* Primary CTA */}
-          <a
-            href={`/${locale}/test`}
-            onClick={() => trackHomeCtaClicked()}
-            className="group mt-8 flex min-h-[52px] items-center justify-center rounded-xl border border-[#D4A843]/30 px-8 py-4 text-[15px] font-semibold tracking-wide text-[#D4A843] transition-all duration-300 hover:border-[#D4A843]/50 hover:shadow-[0_0_32px_rgba(212,168,67,0.1)] sm:min-h-[56px]"
-            style={{
-              background:
-                "linear-gradient(135deg, rgba(212,168,67,0.12) 0%, rgba(212,168,67,0.04) 100%)",
-            }}
-          >
-            {home.ctaButton}
-            <span className="ml-2 transition-transform group-hover:translate-x-1">
-              &rarr;
-            </span>
+          <a href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
+            <Button variant="gold" size="lg" mist>
+              {home.ctaButton}
+              <ButtonArrow />
+            </Button>
           </a>
 
           {/* Secondary link */}
-          <a
-            href={`/${locale}/learn`}
-            onClick={() => trackHomeSecondaryClicked()}
-            className="mt-4 text-sm text-white/35 transition-colors hover:text-white/60"
-          >
-            {home.secondaryLink}
+          <a href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-4">
+            <Button variant="text">
+              {home.secondaryLink}
+            </Button>
           </a>
         </div>
       </section>
