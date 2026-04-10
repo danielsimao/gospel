@@ -153,25 +153,22 @@ export function GraceScreen({ messages }: GraceScreenProps) {
             })}
           </div>
 
-          {/* Tap to continue pill */}
-          <AnimatePresence>
-            {revealedCount > 0 && !allBeatsRevealed && (
-              <motion.div
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4, delay: 0.6 }}
-                className="mt-6 flex justify-center"
-              >
-                <Button variant="gold" size="sm" mist onClick={handleTapContinue}>
-                  <span className="font-mono text-[10px] uppercase tracking-[2.5px]">
-                    {messages.tapContinue}
-                  </span>
-                  <ButtonArrow direction="down" />
-                </Button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* Tap to continue pill — no exit animation, just unmounts when the last beat is revealed */}
+          {revealedCount > 0 && !allBeatsRevealed && (
+            <motion.div
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.6 }}
+              className="mt-6 flex justify-center"
+            >
+              <Button variant="gold" size="sm" mist onClick={handleTapContinue}>
+                <span className="font-mono text-[10px] uppercase tracking-[2.5px]">
+                  {messages.tapContinue}
+                </span>
+                <ButtonArrow direction="down" />
+              </Button>
+            </motion.div>
+          )}
 
           {/* Scripture + Continue — after all beats */}
           <AnimatePresence>
