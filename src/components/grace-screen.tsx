@@ -27,7 +27,10 @@ export function GraceScreen({ messages }: GraceScreenProps) {
   const startTime = useRef(Date.now());
   const maxScrollDepth = useRef(0);
 
-  const [revealedCount, setRevealedCount] = useState(0);
+  // Beat 1 is reserved in the layout from mount to avoid a content shift
+  // when it fades in. Subsequent beats are revealed by user tap, which
+  // intentionally shifts the page.
+  const [revealedCount, setRevealedCount] = useState(1);
   const allBeatsRevealed = revealedCount >= messages.beats.length;
   const beatRefs = useRef(messages.beats.map(() => createRef<HTMLDivElement>()));
 
@@ -48,14 +51,12 @@ export function GraceScreen({ messages }: GraceScreenProps) {
     };
   }, []);
 
-  // Track grace phase entry + auto-reveal beat 1
+  // Track grace phase entry. Beat 1 is already present in the layout
+  // (see useState(1) above) — its visual fade-in is delayed via motion
+  // transition so the title animates first without causing a layout shift.
   useEffect(() => {
     trackGraceRevealed();
-    const timer = setTimeout(() => {
-      setRevealedCount(1);
-      trackGraceBeatRevealed(0);
-    }, 1500);
-    return () => clearTimeout(timer);
+    trackGraceBeatRevealed(0);
   }, []);
 
   const handleTapContinue = useCallback(() => {
@@ -132,7 +133,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
                     opacity: isActive ? 1 : 0.32,
                     y: 0,
                   }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  transition={{ duration: 0.5, ease: "easeOut", delay: i === 0 ? 1.5 : 0 }}
                   className="border-t border-white/[0.04] py-4 first:border-t-0 first:pt-0"
                 >
                   <p className="mb-2 font-mono text-[8px] uppercase tracking-[2.5px] text-[#D4A843]/70">
@@ -158,7 +159,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
             <motion.div
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.6 }}
+              transition={{ duration: 0.4, delay: 2.2 }}
               className="mt-6 flex justify-center"
             >
               <Button variant="gold" size="sm" mist onClick={handleTapContinue}>
