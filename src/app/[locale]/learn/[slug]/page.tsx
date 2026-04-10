@@ -56,10 +56,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const topic = data.topics.find((t) => t.slug === slug);
   if (!topic) return {};
 
+  const messages = await import(`@/messages/${locale}.json`);
+  const brand = messages.default.meta.title.split(" | ")[0];
+
   return buildPageMetadata({
     locale,
     path: `/learn/${slug}`,
-    title: topic.title,
+    title: `${topic.title} | ${brand}`,
     description: topic.metaDescription,
   });
 }

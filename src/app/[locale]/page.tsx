@@ -44,7 +44,7 @@ async function getHomeData(locale: Locale): Promise<HomeData> {
     counter: data.eternity.counter,
     home: data.home,
     share: data.share,
-    meta: data.eternity.meta,
+    meta: data.meta,
   };
 }
 

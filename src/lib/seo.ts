@@ -127,13 +127,20 @@ export function buildSiteSchema() {
         "@id": `${SITE_URL}#website`,
         url: SITE_URL,
         name: BRAND_NAME,
+        description: "Are you a good person? Take the test — a direct, honest look at morality, God, and eternity.",
         inLanguage: [...SUPPORTED_LOCALES],
+        publisher: { "@id": `${SITE_URL}#organization` },
       },
       {
         "@type": "Organization",
         "@id": `${SITE_URL}#organization`,
         url: SITE_URL,
         name: BRAND_NAME,
+        description: "A direct, honest look at the gospel — measure yourself against God's standard and see what comes next.",
+        logo: {
+          "@type": "ImageObject",
+          url: getAbsoluteUrl("/og-image-en.png"),
+        },
       },
     ],
   };

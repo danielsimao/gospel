@@ -21,10 +21,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const learn = messages.default.learn;
   if (!learn) return {};
 
+  const brand = messages.default.meta.title.split(" | ")[0];
+
   return buildPageMetadata({
     locale,
     path: "/learn",
-    title: `${learn.label} | ${messages.default.meta.title}`,
+    title: `${learn.label} | ${brand}`,
     description: learn.hubSubtitle,
   });
 }
@@ -40,7 +42,8 @@ export default async function LearnPage({ params }: Props) {
     throw new Error(`[learn] Missing "learn" key in ${locale}.json`);
   }
 
-  const title = `${learn.label} | ${messages.default.meta.title}`;
+  const brand = messages.default.meta.title.split(" | ")[0];
+  const title = `${learn.label} | ${brand}`;
   const webPageSchema = buildWebPageSchema({
     locale,
     path: "/learn",
