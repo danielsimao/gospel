@@ -11,6 +11,7 @@ import {
   trackHomeViewed,
   trackHomeCtaClicked,
   trackHomeSecondaryClicked,
+  trackHomeRetakeClicked,
 } from "@/lib/eternity-analytics";
 import type { HomeMessages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
@@ -43,9 +44,16 @@ export function HomeShell({ hero, home, share, locale }: HomeShellProps) {
 
   useEffect(() => {
     trackHomeViewed(locale);
-    try {
-      setTestCompleted(localStorage.getItem("test_completed") === "1");
-    } catch {}
+
+    function readTestCompleted() {
+      try {
+        setTestCompleted(localStorage.getItem("test_completed") === "1");
+      } catch {}
+    }
+
+    readTestCompleted();
+    window.addEventListener("pageshow", readTestCompleted);
+    return () => window.removeEventListener("pageshow", readTestCompleted);
   }, [locale]);
 
   return (
@@ -134,7 +142,16 @@ export function HomeShell({ hero, home, share, locale }: HomeShellProps) {
                   {home.learnCta}
                 </Link>
                 <span className="text-white/50">·</span>
-                <Link href={`/${locale}/test`} className="text-white/70 transition-colors hover:text-white/60">
+                <Link
+                  href={`/${locale}/test`}
+                  onClick={() => {
+                    trackHomeRetakeClicked();
+                    try {
+                      localStorage.removeItem("test_completed");
+                    } catch {}
+                  }}
+                  className="text-white/70 transition-colors hover:text-white/60"
+                >
                   {home.retakeCta}
                 </Link>
               </div>
