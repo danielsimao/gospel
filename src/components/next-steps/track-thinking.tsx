@@ -12,6 +12,9 @@ interface TrackThinkingMessages {
   readingLink: string;
   readingLinkLabel: string;
   readingPlanLabel: string;
+  learnHeading: string;
+  learnBody: string;
+  learnLinkLabel: string;
   comeBack: string;
 }
 
@@ -66,9 +69,29 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
       </motion.div>
 
       <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.8,
+          delay: 0.5 + (messages.reflections.length + 1) * 0.3,
+        }}
+        className="mt-5 rounded-xl border border-white/10 bg-white/[0.02] p-5"
+      >
+        <h3 className="text-sm font-semibold tracking-wide text-white/70">{messages.learnHeading}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-white/60">{messages.learnBody}</p>
+        <a
+          href={`/${locale}/learn`}
+          onClick={() => trackNextStepsActionClicked("learn", "thinking")}
+          className="mt-3 inline-flex items-center rounded-lg border border-white/15 px-4 py-2 text-xs font-medium text-white/60 transition-colors hover:bg-white/5 min-h-[44px]"
+        >
+          {messages.learnLinkLabel} &rarr;
+        </a>
+      </motion.div>
+
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.5 + (messages.reflections.length + 1) * 0.3 }}
+        transition={{ duration: 0.8, delay: 0.5 + (messages.reflections.length + 2) * 0.3 }}
         className="mt-10 text-center"
       >
         <p className="text-sm leading-relaxed text-white/60">{messages.comeBack}</p>

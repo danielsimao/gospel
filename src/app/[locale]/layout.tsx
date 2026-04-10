@@ -65,7 +65,7 @@ export default async function LocaleLayout({ params, children }: Props) {
         </noscript>
         <StructuredData data={siteSchema} />
         <Providers>
-          <TopBarWrapper locale={locale as Locale} />
+          <TopBarWrapper locale={locale as Locale} learnLabel={data.learn?.label ?? "Learn"} />
           <DeathCounterWrapper
             label={data.eternity?.counter?.label ?? ""}
             liveBadge={data.eternity?.counter?.liveBadge ?? ""}

@@ -13,10 +13,14 @@ export function trackNextStepsViewed(track: "prayed" | "thinking", locale: strin
 }
 
 export function trackNextStepsActionClicked(
-  action: "read" | "pray" | "community" | "share" | "reading_plan",
+  action: "read" | "pray" | "community" | "share" | "reading_plan" | "learn",
   track: "prayed" | "thinking",
 ) {
   safeCapture("next_steps_action_clicked", { action, track });
+}
+
+export function trackReadingPlanLearnClicked(locale: string) {
+  safeCapture("reading_plan_learn_clicked", { locale });
 }
 
 export function trackReadingPlanViewed(locale: string) {

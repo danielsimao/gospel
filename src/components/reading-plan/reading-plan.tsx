@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { DayCard } from "./day-card";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { readProgress, markDayRead, getCompletedCount } from "@/lib/reading-storage";
-import { trackReadingPlanViewed, trackReadingPlanDayCompleted, trackReadingPlanCompleted } from "@/lib/discipleship-analytics";
+import { trackReadingPlanViewed, trackReadingPlanDayCompleted, trackReadingPlanCompleted, trackReadingPlanLearnClicked } from "@/lib/discipleship-analytics";
 import type { Locale } from "@/lib/i18n";
 
 interface DayMessages {
@@ -152,7 +152,8 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
           <div className="mt-6">
             <p className="text-sm text-white/60">{messages.deeperLabel}</p>
             <a
-              href={`/${locale}/learn/who-is-jesus`}
+              href={`/${locale}/learn`}
+              onClick={() => trackReadingPlanLearnClicked(locale)}
               className="mt-2 inline-flex items-center text-sm text-[#D4A843]/70 transition-colors hover:text-[#D4A843]"
             >
               {messages.deeperLink} →

@@ -21,6 +21,9 @@ interface TrackPrayedMessages {
   communityBody: string;
   communityLink: string;
   communityLinkLabel: string;
+  learnHeading: string;
+  learnBody: string;
+  learnLinkLabel: string;
   shareHeading: string;
   shareMessage: string;
 }
@@ -118,12 +121,33 @@ export function TrackPrayed({ messages, shareMessages, locale }: TrackPrayedProp
             </Button>
           </a>
         </motion.div>
+
+        {/* Learn */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={stagger(paragraphs.length + 3)}
+          className="rounded-xl border border-[#D4A843]/20 bg-[#D4A843]/[0.02] p-5"
+        >
+          <h3 className="text-sm font-semibold tracking-wide text-[#D4A843]">{messages.learnHeading}</h3>
+          <p className="mt-2 text-sm leading-relaxed text-white/60">{messages.learnBody}</p>
+          <a
+            href={`/${locale}/learn`}
+            onClick={() => trackNextStepsActionClicked("learn", "prayed")}
+            className="mt-3 inline-block"
+          >
+            <Button variant="gold" size="sm">
+              {messages.learnLinkLabel}
+              <ButtonArrow />
+            </Button>
+          </a>
+        </motion.div>
       </div>
 
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={stagger(paragraphs.length + 3)}
+        transition={stagger(paragraphs.length + 4)}
         className="mt-12"
       >
         <p className="text-center text-sm text-white/60">{messages.shareHeading}</p>

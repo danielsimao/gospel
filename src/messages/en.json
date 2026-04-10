@@ -159,7 +159,8 @@
       { "name": "Learn more at Living Waters", "url": "https://livingwaters.com/" },
       { "name": "Read the Gospel of John", "url": "https://www.bible.com/bible/114/JHN.1.NKJV" },
       { "name": "Find a church near you", "url": "https://www.google.com/maps/search/church+near+me" }
-    ]
+    ],
+    "learnMoreLabel": "Learn more about the gospel"
   },
   "share": {
     "prompt": "Share this with someone",
@@ -185,6 +186,9 @@
       "communityBody": "You weren't meant to do this alone. Find a Bible-believing church where you can grow.",
       "communityLink": "https://www.9marks.org/church-search/",
       "communityLinkLabel": "Search for a church",
+      "learnHeading": "Learn",
+      "learnBody": "Explore the foundations of the faith — who Jesus is, what grace means, why the cross matters.",
+      "learnLinkLabel": "Explore the foundations",
       "shareHeading": "Share Your Decision",
       "shareMessage": "I just made a decision that changes everything:"
     },
@@ -200,6 +204,9 @@
       "readingLink": "https://www.bible.com/bible/114/JHN.3.NKJV",
       "readingLinkLabel": "Read John 3",
       "readingPlanLabel": "7-day reading plan",
+      "learnHeading": "Want the foundations?",
+      "learnBody": "Short, honest explanations of the core questions — who Jesus claimed to be, why it matters, what grace is.",
+      "learnLinkLabel": "Explore the topics",
       "comeBack": "This site will be here whenever you're ready. Bookmark it, or start the reading plan when the time is right."
     }
   },

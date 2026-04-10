@@ -20,6 +20,10 @@ export function trackHomeSecondaryClicked() {
   safeCapture("home_secondary_clicked", { destination: "learn" });
 }
 
+export function trackTopBarLearnClicked() {
+  safeCapture("top_bar_learn_clicked");
+}
+
 export function trackGraceRevealed() {
   safeCapture("grace_revealed");
 }

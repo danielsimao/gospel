@@ -6,6 +6,7 @@ import { ShareButtons } from "@/components/share-buttons";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import {
   trackInvitationResponse,
+  trackInvitationLearnMoreClicked,
 } from "@/lib/analytics";
 import type { InvitationResponse, Messages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
@@ -107,6 +108,18 @@ export function InvitationScreen({
               <p className="text-center text-sm text-white/60">
                 <Link href={`/${locale}/reading-plan`} className="underline transition-colors hover:text-white/50">
                   {messages.nextSteps.dismissedReturn}
+                </Link>
+              </p>
+            )}
+
+            {invitation.learnMoreLabel && (
+              <p className="mt-4 text-center text-sm text-white/60">
+                <Link
+                  href={`/${locale}/learn`}
+                  onClick={() => trackInvitationLearnMoreClicked(invitationResponse, locale)}
+                  className="underline transition-colors hover:text-white/50"
+                >
+                  {invitation.learnMoreLabel}
                 </Link>
               </p>
             )}

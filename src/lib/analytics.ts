@@ -113,6 +113,16 @@ export function trackInvitationResponse(
   });
 }
 
+export function trackInvitationLearnMoreClicked(
+  response: "prayed" | "thinking" | "dismissed",
+  locale: string,
+) {
+  safeCapture("invitation_learn_more_clicked", {
+    response,
+    locale,
+  });
+}
+
 export function trackResourceClicked(name: string, url: string) {
   safeCapture("resource_clicked", { resource_name: name, resource_url: url });
 }

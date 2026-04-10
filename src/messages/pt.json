@@ -159,7 +159,8 @@
       { "name": "Saber mais em Living Waters", "url": "https://livingwaters.com/" },
       { "name": "Ler o Evangelho de Joao", "url": "https://www.bible.com/bible/212/JHN.1.ACF" },
       { "name": "Encontrar uma igreja perto de ti", "url": "https://www.google.com/maps/search/igreja+perto+de+mim" }
-    ]
+    ],
+    "learnMoreLabel": "Aprende mais sobre o evangelho"
   },
   "share": {
     "prompt": "Partilha com alguem",
@@ -185,6 +186,9 @@
       "communityBody": "Não foste feito para fazer isto sozinho. Encontra uma igreja que crê na Bíblia onde possas crescer.",
       "communityLink": "https://maps.app.goo.gl/NMMMdeJa5H5BR5Vp9",
       "communityLinkLabel": "Ver igrejas",
+      "learnHeading": "Aprende",
+      "learnBody": "Explora os fundamentos da fé — quem é Jesus, o que significa a graça, porque é que a cruz importa.",
+      "learnLinkLabel": "Explorar os fundamentos",
       "shareHeading": "Partilha a Tua Decisão",
       "shareMessage": "Acabei de tomar uma decisão que muda tudo:"
     },
@@ -200,6 +204,9 @@
       "readingLink": "https://www.bible.com/bible/212/JHN.3.ARC",
       "readingLinkLabel": "Ler João 3",
       "readingPlanLabel": "Plano de leitura de 7 dias",
+      "learnHeading": "Queres os fundamentos?",
+      "learnBody": "Explicações curtas e honestas sobre as perguntas essenciais — quem Jesus afirmou ser, porque é que importa, o que é a graça.",
+      "learnLinkLabel": "Explorar os temas",
       "comeBack": "Este site estará aqui sempre que estiveres pronto. Guarda nos favoritos, ou começa o plano de leitura quando achares que é a altura."
     }
   },
