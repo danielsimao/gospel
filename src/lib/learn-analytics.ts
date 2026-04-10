@@ -23,3 +23,7 @@ export function trackTopicCtaClicked(slug: string, locale: string) {
 export function trackTopicNavClicked(slug: string, direction: "next" | "prev", locale: string) {
   safeCapture("topic_nav_clicked", { slug, direction, locale });
 }
+
+export function trackLearnProgressReset(locale: string) {
+  safeCapture("learn_progress_reset", { locale });
+}

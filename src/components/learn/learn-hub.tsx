@@ -4,8 +4,11 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { ShareButtons } from "@/components/share-buttons";
-import { isTopicCompleted } from "@/lib/learn-progress-storage";
+import { isTopicCompleted, clearAllTopicProgress } from "@/lib/learn-progress-storage";
+import { clearAllQuizAnswers, hasAnyQuizAnswers } from "@/lib/learn-quiz-storage";
 import { readProgress, getCompletedCount } from "@/lib/reading-storage";
+import { trackLearnProgressReset } from "@/lib/learn-analytics";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import type { Locale } from "@/lib/i18n";
 
 const TOTAL_READING_DAYS = 7;
@@ -25,14 +28,34 @@ interface LearnHubProps {
   allCompleteTestCta: string;
   allCompleteReadingCta: string;
   allCompleteShareCta: string;
+  resetLabel: string;
+  resetConfirmTitle: string;
+  resetConfirmBody: string;
+  resetConfirmButton: string;
+  resetCancelButton: string;
   shareMessages: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
   topics: Topic[];
   locale: Locale;
 }
 
-export function LearnHub({ label, subtitle, progressLabel, completedLabel, allCompleteHeading, allCompleteTestCta, allCompleteReadingCta, allCompleteShareCta, shareMessages, topics, locale }: LearnHubProps) {
+export function LearnHub({ label, subtitle, progressLabel, completedLabel, allCompleteHeading, allCompleteTestCta, allCompleteReadingCta, allCompleteShareCta, resetLabel, resetConfirmTitle, resetConfirmBody, resetConfirmButton, resetCancelButton, shareMessages, topics, locale }: LearnHubProps) {
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [completionCta, setCompletionCta] = useState<{ label: string; href: string; type: "button" | "share" } | null>(null);
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [hasQuizProgress, setHasQuizProgress] = useState(false);
+
+  function handleReset() {
+    const topicProgressCleared = clearAllTopicProgress();
+    const quizAnswersCleared = clearAllQuizAnswers();
+    if (!topicProgressCleared || !quizAnswersCleared) {
+      return;
+    }
+    setCompleted(new Set());
+    setHasQuizProgress(false);
+    setCompletionCta(null);
+    setResetDialogOpen(false);
+    trackLearnProgressReset(locale);
+  }
 
   useEffect(() => {
     const done = new Set<string>();
@@ -40,6 +63,7 @@ export function LearnHub({ label, subtitle, progressLabel, completedLabel, allCo
       if (isTopicCompleted(topic.slug)) done.add(topic.slug);
     }
     setCompleted(done);
+    setHasQuizProgress(hasAnyQuizAnswers());
 
     // Determine completion CTA if all done
     if (done.size >= topics.length) {
@@ -61,6 +85,7 @@ export function LearnHub({ label, subtitle, progressLabel, completedLabel, allCo
   const completedCount = completed.size;
   const totalCount = topics.length;
   const allDone = completedCount >= totalCount;
+  const hasAnyProgress = completedCount > 0 || hasQuizProgress;
   const progress = progressLabel
     .replace("{completed}", String(completedCount))
     .replace("{total}", String(totalCount));
@@ -81,12 +106,19 @@ export function LearnHub({ label, subtitle, progressLabel, completedLabel, allCo
         </div>
 
         {/* Progress bar */}
-        {completedCount > 0 && (
+        {hasAnyProgress && (
           <div className="mt-6 animate-[fadeInUp_0.5s_ease-out_both]" style={{ animationDelay: "200ms" }}>
             <div className="mb-2 flex items-center justify-between">
               <span className="font-mono text-[10px] uppercase tracking-[2px] text-[#D4A843]/70">
                 {progress}
               </span>
+              <button
+                type="button"
+                onClick={() => setResetDialogOpen(true)}
+                className="font-mono text-[10px] uppercase tracking-[2px] text-white/40 transition-colors hover:text-white/60"
+              >
+                {resetLabel}
+              </button>
             </div>
             <div className="flex gap-1.5">
               {topics.map((topic) => (
@@ -156,6 +188,16 @@ export function LearnHub({ label, subtitle, progressLabel, completedLabel, allCo
           })}
         </div>
       </div>
+
+      <ConfirmDialog
+        open={resetDialogOpen}
+        title={resetConfirmTitle}
+        body={resetConfirmBody}
+        confirmLabel={resetConfirmButton}
+        cancelLabel={resetCancelButton}
+        onConfirm={handleReset}
+        onClose={() => setResetDialogOpen(false)}
+      />
     </main>
   );
 }

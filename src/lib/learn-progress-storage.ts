@@ -15,3 +15,17 @@ export function markTopicCompleted(slug: string): void {
     localStorage.setItem(`${PREFIX}${slug}`, "1");
   } catch {}
 }
+
+export function clearAllTopicProgress(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(PREFIX)) keysToRemove.push(key);
+    }
+    keysToRemove.forEach((k) => localStorage.removeItem(k));
+    return true;
+  } catch {}
+  return false;
+}

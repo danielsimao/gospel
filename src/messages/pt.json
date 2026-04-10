@@ -223,6 +223,11 @@
     "continueReadingLabel": "Continuar a ler João",
     "deeperLabel": "Queres ir mais fundo?",
     "deeperLink": "Explora os fundamentos do que tens lido.",
+    "resetLabel": "Reiniciar",
+    "resetConfirmTitle": "Reiniciar o plano de leitura?",
+    "resetConfirmBody": "Isto vai limpar o progresso dos 7 dias. Podes começar de novo a partir do Dia 1 — mais nada é afetado.",
+    "resetConfirmButton": "Reiniciar progresso",
+    "resetCancelButton": "Cancelar",
     "days": [
       {
         "title": "O Princípio",
@@ -305,6 +310,11 @@
     "completedCtaButton": "Come\u00e7ar o plano de leitura",
     "nextLabel": "Seguinte",
     "prevLabel": "Anterior",
+    "resetLabel": "Reiniciar",
+    "resetConfirmTitle": "Reiniciar o progresso de aprendizagem?",
+    "resetConfirmBody": "Isto vai limpar todos os temas concluídos e respostas aos quizzes. Podes começar a explorar de novo desde o início.",
+    "resetConfirmButton": "Reiniciar progresso",
+    "resetCancelButton": "Cancelar",
     "topics": [
       {
         "slug": "who-is-jesus",

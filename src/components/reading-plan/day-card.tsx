@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,14 @@ interface DayCardProps {
 
 export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markReadLabel, completedLabel, onMarkRead }: DayCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
+  const [isExpanded, setIsExpanded] = useState(isCurrent);
+
+  // Sync expanded state with current day: when isCurrent flips, follow it.
+  // This collapses the just-read day and auto-expands the new current day.
+  // Cards whose isCurrent doesn't change keep whatever the user manually set.
+  useEffect(() => {
+    setIsExpanded(isCurrent);
+  }, [isCurrent]);
 
   // Scroll into view when this card becomes current
   useEffect(() => {
@@ -54,8 +62,13 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
           : "border-white/[0.06] bg-white/[0.015]"
       }`}
     >
-      {/* Header — always visible */}
-      <div className="flex w-full items-center justify-between p-5 sm:p-6">
+      {/* Header — always visible, toggles expand on click */}
+      <button
+        type="button"
+        onClick={() => setIsExpanded((v) => !v)}
+        aria-expanded={isExpanded}
+        className="flex w-full items-center justify-between p-5 text-left transition-colors hover:bg-white/[0.02] sm:p-6"
+      >
         <div className="flex items-center gap-3">
           <span className="font-mono text-[10px] uppercase tracking-[2px] text-[#D4A843]/70">
             {dayLabel} {day}
@@ -69,17 +82,17 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
             </span>
           )}
           <motion.div
-            animate={{ rotate: isCurrent ? 180 : 0 }}
+            animate={{ rotate: isExpanded ? 180 : 0 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           >
             <ChevronDown className="size-4 text-white/50" />
           </motion.div>
         </div>
-      </div>
+      </button>
 
       {/* Content — animated expand/collapse */}
       <AnimatePresence initial={false}>
-        {isCurrent && (
+        {isExpanded && (
           <motion.div
             key="content"
             initial={{ height: 0, opacity: 0 }}
@@ -116,7 +129,7 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
                 <p className="text-sm italic leading-relaxed text-white/60">{messages.prayer}</p>
               </div>
 
-              {!isCompleted && (
+              {isCurrent && !isCompleted && (
                 <div className="mt-4">
                   <Button variant="gold" size="sm" onClick={onMarkRead}>
                     {markReadLabel}

@@ -18,3 +18,28 @@ export function writeQuizAnswer(topicSlug: string, sectionIndex: number, optionI
     localStorage.setItem(`${PREFIX}${topicSlug}-${sectionIndex}`, String(optionIndex));
   } catch {}
 }
+
+export function hasAnyQuizAnswers(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(PREFIX)) return true;
+    }
+  } catch {}
+  return false;
+}
+
+export function clearAllQuizAnswers(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(PREFIX)) keysToRemove.push(key);
+    }
+    keysToRemove.forEach((k) => localStorage.removeItem(k));
+    return true;
+  } catch {}
+  return false;
+}

@@ -23,6 +23,10 @@ export function trackReadingPlanLearnClicked(locale: string) {
   safeCapture("reading_plan_learn_clicked", { locale });
 }
 
+export function trackReadingPlanReset(locale: string) {
+  safeCapture("reading_plan_reset", { locale });
+}
+
 export function trackReadingPlanViewed(locale: string) {
   safeCapture("reading_plan_viewed", { locale });
 }

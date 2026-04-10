@@ -4,8 +4,9 @@ import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { DayCard } from "./day-card";
 import { Button, ButtonArrow } from "@/components/ui/button";
-import { readProgress, markDayRead, getCompletedCount } from "@/lib/reading-storage";
-import { trackReadingPlanViewed, trackReadingPlanDayCompleted, trackReadingPlanCompleted, trackReadingPlanLearnClicked } from "@/lib/discipleship-analytics";
+import { readProgress, markDayRead, getCompletedCount, clearReadingProgress } from "@/lib/reading-storage";
+import { trackReadingPlanViewed, trackReadingPlanDayCompleted, trackReadingPlanCompleted, trackReadingPlanLearnClicked, trackReadingPlanReset } from "@/lib/discipleship-analytics";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import type { Locale } from "@/lib/i18n";
 
 interface DayMessages {
@@ -31,6 +32,11 @@ interface ReadingPlanMessages {
   continueReadingLabel: string;
   deeperLabel: string;
   deeperLink: string;
+  resetLabel: string;
+  resetConfirmTitle: string;
+  resetConfirmBody: string;
+  resetConfirmButton: string;
+  resetCancelButton: string;
   days: DayMessages[];
 }
 
@@ -41,11 +47,22 @@ interface ReadingPlanProps {
 
 export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
   const [progress, setProgress] = useState<Record<string, boolean>>({});
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const totalDays = messages.days.length;
 
   useEffect(() => {
     setProgress(readProgress());
     trackReadingPlanViewed(locale);
+  }, [locale]);
+
+  const handleReset = useCallback(() => {
+    const success = clearReadingProgress();
+    if (!success) {
+      return;
+    }
+    setProgress({});
+    setResetDialogOpen(false);
+    trackReadingPlanReset(locale);
   }, [locale]);
 
   const completedCount = getCompletedCount(progress, totalDays);
@@ -103,6 +120,15 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
           <span className="font-mono text-[10px] uppercase tracking-[2px] text-[#D4A843]/70">
             {progressLabel}
           </span>
+          {completedCount > 0 && (
+            <button
+              type="button"
+              onClick={() => setResetDialogOpen(true)}
+              className="font-mono text-[10px] uppercase tracking-[2px] text-white/40 transition-colors hover:text-white/60"
+            >
+              {messages.resetLabel}
+            </button>
+          )}
         </div>
         <div className="flex gap-1.5">
           {messages.days.map((_, i) => (
@@ -133,6 +159,16 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
           />
         ))}
       </div>
+
+      <ConfirmDialog
+        open={resetDialogOpen}
+        title={messages.resetConfirmTitle}
+        body={messages.resetConfirmBody}
+        confirmLabel={messages.resetConfirmButton}
+        cancelLabel={messages.resetCancelButton}
+        onConfirm={handleReset}
+        onClose={() => setResetDialogOpen(false)}
+      />
 
       {allComplete && (
         <motion.div

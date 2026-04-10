@@ -223,6 +223,11 @@
     "continueReadingLabel": "Continue reading John",
     "deeperLabel": "Want to go deeper?",
     "deeperLink": "Explore the foundations of what you've been reading.",
+    "resetLabel": "Reset",
+    "resetConfirmTitle": "Reset your reading plan?",
+    "resetConfirmBody": "This will clear all 7 days of progress. You can start again from Day 1 — nothing else is affected.",
+    "resetConfirmButton": "Reset progress",
+    "resetCancelButton": "Cancel",
     "days": [
       {
         "title": "The Beginning",
@@ -305,6 +310,11 @@
     "completedCtaButton": "Start the reading plan",
     "nextLabel": "Next",
     "prevLabel": "Previous",
+    "resetLabel": "Reset",
+    "resetConfirmTitle": "Reset your learning progress?",
+    "resetConfirmBody": "This will clear all topic completions and quiz answers. You can start exploring again from the beginning.",
+    "resetConfirmButton": "Reset progress",
+    "resetCancelButton": "Cancel",
     "topics": [
       {
         "slug": "who-is-jesus",

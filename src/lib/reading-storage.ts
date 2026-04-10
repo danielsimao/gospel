@@ -40,3 +40,14 @@ export function getCompletedCount(progress: ReadingProgress, totalDays: number):
   }
   return count;
 }
+
+export function clearReadingProgress(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+    return true;
+  } catch (error) {
+    console.warn("[reading-storage] Failed to clear progress:", error);
+    return false;
+  }
+}

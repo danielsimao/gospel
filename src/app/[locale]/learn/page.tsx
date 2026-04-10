@@ -60,6 +60,11 @@ export default async function LearnPage({ params }: Props) {
         allCompleteTestCta={learn.allCompleteTestCta}
         allCompleteReadingCta={learn.allCompleteReadingCta}
         allCompleteShareCta={learn.allCompleteShareCta}
+        resetLabel={learn.resetLabel}
+        resetConfirmTitle={learn.resetConfirmTitle}
+        resetConfirmBody={learn.resetConfirmBody}
+        resetConfirmButton={learn.resetConfirmButton}
+        resetCancelButton={learn.resetCancelButton}
         shareMessages={messages.default.share}
         topics={learn.topics}
         locale={locale as Locale}
