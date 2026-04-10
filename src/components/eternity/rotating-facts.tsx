@@ -21,7 +21,7 @@ export function RotatingFacts({ facts, interval = 6000 }: RotatingFactsProps) {
   }, [facts.length, interval]);
 
   return (
-    <div className="relative h-6 overflow-hidden">
+    <div className="relative h-10 overflow-hidden sm:h-12">
       <AnimatePresence mode="wait">
         <motion.p
           key={index}
@@ -29,7 +29,7 @@ export function RotatingFacts({ facts, interval = 6000 }: RotatingFactsProps) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -12 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute inset-x-0 text-center text-xs tracking-wide text-white/60 sm:text-sm"
+          className="absolute inset-0 flex items-center justify-center text-center text-xs tracking-wide text-white/60 sm:text-sm"
         >
           {facts[index]}
         </motion.p>
