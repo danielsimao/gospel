@@ -25,10 +25,13 @@ export const DeathCounter = memo(function DeathCounter({
   fromMidnight = false,
 }: DeathCounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const baseRef = useRef(fromMidnight ? getMsSinceMidnightUTC() : 0);
-  const startTime = useRef(Date.now());
+  const baseRef = useRef(0);
+  const startTime = useRef(0);
 
   useEffect(() => {
+    baseRef.current = fromMidnight ? getMsSinceMidnightUTC() : 0;
+    startTime.current = Date.now();
+
     let raf: number;
     function tick() {
       const elapsedMs = Date.now() - startTime.current;
@@ -41,7 +44,7 @@ export const DeathCounter = memo(function DeathCounter({
     }
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [fromMidnight]);
 
   return <span ref={ref} className={className} style={style}>0</span>;
 });

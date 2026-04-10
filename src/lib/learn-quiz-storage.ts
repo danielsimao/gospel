@@ -1,3 +1,5 @@
+import { emitStorageChange } from "./client-storage";
+
 const PREFIX = "learn-quiz-";
 
 export function readQuizAnswer(topicSlug: string, sectionIndex: number): number | null {
@@ -16,6 +18,7 @@ export function writeQuizAnswer(topicSlug: string, sectionIndex: number, optionI
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(`${PREFIX}${topicSlug}-${sectionIndex}`, String(optionIndex));
+    emitStorageChange();
   } catch {}
 }
 
@@ -39,6 +42,7 @@ export function clearAllQuizAnswers(): boolean {
       if (key && key.startsWith(PREFIX)) keysToRemove.push(key);
     }
     keysToRemove.forEach((k) => localStorage.removeItem(k));
+    emitStorageChange();
     return true;
   } catch {}
   return false;

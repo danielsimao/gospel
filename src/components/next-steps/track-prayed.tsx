@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { ShareButtons } from "@/components/share-buttons";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
@@ -82,12 +83,15 @@ export function TrackPrayed({ messages, shareMessages, locale }: TrackPrayedProp
                 <ButtonArrow />
               </Button>
             </a>
-            <a href={`/${locale}/reading-plan`} onClick={() => trackNextStepsActionClicked("reading_plan", "prayed")}>
+            <Link
+              href={`/${locale}/reading-plan`}
+              onClick={() => trackNextStepsActionClicked("reading_plan", "prayed")}
+            >
               <Button variant="ghost" size="sm">
                 {messages.readPlanLabel}
                 <ButtonArrow />
               </Button>
-            </a>
+            </Link>
           </div>
         </motion.div>
 
@@ -131,7 +135,7 @@ export function TrackPrayed({ messages, shareMessages, locale }: TrackPrayedProp
         >
           <h3 className="text-sm font-semibold tracking-wide text-[#D4A843]">{messages.learnHeading}</h3>
           <p className="mt-2 text-sm leading-relaxed text-white/60">{messages.learnBody}</p>
-          <a
+          <Link
             href={`/${locale}/learn`}
             onClick={() => trackNextStepsActionClicked("learn", "prayed")}
             className="mt-3 inline-block"
@@ -140,7 +144,7 @@ export function TrackPrayed({ messages, shareMessages, locale }: TrackPrayedProp
               {messages.learnLinkLabel}
               <ButtonArrow />
             </Button>
-          </a>
+          </Link>
         </motion.div>
       </div>
 

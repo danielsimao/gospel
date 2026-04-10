@@ -1,3 +1,5 @@
+import { emitStorageChange } from "./client-storage";
+
 const STORAGE_KEY = "gospel-reading-progress";
 
 export type ReadingProgress = Record<string, boolean>;
@@ -26,6 +28,7 @@ export function markDayRead(day: number): boolean {
     const current = readProgress();
     current[String(day)] = true;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+    emitStorageChange();
     return true;
   } catch (error) {
     console.warn("[reading-storage] Failed to write progress:", error);
@@ -45,6 +48,7 @@ export function clearReadingProgress(): boolean {
   if (typeof window === "undefined") return false;
   try {
     localStorage.removeItem(STORAGE_KEY);
+    emitStorageChange();
     return true;
   } catch (error) {
     console.warn("[reading-storage] Failed to clear progress:", error);

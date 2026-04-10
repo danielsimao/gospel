@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
 import type { Locale } from "@/lib/i18n";
 
@@ -79,13 +80,13 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
       >
         <h3 className="text-sm font-semibold tracking-wide text-white/70">{messages.learnHeading}</h3>
         <p className="mt-2 text-sm leading-relaxed text-white/60">{messages.learnBody}</p>
-        <a
+        <Link
           href={`/${locale}/learn`}
           onClick={() => trackNextStepsActionClicked("learn", "thinking")}
           className="mt-3 inline-flex items-center rounded-lg border border-white/15 px-4 py-2 text-xs font-medium text-white/60 transition-colors hover:bg-white/5 min-h-[44px]"
         >
           {messages.learnLinkLabel} &rarr;
-        </a>
+        </Link>
       </motion.div>
 
       <motion.div
@@ -95,13 +96,13 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
         className="mt-10 text-center"
       >
         <p className="text-sm leading-relaxed text-white/60">{messages.comeBack}</p>
-        <a
+        <Link
           href={`/${locale}/reading-plan`}
           onClick={() => trackNextStepsActionClicked("reading_plan", "thinking")}
           className="mt-4 inline-flex items-center text-sm text-white/60 transition-colors hover:text-white/60"
         >
           {messages.readingPlanLabel} &rarr;
-        </a>
+        </Link>
       </motion.div>
     </div>
   );

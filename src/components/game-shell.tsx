@@ -10,6 +10,7 @@ import { VerdictScreen } from "@/components/verdict-screen";
 import { GraceScreen } from "@/components/grace-screen";
 import { InvitationScreen } from "@/components/invitation-screen";
 import { trackGameAbandoned } from "@/lib/analytics";
+import { emitStorageChange } from "@/lib/client-storage";
 import { QUESTION_CONFIGS } from "@/lib/questions";
 import type { Messages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
@@ -33,7 +34,10 @@ export function GameShell({ messages, locale }: GameShellProps) {
 
     // Persist test completion so other pages (learn) can check
     if (state.phase === "verdict" || state.phase === "grace" || state.phase === "invitation") {
-      try { localStorage.setItem("test_completed", "1"); } catch {}
+      try {
+        localStorage.setItem("test_completed", "1");
+        emitStorageChange();
+      } catch {}
     }
 
   }, [state.phase, state.score]);

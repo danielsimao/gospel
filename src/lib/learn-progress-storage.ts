@@ -1,3 +1,5 @@
+import { emitStorageChange } from "./client-storage";
+
 const PREFIX = "learn-topic-";
 
 export function isTopicCompleted(slug: string): boolean {
@@ -13,6 +15,7 @@ export function markTopicCompleted(slug: string): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(`${PREFIX}${slug}`, "1");
+    emitStorageChange();
   } catch {}
 }
 
@@ -25,6 +28,7 @@ export function clearAllTopicProgress(): boolean {
       if (key && key.startsWith(PREFIX)) keysToRemove.push(key);
     }
     keysToRemove.forEach((k) => localStorage.removeItem(k));
+    emitStorageChange();
     return true;
   } catch {}
   return false;

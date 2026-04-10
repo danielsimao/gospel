@@ -1,11 +1,8 @@
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { notFound } from "next/navigation";
-import { isValidLocale, getMessages, type Locale } from "@/lib/i18n";
+import { isValidLocale, getMessages } from "@/lib/i18n";
 import { Providers } from "@/components/providers";
-import { FooterWrapper } from "@/components/shared/footer-wrapper";
-import { TopBarWrapper } from "@/components/shared/top-bar-wrapper";
-import { DeathCounterWrapper } from "@/components/shared/death-counter-wrapper";
 import { StructuredData } from "@/components/structured-data";
 import { buildSiteSchema } from "@/lib/seo";
 import type { Metadata } from "next";
@@ -41,14 +38,7 @@ export default async function LocaleLayout({ params, children }: Props) {
   const { locale } = await params;
   if (!isValidLocale(locale)) notFound();
 
-  const allMessages = await import(`@/messages/${locale}.json`);
-  const data = allMessages.default;
-  const footerMessages = data.footer;
   const siteSchema = buildSiteSchema();
-  const learnTopics = (data.learn?.topics ?? []).map((t: { slug: string; title: string }) => ({
-    slug: t.slug,
-    title: t.title,
-  }));
 
   return (
     <html lang={locale} className="dark">
@@ -65,19 +55,7 @@ export default async function LocaleLayout({ params, children }: Props) {
         </noscript>
         <StructuredData data={siteSchema} />
         <Providers>
-          <TopBarWrapper locale={locale as Locale} learnLabel={data.learn?.label ?? "Learn"} />
-          <DeathCounterWrapper
-            label={data.eternity?.counter?.label ?? ""}
-            liveBadge={data.eternity?.counter?.liveBadge ?? ""}
-          />
           {children}
-          {footerMessages && (
-            <FooterWrapper
-              messages={footerMessages}
-              learnTopics={learnTopics}
-              locale={locale as Locale}
-            />
-          )}
         </Providers>
       </body>
     </html>

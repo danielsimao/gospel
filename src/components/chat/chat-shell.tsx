@@ -107,7 +107,7 @@ export function ChatShell({ messages, chatMessages, locale }: ChatShellProps) {
     if (userMsgCount >= MAX_MESSAGES_PER_STAGE) {
       setShowContinueButton(true);
     }
-  }, [chatMsgs.length]);
+  }, [chatMsgs]);
 
   // Global message limit
   useEffect(() => {

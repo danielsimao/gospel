@@ -1,4 +1,4 @@
-import { streamText, tool, stepCountIs } from "ai";
+import { gateway, streamText, tool, stepCountIs, type ModelMessage } from "ai";
 import { z } from "zod";
 import { isValidLocale, getMessages, type Locale } from "@/lib/i18n";
 import { buildSystemPrompt, getNextStage } from "@/lib/chat-prompts";
@@ -6,6 +6,13 @@ import type { ChatStage } from "@/lib/types";
 
 const VALID_STAGES: ChatStage[] = ["intro", "commandments", "conviction", "grace"];
 const MAX_MESSAGES = 20;
+const VALID_MESSAGE_ROLES = new Set(["user", "assistant", "system"]);
+
+interface ChatRequestBody {
+  messages: Array<{ role: string; content: string }>;
+  stage: ChatStage;
+  stageSummaries?: string[];
+}
 
 export async function POST(
   request: Request,
@@ -16,15 +23,20 @@ export async function POST(
     return new Response("Invalid locale", { status: 400 });
   }
 
-  const body = await request.json();
-  const { messages, stage, stageSummaries = [] } = body as {
-    messages: Array<{ role: string; content: string }>;
-    stage: ChatStage;
-    stageSummaries: string[];
-  };
+  const body = (await request.json()) as ChatRequestBody;
+  const { messages, stage, stageSummaries = [] } = body;
 
   if (!VALID_STAGES.includes(stage)) {
     return new Response("Invalid stage", { status: 400 });
+  }
+
+  const invalidMessage = messages.find(
+    (message) =>
+      !VALID_MESSAGE_ROLES.has(message.role) ||
+      typeof message.content !== "string",
+  );
+  if (invalidMessage) {
+    return new Response("Invalid messages", { status: 400 });
   }
 
   const allMessages = await getMessages(locale as Locale);
@@ -33,12 +45,15 @@ export async function POST(
   }
 
   const systemPrompt = buildSystemPrompt(stage, allMessages.chat, stageSummaries);
-  const windowedMessages = messages.slice(-MAX_MESSAGES);
+  const windowedMessages: ModelMessage[] = messages.slice(-MAX_MESSAGES).map((message) => ({
+    role: message.role as "user" | "assistant" | "system",
+    content: message.content,
+  }));
 
   const result = streamText({
-    model: "anthropic/claude-haiku-4.5" as any,
+    model: gateway("anthropic/claude-haiku-4.5"),
     system: systemPrompt,
-    messages: windowedMessages as any,
+    messages: windowedMessages,
     tools: {
       advance_stage: tool({
         description: "Call when you've completed the current stage's objective and are ready to move to the next stage.",

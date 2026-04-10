@@ -24,7 +24,7 @@ interface GraceScreenProps {
 
 export function GraceScreen({ messages }: GraceScreenProps) {
   const dispatch = useGameDispatch();
-  const startTime = useRef(Date.now());
+  const startTime = useRef(0);
   const maxScrollDepth = useRef(0);
 
   // Beat 1 is reserved in the layout from mount to avoid a content shift
@@ -32,10 +32,12 @@ export function GraceScreen({ messages }: GraceScreenProps) {
   // intentionally shifts the page.
   const [revealedCount, setRevealedCount] = useState(1);
   const allBeatsRevealed = revealedCount >= messages.beats.length;
-  const beatRefs = useRef(messages.beats.map(() => createRef<HTMLDivElement>()));
+  const [beatRefs] = useState(() => messages.beats.map(() => createRef<HTMLDivElement>()));
 
   // Track scroll depth + time
   useEffect(() => {
+    startTime.current = Date.now();
+
     function handleScroll() {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
       const maxScroll = scrollHeight - clientHeight;
@@ -66,9 +68,9 @@ export function GraceScreen({ messages }: GraceScreenProps) {
     setRevealedCount(nextBeat + 1);
     // Scroll to the newly revealed beat after a short delay for the animation
     setTimeout(() => {
-      beatRefs.current[nextBeat]?.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      beatRefs[nextBeat]?.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 100);
-  }, [revealedCount, messages.beats.length]);
+  }, [beatRefs, revealedCount, messages.beats.length]);
 
   function handleContinue() {
     dispatch({ type: "SHOW_INVITATION" });
@@ -127,7 +129,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
               return (
                 <motion.div
                   key={i}
-                  ref={beatRefs.current[i]}
+                  ref={beatRefs[i]}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{
                     opacity: isActive ? 1 : 0.32,

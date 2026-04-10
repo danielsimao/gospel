@@ -1,5 +1,5 @@
-"use client";
-
+import Link from "next/link";
+import { FooterLocaleSwitch } from "./footer-locale-switch";
 import type { Locale } from "@/lib/i18n";
 
 interface FooterMessages {
@@ -8,7 +8,6 @@ interface FooterMessages {
   growLabel: string;
   homeLink: string;
   testLink: string;
-  chatLink: string;
   readingPlanLink: string;
   nextStepsLink: string;
   churchLink: string;
@@ -30,13 +29,9 @@ interface FooterProps {
   messages: FooterMessages;
   learnTopics: LearnTopic[];
   locale: Locale;
-  currentPath: string;
 }
 
-export function Footer({ messages, learnTopics, locale, currentPath }: FooterProps) {
-  const otherLocale = locale === "en" ? "pt" : "en";
-  const otherLocalePath = currentPath.replace(`/${locale}`, `/${otherLocale}`);
-
+export function Footer({ messages, learnTopics, locale }: FooterProps) {
   return (
     <footer className="relative z-[1] border-t border-white/[0.08] bg-[#060404]">
       <div className="mx-auto max-w-2xl px-6 py-16 sm:px-8 sm:py-20">
@@ -48,15 +43,20 @@ export function Footer({ messages, learnTopics, locale, currentPath }: FooterPro
               {messages.exploreLabel}
             </h4>
             <nav className="flex flex-col gap-2.5">
-              <a href={`/${locale}`} className="text-sm text-white/70 transition-colors hover:text-white/80">
+              <Link
+                href={`/${locale}`}
+                prefetch={false}
+                className="text-sm text-white/70 transition-colors hover:text-white/80"
+              >
                 {messages.homeLink}
-              </a>
-              <a href={`/${locale}/test`} className="text-sm text-white/70 transition-colors hover:text-white/80">
+              </Link>
+              <Link
+                href={`/${locale}/test`}
+                prefetch={false}
+                className="text-sm text-white/70 transition-colors hover:text-white/80"
+              >
                 {messages.testLink}
-              </a>
-              <a href={`/${locale}/chat`} className="text-sm text-white/70 transition-colors hover:text-white/80">
-                {messages.chatLink}
-              </a>
+              </Link>
             </nav>
           </div>
 
@@ -67,13 +67,14 @@ export function Footer({ messages, learnTopics, locale, currentPath }: FooterPro
             </h4>
             <nav className="flex flex-col gap-2.5">
               {learnTopics.map((topic) => (
-                <a
+                <Link
                   key={topic.slug}
                   href={`/${locale}/learn/${topic.slug}`}
+                  prefetch={false}
                   className="text-sm text-white/70 transition-colors hover:text-white/80"
                 >
                   {topic.title}
-                </a>
+                </Link>
               ))}
             </nav>
           </div>
@@ -84,12 +85,20 @@ export function Footer({ messages, learnTopics, locale, currentPath }: FooterPro
               {messages.growLabel}
             </h4>
             <nav className="flex flex-col gap-2.5">
-              <a href={`/${locale}/reading-plan`} className="text-sm text-white/70 transition-colors hover:text-white/80">
+              <Link
+                href={`/${locale}/reading-plan`}
+                prefetch={false}
+                className="text-sm text-white/70 transition-colors hover:text-white/80"
+              >
                 {messages.readingPlanLink}
-              </a>
-              <a href={`/${locale}/next-steps`} className="text-sm text-white/70 transition-colors hover:text-white/80">
+              </Link>
+              <Link
+                href={`/${locale}/next-steps`}
+                prefetch={false}
+                className="text-sm text-white/70 transition-colors hover:text-white/80"
+              >
                 {messages.nextStepsLink}
-              </a>
+              </Link>
               <a
                 href={messages.churchUrl}
                 target="_blank"
@@ -133,19 +142,7 @@ export function Footer({ messages, learnTopics, locale, currentPath }: FooterPro
         <div className="mt-8 flex items-center justify-between">
           <span className="font-mono text-[11px] text-white/50">gospel</span>
           <div className="flex items-center gap-2.5 font-mono text-[11px]">
-            {locale === "en" ? (
-              <>
-                <span className="font-bold text-white/70">EN</span>
-                <span className="text-white/50">·</span>
-                <a href={otherLocalePath} className="text-white/60 transition-colors hover:text-white/60">PT</a>
-              </>
-            ) : (
-              <>
-                <a href={otherLocalePath} className="text-white/60 transition-colors hover:text-white/60">EN</a>
-                <span className="text-white/50">·</span>
-                <span className="font-bold text-white/70">PT</span>
-              </>
-            )}
+            <FooterLocaleSwitch locale={locale} />
           </div>
         </div>
       </div>

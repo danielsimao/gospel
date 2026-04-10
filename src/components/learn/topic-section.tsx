@@ -47,7 +47,7 @@ export function TopicSection({ heading, body, scripture, scriptureRef, index, sl
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [slug, index, locale]);
+  }, [slug, index, locale, isLast]);
 
   const paragraphs = body.split("\n\n");
 

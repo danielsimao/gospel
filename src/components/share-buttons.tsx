@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { motion } from "framer-motion";
 import { trackShared } from "@/lib/analytics";
 import type { Locale } from "@/lib/i18n";
@@ -17,25 +17,36 @@ interface ShareButtonsProps {
   sharePath?: string;
 }
 
+function subscribeToNavigator() {
+  return () => {};
+}
+
 export function ShareButtons({ messages, locale, sharePath }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
-  const [canNativeShare, setCanNativeShare] = useState(false);
-  const [shareUrl, setShareUrl] = useState("");
+  const canNativeShare = useSyncExternalStore(
+    subscribeToNavigator,
+    () => typeof navigator !== "undefined" && typeof navigator.share === "function",
+    () => false,
+  );
 
-  useEffect(() => {
-    setCanNativeShare("share" in navigator);
-    setShareUrl(`${window.location.origin}${sharePath ?? `/${locale}`}`);
-  }, [locale, sharePath]);
+  function getShareUrl() {
+    const path = sharePath ?? `/${locale}`;
+    if (typeof window === "undefined") {
+      return path;
+    }
+
+    return `${window.location.origin}${path}`;
+  }
 
   function shareWhatsApp() {
     trackShared("whatsapp", locale);
-    const text = encodeURIComponent(`${messages.whatsappMessage} ${shareUrl}`);
+    const text = encodeURIComponent(`${messages.whatsappMessage} ${getShareUrl()}`);
     window.open(`https://wa.me/?text=${text}`, "_blank");
   }
 
   function shareTelegram() {
     trackShared("telegram", locale);
-    const url = encodeURIComponent(shareUrl);
+    const url = encodeURIComponent(getShareUrl());
     const text = encodeURIComponent(messages.telegramMessage);
     window.open(
       `https://t.me/share/url?url=${url}&text=${text}`,
@@ -45,7 +56,7 @@ export function ShareButtons({ messages, locale, sharePath }: ShareButtonsProps)
 
   async function copyLink() {
     try {
-      await navigator.clipboard.writeText(shareUrl);
+      await navigator.clipboard.writeText(getShareUrl());
       trackShared("copy", locale);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -57,7 +68,7 @@ export function ShareButtons({ messages, locale, sharePath }: ShareButtonsProps)
   async function nativeShare() {
     if (!navigator.share) return;
     try {
-      await navigator.share({ url: shareUrl, text: messages.whatsappMessage });
+      await navigator.share({ url: getShareUrl(), text: messages.whatsappMessage });
       trackShared("native", locale);
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") return;

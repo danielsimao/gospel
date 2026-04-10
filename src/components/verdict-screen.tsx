@@ -30,9 +30,7 @@ export function VerdictScreen({
   const confession = buildConfession(state.answers, testMessages);
 
   // Deaths during test = (completedAt - startedAt) in seconds × 1.8
-  const durationMs = state.completedAt
-    ? state.completedAt - state.startedAt
-    : Date.now() - state.startedAt;
+  const durationMs = Math.max(0, (state.completedAt ?? state.startedAt) - state.startedAt);
   const deathCount = Math.floor((durationMs / 1000) * DEATHS_PER_SECOND);
 
   useEffect(() => {

@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useSyncExternalStore } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { DayCard } from "./day-card";
 import { Button, ButtonArrow } from "@/components/ui/button";
+import { subscribeToStorage } from "@/lib/client-storage";
 import { readProgress, markDayRead, getCompletedCount, clearReadingProgress } from "@/lib/reading-storage";
 import { trackReadingPlanViewed, trackReadingPlanDayCompleted, trackReadingPlanCompleted, trackReadingPlanLearnClicked, trackReadingPlanReset } from "@/lib/discipleship-analytics";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -46,12 +48,15 @@ interface ReadingPlanProps {
 }
 
 export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
-  const [progress, setProgress] = useState<Record<string, boolean>>({});
+  const progress = useSyncExternalStore<Record<string, boolean>>(
+    subscribeToStorage,
+    readProgress,
+    () => ({}),
+  );
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const totalDays = messages.days.length;
 
   useEffect(() => {
-    setProgress(readProgress());
     trackReadingPlanViewed(locale);
   }, [locale]);
 
@@ -60,7 +65,6 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
     if (!success) {
       return;
     }
-    setProgress({});
     setResetDialogOpen(false);
     trackReadingPlanReset(locale);
   }, [locale]);
@@ -79,16 +83,13 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
   const handleMarkRead = useCallback((day: number) => {
     const success = markDayRead(day);
     if (!success) return;
-    setProgress(prev => {
-      const updated = { ...prev, [String(day)]: true };
-      const newCount = getCompletedCount(updated, totalDays);
-      if (newCount >= totalDays) {
-        trackReadingPlanCompleted(locale);
-      }
-      return updated;
-    });
+    const updated = { ...progress, [String(day)]: true };
+    const newCount = getCompletedCount(updated, totalDays);
+    if (newCount >= totalDays) {
+      trackReadingPlanCompleted(locale);
+    }
     trackReadingPlanDayCompleted(day, locale);
-  }, [totalDays, locale]);
+  }, [progress, totalDays, locale]);
 
   const progressLabel = messages.progressLabel
     .replace("{current}", String(Math.min(completedCount + 1, totalDays)))
@@ -187,13 +188,13 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
           </a>
           <div className="mt-6">
             <p className="text-sm text-white/60">{messages.deeperLabel}</p>
-            <a
+            <Link
               href={`/${locale}/learn`}
               onClick={() => trackReadingPlanLearnClicked(locale)}
               className="mt-2 inline-flex items-center text-sm text-[#D4A843]/70 transition-colors hover:text-[#D4A843]"
             >
               {messages.deeperLink} →
-            </a>
+            </Link>
           </div>
         </motion.div>
       )}

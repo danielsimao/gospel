@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { readProgress, getCompletedCount } from "@/lib/reading-storage";
@@ -22,21 +22,37 @@ interface TopicNavProps {
   allTopicsLabel?: string;
 }
 
+function getInitialCta(
+  locale: string,
+  ctaHeading: string,
+  ctaButton: string,
+  completedCtaHeading?: string,
+  completedCtaButton?: string,
+) {
+  try {
+    const testDone = localStorage.getItem("test_completed") === "1";
+    const readingDone = getCompletedCount(readProgress(), TOTAL_DAYS) >= TOTAL_DAYS;
+
+    if (!testDone) {
+      return { heading: ctaHeading, button: ctaButton, href: `/${locale}/test` };
+    }
+
+    if (!readingDone && completedCtaHeading && completedCtaButton) {
+      return {
+        heading: completedCtaHeading,
+        button: completedCtaButton,
+        href: `/${locale}/reading-plan`,
+      };
+    }
+  } catch {}
+
+  return null;
+}
+
 export function TopicNav({ slug, locale, prevLabel, nextLabel, prevTopic, nextTopic, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, allTopicsLabel }: TopicNavProps) {
-  const [cta, setCta] = useState<{ heading: string; button: string; href: string } | null>(null);
-
-  useEffect(() => {
-    try {
-      const testDone = localStorage.getItem("test_completed") === "1";
-      const readingDone = getCompletedCount(readProgress(), TOTAL_DAYS) >= TOTAL_DAYS;
-
-      if (!testDone) {
-        setCta({ heading: ctaHeading, button: ctaButton, href: `/${locale}/test` });
-      } else if (!readingDone && completedCtaHeading && completedCtaButton) {
-        setCta({ heading: completedCtaHeading, button: completedCtaButton, href: `/${locale}/reading-plan` });
-      }
-    } catch {}
-  }, [locale, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton]);
+  const [cta] = useState(() =>
+    getInitialCta(locale, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton),
+  );
 
   return (
     <nav className="mt-16">

@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { RotatingFacts } from "@/components/eternity/rotating-facts";
-import { WorldMap } from "@/components/eternity/world-map";
 import { ShareButtons } from "@/components/share-buttons";
 import { Button, ButtonArrow } from "@/components/ui/button";
+import { emitStorageChange } from "@/lib/client-storage";
 import {
   trackHomeViewed,
   trackHomeCtaClicked,
@@ -15,6 +16,14 @@ import {
 } from "@/lib/eternity-analytics";
 import type { HomeMessages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
+
+const WorldMap = dynamic(
+  () => import("@/components/eternity/world-map").then((mod) => mod.WorldMap),
+  {
+    ssr: false,
+    loading: () => <div className="h-[193px] w-full" aria-hidden="true" />,
+  },
+);
 
 interface HeroMessages {
   label: string;
@@ -148,6 +157,7 @@ export function HomeShell({ hero, home, share, locale }: HomeShellProps) {
                     trackHomeRetakeClicked();
                     try {
                       localStorage.removeItem("test_completed");
+                      emitStorageChange();
                     } catch {}
                   }}
                   className="text-white/70 transition-colors hover:text-white/60"

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { ShareButtons } from "@/components/share-buttons";
+import { subscribeToStorage } from "@/lib/client-storage";
 import { isTopicCompleted, clearAllTopicProgress } from "@/lib/learn-progress-storage";
 import { clearAllQuizAnswers, hasAnyQuizAnswers } from "@/lib/learn-quiz-storage";
 import { readProgress, getCompletedCount } from "@/lib/reading-storage";
@@ -12,6 +13,13 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import type { Locale } from "@/lib/i18n";
 
 const TOTAL_READING_DAYS = 7;
+
+type CompletionCta = { label: string; href: string; type: "button" | "share" } | null;
+type LearnHubSnapshot = {
+  completed: Set<string>;
+  completionCta: CompletionCta;
+  hasQuizProgress: boolean;
+};
 
 interface Topic {
   slug: string;
@@ -23,7 +31,6 @@ interface LearnHubProps {
   label: string;
   subtitle: string;
   progressLabel: string;
-  completedLabel: string;
   allCompleteHeading: string;
   allCompleteTestCta: string;
   allCompleteReadingCta: string;
@@ -38,11 +45,65 @@ interface LearnHubProps {
   locale: Locale;
 }
 
-export function LearnHub({ label, subtitle, progressLabel, completedLabel, allCompleteHeading, allCompleteTestCta, allCompleteReadingCta, allCompleteShareCta, resetLabel, resetConfirmTitle, resetConfirmBody, resetConfirmButton, resetCancelButton, shareMessages, topics, locale }: LearnHubProps) {
-  const [completed, setCompleted] = useState<Set<string>>(new Set());
-  const [completionCta, setCompletionCta] = useState<{ label: string; href: string; type: "button" | "share" } | null>(null);
+function readLearnHubState(
+  topics: Topic[],
+  locale: Locale,
+  allCompleteTestCta: string,
+  allCompleteReadingCta: string,
+  allCompleteShareCta: string,
+) {
+  const completed = new Set<string>();
+  for (const topic of topics) {
+    if (isTopicCompleted(topic.slug)) {
+      completed.add(topic.slug);
+    }
+  }
+
+  const hasQuizProgress = hasAnyQuizAnswers();
+  let completionCta: CompletionCta = null;
+
+  if (completed.size >= topics.length) {
+    try {
+      const testDone = localStorage.getItem("test_completed") === "1";
+      const readingDone = getCompletedCount(readProgress(), TOTAL_READING_DAYS) >= TOTAL_READING_DAYS;
+
+      if (!testDone) {
+        completionCta = { label: allCompleteTestCta, href: `/${locale}/test`, type: "button" };
+      } else if (!readingDone) {
+        completionCta = { label: allCompleteReadingCta, href: `/${locale}/reading-plan`, type: "button" };
+      } else {
+        completionCta = { label: allCompleteShareCta, href: "", type: "share" };
+      }
+    } catch {
+      completionCta = null;
+    }
+  }
+
+  return { completed, hasQuizProgress, completionCta };
+}
+
+function getEmptyLearnHubState(): LearnHubSnapshot {
+  return {
+    completed: new Set<string>(),
+    completionCta: null,
+    hasQuizProgress: false,
+  };
+}
+
+export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, allCompleteTestCta, allCompleteReadingCta, allCompleteShareCta, resetLabel, resetConfirmTitle, resetConfirmBody, resetConfirmButton, resetCancelButton, shareMessages, topics, locale }: LearnHubProps) {
+  const snapshot = useSyncExternalStore(
+    subscribeToStorage,
+    () =>
+      readLearnHubState(
+        topics,
+        locale,
+        allCompleteTestCta,
+        allCompleteReadingCta,
+        allCompleteShareCta,
+      ),
+    getEmptyLearnHubState,
+  );
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
-  const [hasQuizProgress, setHasQuizProgress] = useState(false);
 
   function handleReset() {
     const topicProgressCleared = clearAllTopicProgress();
@@ -50,42 +111,14 @@ export function LearnHub({ label, subtitle, progressLabel, completedLabel, allCo
     if (!topicProgressCleared || !quizAnswersCleared) {
       return;
     }
-    setCompleted(new Set());
-    setHasQuizProgress(false);
-    setCompletionCta(null);
     setResetDialogOpen(false);
     trackLearnProgressReset(locale);
   }
 
-  useEffect(() => {
-    const done = new Set<string>();
-    for (const topic of topics) {
-      if (isTopicCompleted(topic.slug)) done.add(topic.slug);
-    }
-    setCompleted(done);
-    setHasQuizProgress(hasAnyQuizAnswers());
-
-    // Determine completion CTA if all done
-    if (done.size >= topics.length) {
-      try {
-        const testDone = localStorage.getItem("test_completed") === "1";
-        const readingDone = getCompletedCount(readProgress(), TOTAL_READING_DAYS) >= TOTAL_READING_DAYS;
-
-        if (!testDone) {
-          setCompletionCta({ label: allCompleteTestCta, href: `/${locale}/test`, type: "button" });
-        } else if (!readingDone) {
-          setCompletionCta({ label: allCompleteReadingCta, href: `/${locale}/reading-plan`, type: "button" });
-        } else {
-          setCompletionCta({ label: allCompleteShareCta, href: "", type: "share" });
-        }
-      } catch {}
-    }
-  }, [topics, locale, allCompleteTestCta, allCompleteReadingCta, allCompleteShareCta]);
-
-  const completedCount = completed.size;
+  const completedCount = snapshot.completed.size;
   const totalCount = topics.length;
   const allDone = completedCount >= totalCount;
-  const hasAnyProgress = completedCount > 0 || hasQuizProgress;
+  const hasAnyProgress = completedCount > 0 || snapshot.hasQuizProgress;
   const progress = progressLabel
     .replace("{completed}", String(completedCount))
     .replace("{total}", String(totalCount));
@@ -125,7 +158,7 @@ export function LearnHub({ label, subtitle, progressLabel, completedLabel, allCo
                 <div key={topic.slug} className="h-[2px] flex-1 overflow-hidden rounded-full bg-white/[0.04]">
                   <div
                     className="h-full bg-[#D4A843] transition-all duration-600 ease-out"
-                    style={{ width: completed.has(topic.slug) ? "100%" : "0%" }}
+                    style={{ width: snapshot.completed.has(topic.slug) ? "100%" : "0%" }}
                   />
                 </div>
               ))}
@@ -134,16 +167,16 @@ export function LearnHub({ label, subtitle, progressLabel, completedLabel, allCo
         )}
 
         {/* All-complete banner */}
-        {allDone && completionCta && (
+        {allDone && snapshot.completionCta && (
           <div className="mt-8 rounded-xl border border-[#D4A843]/20 bg-[#D4A843]/[0.03] p-5 text-center animate-[fadeInUp_0.5s_ease-out_both]" style={{ animationDelay: "300ms" }}>
             <p className="text-sm font-medium text-[#D4A843]">{allCompleteHeading}</p>
-            {completionCta.type === "button" ? (
-              <a href={completionCta.href} className="mt-3 inline-block">
+            {snapshot.completionCta.type === "button" ? (
+              <Link href={snapshot.completionCta.href} className="mt-3 inline-block">
                 <Button variant="gold" size="sm" mist>
-                  {completionCta.label}
+                  {snapshot.completionCta.label}
                   <ButtonArrow />
                 </Button>
-              </a>
+              </Link>
             ) : (
               <div className="mt-3">
                 <ShareButtons messages={shareMessages} locale={locale} sharePath="/test" />
@@ -154,7 +187,7 @@ export function LearnHub({ label, subtitle, progressLabel, completedLabel, allCo
 
         <div className="mt-10 flex flex-col gap-3">
           {topics.map((topic, i) => {
-            const isDone = completed.has(topic.slug);
+            const isDone = snapshot.completed.has(topic.slug);
             return (
               <Link
                 key={topic.slug}
