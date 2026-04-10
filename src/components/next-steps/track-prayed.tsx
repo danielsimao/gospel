@@ -150,9 +150,8 @@ export function TrackPrayed({ messages, shareMessages, locale }: TrackPrayedProp
         transition={stagger(paragraphs.length + 4)}
         className="mt-12"
       >
-        <p className="text-center text-sm text-white/60">{messages.shareHeading}</p>
         <ShareButtons
-          messages={{ ...shareMessages, whatsappMessage: messages.shareMessage, telegramMessage: messages.shareMessage }}
+          messages={{ ...shareMessages, prompt: messages.shareHeading, whatsappMessage: messages.shareMessage, telegramMessage: messages.shareMessage }}
           locale={locale}
         />
       </motion.div>

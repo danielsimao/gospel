@@ -52,7 +52,7 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
     <motion.div
       ref={cardRef}
       initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: isCompleted && !isCurrent ? 0.4 : 1, y: 0 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       className={`rounded-xl border overflow-hidden ${
         isCurrent
