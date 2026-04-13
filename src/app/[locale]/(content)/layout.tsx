@@ -22,7 +22,11 @@ export default async function ContentLayout({ params, children }: Props) {
 
   return (
     <>
-      <TopBar locale={locale as Locale} learnLabel={data.learn?.label ?? "Learn"} />
+      <TopBar
+        locale={locale as Locale}
+        learnLabel={data.learn?.label ?? "Learn"}
+        messages={data.topBar}
+      />
       {children}
       {footerMessages && (
         <Footer

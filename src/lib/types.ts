@@ -108,6 +108,7 @@ export interface Messages {
     heading: string;
     prayedEncouragement: string;
     thinkingEncouragement: string;
+    dismissedEncouragement?: string;
     responses: Record<InvitationResponse, string>;
     resources: Array<{ name: string; url: string }>;
     learnMoreLabel: string;
@@ -115,18 +116,4 @@ export interface Messages {
   share: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
   nextSteps?: { cta: string; dismissedReturn: string };
   meta: { title: string; description: string };
-  chat?: ChatMessages;
-}
-
-// Chat experience types
-export type ChatStage = "landing" | "intro" | "commandments" | "conviction" | "grace" | "invitation";
-
-export interface ChatMessages {
-  landing: { title: string; subtitle: string; cta: string };
-  input: { placeholder: string; send: string };
-  stageDivider: string;
-  typing: string;
-  systemPrompts: Partial<Record<ChatStage, string>>;
-  meta: { title: string; description: string };
-  share: { whatsappMessage: string; telegramMessage: string };
 }

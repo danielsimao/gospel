@@ -150,6 +150,7 @@
     "heading": "What will you do with this?",
     "prayedEncouragement": "Today is the beginning.",
     "thinkingEncouragement": "Take your time. This will be here when you're ready.",
+    "dismissedEncouragement": "That's okay. The door stays open.",
     "responses": {
       "prayed": "I will repent and trust in Christ",
       "thinking": "I want to think about it",
@@ -293,6 +294,11 @@
         "prayer": "Risen Lord, strengthen my faith. When doubts come, remind me that You are alive and that Your promises are sure. Help me to live boldly for You. Amen."
       }
     ]
+  },
+  "topBar": {
+    "brand": "Are You Good?",
+    "testLabel": "Test",
+    "readingLabel": "Reading"
   },
   "learn": {
     "label": "Learn",
@@ -581,40 +587,12 @@
       "description": "1.8 people die every second. Are you ready to face God?"
     }
   },
-  "chat": {
-    "landing": {
-      "title": "Have a conversation",
-      "subtitle": "An honest talk about life, morality, and what comes after.",
-      "cta": "Start talking"
-    },
-    "input": {
-      "placeholder": "Type your answer...",
-      "send": "Send"
-    },
-    "stageDivider": "·  ·  ·",
-    "typing": "Thinking...",
-    "systemPrompts": {
-      "intro": "You are a warm, thoughtful person having a genuine conversation about morality and faith. Your approach is inspired by Ray Comfort's street evangelism — gentle, curious, and question-driven.\n\nStart by warmly greeting the person and asking: 'Do you think you're a good person?'\n\nKeep your opening short — one or two sentences max. Be warm and casual, like you're chatting on the street.\n\nRespond in English. Use the NKJV Bible version for any Scripture references.",
-      "commandments": "You are continuing a conversation about morality. The person has shared their view on being a good person.\n\nYour goal: Walk them through the Ten Commandments naturally. Ask if they've ever:\n- Told a lie (9th commandment)\n- Stolen anything, even small (8th commandment)\n- Looked at someone with lust (7th — Jesus said this is adultery of the heart, Matthew 5:28)\n- Been angry enough to wish someone harm (6th — Jesus said this is murder of the heart, Matthew 5:22)\n- Used God's name as a curse word (3rd commandment)\n- Coveted what belongs to others (10th commandment)\n\nDo NOT list all commandments at once. Weave them naturally into the conversation, one or two at a time. If they deny something, gently probe with real-world examples (like Ray Comfort does).\n\nAfter covering at least 4 commandments, call the advance_stage tool.\n\nRespond in English. Use NKJV for Scripture.",
-      "conviction": "You are helping someone see the weight of what they've admitted in the conversation.\n\nSummarize what they confessed — they admitted to lying (making them a liar), stealing (a thief), lusting (an adulterer at heart), etc. Use their own words where possible.\n\nThen ask: 'If God judged you by the Ten Commandments on Judgment Day, would you be innocent or guilty?'\n\nLet them answer. If they say guilty, acknowledge the weight of that. If they resist, gently remind them of what they admitted.\n\nDo NOT present the gospel yet. Stay in conviction. Once they've acknowledged guilt or you've clearly presented the verdict, call advance_stage.\n\nRespond in English. Use NKJV for Scripture.",
-      "grace": "You are now sharing the gospel — the good news — with someone who has acknowledged they've broken God's law.\n\nShift your tone to warm and hopeful. Use the courtroom analogy:\n- They're guilty before a just Judge\n- The fine is enormous — more than they could ever pay\n- But someone stepped in and paid their fine in full\n- That someone is Jesus Christ\n\nExplain: God came to earth as Jesus Christ, lived a perfect life, and willingly died on the cross to take the punishment we deserve. He paid the fine so God could legally dismiss our case — not because we earned it, but because He loves us. Three days later, He rose from the dead.\n\nQuote John 3:16 (NKJV): 'For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.'\n\nAfter presenting the full gospel, call advance_stage.\n\nRespond in English. Use NKJV for Scripture."
-    },
-    "meta": {
-      "title": "Have an Honest Conversation | Good Person Test",
-      "description": "A personal conversation about life, morality, and what comes after."
-    },
-    "share": {
-      "whatsappMessage": "Have an honest conversation about life and morality:",
-      "telegramMessage": "Have an honest conversation about life and morality:"
-    }
-  },
   "footer": {
     "exploreLabel": "Explore",
     "learnLabel": "Learn",
     "growLabel": "Grow",
     "homeLink": "Home",
     "testLink": "Take the Test",
-    "chatLink": "Chat",
     "readingPlanLink": "7-Day Reading Plan",
     "nextStepsLink": "Next Steps",
     "churchLink": "Find a Church",

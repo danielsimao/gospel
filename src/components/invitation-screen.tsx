@@ -93,6 +93,11 @@ export function InvitationScreen({
                 {invitation.thinkingEncouragement}
               </p>
             )}
+            {invitationResponse === "dismissed" && invitation.dismissedEncouragement && (
+              <p className="text-base text-white/60">
+                {invitation.dismissedEncouragement}
+              </p>
+            )}
 
             {/* What now? CTA */}
             {invitationResponse !== "dismissed" && (

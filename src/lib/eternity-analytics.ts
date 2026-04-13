@@ -28,6 +28,14 @@ export function trackTopBarLearnClicked() {
   safeCapture("top_bar_learn_clicked");
 }
 
+export function trackTopBarTestClicked() {
+  safeCapture("top_bar_test_clicked");
+}
+
+export function trackTopBarReadingClicked() {
+  safeCapture("top_bar_reading_clicked");
+}
+
 export function trackGraceRevealed() {
   safeCapture("grace_revealed");
 }
