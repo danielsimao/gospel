@@ -6,6 +6,7 @@ import { ShareButtons } from "@/components/share-buttons";
 import { subscribeToStorage, emitStorageChange } from "@/lib/client-storage";
 import { readProgress, getCompletedCount } from "@/lib/reading-storage";
 import { isTopicCompleted } from "@/lib/learn-progress-storage";
+import { clearSession } from "@/lib/test-session-storage";
 import {
   trackHomeJourneyStepClicked,
   trackHomeRetakeClicked,
@@ -198,6 +199,7 @@ export function JourneyTracker({
             localStorage.removeItem("test_completed");
             emitStorageChange();
           } catch {}
+          clearSession();
         }}
         className="mt-3 self-center font-mono text-[10px] uppercase tracking-[2px] text-white/40 transition-colors hover:text-white/60"
       >

@@ -5,6 +5,11 @@
     "label": "Examination",
     "subtitle": "Ten commandments. Eight questions. One verdict."
   },
+  "resumeDialog": {
+    "title": "Pick up where you left off?",
+    "continueLabel": "Continue",
+    "startOverLabel": "Start over"
+  },
   "test": {
     "caseLabel": "Examination",
     "guiltLabel": "Guilt",

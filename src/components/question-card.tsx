@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameDispatch, useGameState } from "@/components/game-provider";
 import { FollowUp } from "@/components/follow-up";
@@ -48,41 +48,40 @@ export function QuestionCard({
 }: QuestionCardProps) {
   const dispatch = useGameDispatch();
   const state = useGameState();
-  const [cardState, setCardState] = useState<{
-    questionIndex: number;
-    answered: AnswerType | null;
-    showFollowUp: boolean;
-  }>({
-    questionIndex,
-    answered: null,
-    showFollowUp: false,
-  });
   const timersRef = useRef<NodeJS.Timeout[]>([]);
-  const answered =
-    cardState.questionIndex === questionIndex ? cardState.answered : null;
-  const showFollowUp =
-    cardState.questionIndex === questionIndex ? cardState.showFollowUp : false;
+  const answered = state.currentAnswer;
+  const showFollowUp = state.showFollowUp;
 
   const advance = useCallback(() => {
     dispatch({ type: "ADVANCE_AFTER_FOLLOWUP" });
   }, [dispatch]);
 
   useEffect(() => {
-    const timers = timersRef.current;
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+
+    if (answered !== "justify" || showFollowUp) {
+      return;
+    }
+
+    timersRef.current.push(
+      setTimeout(() => {
+        dispatch({ type: "SHOW_FOLLOWUP" });
+        trackFollowupShown(question.id);
+      }, 600),
+    );
+
     return () => {
-      timers.forEach(clearTimeout);
+      timersRef.current.forEach(clearTimeout);
       timersRef.current = [];
     };
-  }, [questionIndex]);
+  }, [answered, dispatch, question.id, questionIndex, showFollowUp]);
 
   function handleAnswer(answer: AnswerType) {
     if (answered) return;
-
-    setCardState({
-      questionIndex,
-      answered: answer,
-      showFollowUp: false,
-    });
+    const timeOnQuestion = state.questionStartedAt
+      ? Date.now() - state.questionStartedAt
+      : 0;
     dispatch({ type: "ANSWER_QUESTION", answer });
 
     const config = QUESTION_CONFIGS[questionIndex];
@@ -95,22 +94,8 @@ export function QuestionCard({
       question.commandment,
       answer,
       newScore,
-      0,
+      timeOnQuestion,
     );
-
-    // Show follow-up on justify (user controls advance via Next button)
-    if (answer === "justify") {
-      timersRef.current.push(
-        setTimeout(() => {
-          setCardState((currentState) =>
-            currentState.questionIndex === questionIndex
-              ? { ...currentState, showFollowUp: true }
-              : currentState,
-          );
-          trackFollowupShown(question.id);
-        }, 600),
-      );
-    }
   }
 
   // Guilt = inverse of score (display-only transform)

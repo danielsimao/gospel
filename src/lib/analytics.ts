@@ -8,6 +8,14 @@ function safeCapture(event: string, properties?: Record<string, unknown>) {
   }
 }
 
+export function trackTestResumed(phase: string, locale: string) {
+  safeCapture("test_resumed", { phase, locale });
+}
+
+export function trackTestRestarted(locale: string) {
+  safeCapture("test_restarted", { locale });
+}
+
 export function trackGameStarted(locale: string) {
   safeCapture("game_started", {
     locale,

@@ -5,6 +5,11 @@
     "label": "Exame",
     "subtitle": "Dez mandamentos. Oito perguntas. Um veredicto."
   },
+  "resumeDialog": {
+    "title": "Continuar de onde paraste?",
+    "continueLabel": "Continuar",
+    "startOverLabel": "Recomeçar"
+  },
   "test": {
     "caseLabel": "Exame",
     "guiltLabel": "Culpa",

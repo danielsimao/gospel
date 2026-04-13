@@ -29,6 +29,8 @@ export interface GameState {
   currentQuestion: number;
   score: number;
   answers: Answer[];
+  currentAnswer: AnswerType | null;
+  showFollowUp: boolean;
   startedAt: number;
   completedAt: number | null;
   graceReached: boolean;
@@ -39,11 +41,29 @@ export interface GameState {
 export type GameAction =
   | { type: "START_GAME" }
   | { type: "ANSWER_QUESTION"; answer: AnswerType }
+  | { type: "SHOW_FOLLOWUP" }
   | { type: "ADVANCE_AFTER_FOLLOWUP" }
   | { type: "SHOW_VERDICT" }
   | { type: "SHOW_GRACE" }
   | { type: "SHOW_INVITATION" }
-  | { type: "SET_INVITATION_RESPONSE"; response: InvitationResponse };
+  | { type: "SET_INVITATION_RESPONSE"; response: InvitationResponse }
+  | {
+      type: "RESUME_SESSION";
+      session: {
+        phase: GamePhase;
+        currentQuestion: number;
+        score: number;
+        answers: Answer[];
+        currentAnswer: AnswerType | null;
+        showFollowUp: boolean;
+        startedAt: number;
+        completedAt: number | null;
+        questionStartedAt: number | null;
+        savedAt: number;
+        graceReached: boolean;
+        invitationResponse: InvitationResponse | null;
+      };
+    };
 
 export interface JourneyMessages {
   test: {
@@ -113,6 +133,11 @@ export interface TestMessages {
 
 export interface Messages {
   landing: { title: string; cta: string; label: string; subtitle: string };
+  resumeDialog: {
+    title: string;
+    continueLabel: string;
+    startOverLabel: string;
+  };
   test: TestMessages;
   questions: Array<{
     id: number;

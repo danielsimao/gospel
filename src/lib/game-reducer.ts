@@ -6,6 +6,8 @@ export const initialGameState: GameState = {
   currentQuestion: 0,
   score: INITIAL_SCORE,
   answers: [],
+  currentAnswer: null,
+  showFollowUp: false,
   startedAt: 0,
   completedAt: null,
   graceReached: false,
@@ -31,6 +33,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
     case "ANSWER_QUESTION": {
       if (state.phase !== "playing") return state;
+      if (state.currentAnswer) return state;
       const config = QUESTION_CONFIGS[state.currentQuestion];
       if (!config) return state;
 
@@ -52,8 +55,20 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         score: newScore,
         answers: [...state.answers, newAnswer],
+        currentAnswer: action.answer,
+        showFollowUp: false,
       };
     }
+
+    case "SHOW_FOLLOWUP":
+      if (state.phase !== "playing" || state.currentAnswer !== "justify") {
+        return state;
+      }
+
+      return {
+        ...state,
+        showFollowUp: true,
+      };
 
     case "ADVANCE_AFTER_FOLLOWUP": {
       if (state.phase !== "playing") return state;
@@ -65,13 +80,18 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           ...state,
           phase: "verdict",
           currentQuestion: nextQuestion,
+          currentAnswer: null,
+          showFollowUp: false,
           completedAt: Date.now(),
+          questionStartedAt: null,
         };
       }
 
       return {
         ...state,
         currentQuestion: nextQuestion,
+        currentAnswer: null,
+        showFollowUp: false,
         questionStartedAt: Date.now(),
       };
     }
@@ -80,7 +100,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...state,
         phase: "verdict",
+        currentAnswer: null,
+        showFollowUp: false,
         completedAt: state.completedAt ?? Date.now(),
+        questionStartedAt: null,
       };
 
     case "SHOW_GRACE":
@@ -104,6 +127,46 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         invitationResponse: action.response,
       };
+
+    case "RESUME_SESSION": {
+      // Rebase timestamps so active elapsed time survives resume without
+      // counting the time spent away from the tab.
+      const now = Date.now();
+      const activeElapsedMs = action.session.completedAt
+        ? Math.max(0, action.session.completedAt - action.session.startedAt)
+        : Math.max(0, action.session.savedAt - action.session.startedAt);
+      const questionElapsedMs = action.session.questionStartedAt
+        ? Math.max(0, action.session.savedAt - action.session.questionStartedAt)
+        : 0;
+
+      return {
+        ...initialGameState,
+        phase: action.session.phase,
+        currentQuestion: action.session.currentQuestion,
+        score: action.session.score,
+        answers: action.session.answers,
+        currentAnswer:
+          action.session.phase === "playing"
+            ? action.session.currentAnswer
+            : null,
+        showFollowUp:
+          action.session.phase === "playing" &&
+          action.session.currentAnswer === "justify"
+            ? action.session.showFollowUp
+            : false,
+        graceReached: action.session.graceReached,
+        invitationResponse: action.session.invitationResponse,
+        startedAt: now - activeElapsedMs,
+        completedAt:
+          action.session.completedAt === null ? null : now,
+        questionStartedAt:
+          action.session.phase === "playing" &&
+          action.session.currentAnswer === null &&
+          action.session.questionStartedAt
+            ? now - questionElapsedMs
+            : null,
+      };
+    }
 
     default:
       return state;
