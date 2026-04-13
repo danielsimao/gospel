@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useSyncExternalStore } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { DayCard } from "./day-card";
@@ -48,16 +48,15 @@ interface ReadingPlanProps {
 }
 
 export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
-  const progress = useSyncExternalStore<Record<string, boolean>>(
-    subscribeToStorage,
-    readProgress,
-    () => ({}),
+  const [progress, setProgress] = useState<Record<string, boolean>>(() =>
+    typeof window === "undefined" ? {} : readProgress(),
   );
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const totalDays = messages.days.length;
 
   useEffect(() => {
     trackReadingPlanViewed(locale);
+    return subscribeToStorage(() => setProgress(readProgress()));
   }, [locale]);
 
   const handleReset = useCallback(() => {

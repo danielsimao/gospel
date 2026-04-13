@@ -567,7 +567,34 @@
       "O cancro reclama 10 milhões de vidas por ano.",
       "Acidentes rodoviários matam 1,35 milhões de pessoas anualmente.",
       "Não tens o amanhã garantido."
-    ]
+    ],
+    "journey": {
+      "test": {
+        "label": "A Lei",
+        "descComplete": "Já compareceste perante o tribunal de Deus.",
+        "descActive": "Examina-te pelos Dez Mandamentos."
+      },
+      "reading": {
+        "label": "Pão de cada dia",
+        "descComplete": "Leste a Palavra durante os sete dias.",
+        "descActiveStart": "Começa por João 1. Sete dias na Palavra.",
+        "descActiveProgress": "Dia {current} de {total}. Continua.",
+        "descUpcoming": "Lê a Palavra todos os dias."
+      },
+      "learn": {
+        "label": "Fundamentos",
+        "descComplete": "Exploraste todos os fundamentos.",
+        "descActiveStart": "Cinco fundamentos para explorar.",
+        "descActiveProgress": "{current} de {total} temas estudados.",
+        "descUpcoming": "Estuda os fundamentos do evangelho."
+      },
+      "share": {
+        "label": "Partilha",
+        "descActive": "Já percorreste o caminho. Alguém que conheces ainda não.",
+        "descUpcoming": "Depois de teres percorrido o caminho."
+      },
+      "retakeLabel": "Fazer o teste novamente"
+    }
   },
   "eternity": {
     "hero": {

@@ -45,6 +45,34 @@ export type GameAction =
   | { type: "SHOW_INVITATION" }
   | { type: "SET_INVITATION_RESPONSE"; response: InvitationResponse };
 
+export interface JourneyMessages {
+  test: {
+    label: string;
+    descComplete: string;
+    descActive: string;
+  };
+  reading: {
+    label: string;
+    descComplete: string;
+    descActiveStart: string;
+    descActiveProgress: string;
+    descUpcoming: string;
+  };
+  learn: {
+    label: string;
+    descComplete: string;
+    descActiveStart: string;
+    descActiveProgress: string;
+    descUpcoming: string;
+  };
+  share: {
+    label: string;
+    descActive: string;
+    descUpcoming: string;
+  };
+  retakeLabel: string;
+}
+
 export interface HomeMessages {
   provocativeQuestion: string;
   ctaButton: string;
@@ -55,6 +83,7 @@ export interface HomeMessages {
   retakeCta: string;
   sharePrompt: string;
   facts: string[];
+  journey: JourneyMessages;
 }
 
 export interface TestMessages {

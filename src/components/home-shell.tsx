@@ -5,14 +5,13 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { RotatingFacts } from "@/components/eternity/rotating-facts";
-import { ShareButtons } from "@/components/share-buttons";
+import { JourneyTracker } from "@/components/journey-tracker";
 import { Button, ButtonArrow } from "@/components/ui/button";
-import { emitStorageChange } from "@/lib/client-storage";
+import { subscribeToStorage } from "@/lib/client-storage";
 import {
   trackHomeViewed,
   trackHomeCtaClicked,
   trackHomeSecondaryClicked,
-  trackHomeRetakeClicked,
 } from "@/lib/eternity-analytics";
 import type { HomeMessages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
@@ -39,6 +38,7 @@ interface HomeShellProps {
   home: HomeMessages;
   share: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
   locale: Locale;
+  topicSlugs: string[];
 }
 
 const RATE_CARDS = [
@@ -48,7 +48,7 @@ const RATE_CARDS = [
   { value: "155,000", key: "perDay" },
 ] as const;
 
-export function HomeShell({ hero, home, share, locale }: HomeShellProps) {
+export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellProps) {
   const [testCompleted, setTestCompleted] = useState(false);
 
   useEffect(() => {
@@ -62,7 +62,11 @@ export function HomeShell({ hero, home, share, locale }: HomeShellProps) {
 
     readTestCompleted();
     window.addEventListener("pageshow", readTestCompleted);
-    return () => window.removeEventListener("pageshow", readTestCompleted);
+    const unsubscribe = subscribeToStorage(readTestCompleted);
+    return () => {
+      window.removeEventListener("pageshow", readTestCompleted);
+      unsubscribe();
+    };
   }, [locale]);
 
   return (
@@ -131,46 +135,12 @@ export function HomeShell({ hero, home, share, locale }: HomeShellProps) {
 
           {/* === Bottom CTA section — adapts based on test completion === */}
           {testCompleted ? (
-            <>
-              {/* Returning visitor */}
-              <h1 className="mt-10 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-14 sm:text-3xl md:text-4xl">
-                {home.returningQuestion}
-              </h1>
-
-              {/* Primary: Reading plan */}
-              <Link href={`/${locale}/reading-plan`} onClick={() => trackHomeCtaClicked()} className="mt-8">
-                <Button variant="gold" size="lg" mist>
-                  {home.readingPlanCta}
-                  <ButtonArrow />
-                </Button>
-              </Link>
-
-              {/* Secondary actions — grouped as a row */}
-              <div className="mt-6 flex items-center gap-3 text-xs">
-                <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="text-white/70 transition-colors hover:text-white/60">
-                  {home.learnCta}
-                </Link>
-                <span className="text-white/50">·</span>
-                <Link
-                  href={`/${locale}/test`}
-                  onClick={() => {
-                    trackHomeRetakeClicked();
-                    try {
-                      localStorage.removeItem("test_completed");
-                      emitStorageChange();
-                    } catch {}
-                  }}
-                  className="text-white/70 transition-colors hover:text-white/60"
-                >
-                  {home.retakeCta}
-                </Link>
-              </div>
-
-              {/* Share */}
-              <div className="mt-10">
-                <ShareButtons messages={share} locale={locale} sharePath="/test" />
-              </div>
-            </>
+            <JourneyTracker
+              locale={locale}
+              messages={home.journey}
+              shareMessages={share}
+              topicSlugs={topicSlugs}
+            />
           ) : (
             <>
               {/* New visitor */}

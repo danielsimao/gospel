@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { ShareButtons } from "@/components/share-buttons";
@@ -91,18 +91,32 @@ function getEmptyLearnHubState(): LearnHubSnapshot {
 }
 
 export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, allCompleteTestCta, allCompleteReadingCta, allCompleteShareCta, resetLabel, resetConfirmTitle, resetConfirmBody, resetConfirmButton, resetCancelButton, shareMessages, topics, locale }: LearnHubProps) {
-  const snapshot = useSyncExternalStore(
-    subscribeToStorage,
-    () =>
-      readLearnHubState(
-        topics,
-        locale,
-        allCompleteTestCta,
-        allCompleteReadingCta,
-        allCompleteShareCta,
-      ),
-    getEmptyLearnHubState,
+  const [snapshot, setSnapshot] = useState<LearnHubSnapshot>(() =>
+    typeof window === "undefined"
+      ? getEmptyLearnHubState()
+      : readLearnHubState(
+          topics,
+          locale,
+          allCompleteTestCta,
+          allCompleteReadingCta,
+          allCompleteShareCta,
+        ),
   );
+
+  useEffect(() => {
+    return subscribeToStorage(() =>
+      setSnapshot(
+        readLearnHubState(
+          topics,
+          locale,
+          allCompleteTestCta,
+          allCompleteReadingCta,
+          allCompleteShareCta,
+        ),
+      ),
+    );
+  }, [topics, locale, allCompleteTestCta, allCompleteReadingCta, allCompleteShareCta]);
+
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
 
   function handleReset() {

@@ -567,7 +567,34 @@
       "Cancer claims 10 million lives every year.",
       "Road accidents kill 1.35 million people annually.",
       "You are not guaranteed tomorrow."
-    ]
+    ],
+    "journey": {
+      "test": {
+        "label": "The Law",
+        "descComplete": "You've stood before God's court.",
+        "descActive": "Examine yourself against the Ten Commandments."
+      },
+      "reading": {
+        "label": "Daily bread",
+        "descComplete": "You've read the Word for all seven days.",
+        "descActiveStart": "Start with John 1. Seven days in the Word.",
+        "descActiveProgress": "Day {current} of {total}. Keep going.",
+        "descUpcoming": "Read the Word each day."
+      },
+      "learn": {
+        "label": "Foundations",
+        "descComplete": "You've explored every foundation.",
+        "descActiveStart": "Five foundations to explore.",
+        "descActiveProgress": "{current} of {total} topics studied.",
+        "descUpcoming": "Study the foundations of the gospel."
+      },
+      "share": {
+        "label": "Pass it on",
+        "descActive": "You've walked the path. Someone you know hasn't.",
+        "descUpcoming": "After you've walked the path yourself."
+      },
+      "retakeLabel": "Take the test again"
+    }
   },
   "eternity": {
     "hero": {

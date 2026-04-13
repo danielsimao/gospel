@@ -30,6 +30,7 @@ interface HomeData {
   home: HomeMessages;
   share: ShareMessages;
   meta: { title: string; description: string };
+  topicSlugs: string[];
 }
 
 export function generateStaticParams() {
@@ -39,12 +40,16 @@ export function generateStaticParams() {
 async function getHomeData(locale: Locale): Promise<HomeData> {
   const messages = await import(`@/messages/${locale}.json`);
   const data = messages.default;
+  const topicSlugs = (data.learn?.topics ?? []).map(
+    (t: { slug: string }) => t.slug,
+  );
   return {
     hero: data.eternity.hero,
     counter: data.eternity.counter,
     home: data.home,
     share: data.share,
     meta: data.meta,
+    topicSlugs,
   };
 }
 
@@ -79,6 +84,7 @@ export default async function HomePage({ params }: Props) {
         home={data.home}
         share={data.share}
         locale={locale as Locale}
+        topicSlugs={data.topicSlugs}
       />
     </>
   );
