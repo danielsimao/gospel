@@ -90,7 +90,6 @@ export function buildPageMetadata({
   robots,
 }: BuildPageMetadataArgs): Metadata {
   const url = getLocaleUrl(locale, path);
-  const imageUrl = getAbsoluteUrl(`/og-image-${locale}.png`);
 
   return {
     title,
@@ -106,13 +105,11 @@ export function buildPageMetadata({
       locale: getOpenGraphLocale(locale),
       title,
       description,
-      images: [imageUrl],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [imageUrl],
     },
     robots,
   };
@@ -139,7 +136,7 @@ export function buildSiteSchema() {
         description: "A direct, honest look at the gospel — measure yourself against God's standard and see what comes next.",
         logo: {
           "@type": "ImageObject",
-          url: getAbsoluteUrl("/og-image-en.png"),
+          url: getAbsoluteUrl("/en/opengraph-image"),
         },
       },
     ],

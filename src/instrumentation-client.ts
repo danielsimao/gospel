@@ -1,14 +1,10 @@
-import posthog from "posthog-js";
+import { getConsent } from "@/lib/consent";
+import { initPostHog } from "@/lib/posthog";
 
-if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
-  try {
-    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
-      api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",
-      person_profiles: "identified_only",
-      capture_pageview: false,
-      capture_pageleave: true,
-    });
-  } catch {
-    // Analytics must never break the app
+try {
+  if (typeof window !== "undefined" && getConsent() === "granted") {
+    initPostHog();
   }
+} catch (error) {
+  console.warn("[instrumentation-client] Failed to initialize:", error);
 }

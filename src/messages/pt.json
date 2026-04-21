@@ -619,12 +619,97 @@
       "description": "1.8 pessoas morrem a cada segundo. Estas preparado para enfrentar Deus?"
     }
   },
+  "privacy": {
+    "heading": "Política de Privacidade",
+    "description": "Como tratamos os teus dados neste site.",
+    "lastUpdated": "Última atualização: abril de 2026",
+    "sections": [
+      {
+        "title": "O que recolhemos",
+        "body": "Usamos o PostHog para análises anónimas (visualizações de páginas, cliques em botões, conclusão do funil) e o Sentry para monitorização de erros. O Vercel Analytics recolhe métricas de desempenho anónimas. Não recolhemos o teu nome, e-mail ou qualquer informação pessoal identificável."
+      },
+      {
+        "title": "Cookies e armazenamento local",
+        "body": "Não usamos cookies. O teu progresso no teste, conclusão do plano de leitura e respostas aos questionários são guardados no armazenamento local do teu navegador. Estes dados nunca saem do teu dispositivo e não são enviados para nenhum servidor."
+      },
+      {
+        "title": "Consentimento de análises",
+        "body": "Na tua primeira visita, perguntamos se consentes o rastreamento analítico. Se recusares, o PostHog nunca é carregado e nenhum dado analítico é recolhido. Podes redefinir a tua escolha de consentimento a qualquer momento limpando os dados do navegador para este site."
+      },
+      {
+        "title": "Serviços de terceiros",
+        "body": "O PostHog (análises), Sentry (monitorização de erros) e Vercel (alojamento e desempenho) podem processar dados agregados e anónimos nos seus servidores. Não partilhamos dados com anunciantes nem vendemos dados a terceiros."
+      },
+      {
+        "title": "Retenção de dados",
+        "body": "Os dados analíticos são retidos de acordo com as políticas de retenção padrão do PostHog e do Sentry. Os dados de armazenamento local persistem até limpares os dados do navegador ou redefinires o teu progresso na aplicação."
+      },
+      {
+        "title": "Contacto",
+        "body": "Se tiveres perguntas sobre esta política de privacidade, podes contactar-nos através do repositório GitHub do projeto."
+      }
+    ]
+  },
+  "terms": {
+    "heading": "Termos de Utilização",
+    "description": "Os termos que regem a utilização deste site.",
+    "lastUpdated": "Última atualização: abril de 2026",
+    "sections": [
+      {
+        "title": "Propósito",
+        "body": "Este site é um recurso educativo e evangelístico gratuito. Apresenta o evangelho cristão através de um exame moral interativo, ensino baseado nas Escrituras e um plano de leitura guiado."
+      },
+      {
+        "title": "Sem aconselhamento profissional",
+        "body": "O conteúdo deste site não constitui aconselhamento profissional, jurídico, médico ou psicológico. Se estiveres em crise ou precisares de ajuda profissional, contacta um profissional qualificado ou uma linha de apoio em crise."
+      },
+      {
+        "title": "Links externos",
+        "body": "Este site contém links para recursos de terceiros (planos de leitura bíblica, diretórios de igrejas, sites de ministérios). Não somos responsáveis pelo conteúdo, disponibilidade ou práticas de privacidade de sites externos."
+      },
+      {
+        "title": "Propriedade intelectual",
+        "body": "As citações bíblicas provêm de traduções da Bíblia publicamente disponíveis e são atribuídas quando citadas. O design, código e conteúdo original do site são propriedade dos criadores do projeto."
+      },
+      {
+        "title": "Sem garantia",
+        "body": "Este site é fornecido tal como está. Não garantimos disponibilidade contínua, precisão das traduções ou completude do conteúdo."
+      },
+      {
+        "title": "Alterações",
+        "body": "Podemos atualizar estes termos a qualquer momento. O uso continuado do site constitui aceitação dos termos atualizados."
+      }
+    ]
+  },
+  "about": {
+    "heading": "Sobre",
+    "description": "Quem somos e porque existe este site.",
+    "sections": [
+      {
+        "title": "A nossa missão",
+        "body": "Este site existe para apresentar o evangelho de Jesus Cristo de forma clara, honesta e sem compromisso. Acreditamos que toda a pessoa estará diante de Deus e prestará contas da sua vida. O nosso objetivo é ajudar-te a considerar essa realidade antes que seja tarde demais."
+      },
+      {
+        "title": "No que acreditamos",
+        "body": "Mantemos a fé cristã histórica tal como revelada na Bíblia. Acreditamos que todos pecaram e estão destituídos da glória de Deus, que o salário do pecado é a morte, e que Deus demonstra o Seu amor por nós pelo facto de Cristo ter morrido por nós quando ainda éramos pecadores. A salvação é somente pela graça, somente pela fé, somente em Cristo."
+      },
+      {
+        "title": "O teste",
+        "body": "O exame moral neste site é baseado nos Dez Mandamentos — o padrão moral de Deus. Não foi concebido para condenar, mas para mostrar a cada pessoa a sua necessidade de um Salvador. Como o apóstolo Paulo escreveu: 'Pela lei vem o conhecimento do pecado' (Romanos 3:20)."
+      },
+      {
+        "title": "Quem construiu isto",
+        "body": "Este site foi construído por cristãos que querem partilhar as boas novas com o maior número possível de pessoas. Não está afiliado a nenhuma igreja ou denominação específica. É um recurso gratuito e será sempre."
+      }
+    ]
+  },
   "footer": {
     "exploreLabel": "Explorar",
     "learnLabel": "Aprender",
     "growLabel": "Crescer",
     "homeLink": "Início",
     "testLink": "Faz o Teste",
+    "aboutLink": "Sobre",
     "readingPlanLink": "Plano de Leitura de 7 Dias",
     "nextStepsLink": "Próximos Passos",
     "churchLink": "Encontra uma Igreja",
@@ -633,6 +718,10 @@
     "livingWatersUrl": "https://livingwaters.com/are-you-a-good-person/",
     "needGodLink": "needGod.net",
     "needGodUrl": "https://needgod.net/",
+    "privacyLink": "Privacidade",
+    "termsLink": "Termos",
+    "needHelpLink": "Precisas de ajuda?",
+    "needHelpUrl": "https://findahelpline.com/",
     "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigénito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.",
     "scriptureRef": "João 3:16 (ARC)"
   }

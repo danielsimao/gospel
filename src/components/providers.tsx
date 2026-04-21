@@ -5,6 +5,8 @@ import { usePathname, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { getConsent } from "@/lib/consent";
+import { initPostHog, isPostHogInitialized } from "@/lib/posthog";
 
 function PostHogPageviewTracker() {
   const pathname = usePathname();
@@ -13,9 +15,14 @@ function PostHogPageviewTracker() {
   const search = searchParams.toString();
 
   useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_POSTHOG_KEY || typeof window === "undefined") {
+    if (!process.env.NEXT_PUBLIC_POSTHOG_KEY || typeof window === "undefined" || getConsent() !== "granted") {
       return;
     }
+
+    // Ensure PostHog is initialized (idempotent — handles mid-session consent)
+    initPostHog();
+
+    if (!isPostHogInitialized()) return;
 
     const url = search ? `${window.location.origin}${pathname}?${search}` : `${window.location.origin}${pathname}`;
 

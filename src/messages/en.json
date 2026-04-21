@@ -619,12 +619,97 @@
       "description": "1.8 people die every second. Are you ready to face God?"
     }
   },
+  "privacy": {
+    "heading": "Privacy Policy",
+    "description": "How we handle your data on this site.",
+    "lastUpdated": "Last updated: April 2026",
+    "sections": [
+      {
+        "title": "What we collect",
+        "body": "We use PostHog for anonymous analytics (page views, button clicks, funnel completion) and Sentry for error tracking. Vercel Analytics collects anonymous performance metrics. We do not collect your name, email address, or any personally identifiable information."
+      },
+      {
+        "title": "Cookies and local storage",
+        "body": "We do not use cookies. Your test progress, reading plan completion, and quiz answers are saved in your browser's local storage. This data never leaves your device and is not sent to any server."
+      },
+      {
+        "title": "Analytics consent",
+        "body": "When you first visit, we ask whether you consent to analytics tracking. If you decline, PostHog is never loaded and no analytics data is collected. You can reset your consent choice at any time by clearing your browser data for this site."
+      },
+      {
+        "title": "Third-party services",
+        "body": "PostHog (analytics), Sentry (error monitoring), and Vercel (hosting and performance) may process aggregated, anonymous data on their servers. We do not share any data with advertisers or sell data to third parties."
+      },
+      {
+        "title": "Data retention",
+        "body": "Analytics data is retained according to PostHog's and Sentry's default retention policies. Local storage data persists until you clear your browser data or reset your progress within the app."
+      },
+      {
+        "title": "Contact",
+        "body": "If you have questions about this privacy policy, you can reach us through the project's GitHub repository."
+      }
+    ]
+  },
+  "terms": {
+    "heading": "Terms of Use",
+    "description": "The terms that govern your use of this site.",
+    "lastUpdated": "Last updated: April 2026",
+    "sections": [
+      {
+        "title": "Purpose",
+        "body": "This site is a free educational and evangelistic resource. It presents the Christian gospel through an interactive moral examination, scripture-based teaching, and a guided reading plan."
+      },
+      {
+        "title": "No professional advice",
+        "body": "The content on this site is not professional counselling, legal, medical, or psychological advice. If you are in crisis or need professional help, please contact a qualified professional or a crisis helpline."
+      },
+      {
+        "title": "External links",
+        "body": "This site links to third-party resources (Bible reading plans, church directories, ministry websites). We are not responsible for the content, availability, or privacy practices of external sites."
+      },
+      {
+        "title": "Intellectual property",
+        "body": "Scripture quotations are from publicly available Bible translations and are attributed where cited. The site's design, code, and original content are the property of the project's creators."
+      },
+      {
+        "title": "No warranty",
+        "body": "This site is provided as-is. We make no guarantees about uptime, accuracy of translations, or completeness of content."
+      },
+      {
+        "title": "Changes",
+        "body": "We may update these terms at any time. Continued use of the site constitutes acceptance of the updated terms."
+      }
+    ]
+  },
+  "about": {
+    "heading": "About",
+    "description": "Who we are and why this site exists.",
+    "sections": [
+      {
+        "title": "Our mission",
+        "body": "This site exists to present the gospel of Jesus Christ clearly, honestly, and without compromise. We believe every person will stand before God and give an account of their life. Our goal is to help you consider that reality before it's too late."
+      },
+      {
+        "title": "What we believe",
+        "body": "We hold to the historic Christian faith as revealed in the Bible. We believe that all people have sinned and fall short of God's glory, that the wages of sin is death, and that God demonstrates His love for us in that while we were still sinners, Christ died for us. Salvation is by grace alone, through faith alone, in Christ alone."
+      },
+      {
+        "title": "The test",
+        "body": "The moral examination on this site is based on the Ten Commandments — God's moral standard. It is not designed to condemn, but to show every person their need for a Saviour. As the apostle Paul wrote: 'Through the law we become conscious of our sin' (Romans 3:20)."
+      },
+      {
+        "title": "Who built this",
+        "body": "This site was built by Christians who want to share the good news with as many people as possible. It is not affiliated with any specific church or denomination. It is a free resource and always will be."
+      }
+    ]
+  },
   "footer": {
     "exploreLabel": "Explore",
     "learnLabel": "Learn",
     "growLabel": "Grow",
     "homeLink": "Home",
     "testLink": "Take the Test",
+    "aboutLink": "About",
     "readingPlanLink": "7-Day Reading Plan",
     "nextStepsLink": "Next Steps",
     "churchLink": "Find a Church",
@@ -633,6 +718,10 @@
     "livingWatersUrl": "https://livingwaters.com/are-you-a-good-person/",
     "needGodLink": "needGod.net",
     "needGodUrl": "https://needgod.net/",
+    "privacyLink": "Privacy",
+    "termsLink": "Terms",
+    "needHelpLink": "Need help?",
+    "needHelpUrl": "https://findahelpline.com/",
     "scripture": "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.",
     "scriptureRef": "John 3:16 (NKJV)"
   }

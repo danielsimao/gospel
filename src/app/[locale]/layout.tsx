@@ -3,6 +3,7 @@ import { GeistMono } from "geist/font/mono";
 import { notFound } from "next/navigation";
 import { isValidLocale, getMessages } from "@/lib/i18n";
 import { Providers } from "@/components/providers";
+import { ConsentBanner } from "@/components/shared/consent-banner";
 import { StructuredData } from "@/components/structured-data";
 import { buildSiteSchema } from "@/lib/seo";
 import type { Metadata } from "next";
@@ -23,13 +24,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: messages.meta.title,
       description: messages.meta.description,
-      images: [`/og-image-${locale}.png`],
     },
     twitter: {
       card: "summary_large_image",
       title: messages.meta.title,
       description: messages.meta.description,
-      images: [`/og-image-${locale}.png`],
     },
   };
 }
@@ -56,6 +55,7 @@ export default async function LocaleLayout({ params, children }: Props) {
         <StructuredData data={siteSchema} />
         <Providers>
           {children}
+          <ConsentBanner />
         </Providers>
       </body>
     </html>

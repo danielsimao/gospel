@@ -8,6 +8,7 @@ interface FooterMessages {
   growLabel: string;
   homeLink: string;
   testLink: string;
+  aboutLink: string;
   readingPlanLink: string;
   nextStepsLink: string;
   churchLink: string;
@@ -16,6 +17,10 @@ interface FooterMessages {
   livingWatersUrl: string;
   needGodLink: string;
   needGodUrl: string;
+  privacyLink: string;
+  termsLink: string;
+  needHelpLink: string;
+  needHelpUrl: string;
   scripture: string;
   scriptureRef: string;
 }
@@ -56,6 +61,13 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
                 className="text-sm text-white/70 transition-colors hover:text-white/80"
               >
                 {messages.testLink}
+              </Link>
+              <Link
+                href={`/${locale}/about`}
+                prefetch={false}
+                className="text-sm text-white/70 transition-colors hover:text-white/80"
+              >
+                {messages.aboutLink}
               </Link>
             </nav>
           </div>
@@ -129,6 +141,34 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
 
         {/* Divider */}
         <div className="mt-14 h-px bg-white/[0.08]" />
+
+        {/* Legal row */}
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+          <Link
+            href={`/${locale}/privacy`}
+            prefetch={false}
+            className="font-mono text-[11px] text-white/40 transition-colors hover:text-white/60"
+          >
+            {messages.privacyLink}
+          </Link>
+          <span className="text-white/20">&middot;</span>
+          <Link
+            href={`/${locale}/terms`}
+            prefetch={false}
+            className="font-mono text-[11px] text-white/40 transition-colors hover:text-white/60"
+          >
+            {messages.termsLink}
+          </Link>
+          <span className="text-white/20">&middot;</span>
+          <a
+            href={messages.needHelpUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-[11px] text-white/40 transition-colors hover:text-white/60"
+          >
+            {messages.needHelpLink}
+          </a>
+        </div>
 
         {/* Scripture */}
         <p className="mt-8 text-center text-xs italic leading-relaxed text-white/60">
