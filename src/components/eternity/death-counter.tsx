@@ -46,5 +46,13 @@ export const DeathCounter = memo(function DeathCounter({
     return () => cancelAnimationFrame(raf);
   }, [fromMidnight]);
 
-  return <span ref={ref} className={className} style={style}>0</span>;
+  return (
+    <span
+      ref={ref}
+      className={className}
+      style={{ ...style, display: "inline-block", minWidth: "7ch" , textAlign: "center" }}
+    >
+      0
+    </span>
+  );
 });

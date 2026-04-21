@@ -20,7 +20,7 @@ const WorldMap = dynamic(
   () => import("@/components/eternity/world-map").then((mod) => mod.WorldMap),
   {
     ssr: false,
-    loading: () => <div className="h-[193px] w-full" aria-hidden="true" />,
+    loading: () => null,
   },
 );
 
@@ -49,7 +49,14 @@ const RATE_CARDS = [
 ] as const;
 
 export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellProps) {
-  const [testCompleted, setTestCompleted] = useState(false);
+  const [testCompleted, setTestCompleted] = useState(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      return localStorage.getItem("test_completed") === "1";
+    } catch {
+      return false;
+    }
+  });
 
   useEffect(() => {
     trackHomeViewed(locale);
@@ -60,7 +67,6 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
       } catch {}
     }
 
-    readTestCompleted();
     window.addEventListener("pageshow", readTestCompleted);
     const unsubscribe = subscribeToStorage(readTestCompleted);
     return () => {
@@ -129,7 +135,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
           )}
 
           {/* World map */}
-          <div className="mt-6 w-full sm:mt-10 sm:max-w-2xl">
+          <div className="mt-6 w-full sm:mt-10 sm:max-w-2xl" style={{ aspectRatio: "600 / 340" }}>
             <WorldMap />
           </div>
 
