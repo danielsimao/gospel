@@ -108,9 +108,9 @@ export function QuestionCard({
   const canShowVerdictShortcut = state.answers.length >= 3 && !isLastQuestion;
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-4 py-6 sm:px-6">
-      <div className="flex w-full max-w-md flex-col items-center">
-        {/* Case header */}
+    <div className="grid flex-1 grid-rows-[auto_1fr_auto] px-4 py-6 sm:px-6">
+      {/* Row 1: Case header + guilt rail — pinned to top */}
+      <div className="flex flex-col items-center">
         <div className="mb-3 flex items-center gap-2">
           <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
             {testMessages.caseLabel}
@@ -121,7 +121,6 @@ export function QuestionCard({
           </span>
         </div>
 
-        {/* Guilt rail */}
         <div className="w-full max-w-xs sm:max-w-sm">
           <div className="relative h-[2px] overflow-hidden rounded-full bg-white/[0.04]">
             <motion.div
@@ -131,12 +130,14 @@ export function QuestionCard({
             />
           </div>
         </div>
+      </div>
 
-        {/* Question card */}
-        <div className="relative mt-6 w-full max-w-xs sm:max-w-sm">
-          <AnimatePresence mode="wait">
+      {/* Row 2: Card area — self-centered in the 1fr space */}
+      <div className="w-full max-w-xs self-center justify-self-center sm:max-w-sm">
+          <AnimatePresence mode="popLayout">
             <motion.div
               key={questionIndex}
+              layout
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
@@ -274,8 +275,10 @@ export function QuestionCard({
             </motion.div>
           </AnimatePresence>
         </div>
+      </div>
 
-        {/* Answered chips history */}
+      {/* Row 3: Answered chips — pinned to bottom */}
+      <div className="flex min-h-[40px] items-start justify-center">
         {state.answers.length > 0 && (
           <motion.div
             initial={{ opacity: 0 }}
