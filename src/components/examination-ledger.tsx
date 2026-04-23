@@ -7,7 +7,6 @@ import type { Answer, TestMessages } from "@/lib/types";
 interface ExaminationLedgerProps {
   currentQuestion: number;
   answers: Answer[];
-  guilt: number;
   testMessages: TestMessages;
 }
 
@@ -20,31 +19,20 @@ const JUSTIFY_DASH_PATTERN =
 export function ExaminationLedger({
   currentQuestion,
   answers,
-  guilt,
   testMessages,
 }: ExaminationLedgerProps) {
   const displayIndex = currentQuestion + 1;
 
   return (
     <div className="flex flex-col items-center">
-      <div className="mb-1.5 flex w-full max-w-xs items-center justify-between sm:max-w-sm">
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
-            {testMessages.caseLabel}
-          </span>
-          <span className="font-mono text-[9px] tabular-nums text-red-400/75">
-            {String(displayIndex).padStart(2, "0")} /{" "}
-            {String(TOTAL_QUESTIONS).padStart(2, "0")}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
-            {testMessages.guiltLabel}
-          </span>
-          <span className="inline-block min-w-[3ch] text-right font-mono text-[9px] tabular-nums text-red-400/75">
-            {Math.round(guilt)}
-          </span>
-        </div>
+      <div className="mb-3 flex items-center gap-2">
+        <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
+          {testMessages.caseLabel}
+        </span>
+        <span className="font-mono text-[9px] tabular-nums text-red-400/75">
+          {String(displayIndex).padStart(2, "0")} /{" "}
+          {String(TOTAL_QUESTIONS).padStart(2, "0")}
+        </span>
       </div>
 
       <div

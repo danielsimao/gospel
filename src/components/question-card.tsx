@@ -99,8 +99,6 @@ export function QuestionCard({
     );
   }
 
-  // Guilt = inverse of score (display-only transform)
-  const guilt = Math.min(100, Math.max(0, 100 - score));
   const config = QUESTION_CONFIGS[questionIndex];
   const ordinal = config?.commandment ?? "";
   const roman = COMMANDMENT_ROMAN[ordinal] ?? ordinal;
@@ -108,12 +106,11 @@ export function QuestionCard({
   const canShowVerdictShortcut = state.answers.length >= 3 && !isLastQuestion;
 
   return (
-    <div className="grid flex-1 grid-rows-[auto_1fr_auto] px-4 pb-6 pt-12 sm:px-6 sm:pt-14">
+    <div className="grid flex-1 grid-rows-[auto_1fr_auto] px-4 py-6 sm:px-6">
       {/* Row 1: Examination ledger — pinned to top */}
       <ExaminationLedger
         currentQuestion={questionIndex}
         answers={state.answers}
-        guilt={guilt}
         testMessages={testMessages}
       />
 
