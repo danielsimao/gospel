@@ -4,6 +4,7 @@ import { useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGameDispatch, useGameState } from "@/components/game-provider";
 import { FollowUp } from "@/components/follow-up";
+import { ExaminationLedger } from "@/components/examination-ledger";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackQuestionAnswered, trackFollowupShown } from "@/lib/analytics";
 import { QUESTION_CONFIGS, TOTAL_QUESTIONS } from "@/lib/questions";
@@ -100,7 +101,6 @@ export function QuestionCard({
 
   // Guilt = inverse of score (display-only transform)
   const guilt = Math.min(100, Math.max(0, 100 - score));
-  const displayIndex = questionIndex + 1;
   const config = QUESTION_CONFIGS[questionIndex];
   const ordinal = config?.commandment ?? "";
   const roman = COMMANDMENT_ROMAN[ordinal] ?? ordinal;
@@ -108,29 +108,14 @@ export function QuestionCard({
   const canShowVerdictShortcut = state.answers.length >= 3 && !isLastQuestion;
 
   return (
-    <div className="grid flex-1 grid-rows-[auto_1fr_auto] px-4 py-6 sm:px-6">
-      {/* Row 1: Case header + guilt rail — pinned to top */}
-      <div className="flex flex-col items-center">
-        <div className="mb-3 flex items-center gap-2">
-          <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
-            {testMessages.caseLabel}
-          </span>
-          <span className="font-mono text-[9px] tabular-nums text-red-400/75">
-            {String(displayIndex).padStart(2, "0")} /{" "}
-            {String(TOTAL_QUESTIONS).padStart(2, "0")}
-          </span>
-        </div>
-
-        <div className="w-full max-w-xs sm:max-w-sm">
-          <div className="relative h-[2px] overflow-hidden rounded-full bg-white/[0.04]">
-            <motion.div
-              className="absolute inset-y-0 left-0 bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]"
-              animate={{ width: `${guilt}%` }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            />
-          </div>
-        </div>
-      </div>
+    <div className="grid flex-1 grid-rows-[auto_1fr_auto] px-4 pb-6 pt-12 sm:px-6 sm:pt-14">
+      {/* Row 1: Examination ledger — pinned to top */}
+      <ExaminationLedger
+        currentQuestion={questionIndex}
+        answers={state.answers}
+        guilt={guilt}
+        testMessages={testMessages}
+      />
 
       {/* Row 2: Card area — self-centered in the 1fr space */}
       <div className="w-full max-w-xs self-center justify-self-center sm:max-w-sm">
@@ -274,7 +259,6 @@ export function QuestionCard({
               </div>
             </motion.div>
           </AnimatePresence>
-        </div>
       </div>
 
       {/* Row 3: Answered chips — pinned to bottom */}
