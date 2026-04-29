@@ -147,39 +147,21 @@ export function QuestionCard({
                 {/* Buttons */}
                 <AnimatePresence mode="wait">
                   {!answered ? (
-                    <>
-                      <motion.div
-                        key="buttons"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="mt-5 flex gap-2"
-                      >
-                        <Button variant="red" size="sm" onClick={() => handleAnswer("honest")} className="flex-1">
-                          {question.honestLabel}
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleAnswer("justify")} className="flex-1">
-                          {question.justifyLabel}
-                        </Button>
-                      </motion.div>
-                      {canShowVerdictShortcut && (
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.3, delay: 0.1 }}
-                          className="mt-3 flex justify-end"
-                        >
-                          <Button variant="red" size="sm" onClick={() => dispatch({ type: "SHOW_VERDICT" })}>
-                            <span className="h-1.5 w-1.5 rounded-full bg-red-500/60" />
-                            <span className="font-mono text-[10px] uppercase tracking-[1.5px]">
-                              {testMessages.seeVerdictLabel}
-                            </span>
-                          </Button>
-                        </motion.div>
-                      )}
-                    </>
+                    <motion.div
+                      key="buttons"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="mt-5 flex gap-2"
+                    >
+                      <Button variant="red" size="sm" onClick={() => handleAnswer("honest")} className="flex-1">
+                        {question.honestLabel}
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={() => handleAnswer("justify")} className="flex-1">
+                        {question.justifyLabel}
+                      </Button>
+                    </motion.div>
                   ) : (
                     <motion.div
                       key="response"
@@ -219,7 +201,7 @@ export function QuestionCard({
                         </>
                       )}
 
-                      {/* Action buttons */}
+                      {/* Action button */}
                       <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -227,7 +209,7 @@ export function QuestionCard({
                           duration: 0.4,
                           delay: answered === "justify" ? 1.2 : 0.5,
                         }}
-                        className="mt-4 flex gap-2"
+                        className="mt-4"
                         onAnimationComplete={() => {
                           // Scroll the Next button into view after it fades in
                           const el = document.querySelector('[data-slot="action-buttons"]');
@@ -235,20 +217,12 @@ export function QuestionCard({
                         }}
                         data-slot="action-buttons"
                       >
-                        <Button variant="ghost" size="sm" onClick={advance} className="flex-1">
+                        <Button variant="ghost" size="sm" onClick={advance} className="w-full">
                           {isLastQuestion
                             ? testMessages.seeVerdictLabel
                             : testMessages.nextLabel}
                           <ButtonArrow />
                         </Button>
-                        {canShowVerdictShortcut && (
-                          <Button variant="red" size="sm" onClick={() => dispatch({ type: "SHOW_VERDICT" })}>
-                            <span className="h-1.5 w-1.5 rounded-full bg-red-500/60" />
-                            <span className="font-mono text-[10px] uppercase tracking-[1.5px]">
-                              {testMessages.seeVerdictLabel}
-                            </span>
-                          </Button>
-                        )}
                       </motion.div>
                     </motion.div>
                   )}
@@ -258,8 +232,8 @@ export function QuestionCard({
           </AnimatePresence>
       </div>
 
-      {/* Row 3: Answered chips — pinned to bottom */}
-      <div className="flex min-h-[40px] items-start justify-center">
+      {/* Row 3: Answered chips + verdict shortcut — pinned to bottom */}
+      <div className="flex min-h-[40px] flex-col items-center justify-start gap-3">
         {state.answers.length > 0 && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -289,6 +263,28 @@ export function QuestionCard({
               );
             })}
           </motion.div>
+        )}
+        {canShowVerdictShortcut && (
+          <motion.button
+            type="button"
+            onClick={() => dispatch({ type: "SHOW_VERDICT" })}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="group inline-flex items-center gap-2 rounded-md px-2 py-1 font-mono text-[10px] uppercase tracking-[2px] text-red-400/60 transition-colors hover:text-red-400/95 focus-visible:text-red-400/95 focus-visible:outline-none"
+          >
+            <span
+              aria-hidden="true"
+              className="h-px w-4 bg-red-500/40 transition-all duration-300 group-hover:w-7 group-hover:bg-red-500"
+            />
+            <span>{testMessages.seeVerdictLabel}</span>
+            <span
+              aria-hidden="true"
+              className="transition-transform duration-300 group-hover:translate-x-0.5"
+            >
+              →
+            </span>
+          </motion.button>
         )}
       </div>
     </div>
