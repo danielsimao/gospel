@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { RotatingFacts } from "@/components/eternity/rotating-facts";
 import { JourneyTracker } from "@/components/journey-tracker";
@@ -57,6 +58,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
       return false;
     }
   });
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     trackHomeViewed(locale);
@@ -75,8 +77,36 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
     };
   }, [locale]);
 
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 60);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const showScrollHint = !testCompleted && !scrolled;
+
   return (
     <div className="min-h-dvh overflow-x-hidden bg-[#060404]">
+      {/* Scroll hint — visible at top of page for new visitors */}
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-x-0 bottom-5 z-30 flex justify-center"
+        initial={false}
+        animate={{ opacity: showScrollHint ? 1 : 0 }}
+        transition={{ duration: 0.5, delay: showScrollHint ? 1.2 : 0 }}
+      >
+        <motion.div
+          className="flex flex-col items-center gap-1.5 text-red-400/70"
+          animate={{ y: [0, 5, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <span className="h-px w-5 bg-red-500/50" />
+          <span className="font-mono text-[11px] leading-none">↓</span>
+        </motion.div>
+      </motion.div>
+
       <section className="relative flex min-h-[100svh] flex-col items-center justify-center px-4 pt-16 pb-12 sm:px-6 sm:pt-20 sm:pb-16">
         {/* Radial vignette */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
