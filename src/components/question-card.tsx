@@ -114,8 +114,8 @@ export function QuestionCard({
         testMessages={testMessages}
       />
 
-      {/* Row 2: Card area — self-centered in the 1fr space */}
-      <div className="w-full max-w-xs self-center justify-self-center sm:max-w-sm">
+      {/* Row 2: Card area + verdict shortcut — self-centered in the 1fr space */}
+      <div className="flex w-full max-w-xs flex-col items-center self-center justify-self-center sm:max-w-sm">
           <AnimatePresence mode="popLayout">
             <motion.div
               key={questionIndex}
@@ -124,6 +124,7 @@ export function QuestionCard({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full"
             >
               <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.03] to-white/[0.01] p-6 sm:p-7">
                 {/* Commandment accent */}
@@ -230,9 +231,31 @@ export function QuestionCard({
               </div>
             </motion.div>
           </AnimatePresence>
+          {canShowVerdictShortcut && (
+            <motion.button
+              type="button"
+              onClick={() => dispatch({ type: "SHOW_VERDICT" })}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="group mt-4 inline-flex items-center gap-2.5 rounded-md px-3 py-1.5 font-mono text-[11px] uppercase tracking-[2.5px] text-red-400/65 transition-colors hover:text-red-400 focus-visible:text-red-400 focus-visible:outline-none"
+            >
+              <span
+                aria-hidden="true"
+                className="h-px w-5 bg-red-500/45 transition-all duration-300 group-hover:w-9 group-hover:bg-red-500"
+              />
+              <span>{testMessages.seeVerdictLabel}</span>
+              <span
+                aria-hidden="true"
+                className="text-[13px] transition-transform duration-300 group-hover:translate-x-1"
+              >
+                →
+              </span>
+            </motion.button>
+          )}
       </div>
 
-      {/* Row 3: Answered chips + verdict shortcut — pinned to bottom */}
+      {/* Row 3: Answered chips — pinned to bottom */}
       <div className="flex min-h-[40px] flex-col items-center justify-start gap-3">
         {state.answers.length > 0 && (
           <motion.div
@@ -263,28 +286,6 @@ export function QuestionCard({
               );
             })}
           </motion.div>
-        )}
-        {canShowVerdictShortcut && (
-          <motion.button
-            type="button"
-            onClick={() => dispatch({ type: "SHOW_VERDICT" })}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="group inline-flex items-center gap-2 rounded-md px-2 py-1 font-mono text-[10px] uppercase tracking-[2px] text-red-400/60 transition-colors hover:text-red-400/95 focus-visible:text-red-400/95 focus-visible:outline-none"
-          >
-            <span
-              aria-hidden="true"
-              className="h-px w-4 bg-red-500/40 transition-all duration-300 group-hover:w-7 group-hover:bg-red-500"
-            />
-            <span>{testMessages.seeVerdictLabel}</span>
-            <span
-              aria-hidden="true"
-              className="transition-transform duration-300 group-hover:translate-x-0.5"
-            >
-              →
-            </span>
-          </motion.button>
         )}
       </div>
     </div>
