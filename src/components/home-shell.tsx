@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { RotatingFacts } from "@/components/eternity/rotating-facts";
 import { JourneyTracker } from "@/components/journey-tracker";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { subscribeToStorage } from "@/lib/client-storage";
+import { getConsent } from "@/lib/consent";
 import {
   trackHomeViewed,
   trackHomeCtaClicked,
@@ -59,6 +61,8 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
     }
   });
   const [scrolled, setScrolled] = useState(false);
+  const [consentAnswered, setConsentAnswered] = useState(false);
+  const [isScrollable, setIsScrollable] = useState(false);
 
   useEffect(() => {
     trackHomeViewed(locale);
@@ -85,25 +89,65 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const showScrollHint = !testCompleted && !scrolled;
+  // Reveal the scroll hint only once the consent banner is gone. Resolved in an
+  // effect (not at init) to keep SSR/first-render output stable and avoid a
+  // hydration mismatch. Returning visitors already answered on a prior visit;
+  // this-visit answers arrive via the banner's "consentchange" event. The event
+  // only fires after an explicit accept/decline, so we trust it unconditionally
+  // rather than re-reading storage (which can be blocked in private mode).
+  useEffect(() => {
+    if (getConsent() !== "pending") setConsentAnswered(true);
+    function onConsentChange() {
+      setConsentAnswered(true);
+    }
+    window.addEventListener("consentchange", onConsentChange);
+    return () => window.removeEventListener("consentchange", onConsentChange);
+  }, []);
+
+  // Only hint at scrolling when there is actually content below the fold.
+  // The WorldMap mounts after first paint (ssr: false), so re-measure on any
+  // layout change via ResizeObserver, not just on mount.
+  useEffect(() => {
+    const root = document.documentElement;
+    function measure() {
+      setIsScrollable(root.scrollHeight - window.innerHeight > 24);
+    }
+    measure();
+    window.addEventListener("resize", measure);
+
+    // ResizeObserver catches the late WorldMap mount; degrade to resize-only
+    // where it's unavailable (older webviews, jsdom) instead of throwing.
+    if (typeof ResizeObserver === "undefined") {
+      return () => window.removeEventListener("resize", measure);
+    }
+    const observer = new ResizeObserver(measure);
+    observer.observe(root);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
+  const showScrollHint =
+    !testCompleted && !scrolled && consentAnswered && isScrollable;
 
   return (
     <div className="min-h-dvh overflow-x-hidden bg-[#060404]">
-      {/* Scroll hint — visible at top of page for new visitors */}
+      {/* Scroll hint — shown to new visitors at the top, once consent is answered and the page overflows the viewport */}
       <motion.div
         aria-hidden="true"
-        className="pointer-events-none fixed inset-x-0 bottom-5 z-30 flex justify-center"
+        className="pointer-events-none fixed inset-x-0 bottom-6 z-30 flex justify-center"
         initial={false}
         animate={{ opacity: showScrollHint ? 1 : 0 }}
         transition={{ duration: 0.5, delay: showScrollHint ? 1.2 : 0 }}
       >
         <motion.div
-          className="flex flex-col items-center gap-1.5 text-red-400/70"
-          animate={{ y: [0, 5, 0] }}
+          className="flex flex-col items-center"
+          animate={{ y: [0, 6, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
         >
-          <span className="h-px w-5 bg-red-500/50" />
-          <span className="font-mono text-[11px] leading-none">↓</span>
+          <ChevronDown className="size-5 text-red-400/70" strokeWidth={2.5} />
+          <ChevronDown className="-mt-3 size-5 text-red-400/40" strokeWidth={2.5} />
         </motion.div>
       </motion.div>
 
@@ -160,7 +204,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
           {/* Rotating facts — news ticker */}
           {home.facts.length > 0 && (
             <div className="mt-8 w-full max-w-md sm:mt-10">
-              <RotatingFacts facts={home.facts} />
+              <RotatingFacts facts={home.facts} interval={9000} />
             </div>
           )}
 
@@ -180,7 +224,10 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
           ) : (
             <>
               {/* New visitor */}
-              <h1 className="mt-10 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-14 sm:text-3xl md:text-4xl">
+              <p className="mt-10 font-mono text-[10px] uppercase tracking-[3px] text-red-400/80 sm:mt-14 sm:text-[11px] sm:tracking-[4px]">
+                {home.mortalityStat}
+              </p>
+              <h1 className="mt-3 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-4 sm:text-3xl md:text-4xl">
                 {home.provocativeQuestion}
               </h1>
 

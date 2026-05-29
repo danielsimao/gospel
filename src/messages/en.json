@@ -555,6 +555,7 @@
   },
   "home": {
     "provocativeQuestion": "If you died today, where will you spend eternity?",
+    "mortalityStat": "10 / 10 people will die",
     "ctaButton": "Take the test",
     "secondaryLink": "Not ready? Learn more",
     "returningQuestion": "The counter is still ticking. What will you do with what you know?",

@@ -35,11 +35,13 @@ export function ConsentBanner() {
     setConsent("granted");
     initPostHog();
     setVisible(false);
+    window.dispatchEvent(new Event("consentchange"));
   }
 
   function handleDecline() {
     setConsent("denied");
     setVisible(false);
+    window.dispatchEvent(new Event("consentchange"));
   }
 
   return (

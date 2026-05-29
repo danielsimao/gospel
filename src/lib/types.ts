@@ -95,6 +95,7 @@ export interface JourneyMessages {
 
 export interface HomeMessages {
   provocativeQuestion: string;
+  mortalityStat: string;
   ctaButton: string;
   secondaryLink: string;
   returningQuestion: string;
