@@ -63,7 +63,7 @@ export default async function NextStepsPage({ params, searchParams }: Props) {
     <>
       <StructuredData data={webPageSchema} />
       <NextStepsClient
-        track={track === "thinking" ? "thinking" : "prayed"}
+        track={track === "thinking" ? "thinking" : "committed"}
         nextStepsMessages={data.nextSteps}
         shareMessages={data.share}
         locale={locale as Locale}

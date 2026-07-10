@@ -153,11 +153,11 @@
   },
   "invitation": {
     "heading": "O que vais fazer com isto?",
-    "prayedEncouragement": "Hoje \u00e9 o in\u00edcio.",
+    "committedEncouragement": "Hoje \u00e9 o in\u00edcio.",
     "thinkingEncouragement": "N\u00e3o tenhas pressa. Isto estar\u00e1 aqui quando estiveres pronto.",
     "dismissedEncouragement": "Tudo bem. A porta continua aberta.",
     "responses": {
-      "prayed": "Vou arrepender-me e confiar em Cristo",
+      "committed": "Vou arrepender-me e confiar em Cristo",
       "thinking": "Quero pensar sobre isto",
       "dismissed": "Não é para mim"
     },

@@ -153,11 +153,11 @@
   },
   "invitation": {
     "heading": "What will you do with this?",
-    "prayedEncouragement": "Today is the beginning.",
+    "committedEncouragement": "Today is the beginning.",
     "thinkingEncouragement": "Take your time. This will be here when you're ready.",
     "dismissedEncouragement": "That's okay. The door stays open.",
     "responses": {
-      "prayed": "I will repent and trust in Christ",
+      "committed": "I will repent and trust in Christ",
       "thinking": "I want to think about it",
       "dismissed": "Not for me"
     },

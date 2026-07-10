@@ -7,7 +7,7 @@ export type GamePhase =
 
 export type AnswerType = "honest" | "justify";
 
-export type InvitationResponse = "prayed" | "thinking" | "dismissed";
+export type InvitationResponse = "committed" | "thinking" | "dismissed";
 
 export interface QuestionConfig {
   id: number;
@@ -161,7 +161,7 @@ export interface Messages {
   };
   invitation: {
     heading: string;
-    prayedEncouragement: string;
+    committedEncouragement: string;
     thinkingEncouragement: string;
     dismissedEncouragement?: string;
     responses: Record<InvitationResponse, string>;

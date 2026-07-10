@@ -8,13 +8,13 @@ function safeCapture(event: string, properties?: Record<string, unknown>) {
   }
 }
 
-export function trackNextStepsViewed(track: "prayed" | "thinking", locale: string) {
+export function trackNextStepsViewed(track: "committed" | "thinking", locale: string) {
   safeCapture("next_steps_viewed", { track, locale });
 }
 
 export function trackNextStepsActionClicked(
   action: "read" | "pray" | "community" | "share" | "reading_plan" | "learn",
-  track: "prayed" | "thinking",
+  track: "committed" | "thinking",
 ) {
   safeCapture("next_steps_action_clicked", { action, track });
 }

@@ -141,14 +141,14 @@ describe("gameReducer", () => {
       state = answerAll(state, "honest");
       state = gameReducer(state, { type: "SHOW_GRACE" });
       state = gameReducer(state, { type: "SHOW_INVITATION" });
-      state = gameReducer(state, { type: "SET_INVITATION_RESPONSE", response: "prayed" });
+      state = gameReducer(state, { type: "SET_INVITATION_RESPONSE", response: "committed" });
 
-      expect(state.invitationResponse).toBe("prayed");
+      expect(state.invitationResponse).toBe("committed");
     });
 
     it("ignores response outside invitation phase", () => {
       const playing = startGame();
-      const state = gameReducer(playing, { type: "SET_INVITATION_RESPONSE", response: "prayed" });
+      const state = gameReducer(playing, { type: "SET_INVITATION_RESPONSE", response: "committed" });
       expect(state).toBe(playing);
     });
   });

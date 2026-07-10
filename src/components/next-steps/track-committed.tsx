@@ -7,7 +7,7 @@ import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
 import type { Locale } from "@/lib/i18n";
 
-interface TrackPrayedMessages {
+interface TrackCommittedMessages {
   welcome: string;
   whatHappened: string;
   readHeading: string;
@@ -29,15 +29,15 @@ interface TrackPrayedMessages {
   shareMessage: string;
 }
 
-interface TrackPrayedProps {
-  messages: TrackPrayedMessages;
+interface TrackCommittedProps {
+  messages: TrackCommittedMessages;
   shareMessages: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
   locale: Locale;
 }
 
 const stagger = (i: number) => ({ duration: 0.8, delay: 0.3 + i * 0.2 });
 
-export function TrackPrayed({ messages, shareMessages, locale }: TrackPrayedProps) {
+export function TrackCommitted({ messages, shareMessages, locale }: TrackCommittedProps) {
   const paragraphs = messages.whatHappened.split("\n\n");
 
   return (
@@ -77,7 +77,7 @@ export function TrackPrayed({ messages, shareMessages, locale }: TrackPrayedProp
           <h3 className="text-sm font-semibold tracking-wide text-[#D4A843]">{messages.readHeading}</h3>
           <p className="mt-2 text-sm leading-relaxed text-white/60">{messages.readBody}</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <a href={messages.readLink} target="_blank" rel="noopener noreferrer" onClick={() => trackNextStepsActionClicked("read", "prayed")}>
+            <a href={messages.readLink} target="_blank" rel="noopener noreferrer" onClick={() => trackNextStepsActionClicked("read", "committed")}>
               <Button variant="gold" size="sm">
                 {messages.readLinkLabel}
                 <ButtonArrow />
@@ -85,7 +85,7 @@ export function TrackPrayed({ messages, shareMessages, locale }: TrackPrayedProp
             </a>
             <Link
               href={`/${locale}/reading-plan`}
-              onClick={() => trackNextStepsActionClicked("reading_plan", "prayed")}
+              onClick={() => trackNextStepsActionClicked("reading_plan", "committed")}
             >
               <Button variant="ghost" size="sm">
                 {messages.readPlanLabel}
@@ -118,7 +118,7 @@ export function TrackPrayed({ messages, shareMessages, locale }: TrackPrayedProp
         >
           <h3 className="text-sm font-semibold tracking-wide text-[#D4A843]">{messages.communityHeading}</h3>
           <p className="mt-2 text-sm leading-relaxed text-white/60">{messages.communityBody}</p>
-          <a href={messages.communityLink} target="_blank" rel="noopener noreferrer" onClick={() => trackNextStepsActionClicked("community", "prayed")} className="mt-3 inline-block">
+          <a href={messages.communityLink} target="_blank" rel="noopener noreferrer" onClick={() => trackNextStepsActionClicked("community", "committed")} className="mt-3 inline-block">
             <Button variant="gold" size="sm">
               {messages.communityLinkLabel}
               <ButtonArrow />
@@ -137,7 +137,7 @@ export function TrackPrayed({ messages, shareMessages, locale }: TrackPrayedProp
           <p className="mt-2 text-sm leading-relaxed text-white/60">{messages.learnBody}</p>
           <Link
             href={`/${locale}/learn`}
-            onClick={() => trackNextStepsActionClicked("learn", "prayed")}
+            onClick={() => trackNextStepsActionClicked("learn", "committed")}
             className="mt-3 inline-block"
           >
             <Button variant="gold" size="sm">

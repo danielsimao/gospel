@@ -112,7 +112,7 @@ export function trackGraceViewed(timeSpent: number, scrollDepth: number) {
 }
 
 export function trackInvitationResponse(
-  response: "prayed" | "thinking" | "dismissed",
+  response: "committed" | "thinking" | "dismissed",
   totalTime: number,
 ) {
   safeCapture("invitation_response", {
@@ -122,7 +122,7 @@ export function trackInvitationResponse(
 }
 
 export function trackInvitationLearnMoreClicked(
-  response: "prayed" | "thinking" | "dismissed",
+  response: "committed" | "thinking" | "dismissed",
   locale: string,
 ) {
   safeCapture("invitation_learn_more_clicked", {

@@ -62,8 +62,8 @@ export function InvitationScreen({
             transition={{ duration: 0.6, delay: 0.4 }}
             className="mt-10 flex flex-col items-center gap-3"
           >
-            <Button variant="gold" mist onClick={() => handleResponse("prayed")} className="w-full max-w-sm">
-              {invitation.responses.prayed}
+            <Button variant="gold" mist onClick={() => handleResponse("committed")} className="w-full max-w-sm">
+              {invitation.responses.committed}
             </Button>
             <Button variant="ghost" onClick={() => handleResponse("thinking")} className="w-full max-w-sm">
               {invitation.responses.thinking}
@@ -83,9 +83,9 @@ export function InvitationScreen({
             className="mt-10"
           >
             {/* Encouragement line */}
-            {invitationResponse === "prayed" && (
+            {invitationResponse === "committed" && (
               <p className="text-lg font-medium text-[#D4A843]">
-                {invitation.prayedEncouragement}
+                {invitation.committedEncouragement}
               </p>
             )}
             {invitationResponse === "thinking" && (
@@ -101,7 +101,7 @@ export function InvitationScreen({
 
             {/* What now? CTA */}
             {invitationResponse !== "dismissed" && (
-              <Link href={`/${locale}/next-steps?track=${invitationResponse === "prayed" ? "prayed" : "thinking"}`} className="mt-6 block">
+              <Link href={`/${locale}/next-steps?track=${invitationResponse === "committed" ? "committed" : "thinking"}`} className="mt-6 block">
                 <Button variant="gold" mist className="w-full">
                   {messages.nextSteps?.cta ?? "What now?"}
                   <ButtonArrow />
