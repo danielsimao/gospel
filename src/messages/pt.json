@@ -558,11 +558,6 @@
     "mortalityStat": "10 / 10 pessoas vão morrer",
     "ctaButton": "Faz o teste",
     "secondaryLink": "Ainda não? Sabe mais",
-    "returningQuestion": "O contador continua a contar. O que vais fazer com o que sabes?",
-    "readingPlanCta": "Começar o plano de leitura",
-    "learnCta": "Ir mais fundo",
-    "retakeCta": "Fazer o teste outra vez",
-    "sharePrompt": "Partilha com alguém",
     "facts": [
       "No ano passado, 56 milhões de pessoas morreram em todo o mundo.",
       "As doenças cardíacas matam 17,9 milhões de pessoas por ano.",
@@ -600,6 +595,34 @@
         "descUpcoming": "Depois de teres percorrido o caminho."
       },
       "retakeLabel": "Fazer o teste novamente"
+    },
+    "journeyStages": {
+      "undecided": {
+        "heading": "Viste o veredito. O que vais fazer com ele?",
+        "cta": "Volta onde ficaste"
+      },
+      "committed": {
+        "heading": "Se te arrependeste e confiaste em Cristo, Deus perdoou-te — não porque o mereceste, mas por causa do que Cristo fez.",
+        "subheading": "Cresce nisso:"
+      },
+      "thinking": {
+        "reflection": "O desconforto que sentes pode ser a tua consciência a concordar com o padrão de Deus. Leva-o a sério.",
+        "johnCard": {
+          "label": "Lê João 3",
+          "description": "Uma conversa entre Jesus e um homem que tinha perguntas como as tuas.",
+          "url": "https://www.bible.com/bible/1930/JHN.3.ARC"
+        },
+        "learnCard": {
+          "label": "Os fundamentos",
+          "description": "Respostas curtas e honestas às perguntas essenciais."
+        },
+        "commitLabel": "Arrependi-me e confiei em Cristo",
+        "retakeLabel": "Faz o teste outra vez"
+      },
+      "dismissed": {
+        "line": "Está bem. A porta continua aberta.",
+        "retakeCta": "Faz o teste outra vez"
+      }
     }
   },
   "eternity": {

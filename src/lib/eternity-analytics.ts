@@ -8,8 +8,8 @@ function safeCapture(event: string, properties?: Record<string, unknown>) {
   }
 }
 
-export function trackHomeViewed(locale: string) {
-  safeCapture("home_page_viewed", { locale });
+export function trackHomeViewed(locale: string, stage?: string) {
+  safeCapture("home_page_viewed", { locale, stage });
 }
 
 export function trackHomeCtaClicked() {

@@ -93,18 +93,36 @@ export interface JourneyMessages {
   retakeLabel: string;
 }
 
+export interface JourneyStagesMessages {
+  undecided: {
+    heading: string;
+    cta: string;
+  };
+  committed: {
+    heading: string;
+    subheading: string;
+  };
+  thinking: {
+    reflection: string;
+    johnCard: { label: string; description: string; url: string };
+    learnCard: { label: string; description: string };
+    commitLabel: string;
+    retakeLabel: string;
+  };
+  dismissed: {
+    line: string;
+    retakeCta: string;
+  };
+}
+
 export interface HomeMessages {
   provocativeQuestion: string;
   mortalityStat: string;
   ctaButton: string;
   secondaryLink: string;
-  returningQuestion: string;
-  readingPlanCta: string;
-  learnCta: string;
-  retakeCta: string;
-  sharePrompt: string;
   facts: string[];
   journey: JourneyMessages;
+  journeyStages: JourneyStagesMessages;
 }
 
 export interface TestMessages {

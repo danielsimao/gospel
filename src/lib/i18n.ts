@@ -1,4 +1,4 @@
-import type { Messages } from "./types";
+import type { JourneyStagesMessages, Messages } from "./types";
 import { TOTAL_QUESTIONS } from "./questions";
 
 export const SUPPORTED_LOCALES = ["en", "pt"] as const;
@@ -24,6 +24,16 @@ function validateMessages(messages: unknown, locale: string): Messages {
   }
   if (!m.test?.caseLabel || !m.test?.verdictLabels || !m.test?.verdict?.prelude) {
     throw new Error(`[i18n] Missing required test content for locale "${locale}"`);
+  }
+  const stages = (m as Messages & { home?: { journeyStages?: JourneyStagesMessages } }).home
+    ?.journeyStages;
+  if (
+    !stages?.undecided?.heading ||
+    !stages?.committed?.heading ||
+    !stages?.thinking?.commitLabel ||
+    !stages?.dismissed?.retakeCta
+  ) {
+    throw new Error(`[i18n] Missing home.journeyStages content for locale "${locale}"`);
   }
   return m;
 }

@@ -558,11 +558,6 @@
     "mortalityStat": "10 / 10 people will die",
     "ctaButton": "Take the test",
     "secondaryLink": "Not ready? Learn more",
-    "returningQuestion": "The counter is still ticking. What will you do with what you know?",
-    "readingPlanCta": "Start the reading plan",
-    "learnCta": "Go deeper",
-    "retakeCta": "Take the test again",
-    "sharePrompt": "Share this with someone",
     "facts": [
       "Last year, 56 million people died worldwide.",
       "Heart disease kills 17.9 million people every year.",
@@ -600,6 +595,34 @@
         "descUpcoming": "After you've walked the path yourself."
       },
       "retakeLabel": "Take the test again"
+    },
+    "journeyStages": {
+      "undecided": {
+        "heading": "You've seen the verdict. What will you do with it?",
+        "cta": "Return to where you left off"
+      },
+      "committed": {
+        "heading": "If you've repented and trusted in Christ, God has forgiven you — not because you earned it, but because of what Christ did.",
+        "subheading": "Grow in it:"
+      },
+      "thinking": {
+        "reflection": "The discomfort you feel might be your conscience agreeing with God's standard. Take it seriously.",
+        "johnCard": {
+          "label": "Read John 3",
+          "description": "A conversation between Jesus and a man who had questions just like yours.",
+          "url": "https://www.bible.com/bible/114/JHN.3.NKJV"
+        },
+        "learnCard": {
+          "label": "The foundations",
+          "description": "Short, honest answers to the core questions."
+        },
+        "commitLabel": "I have repented and trusted in Christ",
+        "retakeLabel": "Take the test again"
+      },
+      "dismissed": {
+        "line": "That's okay. The door stays open.",
+        "retakeCta": "Take the test again"
+      }
     }
   },
   "eternity": {

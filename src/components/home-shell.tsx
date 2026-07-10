@@ -11,6 +11,8 @@ import { JourneyTracker } from "@/components/journey-tracker";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { getConsent } from "@/lib/consent";
 import { useJourney } from "@/lib/use-journey";
+import { saveInvitationResponse, resetJourney } from "@/lib/journey-storage";
+import { clearSession } from "@/lib/test-session-storage";
 import {
   trackHomeViewed,
   trackHomeCtaClicked,
@@ -53,14 +55,16 @@ const RATE_CARDS = [
 
 export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellProps) {
   const journey = useJourney(topicSlugs);
-  const testCompleted = journey.stage !== "visitor";
   const [scrolled, setScrolled] = useState(false);
   const [consentAnswered, setConsentAnswered] = useState(false);
   const [isScrollable, setIsScrollable] = useState(false);
+  const [viewTracked, setViewTracked] = useState(false);
 
   useEffect(() => {
-    trackHomeViewed(locale);
-  }, [locale]);
+    if (viewTracked || !journey.ready) return;
+    setViewTracked(true);
+    trackHomeViewed(locale, journey.stage);
+  }, [viewTracked, journey.ready, journey.stage, locale]);
 
   useEffect(() => {
     function onScroll() {
@@ -110,7 +114,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
   }, []);
 
   const showScrollHint =
-    !testCompleted && !scrolled && consentAnswered && isScrollable;
+    journey.stage === "visitor" && !scrolled && consentAnswered && isScrollable;
 
   return (
     <div className="min-h-dvh overflow-x-hidden bg-[#060404]">
@@ -194,16 +198,112 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
             <WorldMap />
           </div>
 
-          {/* === Bottom CTA section — adapts based on test completion === */}
-          {testCompleted ? (
-            <JourneyTracker
-              locale={locale}
-              messages={home.journey}
-              shareMessages={share}
-              topicSlugs={topicSlugs}
-              snapshot={journey}
-            />
-          ) : (
+          {/* === Bottom CTA section — adapts to journey stage === */}
+          {journey.stage === "committed" && (
+            <div className="mt-10 flex w-full flex-col items-center sm:mt-14">
+              <p className="max-w-md text-center text-sm leading-relaxed text-white/70">
+                {home.journeyStages.committed.heading}
+              </p>
+              <p className="mt-2 font-mono text-[10px] uppercase tracking-[3px] text-[#D4A843]/80">
+                {home.journeyStages.committed.subheading}
+              </p>
+              <JourneyTracker
+                snapshot={journey}
+                locale={locale}
+                messages={home.journey}
+                shareMessages={share}
+                topicSlugs={topicSlugs}
+              />
+            </div>
+          )}
+
+          {journey.stage === "undecided" && (
+            <>
+              <h1 className="mt-10 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-14 sm:text-3xl">
+                {home.journeyStages.undecided.heading}
+              </h1>
+              <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
+                <Button variant="gold" size="lg" mist>
+                  {home.journeyStages.undecided.cta}
+                  <ButtonArrow />
+                </Button>
+              </Link>
+            </>
+          )}
+
+          {journey.stage === "thinking" && (
+            <div className="mt-10 flex w-full max-w-md flex-col items-center gap-3 sm:mt-14">
+              <p className="text-center text-sm leading-relaxed text-white/70">
+                {home.journeyStages.thinking.reflection}
+              </p>
+              <a
+                href={home.journeyStages.thinking.johnCard.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full rounded-xl border border-white/[0.06] bg-white/[0.015] p-5 transition-all hover:border-[#D4A843]/20"
+              >
+                <p className="text-sm font-semibold text-white/85">
+                  {home.journeyStages.thinking.johnCard.label}
+                </p>
+                <p className="mt-1 text-[13px] leading-relaxed text-white/60">
+                  {home.journeyStages.thinking.johnCard.description}
+                </p>
+              </a>
+              <Link
+                href={`/${locale}/learn`}
+                className="block w-full rounded-xl border border-white/[0.06] bg-white/[0.015] p-5 transition-all hover:border-[#D4A843]/20"
+              >
+                <p className="text-sm font-semibold text-white/85">
+                  {home.journeyStages.thinking.learnCard.label}
+                </p>
+                <p className="mt-1 text-[13px] leading-relaxed text-white/60">
+                  {home.journeyStages.thinking.learnCard.description}
+                </p>
+              </Link>
+              <button
+                type="button"
+                onClick={() => saveInvitationResponse("committed")}
+                className="mt-3 font-mono text-[10px] uppercase tracking-[2px] text-[#D4A843]/70 transition-colors hover:text-[#D4A843]"
+              >
+                {home.journeyStages.thinking.commitLabel}
+              </button>
+              <Link
+                href={`/${locale}/test`}
+                onClick={() => {
+                  resetJourney();
+                  clearSession();
+                }}
+                className="font-mono text-[10px] uppercase tracking-[2px] text-white/40 transition-colors hover:text-white/60"
+              >
+                {home.journeyStages.thinking.retakeLabel}
+              </Link>
+            </div>
+          )}
+
+          {journey.stage === "dismissed" && (
+            <>
+              <p className="mt-10 max-w-md text-center text-sm leading-relaxed text-white/60 sm:mt-14">
+                {home.journeyStages.dismissed.line}
+              </p>
+              <Link
+                href={`/${locale}/test`}
+                onClick={() => {
+                  resetJourney();
+                  clearSession();
+                }}
+                className="mt-6"
+              >
+                <Button variant="ghost">
+                  {home.journeyStages.dismissed.retakeCta}
+                </Button>
+              </Link>
+              <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-4">
+                <Button variant="text">{home.secondaryLink}</Button>
+              </Link>
+            </>
+          )}
+
+          {journey.stage === "visitor" && (
             <>
               {/* New visitor */}
               <p className="mt-10 font-mono text-[10px] uppercase tracking-[3px] text-red-400/80 sm:mt-14 sm:text-[11px] sm:tracking-[4px]">
@@ -212,20 +312,14 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
               <h1 className="mt-3 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-4 sm:text-3xl md:text-4xl">
                 {home.provocativeQuestion}
               </h1>
-
-              {/* Primary CTA */}
               <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
                 <Button variant="gold" size="lg" mist>
                   {home.ctaButton}
                   <ButtonArrow />
                 </Button>
               </Link>
-
-              {/* Secondary link */}
               <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-4">
-                <Button variant="text">
-                  {home.secondaryLink}
-                </Button>
+                <Button variant="text">{home.secondaryLink}</Button>
               </Link>
             </>
           )}
