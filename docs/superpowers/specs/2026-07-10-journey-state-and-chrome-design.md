@@ -51,7 +51,9 @@ useJourney(topicSlugs) → {
 
 - `undecided` = test completed but no invitation response (closed tab at grace/invitation).
 - Stage derivation is a pure exported function (unit-tested).
-- Consumers migrate to the hook: `home-shell`, `journey-tracker`, `top-bar`, `learn-hub`. All raw `localStorage.getItem("test_completed")` calls and the duplicated `readSnapshot()` / `readStage()` helpers are removed.
+- Consumers migrate to the hook: `home-shell`, `journey-tracker`, `top-bar`, `learn-hub`, `topic-nav`. All raw `localStorage.getItem("test_completed")` calls and the duplicated `readSnapshot()` / `readStage()` helpers are removed.
+- **Session ↔ journey sync rule:** the journey record is the source of truth for stage. `saveInvitationResponse()` also patches the saved test session's `invitationResponse` when one exists, so resuming `/test` never shows a stale response state.
+- `markTestCompleted()` fires on the same trigger as the current inline write: entering `verdict` (game-shell already covers `verdict | grace | invitation`).
 - `reading-storage`, `learn-progress-storage`, `test-session-storage` stay as they are; the hook composes them.
 
 **Rename `prayed` → `committed`** across types (`InvitationResponse`), reducer, session storage, analytics events, and component props. Not launched, so no data migration. Button copy is already correct ("I will repent and trust in Christ").
@@ -65,12 +67,14 @@ useJourney(topicSlugs) → {
 | `visitor` | Unchanged: mortality stat, "Are you a good person?", gold CTA → test. |
 | `undecided` | Heading with the LW charge — "You've seen the verdict. What will you do with it?" — gold CTA → `/test` (resume dialog restores at grace/invitation). No tracker. |
 | `committed` | Conditional LW framing header — "If you've repented and trusted in Christ, God has forgiven you. Grow in it:" — then the existing `JourneyTracker` (reading → learn → share). No celebration of the click; assurance points at Christ's work and fruit. |
-| `thinking` | No checklist pressure. One reflection line (trackB voice) + three cards: Read John 3 (external Bible link) · Learn foundations (→ `/learn`) · Revisit the verdict (→ `/test`, resumes at the completed session's grace/invitation). Quiet link "I have repented and trusted in Christ" → updates response `thinking → committed`. Never auto-downgrades. |
-| `dismissed` | Near-visitor: same hero, subdued ghost "Take the test again" CTA + `dismissedEncouragement` line ("The door stays open"). No tracker, no guilt. |
+| `thinking` | No checklist pressure. One reflection line (trackB voice) + three cards: Read John 3 (external Bible link) · Learn foundations (→ `/learn`) · "Return to the question" (→ `/test`; resume lands on the invitation screen — card copy is honest about that, e.g. "The question still stands"). Quiet link "I have repented and trusted in Christ" → updates response `thinking → committed`, homepage re-renders in place to the `committed` variant (no navigation). Never auto-downgrades. |
+| `dismissed` | Near-visitor: same hero, subdued ghost "Take the test again" CTA + `dismissedEncouragement` line ("The door stays open"). CTA performs a full journey reset on click (journey record + test session cleared; reading/learn progress kept) — same semantics as the tracker's retake link. No tracker, no guilt. |
 
-All new copy lives in `messages/{en,pt}.json` under `home.journeyStages`, required by the `i18n.ts` validator.
+All new copy lives in `messages/{en,pt}.json` under `home.journeyStages`, required by the `i18n.ts` validator. PT copy drafted alongside EN; native-speaker review by the owner before ship (theological register matters).
 
 The `thinking → committed` link routes through the same `saveInvitationResponse("committed")` path (analytics event included) — no bespoke mutation.
+
+`trackHomeViewed` gains a `stage` property so PostHog shows the distribution of returning stages once launched.
 
 ### 3. Chrome unification + next-steps
 
@@ -106,9 +110,21 @@ The `thinking → committed` link routes through the same `saveInvitationRespons
 
 ## Implementation order
 
+0. Housekeeping: commit the pending "Examination"→"Test" copy WIP first (clean baseline); delete root screenshot `.png`s; move `ACTION-PLAN.md` and `FULL-AUDIT-REPORT.md` into `docs/`.
 1. State layer (journey-storage, use-journey, rename, migrate consumers) — everything else depends on it.
 2. Homepage stage variants + messages.
 3. Chrome restructure + next-steps rewiring.
 4. Test updates + E2E walkthrough.
 
 Each slice leaves the app working and is verifiable on its own.
+
+## Grill decisions (2026-07-10)
+
+- Dismissed CTA = full journey reset on click (identical to tracker retake link).
+- Thinking "return" card renamed to match real resume destination (invitation screen), not "revisit the verdict".
+- Thinking → committed flip re-renders homepage in place; no redirect, no confirm dialog.
+- TopBar's Test link duplicating the hero CTA on home: accepted — chrome consistency wins.
+- Full Footer on home: accepted (adds locale switch + crawlable links below the fold).
+- `topic-nav.tsx` added to raw-flag consumer migration list (was missed in first draft).
+- Analytics: `stage` property added to `home_viewed`.
+- PT copy: drafted with EN, owner reviews before ship.
