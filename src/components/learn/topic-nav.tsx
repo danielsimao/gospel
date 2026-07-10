@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { readProgress, getCompletedCount } from "@/lib/reading-storage";
+import { computeJourneySnapshot } from "@/lib/use-journey";
 import { trackTopicCtaClicked, trackTopicNavClicked } from "@/lib/learn-analytics";
 
 const TOTAL_DAYS = 7;
@@ -30,7 +31,7 @@ function getInitialCta(
   completedCtaButton?: string,
 ) {
   try {
-    const testDone = localStorage.getItem("test_completed") === "1";
+    const testDone = computeJourneySnapshot([]).stage !== "visitor";
     const readingDone = getCompletedCount(readProgress(), TOTAL_DAYS) >= TOTAL_DAYS;
 
     if (!testDone) {

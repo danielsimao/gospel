@@ -9,8 +9,8 @@ import { DeathCounter } from "@/components/eternity/death-counter";
 import { RotatingFacts } from "@/components/eternity/rotating-facts";
 import { JourneyTracker } from "@/components/journey-tracker";
 import { Button, ButtonArrow } from "@/components/ui/button";
-import { subscribeToStorage } from "@/lib/client-storage";
 import { getConsent } from "@/lib/consent";
+import { useJourney } from "@/lib/use-journey";
 import {
   trackHomeViewed,
   trackHomeCtaClicked,
@@ -52,33 +52,14 @@ const RATE_CARDS = [
 ] as const;
 
 export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellProps) {
-  const [testCompleted, setTestCompleted] = useState(() => {
-    if (typeof window === "undefined") return false;
-    try {
-      return localStorage.getItem("test_completed") === "1";
-    } catch {
-      return false;
-    }
-  });
+  const journey = useJourney(topicSlugs);
+  const testCompleted = journey.stage !== "visitor";
   const [scrolled, setScrolled] = useState(false);
   const [consentAnswered, setConsentAnswered] = useState(false);
   const [isScrollable, setIsScrollable] = useState(false);
 
   useEffect(() => {
     trackHomeViewed(locale);
-
-    function readTestCompleted() {
-      try {
-        setTestCompleted(localStorage.getItem("test_completed") === "1");
-      } catch {}
-    }
-
-    window.addEventListener("pageshow", readTestCompleted);
-    const unsubscribe = subscribeToStorage(readTestCompleted);
-    return () => {
-      window.removeEventListener("pageshow", readTestCompleted);
-      unsubscribe();
-    };
   }, [locale]);
 
   useEffect(() => {
@@ -220,6 +201,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
               messages={home.journey}
               shareMessages={share}
               topicSlugs={topicSlugs}
+              snapshot={journey}
             />
           ) : (
             <>

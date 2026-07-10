@@ -15,13 +15,13 @@ import {
   trackTestResumed,
   trackTestRestarted,
 } from "@/lib/analytics";
-import { emitStorageChange } from "@/lib/client-storage";
 import { QUESTION_CONFIGS } from "@/lib/questions";
 import {
   readSession,
   clearSession,
   type SavedSession,
 } from "@/lib/test-session-storage";
+import { markTestCompleted, saveInvitationResponse } from "@/lib/journey-storage";
 import type { Messages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 
@@ -78,12 +78,9 @@ export function GameShell({ messages, locale }: GameShellProps) {
       data: { phase: state.phase, score: state.score },
     });
 
-    // Persist test completion so other pages (learn) can check
+    // Persist test completion so other pages (home, learn, nav) can check
     if (state.phase === "verdict" || state.phase === "grace" || state.phase === "invitation") {
-      try {
-        localStorage.setItem("test_completed", "1");
-        emitStorageChange();
-      } catch {}
+      markTestCompleted();
     }
 
   }, [state.phase, state.score]);
@@ -168,9 +165,10 @@ export function GameShell({ messages, locale }: GameShellProps) {
             locale={locale}
             startedAt={state.startedAt}
             invitationResponse={state.invitationResponse}
-            onResponse={(response) =>
-              dispatch({ type: "SET_INVITATION_RESPONSE", response })
-            }
+            onResponse={(response) => {
+              saveInvitationResponse(response);
+              dispatch({ type: "SET_INVITATION_RESPONSE", response });
+            }}
           />
         )}
       </div>

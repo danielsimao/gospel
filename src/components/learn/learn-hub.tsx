@@ -8,6 +8,7 @@ import { subscribeToStorage } from "@/lib/client-storage";
 import { isTopicCompleted, clearAllTopicProgress } from "@/lib/learn-progress-storage";
 import { clearAllQuizAnswers, hasAnyQuizAnswers } from "@/lib/learn-quiz-storage";
 import { readProgress, getCompletedCount } from "@/lib/reading-storage";
+import { readJourney, deriveStage } from "@/lib/journey-storage";
 import { trackLearnProgressReset } from "@/lib/learn-analytics";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import type { Locale } from "@/lib/i18n";
@@ -64,7 +65,7 @@ function readLearnHubState(
 
   if (completed.size >= topics.length) {
     try {
-      const testDone = localStorage.getItem("test_completed") === "1";
+      const testDone = deriveStage(readJourney()) !== "visitor";
       const readingDone = getCompletedCount(readProgress(), TOTAL_READING_DAYS) >= TOTAL_READING_DAYS;
 
       if (!testDone) {

@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ShareButtons } from "@/components/share-buttons";
-import { subscribeToStorage, emitStorageChange } from "@/lib/client-storage";
-import { readProgress, getCompletedCount } from "@/lib/reading-storage";
-import { isTopicCompleted } from "@/lib/learn-progress-storage";
+import { resetJourney } from "@/lib/journey-storage";
+import { TOTAL_READING_DAYS, type JourneySnapshot } from "@/lib/use-journey";
 import { clearSession } from "@/lib/test-session-storage";
 import {
   trackHomeJourneyStepClicked,
@@ -14,16 +12,8 @@ import {
 import type { JourneyMessages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 
-const TOTAL_READING_DAYS = 7;
-
 type StepId = "test" | "reading" | "learn" | "share";
 type CardState = "complete" | "active" | "upcoming" | "all-done";
-
-type Snapshot = {
-  testDone: boolean;
-  readingDone: number;
-  learnDone: number;
-};
 
 interface ShareMessages {
   prompt: string;
@@ -37,26 +27,7 @@ interface JourneyTrackerProps {
   messages: JourneyMessages;
   shareMessages: ShareMessages;
   topicSlugs: string[];
-}
-
-const EMPTY_SNAPSHOT: Snapshot = {
-  testDone: false,
-  readingDone: 0,
-  learnDone: 0,
-};
-
-function readSnapshot(topicSlugs: string[]): Snapshot {
-  try {
-    const testDone = localStorage.getItem("test_completed") === "1";
-    const readingDone = getCompletedCount(readProgress(), TOTAL_READING_DAYS);
-    const learnDone = topicSlugs.reduce(
-      (n, slug) => (isTopicCompleted(slug) ? n + 1 : n),
-      0,
-    );
-    return { testDone, readingDone, learnDone };
-  } catch {
-    return EMPTY_SNAPSHOT;
-  }
+  snapshot: JourneySnapshot;
 }
 
 function deriveActiveId(
@@ -75,20 +46,10 @@ export function JourneyTracker({
   messages,
   shareMessages,
   topicSlugs,
+  snapshot,
 }: JourneyTrackerProps) {
-  // Lazy initializer: read localStorage synchronously on first render.
-  // Safe because this component only ever mounts client-side — home-shell
-  // gates the returning branch on a post-mount localStorage read.
-  const [snapshot, setSnapshot] = useState<Snapshot>(() =>
-    typeof window === "undefined" ? EMPTY_SNAPSHOT : readSnapshot(topicSlugs),
-  );
-
-  useEffect(() => {
-    return subscribeToStorage(() => setSnapshot(readSnapshot(topicSlugs)));
-  }, [topicSlugs]);
-
   const totalTopics = topicSlugs.length;
-  const testComplete = snapshot.testDone;
+  const testComplete = snapshot.stage !== "visitor";
   const readingComplete = snapshot.readingDone >= TOTAL_READING_DAYS;
   // Guard totalTopics > 0: if topic list is empty (message file drift),
   // learn never "auto-completes" and share never falsely unlocks.
@@ -195,10 +156,7 @@ export function JourneyTracker({
         href={`/${locale}/test`}
         onClick={() => {
           trackHomeRetakeClicked();
-          try {
-            localStorage.removeItem("test_completed");
-            emitStorageChange();
-          } catch {}
+          resetJourney();
           clearSession();
         }}
         className="mt-3 self-center font-mono text-[10px] uppercase tracking-[2px] text-white/40 transition-colors hover:text-white/60"
