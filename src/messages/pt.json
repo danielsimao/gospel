@@ -1,9 +1,9 @@
 {
   "landing": {
     "title": "Tu es uma boa pessoa?",
-    "cta": "Comecar exame",
-    "label": "Exame",
-    "subtitle": "Dez mandamentos. Oito perguntas. Um veredicto."
+    "cta": "Começar o teste",
+    "label": "Teste",
+    "subtitle": "A Lei de Deus. Oito perguntas. Um veredicto."
   },
   "resumeDialog": {
     "title": "Continuar de onde paraste?",
@@ -11,7 +11,7 @@
     "startOverLabel": "Recomeçar"
   },
   "test": {
-    "caseLabel": "Exame",
+    "caseLabel": "Teste",
     "guiltLabel": "Culpa",
     "counterLabel": "morreram desde que abriste esta pagina",
     "liveBadge": "ao vivo",
@@ -578,7 +578,7 @@
       "test": {
         "label": "A Lei",
         "descComplete": "Já compareceste perante o tribunal de Deus.",
-        "descActive": "Examina-te pelos Dez Mandamentos."
+        "descActive": "Examina-te pela Lei de Deus."
       },
       "reading": {
         "label": "Pão de cada dia",

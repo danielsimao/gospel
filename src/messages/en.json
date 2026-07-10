@@ -1,9 +1,9 @@
 {
   "landing": {
     "title": "Are you a good person?",
-    "cta": "Begin examination",
-    "label": "Examination",
-    "subtitle": "Ten commandments. Eight questions. One verdict."
+    "cta": "Begin the test",
+    "label": "Test",
+    "subtitle": "God's Law. Eight questions. One verdict."
   },
   "resumeDialog": {
     "title": "Pick up where you left off?",
@@ -11,7 +11,7 @@
     "startOverLabel": "Start over"
   },
   "test": {
-    "caseLabel": "Examination",
+    "caseLabel": "Test",
     "guiltLabel": "Guilt",
     "counterLabel": "died since you opened this page",
     "liveBadge": "live",
@@ -578,7 +578,7 @@
       "test": {
         "label": "The Law",
         "descComplete": "You've stood before God's court.",
-        "descActive": "Examine yourself against the Ten Commandments."
+        "descActive": "Examine yourself against God's Law."
       },
       "reading": {
         "label": "Daily bread",

@@ -14,11 +14,11 @@ export const contentType = "image/png";
 const COPY = {
   en: {
     title: "Are You a Good Person?",
-    subtitle: "Ten commandments. Eight questions. One verdict.",
+    subtitle: "God's Law. Eight questions. One verdict.",
   },
   pt: {
     title: "Tu és uma boa pessoa?",
-    subtitle: "Dez mandamentos. Oito perguntas. Um veredicto.",
+    subtitle: "A Lei de Deus. Oito perguntas. Um veredicto.",
   },
 } as const;
 
