@@ -101,7 +101,7 @@ export function InvitationScreen({
 
             {/* What now? CTA */}
             {invitationResponse !== "dismissed" && (
-              <Link href={`/${locale}/next-steps?track=${invitationResponse === "committed" ? "committed" : "thinking"}`} className="mt-6 block">
+              <Link href={`/${locale}/next-steps`} className="mt-6 block">
                 <Button variant="gold" mist className="w-full">
                   {messages.nextSteps?.cta ?? "What now?"}
                   <ButtonArrow />

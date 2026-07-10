@@ -1,13 +1,12 @@
 import { notFound } from "next/navigation";
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
-import { NextStepsClient } from "../../next-steps/client";
+import { NextStepsClient } from "./client";
 import { StructuredData } from "@/components/structured-data";
 import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
 import type { Metadata } from "next";
 
 type Props = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ track?: string }>;
 };
 
 function getNextStepsDescription(locale: string): string {
@@ -40,10 +39,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-export default async function NextStepsPage({ params, searchParams }: Props) {
+export default async function NextStepsPage({ params }: Props) {
   const { locale } = await params;
   if (!isValidLocale(locale)) notFound();
-  const { track } = await searchParams;
 
   const messages = await import(`@/messages/${locale}.json`);
   const data = messages.default;
@@ -62,12 +60,7 @@ export default async function NextStepsPage({ params, searchParams }: Props) {
   return (
     <>
       <StructuredData data={webPageSchema} />
-      <NextStepsClient
-        track={track === "thinking" ? "thinking" : "committed"}
-        nextStepsMessages={data.nextSteps}
-        shareMessages={data.share}
-        locale={locale as Locale}
-      />
+      <NextStepsClient nextStepsMessages={data.nextSteps} shareMessages={data.share} locale={locale as Locale} />
     </>
   );
 }

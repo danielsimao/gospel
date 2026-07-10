@@ -1,15 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { TrackCommitted } from "@/components/next-steps/track-committed";
 import { TrackThinking } from "@/components/next-steps/track-thinking";
 import { trackNextStepsViewed } from "@/lib/discipleship-analytics";
+import { useJourney } from "@/lib/use-journey";
 import type { Locale } from "@/lib/i18n";
 
-type Track = "committed" | "thinking";
-
 interface NextStepsClientProps {
-  track: Track;
   nextStepsMessages: {
     trackA: Parameters<typeof TrackCommitted>[0]["messages"];
     trackB: Parameters<typeof TrackThinking>[0]["messages"];
@@ -18,12 +17,24 @@ interface NextStepsClientProps {
   locale: Locale;
 }
 
-export function NextStepsView({
-  track,
-  nextStepsMessages,
-  shareMessages,
-  locale,
-}: NextStepsClientProps & { track: Track }) {
+export function NextStepsClient({ nextStepsMessages, shareMessages, locale }: NextStepsClientProps) {
+  const { stage, ready } = useJourney();
+  const router = useRouter();
+
+  const track = stage === "committed" ? "committed" : stage === "thinking" ? "thinking" : null;
+
+  useEffect(() => {
+    if (!ready) return;
+    if (!track) {
+      // No recorded response — the page has nothing honest to say. Go home.
+      router.replace(`/${locale}`);
+      return;
+    }
+    trackNextStepsViewed(track, locale);
+  }, [ready, track, locale, router]);
+
+  if (!ready || !track) return null;
+
   return (
     <main className="min-h-dvh bg-[#060404] text-white">
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
@@ -36,12 +47,4 @@ export function NextStepsView({
       </div>
     </main>
   );
-}
-
-export function NextStepsClient({ track, nextStepsMessages, shareMessages, locale }: NextStepsClientProps) {
-  useEffect(() => {
-    trackNextStepsViewed(track, locale);
-  }, [track, locale]);
-
-  return <NextStepsView track={track} nextStepsMessages={nextStepsMessages} shareMessages={shareMessages} locale={locale} />;
 }
