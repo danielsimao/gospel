@@ -136,7 +136,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
         </motion.div>
       </motion.div>
 
-      <section className="relative flex min-h-[100svh] flex-col items-center justify-center px-4 pt-16 pb-12 sm:px-6 sm:pt-20 sm:pb-16">
+      <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-center px-4 pt-8 pb-12 sm:px-6 sm:pt-10 sm:pb-16">
         {/* Radial vignette */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
 
