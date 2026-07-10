@@ -45,6 +45,7 @@ function migrateLegacyFlag(): void {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(record));
   }
   localStorage.removeItem(LEGACY_TEST_COMPLETED_KEY);
+  emitStorageChange();
 }
 
 export function readJourney(): JourneyRecord {

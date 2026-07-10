@@ -7,6 +7,7 @@ import {
   deriveStage,
   type JourneyRecord,
 } from "@/lib/journey-storage";
+import { emitStorageChange } from "@/lib/client-storage";
 
 // Mock localStorage (same pattern as test-session-storage.test.ts)
 const storage = new Map<string, string>();
@@ -84,6 +85,17 @@ describe("journey-storage", () => {
       storage.set("test_completed", "0");
       expect(readJourney().testCompletedAt).toBeNull();
       expect(storage.has("test_completed")).toBe(false);
+    });
+
+    it("emits a storage change when migrating the legacy flag", () => {
+      storage.set("test_completed", "1");
+      readJourney();
+      expect(vi.mocked(emitStorageChange)).toHaveBeenCalledTimes(1);
+    });
+
+    it("does not emit on a plain read with no migration", () => {
+      readJourney();
+      expect(vi.mocked(emitStorageChange)).not.toHaveBeenCalled();
     });
   });
 
