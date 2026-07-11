@@ -22,12 +22,16 @@ The site is live at https://www.ifyoudiedtoday.com (see `docs/superpowers/specs/
 | Slug | Target query | Angle (Living Waters voice) |
 |---|---|---|
 | `am-i-a-good-person` | "am I a good person" | Mirror test: our standard vs God's standard → the commandments → take the test |
-| `how-can-my-sins-be-forgiven` | "how can my sins be forgiven" | Not by earning — courtroom/fine analogy → the cross → repentance + faith; cross-links `why-the-cross` |
+| `how-can-my-sins-be-forgiven` | "how can my sins be forgiven" | Not by earning — courtroom/fine analogy → the cross → repentance + faith; sits adjacent to `why-the-cross` in the topic order so prev/next nav links them (body text supports no inline links — no new machinery) |
 | `does-god-exist` | "does god exist" | Creation, conscience, Christ — classic LW argument, no academic apologetics sprawl |
 
 **One expansion:** `what-happens-when-i-die` grows from 4 to 6-7 sections; title and metaDescription retuned toward the query ("What Happens When You Die?"). Slug unchanged (already indexed).
 
-**Ordering** in `learn.topics`: `am-i-a-good-person` first, then the existing five, then the two other new topics. Learn hub, footer nav, and sitemap update automatically from the array.
+**Ordering** in `learn.topics` (grill-approved): `am-i-a-good-person` → `who-is-jesus` → `what-is-sin` → `why-the-cross` → `how-can-my-sins-be-forgiven` → `what-is-repentance` → `what-happens-when-i-die` → `does-god-exist`. Learn hub, footer nav, and sitemap update automatically from the array.
+
+**Quiz policy for new sections:** quiz on most sections (matching the existing feel), skipped where one would be artificial — the `quiz` field is already optional in the renderer.
+
+**Accepted regression:** growing the topic list means anyone who had completed all five current topics regresses to "learn incomplete" in the hub and journey tracker. Accepted — the site is days old with ~zero completed users, and the new content genuinely is unread. No grandfathering code.
 
 **Copy authorship:** drafted by the implementer in both locales, in Living Waters voice; the owner reviews EN theology and PT register before merge (hard gate). Binding: no copy may assure salvation from a click or from taking the test; assurance points to Christ's work and repentance+faith (see the journey spec's Living Waters constraint).
 
@@ -61,9 +65,12 @@ All items are reviewed findings from the launch cycle:
 - **Copy gate:** owner reviews all new/changed EN + PT strings before merge.
 - **Post-deploy:** PSI re-run on `/en/test` (target ≤ 3.0s LCP), validator.schema.org spot-check on one topic page, GSC sitemap refresh.
 
-## Implementation order
+## Implementation order & releases
 
-1. Polish batch (Part C) — small, independent, keeps prod-parity while content is drafted.
-2. Schema builders + dates (Part B) on existing topics.
-3. New topics + expansion (Part A) — biggest chunk, lands on top of schema.
-4. E2E + copy review gate + deploy.
+Two releases (grill-approved):
+
+**Release 1 — polish:** Part C alone; ships to production as soon as green (includes the LCP wins). Small, safe, independently verifiable.
+
+**Release 2 — content + schema:** Part B (schema builders + dates on existing topics), then Part A (new topics + expansion), then E2E + owner copy review gate (EN theology + PT register), then deploy.
+
+`dateModified` policy: bump only on meaningful content changes, not typo fixes. PT titles use the natural PT query form (e.g. "Sou uma boa pessoa?") — owner review covers register.
