@@ -1,7 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getConsent, setConsent } from "@/lib/consent";
+import { useSyncExternalStore } from "react";
+import {
+  hasAnsweredConsent,
+  setConsent,
+  subscribeToConsentAnswered,
+} from "@/lib/consent";
 import { initPostHog } from "@/lib/posthog";
 
 const COPY = {
@@ -18,13 +22,15 @@ const COPY = {
 } as const;
 
 export function ConsentBanner() {
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (getConsent() === "pending") {
-      setVisible(true);
-    }
-  }, []);
+  // Hidden on the server render (stable hydration), shown post-hydration while
+  // consent is pending. hasAnsweredConsent counts an explicit accept/decline
+  // this session, so the banner still dismisses when storage writes fail
+  // (private mode).
+  const visible = useSyncExternalStore(
+    subscribeToConsentAnswered,
+    () => !hasAnsweredConsent(),
+    () => false,
+  );
 
   if (!visible) return null;
 
@@ -34,13 +40,11 @@ export function ConsentBanner() {
   function handleAccept() {
     setConsent("granted");
     initPostHog();
-    setVisible(false);
     window.dispatchEvent(new Event("consentchange"));
   }
 
   function handleDecline() {
     setConsent("denied");
-    setVisible(false);
     window.dispatchEvent(new Event("consentchange"));
   }
 

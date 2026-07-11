@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -9,7 +9,7 @@ import { DeathCounter } from "@/components/eternity/death-counter";
 import { RotatingFacts } from "@/components/eternity/rotating-facts";
 import { JourneyTracker } from "@/components/journey-tracker";
 import { Button, ButtonArrow } from "@/components/ui/button";
-import { getConsent } from "@/lib/consent";
+import { hasAnsweredConsent, subscribeToConsentAnswered } from "@/lib/consent";
 import { useJourney } from "@/lib/use-journey";
 import { saveInvitationResponse, resetJourney } from "@/lib/journey-storage";
 import { clearSession } from "@/lib/test-session-storage";
@@ -56,15 +56,24 @@ const RATE_CARDS = [
 export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellProps) {
   const journey = useJourney(topicSlugs);
   const [scrolled, setScrolled] = useState(false);
-  const [consentAnswered, setConsentAnswered] = useState(false);
   const [isScrollable, setIsScrollable] = useState(false);
-  const [viewTracked, setViewTracked] = useState(false);
+  const viewTracked = useRef(false);
+
+  // Reveal the scroll hint only once the consent banner is gone. Server render
+  // reports "unanswered" for stable hydration; hasAnsweredConsent also counts
+  // an explicit accept/decline this session, so private-mode browsers (where
+  // the storage write can fail) still dismiss the hint gate.
+  const consentAnswered = useSyncExternalStore(
+    subscribeToConsentAnswered,
+    hasAnsweredConsent,
+    () => false,
+  );
 
   useEffect(() => {
-    if (viewTracked || !journey.ready) return;
-    setViewTracked(true);
+    if (viewTracked.current || !journey.ready) return;
+    viewTracked.current = true;
     trackHomeViewed(locale, journey.stage);
-  }, [viewTracked, journey.ready, journey.stage, locale]);
+  }, [journey.ready, journey.stage, locale]);
 
   useEffect(() => {
     function onScroll() {
@@ -72,21 +81,6 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
     }
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Reveal the scroll hint only once the consent banner is gone. Resolved in an
-  // effect (not at init) to keep SSR/first-render output stable and avoid a
-  // hydration mismatch. Returning visitors already answered on a prior visit;
-  // this-visit answers arrive via the banner's "consentchange" event. The event
-  // only fires after an explicit accept/decline, so we trust it unconditionally
-  // rather than re-reading storage (which can be blocked in private mode).
-  useEffect(() => {
-    if (getConsent() !== "pending") setConsentAnswered(true);
-    function onConsentChange() {
-      setConsentAnswered(true);
-    }
-    window.addEventListener("consentchange", onConsentChange);
-    return () => window.removeEventListener("consentchange", onConsentChange);
   }, []);
 
   // Only hint at scrolling when there is actually content below the fold.
