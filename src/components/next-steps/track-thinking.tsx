@@ -26,7 +26,7 @@ interface TrackThinkingProps {
 
 export function TrackThinking({ messages, locale }: TrackThinkingProps) {
   return (
-    <div className="mx-auto max-w-lg px-4 py-16 sm:px-6 sm:py-24">
+    <>
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -104,6 +104,6 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
           {messages.readingPlanLabel} &rarr;
         </Link>
       </motion.div>
-    </div>
+    </>
   );
 }

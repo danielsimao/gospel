@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { TrackCommitted } from "@/components/next-steps/track-committed";
 import { TrackThinking } from "@/components/next-steps/track-thinking";
+import { PageShell } from "@/components/shared/page-shell";
 import { trackNextStepsViewed } from "@/lib/discipleship-analytics";
 import { useJourney } from "@/lib/use-journey";
 import type { Locale } from "@/lib/i18n";
@@ -36,15 +37,12 @@ export function NextStepsClient({ nextStepsMessages, shareMessages, locale }: Ne
   if (!ready || !track) return null;
 
   return (
-    <main className="min-h-dvh bg-[#060404] text-white">
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
-      <div className="relative z-[1]">
-        {track === "committed" ? (
-          <TrackCommitted messages={nextStepsMessages.trackA} shareMessages={shareMessages} locale={locale} />
-        ) : (
-          <TrackThinking messages={nextStepsMessages.trackB} locale={locale} />
-        )}
-      </div>
-    </main>
+    <PageShell>
+      {track === "committed" ? (
+        <TrackCommitted messages={nextStepsMessages.trackA} shareMessages={shareMessages} locale={locale} />
+      ) : (
+        <TrackThinking messages={nextStepsMessages.trackB} locale={locale} />
+      )}
+    </PageShell>
   );
 }

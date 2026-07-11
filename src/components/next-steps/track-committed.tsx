@@ -41,7 +41,7 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
   const paragraphs = messages.whatHappened.split("\n\n");
 
   return (
-    <div className="mx-auto max-w-lg px-4 py-16 sm:px-6 sm:py-24">
+    <>
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -159,6 +159,6 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
           locale={locale}
         />
       </motion.div>
-    </div>
+    </>
   );
 }

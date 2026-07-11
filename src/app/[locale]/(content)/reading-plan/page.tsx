@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
 import { ReadingPlan } from "@/components/reading-plan/reading-plan";
 import { StructuredData } from "@/components/structured-data";
+import { PageShell } from "@/components/shared/page-shell";
 import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
 import type { Metadata } from "next";
 
@@ -50,12 +51,9 @@ export default async function ReadingPlanPage({ params }: Props) {
   return (
     <>
       <StructuredData data={webPageSchema} />
-      <main className="min-h-dvh bg-[#060404] text-white">
-        <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
-        <div className="relative z-[1]">
-          <ReadingPlan messages={data.readingPlan} locale={locale as Locale} />
-        </div>
-      </main>
+      <PageShell>
+        <ReadingPlan messages={data.readingPlan} locale={locale as Locale} />
+      </PageShell>
     </>
   );
 }

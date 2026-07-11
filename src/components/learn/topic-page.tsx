@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { TopicSection } from "./topic-section";
 import { TopicNav } from "./topic-nav";
 import { trackTopicPageViewed } from "@/lib/learn-analytics";
+import { PageShell } from "@/components/shared/page-shell";
 
 interface SectionMessages {
   heading: string;
@@ -49,10 +50,8 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
   }, [topic.slug, locale]);
 
   return (
-    <main className="min-h-dvh bg-[#060404] text-white">
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
-
-      <article className="relative z-[1] mx-auto max-w-lg px-4 py-16 sm:px-6 sm:py-24">
+    <PageShell>
+      <article>
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -105,6 +104,6 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
           allTopicsLabel={allTopicsLabel}
         />
       </article>
-    </main>
+    </PageShell>
   );
 }
