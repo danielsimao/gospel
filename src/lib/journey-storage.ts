@@ -40,6 +40,9 @@ function isValidResponse(value: unknown): value is InvitationResponse {
 function migrateLegacyFlag(): void {
   const legacy = localStorage.getItem(LEGACY_TEST_COMPLETED_KEY);
   if (legacy === null) return;
+  // Accepted edge case: if a journey record already exists but is corrupt (fails to
+  // parse/validate in readJourney), it still counts as "existing" here, so the legacy
+  // flag is discarded below without folding — same discard policy as a corrupt-record read.
   if (legacy === "1" && localStorage.getItem(STORAGE_KEY) === null) {
     const record: JourneyRecord = { ...EMPTY_RECORD, testCompletedAt: Date.now() };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(record));

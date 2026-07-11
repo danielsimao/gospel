@@ -598,7 +598,7 @@
     },
     "journeyStages": {
       "undecided": {
-        "heading": "Viste o veredito. O que vais fazer com ele?",
+        "heading": "Viste o veredicto. O que vais fazer com ele?",
         "cta": "Volta onde ficaste"
       },
       "committed": {

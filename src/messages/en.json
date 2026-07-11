@@ -22,22 +22,22 @@
     "commandmentLabel": "Commandment",
     "backLabel": "Back",
     "verdictLabels": {
-      "9th": "liar",
-      "8th": "thief",
-      "7th": "adulterer",
-      "6th": "murderer at heart",
-      "3rd": "blasphemer",
-      "10th": "coveter",
-      "1st": "idolater",
-      "5th": "dishonorer"
+      "9th": "a liar",
+      "8th": "a thief",
+      "7th": "an adulterer",
+      "6th": "a murderer at heart",
+      "3rd": "a blasphemer",
+      "10th": "a coveter",
+      "1st": "an idolater",
+      "5th": "a dishonorer"
     },
     "verdict": {
       "prelude": "The verdict",
       "deathLineTemplate": "people died while you answered. You could be next.",
       "bridgeButton": "Is there any hope?",
-      "confessionAdmitted": "A {list} — by your own admission.",
-      "confessionDenied": "A {list} — by your evasions.",
-      "confessionBoth": "A {admitted} — by your own admission. And a {denied} — by your evasions.",
+      "confessionAdmitted": "You are {list} — by your own admission.",
+      "confessionDenied": "You are {list} — by your evasions.",
+      "confessionBoth": "You are {admitted} — by your own admission. And {denied} — by your evasions.",
       "separator": "and",
       "useOxfordComma": true,
       "noneLabel": "Guilty still."

@@ -17,6 +17,7 @@ import {
   trackHomeViewed,
   trackHomeCtaClicked,
   trackHomeSecondaryClicked,
+  trackHomeRetakeClicked,
 } from "@/lib/eternity-analytics";
 import type { HomeMessages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
@@ -264,6 +265,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
               <Link
                 href={`/${locale}/test`}
                 onClick={() => {
+                  trackHomeRetakeClicked();
                   resetJourney();
                   clearSession();
                 }}
@@ -282,6 +284,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
               <Link
                 href={`/${locale}/test`}
                 onClick={() => {
+                  trackHomeRetakeClicked();
                   resetJourney();
                   clearSession();
                 }}
