@@ -141,7 +141,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
 
   return (
     <PageShell>
-      <div className="animate-[fadeInUp_0.8s_ease-out_both]">
+      <div className="animate-[fadeInUp_0.5s_ease-out_both]">
         <p className="font-mono text-[9px] uppercase tracking-[4px] text-[#D4A843]/70">{label}</p>
         <h1
           className="mt-3 text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl"
@@ -153,7 +153,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
 
       {/* Progress bar */}
       {hasAnyProgress && (
-        <div className="mt-6 animate-[fadeInUp_0.5s_ease-out_both]" style={{ animationDelay: "200ms" }}>
+        <div className="mt-6 animate-[fadeInUp_0.5s_ease-out_both]" style={{ animationDelay: "80ms" }}>
           <div className="mb-2 flex items-center justify-between">
             <span className="font-mono text-[10px] uppercase tracking-[2px] text-[#D4A843]/70">
               {progress}
@@ -181,7 +181,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
 
       {/* All-complete banner */}
       {allDone && snapshot.completionCta && (
-        <div className="mt-8 rounded-xl border border-[#D4A843]/20 bg-[#D4A843]/[0.03] p-5 text-center animate-[fadeInUp_0.5s_ease-out_both]" style={{ animationDelay: "300ms" }}>
+        <div className="mt-8 rounded-xl border border-[#D4A843]/20 bg-[#D4A843]/[0.03] p-5 text-center animate-[fadeInUp_0.5s_ease-out_both]" style={{ animationDelay: "120ms" }}>
           <p className="text-sm font-medium text-[#D4A843]">{allCompleteHeading}</p>
           {snapshot.completionCta.type === "button" ? (
             <Link href={snapshot.completionCta.href} className="mt-3 inline-block">
@@ -206,7 +206,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
               key={topic.slug}
               href={`/${locale}/learn/${topic.slug}`}
               className="group flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.015] px-5 py-4 transition-all hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.02] sm:px-6 sm:py-5 animate-[fadeInUp_0.5s_ease-out_both]"
-              style={{ animationDelay: `${300 + i * 100}ms` }}
+              style={{ animationDelay: `${120 + i * 40}ms` }}
             >
               <div className="flex items-center gap-4">
                 <span className="font-mono text-[10px] tabular-nums text-[#D4A843]/70">
