@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { MotionConfig } from "framer-motion";
 import posthog from "posthog-js";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -47,13 +48,13 @@ function PostHogPageviewTracker() {
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       <Suspense fallback={null}>
         <PostHogPageviewTracker />
       </Suspense>
       <Analytics />
       <SpeedInsights />
       {children}
-    </>
+    </MotionConfig>
   );
 }
