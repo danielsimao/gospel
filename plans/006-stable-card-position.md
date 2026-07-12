@@ -1,6 +1,6 @@
 # 006 — Pin the question card to a stable top position
 
-- **Status**: TODO
+- **Status**: DONE (commit c5ad914)
 - **Commit**: 1e9581f
 - **Severity**: MEDIUM
 - **Category**: Content shift / performance

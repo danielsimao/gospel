@@ -114,12 +114,11 @@ export function QuestionCard({
         testMessages={testMessages}
       />
 
-      {/* Row 2: Card area + verdict shortcut — self-centered in the 1fr space */}
-      <div className="flex w-full max-w-xs flex-col items-center self-center justify-self-center sm:max-w-sm">
+      {/* Row 2: Card area + verdict shortcut — pinned to a stable top offset */}
+      <div className="flex w-full max-w-xs flex-col items-center self-start justify-self-center pt-[7vh] sm:max-w-sm sm:pt-[9vh]">
           <AnimatePresence mode="popLayout">
             <motion.div
               key={questionIndex}
-              layout
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
