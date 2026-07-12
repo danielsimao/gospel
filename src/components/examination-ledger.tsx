@@ -51,22 +51,15 @@ export function ExaminationLedger({
 
           if (isActive) {
             return (
-              <motion.div
-                key={i}
-                className="h-[2px] flex-1 rounded-full bg-red-500"
-                animate={{
-                  boxShadow: [
-                    "0 0 8px rgba(239,68,68,0.45)",
-                    "0 0 12px rgba(239,68,68,0.7)",
-                    "0 0 8px rgba(239,68,68,0.45)",
-                  ],
-                }}
-                transition={{
-                  duration: 2.2,
-                  ease: "easeInOut",
-                  repeat: Infinity,
-                }}
-              />
+              <div key={i} className="relative h-[2px] flex-1 rounded-full bg-red-500">
+                <motion.div
+                  aria-hidden="true"
+                  className="absolute inset-0 rounded-full"
+                  style={{ boxShadow: "0 0 12px rgba(239,68,68,0.7)" }}
+                  animate={{ opacity: [0.55, 1, 0.55] }}
+                  transition={{ duration: 2.2, ease: "easeInOut", repeat: Infinity }}
+                />
+              </div>
             );
           }
 

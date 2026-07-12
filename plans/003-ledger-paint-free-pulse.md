@@ -1,6 +1,6 @@
 # 003 — Make the active ledger segment's pulse composite-only
 
-- **Status**: TODO
+- **Status**: DONE (pending commit)
 - **Commit**: 8eb6e36
 - **Severity**: HIGH
 - **Category**: Performance
