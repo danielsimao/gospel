@@ -6,7 +6,11 @@ import { Providers } from "@/components/providers";
 import { ConsentBanner } from "@/components/shared/consent-banner";
 import { StructuredData } from "@/components/structured-data";
 import { buildSiteSchema } from "@/lib/seo";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+
+export const viewport: Viewport = {
+  themeColor: "#060404",
+};
 
 type Props = {
   params: Promise<{ locale: string }>;

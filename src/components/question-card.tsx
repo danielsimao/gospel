@@ -108,12 +108,19 @@ export function QuestionCard({
 
   return (
     <div className="grid flex-1 grid-rows-[auto_1fr_auto] px-4 py-6 sm:px-6">
-      {/* Row 1: Examination ledger — pinned to top */}
-      <ExaminationLedger
-        currentQuestion={questionIndex}
-        answers={state.answers}
-        testMessages={testMessages}
-      />
+      {/* Row 1: Examination ledger — pinned to top; enters just behind the
+          card on phase entry (mounts once, not per question) */}
+      <motion.div
+        initial={{ opacity: 0, y: -4 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, delay: 0.05, ease: EASE_OUT_STRONG }}
+      >
+        <ExaminationLedger
+          currentQuestion={questionIndex}
+          answers={state.answers}
+          testMessages={testMessages}
+        />
+      </motion.div>
 
       {/* Row 2: Card area + verdict shortcut — pinned to a stable top offset */}
       <div className="flex w-full max-w-xs flex-col items-center self-start justify-self-center pt-[7vh] sm:max-w-sm sm:pt-[9vh]">
