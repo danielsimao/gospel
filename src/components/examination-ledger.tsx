@@ -11,7 +11,7 @@ interface ExaminationLedgerProps {
 }
 
 const TRANSITION_CLASSES =
-  "motion-safe:transition-colors motion-safe:duration-500 motion-safe:ease-[cubic-bezier(0.16,1,0.3,1)]";
+  "motion-safe:transition-colors motion-safe:duration-500 motion-safe:ease-[var(--ease-out-strong)]";
 
 const JUSTIFY_DASH_PATTERN =
   "repeating-linear-gradient(to right, rgb(153 27 27 / 0.8) 0 3px, transparent 3px 6px)";

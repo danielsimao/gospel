@@ -6,6 +6,7 @@ import { useGameDispatch } from "@/components/game-provider";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackVerdictReached } from "@/lib/analytics";
 import { buildConfession } from "@/lib/confession";
+import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { GameState, TestMessages } from "@/lib/types";
 
 interface VerdictScreenProps {
@@ -77,7 +78,7 @@ export function VerdictScreen({
         <motion.p
           initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1, delay: 0.3, ease: EASE_OUT_STRONG }}
           className="mt-4 text-5xl font-black uppercase tracking-[0.15em] text-red-500 sm:text-6xl md:text-7xl"
           style={{
             textShadow:

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ShareButtons } from "@/components/share-buttons";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
+import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { Locale } from "@/lib/i18n";
 
 interface TrackCommittedMessages {
@@ -45,7 +46,7 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 1, ease: EASE_OUT_STRONG }}
         className="text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl"
         style={{ textShadow: "0 0 60px rgba(212,168,67,0.2)" }}
       >

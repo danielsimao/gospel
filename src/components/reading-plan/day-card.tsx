@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EASE_OUT_STRONG } from "@/lib/motion";
 
 interface DayCardMessages {
   title: string;
@@ -83,7 +84,7 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
           )}
           <motion.div
             animate={{ rotate: isExpanded ? 180 : 0 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.3, ease: EASE_OUT_STRONG }}
           >
             <ChevronDown className="size-4 text-white/50" />
           </motion.div>
@@ -99,7 +100,7 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{
-              height: { duration: 0.4, ease: [0.16, 1, 0.3, 1] },
+              height: { duration: 0.4, ease: EASE_OUT_STRONG },
               opacity: { duration: 0.3, delay: 0.05 },
             }}
             className="overflow-hidden"

@@ -8,6 +8,7 @@ import { Button, ButtonArrow } from "@/components/ui/button";
 import { subscribeToStorage } from "@/lib/client-storage";
 import { readProgress, markDayRead, getCompletedCount, clearReadingProgress } from "@/lib/reading-storage";
 import { trackReadingPlanViewed, trackReadingPlanDayCompleted, trackReadingPlanCompleted, trackReadingPlanLearnClicked, trackReadingPlanReset } from "@/lib/discipleship-analytics";
+import { EASE_OUT_STRONG } from "@/lib/motion";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import type { Locale } from "@/lib/i18n";
 
@@ -99,7 +100,7 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 1, ease: EASE_OUT_STRONG }}
       >
         <h1
           className="text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl"

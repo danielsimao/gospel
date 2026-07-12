@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
+import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { Locale } from "@/lib/i18n";
 
 interface TrackThinkingMessages {
@@ -30,7 +31,7 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
       <motion.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 1, ease: EASE_OUT_STRONG }}
         className="text-2xl font-bold tracking-tight text-white/90 sm:text-3xl"
       >
         {messages.acknowledgment}

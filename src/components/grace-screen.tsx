@@ -9,6 +9,7 @@ import {
   trackGraceRevealed,
   trackGraceBeatRevealed,
 } from "@/lib/eternity-analytics";
+import { EASE_OUT_STRONG } from "@/lib/motion";
 
 interface GraceScreenProps {
   messages: {
@@ -110,7 +111,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
           <motion.h2
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1, delay: 0.5, ease: EASE_OUT_STRONG }}
             className="text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl md:text-5xl"
             style={{ textShadow: "0 0 60px rgba(212,168,67,0.2)" }}
           >

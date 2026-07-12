@@ -1,6 +1,6 @@
 # 009 — Tokenize the house easing curve (14 hand-typed copies)
 
-- **Status**: TODO
+- **Status**: DONE (commit 7abbef0)
 - **Commit**: 1e9581f
 - **Severity**: LOW
 - **Category**: Cohesion & tokens

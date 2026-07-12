@@ -52,6 +52,7 @@
 :root {
   --background: #000000;
   --foreground: #ffffff;
+  --ease-out-strong: cubic-bezier(0.16, 1, 0.3, 1);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);

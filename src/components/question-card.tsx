@@ -7,6 +7,7 @@ import { FollowUp } from "@/components/follow-up";
 import { ExaminationLedger } from "@/components/examination-ledger";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackQuestionAnswered, trackFollowupShown } from "@/lib/analytics";
+import { EASE_OUT_STRONG } from "@/lib/motion";
 import { QUESTION_CONFIGS, TOTAL_QUESTIONS } from "@/lib/questions";
 import type { AnswerType, TestMessages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
@@ -122,7 +123,7 @@ export function QuestionCard({
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.45, ease: EASE_OUT_STRONG }}
               className="w-full"
             >
               <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.03] to-white/[0.01] p-6 sm:p-7">
@@ -273,7 +274,7 @@ export function QuestionCard({
                   key={i}
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: isJustified ? 0.5 : 1, scale: 1 }}
-                  transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ duration: 0.18, ease: EASE_OUT_STRONG }}
                   className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 ${
                     isJustified
                       ? "border-dashed border-red-900/30 bg-red-950/10"

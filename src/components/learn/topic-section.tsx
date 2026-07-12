@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { SectionQuiz } from "./section-quiz";
 import { markTopicCompleted } from "@/lib/learn-progress-storage";
 import { trackTopicSectionReached } from "@/lib/learn-analytics";
+import { EASE_OUT_STRONG } from "@/lib/motion";
 
 interface QuizData {
   question: string;
@@ -56,7 +57,7 @@ export function TopicSection({ heading, body, scripture, scriptureRef, index, sl
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={revealed ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.8, ease: EASE_OUT_STRONG }}
       >
         <div className="mb-4 flex items-center gap-3">
           <span className="h-px w-6 bg-red-500/40" />

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { EASE_OUT_STRONG } from "@/lib/motion";
 
 interface RotatingFactsProps {
   facts: string[];
@@ -28,7 +29,7 @@ export function RotatingFacts({ facts, interval = 6000 }: RotatingFactsProps) {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -12 }}
-          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.4, ease: EASE_OUT_STRONG }}
           className="absolute inset-0 flex items-center justify-center text-center text-xs tracking-wide text-white/60 sm:text-sm"
         >
           {facts[index]}

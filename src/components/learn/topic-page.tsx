@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { TopicSection } from "./topic-section";
 import { TopicNav } from "./topic-nav";
 import { trackTopicPageViewed } from "@/lib/learn-analytics";
+import { EASE_OUT_STRONG } from "@/lib/motion";
 import { PageShell } from "@/components/shared/page-shell";
 
 interface SectionMessages {
@@ -55,7 +56,7 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1, ease: EASE_OUT_STRONG }}
         >
           <Link
             href={`/${locale}/learn`}

@@ -23,6 +23,7 @@ import {
   type SavedSession,
 } from "@/lib/test-session-storage";
 import { markTestCompleted, saveInvitationResponse } from "@/lib/journey-storage";
+import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { Messages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 
@@ -142,7 +143,7 @@ export function GameShell({ messages, locale }: GameShellProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.2, ease: EASE_OUT_STRONG }}
             className="flex flex-1 flex-col"
           >
             {state.phase === "landing" && (

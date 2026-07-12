@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { EASE_OUT_STRONG } from "@/lib/motion";
 
 interface ResumeDialogProps {
   open: boolean;
@@ -48,7 +49,7 @@ export function ResumeDialog({
             initial={{ opacity: 0, y: 8, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.25, ease: EASE_OUT_STRONG }}
             className="relative w-full max-w-sm rounded-2xl border border-white/10 bg-[#0b0808] p-6 shadow-2xl"
           >
             <h2
