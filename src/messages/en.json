@@ -152,6 +152,7 @@
     "tapContinue": "Tap to continue"
   },
   "invitation": {
+    "eyebrow": "The decision",
     "heading": "What will you do with this?",
     "committedEncouragement": "Today is the beginning.",
     "thinkingEncouragement": "Take your time. This will be here when you're ready.",
@@ -301,7 +302,7 @@
     ]
   },
   "topBar": {
-    "brand": "Are You Good?",
+    "brand": "If You Died Today",
     "testLabel": "Test",
     "readingLabel": "Reading"
   },

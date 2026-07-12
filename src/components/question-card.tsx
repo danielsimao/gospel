@@ -135,8 +135,8 @@ export function QuestionCard({
                   </span>
                 </div>
 
-                {/* Commandment scripture (from i18n) */}
-                <p className="mb-3 font-mono text-[10px] uppercase tracking-[1.5px] text-white/50">
+                {/* Commandment scripture (from i18n) — the Law is the blade, not a caption */}
+                <p className="mb-3 font-mono text-[11px] uppercase tracking-[2px] text-white/75">
                   {question.commandment}
                 </p>
 

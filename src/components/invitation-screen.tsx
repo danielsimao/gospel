@@ -42,14 +42,42 @@ export function InvitationScreen({
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-6 py-16">
-      <div className="max-w-lg w-full text-center">
-        {/* Heading — the question */}
+    <div className="relative flex flex-1 flex-col items-center justify-center px-6 py-16">
+      {/* Crossroads atmosphere — judgment above, the door below */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 12%, rgba(239,68,68,0.05) 0%, transparent 55%), radial-gradient(ellipse at 50% 72%, rgba(212,168,67,0.07) 0%, transparent 60%)",
+          filter: "blur(36px)",
+        }}
+      />
+      <div className="relative max-w-lg w-full text-center">
+        {/* Eyebrow — red meets gold at the crossroads */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="mb-4 flex items-center justify-center gap-2"
+        >
+          <span className="h-px w-6 bg-red-500/40" />
+          <span className="font-mono text-[9px] uppercase tracking-[3px] text-white/60">
+            {invitation.eyebrow}
+          </span>
+          <span className="h-px w-6 bg-[#D4A843]/40" />
+        </motion.div>
+
+        {/* Heading — the question yields once answered */}
         <motion.h2
           initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={{ opacity: invitationResponse ? 0.4 : 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-3xl font-bold sm:text-4xl"
+          className={
+            invitationResponse
+              ? "text-xl font-semibold text-white/70 sm:text-2xl"
+              : "text-3xl font-bold sm:text-4xl"
+          }
         >
           {invitation.heading}
         </motion.h2>
@@ -82,19 +110,22 @@ export function InvitationScreen({
             transition={{ duration: 0.6 }}
             className="mt-10"
           >
-            {/* Encouragement line */}
+            {/* Encouragement — now the lead voice; the question above has yielded */}
             {invitationResponse === "committed" && (
-              <p className="text-lg font-medium text-[#D4A843]">
+              <p
+                className="text-2xl font-bold tracking-tight text-[#D4A843] sm:text-3xl"
+                style={{ textShadow: "0 0 50px rgba(212,168,67,0.25)" }}
+              >
                 {invitation.committedEncouragement}
               </p>
             )}
             {invitationResponse === "thinking" && (
-              <p className="text-base text-white/60">
+              <p className="text-xl font-semibold text-white/80 sm:text-2xl">
                 {invitation.thinkingEncouragement}
               </p>
             )}
             {invitationResponse === "dismissed" && invitation.dismissedEncouragement && (
-              <p className="text-base text-white/60">
+              <p className="text-xl font-semibold text-white/80 sm:text-2xl">
                 {invitation.dismissedEncouragement}
               </p>
             )}

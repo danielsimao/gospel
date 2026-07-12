@@ -152,6 +152,7 @@
     "tapContinue": "Toca para continuar"
   },
   "invitation": {
+    "eyebrow": "A decisão",
     "heading": "O que vais fazer com isto?",
     "committedEncouragement": "Hoje \u00e9 o in\u00edcio.",
     "thinkingEncouragement": "N\u00e3o tenhas pressa. Isto estar\u00e1 aqui quando estiveres pronto.",
@@ -301,7 +302,7 @@
     ]
   },
   "topBar": {
-    "brand": "És Bom?",
+    "brand": "Se Morresses Hoje",
     "testLabel": "Teste",
     "readingLabel": "Leitura"
   },

@@ -82,7 +82,7 @@ export function ShareButtons({ messages, locale, sharePath }: ShareButtonsProps)
       <div className="flex items-center justify-center gap-4">
         <button
           onClick={shareWhatsApp}
-          className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366]/10 text-[#25D366] transition-colors hover:bg-[#25D366]/20 min-h-[44px] min-w-[44px]"
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-white/55 transition-colors hover:border-[#25D366]/40 hover:text-[#25D366] min-h-[44px] min-w-[44px]"
           aria-label="Share on WhatsApp"
         >
           <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
@@ -92,7 +92,7 @@ export function ShareButtons({ messages, locale, sharePath }: ShareButtonsProps)
 
         <button
           onClick={shareTelegram}
-          className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0088cc]/10 text-[#0088cc] transition-colors hover:bg-[#0088cc]/20 min-h-[44px] min-w-[44px]"
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-white/55 transition-colors hover:border-[#0088cc]/40 hover:text-[#0088cc] min-h-[44px] min-w-[44px]"
           aria-label="Share on Telegram"
         >
           <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
@@ -102,7 +102,7 @@ export function ShareButtons({ messages, locale, sharePath }: ShareButtonsProps)
 
         <button
           onClick={copyLink}
-          className="flex h-12 w-12 items-center justify-center rounded-full bg-white/5 text-white/60 transition-colors hover:bg-white/10 min-h-[44px] min-w-[44px]"
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-white/55 transition-colors hover:border-white/25 hover:text-white/80 min-h-[44px] min-w-[44px]"
           aria-label="Copy link"
         >
           {copied ? (
@@ -120,7 +120,7 @@ export function ShareButtons({ messages, locale, sharePath }: ShareButtonsProps)
         {canNativeShare && (
           <button
             onClick={nativeShare}
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-white/5 text-white/60 transition-colors hover:bg-white/10 min-h-[44px] min-w-[44px]"
+            className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-white/55 transition-colors hover:border-white/25 hover:text-white/80 min-h-[44px] min-w-[44px]"
             aria-label="Share"
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">

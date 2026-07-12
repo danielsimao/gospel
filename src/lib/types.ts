@@ -180,6 +180,7 @@ export interface Messages {
     tapContinue: string;
   };
   invitation: {
+    eyebrow: string;
     heading: string;
     committedEncouragement: string;
     thinkingEncouragement: string;

@@ -93,7 +93,7 @@ export function VerdictScreen({
           initial={false}
           animate={{ opacity: showConfession ? 1 : 0 }}
           transition={{ duration: 0.8 }}
-          className="mt-5 max-w-sm text-sm leading-relaxed text-white/55"
+          className="mt-5 max-w-sm text-[15px] leading-relaxed text-white/80 sm:text-base"
           aria-hidden={!showConfession}
         >
           {confession}

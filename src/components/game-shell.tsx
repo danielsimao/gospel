@@ -36,12 +36,18 @@ export function GameShell({ messages, locale }: GameShellProps) {
   const state = useGameState();
   const dispatch = useGameDispatch();
 
-  // Read any saved session once on mount. Only show the resume dialog if
-  // the current state is still on landing — once the user begins (or resumes)
-  // a session, this stays null for the lifetime of the component.
-  const [pendingResume, setPendingResume] = useState<SavedSession | null>(() =>
-    typeof window === "undefined" ? null : readSession(),
-  );
+  // Read any saved session post-mount (server renders no dialog; a lazy
+  // initializer here caused hydration mismatches for resuming users). Only
+  // show the resume dialog while the state is still on landing — once the
+  // user begins (or resumes) a session, this stays null.
+  const [pendingResume, setPendingResume] = useState<SavedSession | null>(null);
+
+  useEffect(() => {
+    // Deferred one frame: reading localStorage after paint keeps hydration
+    // stable and satisfies react-hooks/set-state-in-effect.
+    const id = requestAnimationFrame(() => setPendingResume(readSession()));
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   function handleResumeContinue() {
     if (!pendingResume) return;
