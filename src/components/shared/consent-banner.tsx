@@ -1,12 +1,14 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   hasAnsweredConsent,
   setConsent,
   subscribeToConsentAnswered,
 } from "@/lib/consent";
 import { initPostHog } from "@/lib/posthog";
+import { EASE_OUT_STRONG } from "@/lib/motion";
 
 const COPY = {
   en: {
@@ -32,8 +34,6 @@ export function ConsentBanner() {
     () => false,
   );
 
-  if (!visible) return null;
-
   const lang = typeof document !== "undefined" && document.documentElement.lang.startsWith("pt") ? "pt" : "en";
   const copy = COPY[lang];
 
@@ -49,7 +49,15 @@ export function ConsentBanner() {
   }
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-white/[0.08] bg-[#060404]/95 backdrop-blur-sm">
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ y: "100%" }}
+          animate={{ y: 0 }}
+          exit={{ y: "100%", opacity: 0, transition: { duration: 0.15, ease: "easeIn" } }}
+          transition={{ duration: 0.3, ease: EASE_OUT_STRONG }}
+          className="fixed inset-x-0 bottom-0 z-50 border-t border-white/[0.08] bg-[#060404]/95 backdrop-blur-sm"
+        >
       <div className="mx-auto flex max-w-2xl items-center justify-between gap-4 px-6 py-3 sm:px-8">
         <p className="font-mono text-[11px] text-white/50">
           {copy.message}
@@ -69,6 +77,8 @@ export function ConsentBanner() {
           </button>
         </div>
       </div>
-    </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

@@ -1,6 +1,6 @@
 # 010 — Slide the consent banner in and out
 
-- **Status**: TODO
+- **Status**: DONE (commit 45d07f1)
 - **Commit**: 71deab3
 - **Severity**: MEDIUM-HIGH
 - **Category**: Missed opportunity / physicality
