@@ -22,12 +22,12 @@ export type JourneyStage =
   | "thinking"
   | "dismissed";
 
-const EMPTY_RECORD: JourneyRecord = {
+const EMPTY_RECORD: JourneyRecord = Object.freeze({
   version: CURRENT_VERSION,
   testCompletedAt: null,
   invitationResponse: null,
   respondedAt: null,
-};
+});
 
 function isValidResponse(value: unknown): value is InvitationResponse {
   return value === "committed" || value === "thinking" || value === "dismissed";
@@ -36,29 +36,33 @@ function isValidResponse(value: unknown): value is InvitationResponse {
 /**
  * One-time migration: fold the legacy bare "test_completed" flag into the
  * journey record, then delete the flag. Never overwrites an existing record.
+ * Accepted edge: if the journey record exists but is corrupt, the legacy flag
+ * is still deleted without folding (same discard policy as corrupt-record reads).
+ * Called from useJourney's mount effect — never during render.
  */
-function migrateLegacyFlag(): void {
-  const legacy = localStorage.getItem(LEGACY_TEST_COMPLETED_KEY);
-  if (legacy === null) return;
-  // Accepted edge case: if a journey record already exists but is corrupt (fails to
-  // parse/validate in readJourney), it still counts as "existing" here, so the legacy
-  // flag is discarded below without folding — same discard policy as a corrupt-record read.
-  if (legacy === "1" && localStorage.getItem(STORAGE_KEY) === null) {
-    const record: JourneyRecord = { ...EMPTY_RECORD, testCompletedAt: Date.now() };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(record));
+export function migrateLegacyJourney(): void {
+  if (typeof window === "undefined") return;
+  try {
+    const legacy = localStorage.getItem(LEGACY_TEST_COMPLETED_KEY);
+    if (legacy === null) return;
+    if (legacy === "1" && localStorage.getItem(STORAGE_KEY) === null) {
+      const record: JourneyRecord = { ...EMPTY_RECORD, testCompletedAt: Date.now() };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(record));
+    }
+    localStorage.removeItem(LEGACY_TEST_COMPLETED_KEY);
+    emitStorageChange();
+  } catch (error) {
+    console.warn("[journey-storage] Failed to migrate legacy flag:", error);
   }
-  localStorage.removeItem(LEGACY_TEST_COMPLETED_KEY);
-  emitStorageChange();
 }
 
 export function readJourney(): JourneyRecord {
-  if (typeof window === "undefined") return EMPTY_RECORD;
+  if (typeof window === "undefined") return { ...EMPTY_RECORD };
   try {
-    migrateLegacyFlag();
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return EMPTY_RECORD;
+    if (!raw) return { ...EMPTY_RECORD };
     const parsed = JSON.parse(raw) as Partial<JourneyRecord>;
-    if (parsed.version !== CURRENT_VERSION) return EMPTY_RECORD;
+    if (parsed.version !== CURRENT_VERSION) return { ...EMPTY_RECORD };
     return {
       version: CURRENT_VERSION,
       testCompletedAt:
@@ -70,7 +74,7 @@ export function readJourney(): JourneyRecord {
     };
   } catch (error) {
     console.warn("[journey-storage] Failed to read journey:", error);
-    return EMPTY_RECORD;
+    return { ...EMPTY_RECORD };
   }
 }
 

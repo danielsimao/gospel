@@ -5,6 +5,7 @@ import {
   saveInvitationResponse,
   resetJourney,
   deriveStage,
+  migrateLegacyJourney,
   type JourneyRecord,
 } from "@/lib/journey-storage";
 import { emitStorageChange } from "@/lib/client-storage";
@@ -68,6 +69,7 @@ describe("journey-storage", () => {
   describe("legacy test_completed migration", () => {
     it("folds a legacy flag into a new record and deletes the flag", () => {
       storage.set("test_completed", "1");
+      migrateLegacyJourney();
       const record = readJourney();
       expect(record.testCompletedAt).not.toBeNull();
       expect(storage.has("test_completed")).toBe(false);
@@ -76,6 +78,7 @@ describe("journey-storage", () => {
     it("does not overwrite an existing record, but still deletes the flag", () => {
       saveInvitationResponse("committed");
       storage.set("test_completed", "1");
+      migrateLegacyJourney();
       const record = readJourney();
       expect(record.invitationResponse).toBe("committed");
       expect(storage.has("test_completed")).toBe(false);
@@ -83,19 +86,33 @@ describe("journey-storage", () => {
 
     it("ignores a legacy flag that is not '1'", () => {
       storage.set("test_completed", "0");
+      migrateLegacyJourney();
       expect(readJourney().testCompletedAt).toBeNull();
       expect(storage.has("test_completed")).toBe(false);
     });
 
     it("emits a storage change when migrating the legacy flag", () => {
       storage.set("test_completed", "1");
-      readJourney();
+      migrateLegacyJourney();
       expect(vi.mocked(emitStorageChange)).toHaveBeenCalledTimes(1);
     });
 
     it("does not emit on a plain read with no migration", () => {
       readJourney();
       expect(vi.mocked(emitStorageChange)).not.toHaveBeenCalled();
+    });
+
+    it("readJourney never mutates storage even when a legacy flag exists", () => {
+      storage.set("test_completed", "1");
+      readJourney();
+      expect(storage.has("test_completed")).toBe(true);
+      expect(vi.mocked(emitStorageChange)).not.toHaveBeenCalled();
+    });
+
+    it("returned empty records are independent copies", () => {
+      const a = readJourney();
+      (a as { testCompletedAt: number | null }).testCompletedAt = 999;
+      expect(readJourney().testCompletedAt).toBeNull();
     });
   });
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { subscribeToStorage } from "./client-storage";
-import { readJourney, deriveStage, type JourneyStage } from "./journey-storage";
+import { readJourney, deriveStage, migrateLegacyJourney, type JourneyStage } from "./journey-storage";
 import { readProgress, getCompletedCount } from "./reading-storage";
 import { isTopicCompleted } from "./learn-progress-storage";
 
@@ -57,6 +57,7 @@ export function useJourney(
   useEffect(() => {
     const slugs = slugsKey ? slugsKey.split(",") : [];
     const update = () => setSnapshot(computeJourneySnapshot(slugs));
+    migrateLegacyJourney();
     update();
     window.addEventListener("pageshow", update);
     const unsubscribe = subscribeToStorage(update);
