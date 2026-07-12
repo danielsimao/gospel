@@ -10,10 +10,12 @@ export function isValidLocale(locale: string): locale is Locale {
 }
 
 export const JOURNEY_STAGE_LEAVES: string[][] = [
+  ["undecided", "eyebrow"],
   ["undecided", "heading"],
   ["undecided", "cta"],
   ["committed", "heading"],
   ["committed", "subheading"],
+  ["thinking", "eyebrow"],
   ["thinking", "reflection"],
   ["thinking", "commitLabel"],
   ["thinking", "retakeLabel"],

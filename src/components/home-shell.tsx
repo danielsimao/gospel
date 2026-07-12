@@ -195,13 +195,30 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
 
           {/* === Bottom CTA section — adapts to journey stage === */}
           {journey.stage === "committed" && (
-            <div className="mt-10 flex w-full flex-col items-center sm:mt-14">
-              <p className="max-w-md text-center text-sm leading-relaxed text-white/70">
-                {home.journeyStages.committed.heading}
-              </p>
-              <p className="mt-2 font-mono text-[10px] uppercase tracking-[3px] text-[#D4A843]/80">
-                {home.journeyStages.committed.subheading}
-              </p>
+            <div className="relative mt-10 flex w-full flex-col items-center sm:mt-14">
+              {/* Warm grace glow — this state continues the grace screen's atmosphere */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -inset-x-10 -top-12 bottom-1/3"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at 50% 25%, rgba(212,168,67,0.08) 0%, transparent 65%)",
+                  filter: "blur(32px)",
+                }}
+              />
+              {/* Conditional promise — scripture treatment, honored not celebrated */}
+              <blockquote className="relative max-w-md border-l border-[#D4A843]/30 pl-4 text-left">
+                <p className="text-[15px] italic leading-relaxed text-white/80 sm:text-base">
+                  {home.journeyStages.committed.heading}
+                </p>
+              </blockquote>
+              <div className="relative mt-7 flex items-center gap-2">
+                <span className="h-px w-6 bg-[#D4A843]/40" />
+                <span className="font-mono text-[10px] uppercase tracking-[3px] text-[#D4A843]/80">
+                  {home.journeyStages.committed.subheading}
+                </span>
+                <span className="h-px w-6 bg-[#D4A843]/40" />
+              </div>
               <JourneyTracker
                 snapshot={journey}
                 locale={locale}
@@ -214,7 +231,15 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
 
           {journey.stage === "undecided" && (
             <>
-              <h1 className="mt-10 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-14 sm:text-3xl">
+              {/* Red docket eyebrow — the verdict is still on the table */}
+              <div className="mt-10 flex items-center gap-2 sm:mt-14">
+                <span className="h-px w-6 bg-red-500/40" />
+                <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/80 sm:text-[10px] sm:tracking-[4px]">
+                  {home.journeyStages.undecided.eyebrow}
+                </span>
+                <span className="h-px w-6 bg-red-500/40" />
+              </div>
+              <h1 className="mt-3 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-4 sm:text-3xl">
                 {home.journeyStages.undecided.heading}
               </h1>
               <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
@@ -228,40 +253,73 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
 
           {journey.stage === "thinking" && (
             <div className="mt-10 flex w-full max-w-md flex-col items-center gap-3 sm:mt-14">
+              {/* Dim gold eyebrow — leaning toward grace, not there yet */}
+              <div className="flex items-center gap-2">
+                <span className="h-px w-6 bg-[#D4A843]/30" />
+                <span className="font-mono text-[9px] uppercase tracking-[3px] text-[#D4A843]/60">
+                  {home.journeyStages.thinking.eyebrow}
+                </span>
+                <span className="h-px w-6 bg-[#D4A843]/30" />
+              </div>
               <p className="text-center text-sm leading-relaxed text-white/70">
                 {home.journeyStages.thinking.reflection}
               </p>
+              {/* Primary card — John 3, gold-accented */}
               <a
                 href={home.journeyStages.thinking.johnCard.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full rounded-xl border border-white/[0.06] bg-white/[0.015] p-5 transition-all hover:border-[#D4A843]/20"
+                className="group mt-2 block w-full rounded-xl border border-[#D4A843]/25 bg-[#D4A843]/[0.03] p-5 transition-all hover:border-[#D4A843]/45"
               >
-                <p className="text-sm font-semibold text-white/85">
-                  {home.journeyStages.thinking.johnCard.label}
-                </p>
-                <p className="mt-1 text-[13px] leading-relaxed text-white/60">
-                  {home.journeyStages.thinking.johnCard.description}
-                </p>
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-white/90">
+                      {home.journeyStages.thinking.johnCard.label}
+                    </p>
+                    <p className="mt-1 text-[13px] leading-relaxed text-white/60">
+                      {home.journeyStages.thinking.johnCard.description}
+                    </p>
+                  </div>
+                  <span
+                    aria-hidden="true"
+                    className="mt-0.5 text-[#D4A843]/70 transition-transform group-hover:translate-x-1"
+                  >
+                    →
+                  </span>
+                </div>
               </a>
+              {/* Secondary card — foundations, ghost */}
               <Link
                 href={`/${locale}/learn`}
-                className="block w-full rounded-xl border border-white/[0.06] bg-white/[0.015] p-5 transition-all hover:border-[#D4A843]/20"
+                className="group block w-full rounded-xl border border-white/[0.06] bg-white/[0.015] p-5 transition-all hover:border-white/[0.14]"
               >
-                <p className="text-sm font-semibold text-white/85">
-                  {home.journeyStages.thinking.learnCard.label}
-                </p>
-                <p className="mt-1 text-[13px] leading-relaxed text-white/60">
-                  {home.journeyStages.thinking.learnCard.description}
-                </p>
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-white/85">
+                      {home.journeyStages.thinking.learnCard.label}
+                    </p>
+                    <p className="mt-1 text-[13px] leading-relaxed text-white/60">
+                      {home.journeyStages.thinking.learnCard.description}
+                    </p>
+                  </div>
+                  <span
+                    aria-hidden="true"
+                    className="mt-0.5 text-white/40 transition-transform group-hover:translate-x-1"
+                  >
+                    →
+                  </span>
+                </div>
               </Link>
-              <button
-                type="button"
+              {/* The decision — same gold commitment button as the invitation screen */}
+              <Button
+                variant="gold"
+                size="sm"
+                mist
                 onClick={() => saveInvitationResponse("committed")}
-                className="mt-3 font-mono text-[10px] uppercase tracking-[2px] text-[#D4A843]/70 transition-colors hover:text-[#D4A843]"
+                className="mt-4 w-full max-w-sm"
               >
                 {home.journeyStages.thinking.commitLabel}
-              </button>
+              </Button>
               <Link
                 href={`/${locale}/test`}
                 onClick={() => {
@@ -269,7 +327,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
                   resetJourney();
                   clearSession();
                 }}
-                className="font-mono text-[10px] uppercase tracking-[2px] text-white/40 transition-colors hover:text-white/60"
+                className="mt-1 font-mono text-[10px] uppercase tracking-[2px] text-white/35 transition-colors hover:text-white/55"
               >
                 {home.journeyStages.thinking.retakeLabel}
               </Link>
@@ -278,9 +336,14 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
 
           {journey.stage === "dismissed" && (
             <>
-              <p className="mt-10 max-w-md text-center text-sm leading-relaxed text-white/60 sm:mt-14">
-                {home.journeyStages.dismissed.line}
-              </p>
+              {/* The door line — quiet framed gesture, no pressure */}
+              <div className="mt-10 flex w-full max-w-md items-center justify-center gap-4 sm:mt-14">
+                <span aria-hidden="true" className="h-px flex-1 max-w-12 bg-white/[0.12]" />
+                <p className="max-w-[16rem] text-center text-[15px] italic leading-relaxed text-white/65">
+                  {home.journeyStages.dismissed.line}
+                </p>
+                <span aria-hidden="true" className="h-px flex-1 max-w-12 bg-white/[0.12]" />
+              </div>
               <Link
                 href={`/${locale}/test`}
                 onClick={() => {
@@ -288,13 +351,13 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
                   resetJourney();
                   clearSession();
                 }}
-                className="mt-6"
+                className="mt-7"
               >
-                <Button variant="ghost">
+                <Button variant="ghost" size="sm">
                   {home.journeyStages.dismissed.retakeCta}
                 </Button>
               </Link>
-              <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-4">
+              <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-3">
                 <Button variant="text">{home.secondaryLink}</Button>
               </Link>
             </>

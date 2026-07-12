@@ -846,6 +846,7 @@
     },
     "journeyStages": {
       "undecided": {
+        "eyebrow": "The verdict stands",
         "heading": "You've seen the verdict. What will you do with it?",
         "cta": "Return to where you left off"
       },
@@ -854,6 +855,7 @@
         "subheading": "Grow in it:"
       },
       "thinking": {
+        "eyebrow": "The question is still open",
         "reflection": "The discomfort you feel might be your conscience agreeing with God's standard. Take it seriously.",
         "johnCard": {
           "label": "Read John 3",

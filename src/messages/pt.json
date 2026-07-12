@@ -846,6 +846,7 @@
     },
     "journeyStages": {
       "undecided": {
+        "eyebrow": "O veredicto mantém-se",
         "heading": "Viste o veredicto. O que vais fazer com ele?",
         "cta": "Volta onde ficaste"
       },
@@ -854,6 +855,7 @@
         "subheading": "Cresce nisso:"
       },
       "thinking": {
+        "eyebrow": "A pergunta continua em aberto",
         "reflection": "O desconforto que sentes pode ser a tua consciência a concordar com o padrão de Deus. Leva-o a sério.",
         "johnCard": {
           "label": "Lê João 3",

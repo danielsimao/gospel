@@ -95,6 +95,7 @@ export interface JourneyMessages {
 
 export interface JourneyStagesMessages {
   undecided: {
+    eyebrow: string;
     heading: string;
     cta: string;
   };
@@ -103,6 +104,7 @@ export interface JourneyStagesMessages {
     subheading: string;
   };
   thinking: {
+    eyebrow: string;
     reflection: string;
     johnCard: { label: string; description: string; url: string };
     learnCard: { label: string; description: string };
