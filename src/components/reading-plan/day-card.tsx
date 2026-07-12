@@ -78,9 +78,14 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
         </div>
         <div className="flex items-center gap-2">
           {isCompleted && (
-            <span className="font-mono text-[9px] uppercase tracking-[2px] text-[#D4A843]/70">
+            <motion.span
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.18, ease: EASE_OUT_STRONG }}
+              className="font-mono text-[9px] uppercase tracking-[2px] text-[#D4A843]/70"
+            >
               {completedLabel}
-            </span>
+            </motion.span>
           )}
           <motion.div
             animate={{ rotate: isExpanded ? 180 : 0 }}
