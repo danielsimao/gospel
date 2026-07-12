@@ -23,7 +23,7 @@ export function RotatingFacts({ facts, interval = 6000 }: RotatingFactsProps) {
 
   return (
     <div className="relative h-10 overflow-hidden sm:h-12">
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         <motion.p
           key={index}
           initial={{ opacity: 0, y: 12 }}

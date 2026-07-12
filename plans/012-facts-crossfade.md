@@ -1,6 +1,6 @@
 # 012 — Crossfade the rotating facts ticker (no blank gap)
 
-- **Status**: TODO
+- **Status**: DONE (commit TBD)
 - **Commit**: 71deab3
 - **Severity**: LOW-MEDIUM
 - **Category**: Cohesion
