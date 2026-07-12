@@ -1,6 +1,6 @@
 # 007 — Fade the grace tap-pill out instead of unmounting it
 
-- **Status**: TODO
+- **Status**: DONE (commit 49651e2)
 - **Commit**: 1e9581f
 - **Severity**: LOW
 - **Category**: Content shift
