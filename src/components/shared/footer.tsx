@@ -180,7 +180,7 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
 
         {/* Bottom row */}
         <div className="mt-8 flex items-center justify-between">
-          <span className="font-mono text-[11px] text-white/50">gospel</span>
+          <span className="font-mono text-[11px] text-white/50">ifyoudiedtoday.com</span>
           <div className="flex items-center gap-2.5 font-mono text-[11px]">
             <FooterLocaleSwitch locale={locale} />
           </div>

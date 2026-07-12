@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-export const alt = "Gospel — Are You a Good Person?";
+export const alt = "If You Died Today — Are You a Good Person?";
 
 export const size = {
   width: 1200,

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SUPPORTED_LOCALES } from "@/lib/i18n";
 import { getLocaleUrl } from "@/lib/seo";
+import { TOPIC_DATES } from "@/lib/topic-dates";
 
 const BUILD_TIMESTAMP = new Date();
 
@@ -21,11 +22,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       });
     }
 
-    // Learn pages
+    // Learn pages — honest per-topic dates, matching the Article schema
     for (const slug of learnSlugs) {
+      const dates = TOPIC_DATES[slug];
       entries.push({
         url: getLocaleUrl(locale, `/learn/${slug}`),
-        lastModified: BUILD_TIMESTAMP,
+        lastModified: dates ? new Date(dates.modified) : BUILD_TIMESTAMP,
         changeFrequency: "monthly",
         priority: 0.8,
       });
