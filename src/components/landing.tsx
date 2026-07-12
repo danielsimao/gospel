@@ -23,14 +23,14 @@ export function Landing({ messages, locale }: LandingProps) {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 0.4 }}
       className="flex flex-1 flex-col items-center justify-center px-6 text-center"
     >
       {/* Docket label */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
+        transition={{ duration: 0.5, delay: 0.05 }}
         className="flex items-center gap-2"
       >
         <span className="h-px w-6 bg-red-500/40" />
@@ -44,7 +44,7 @@ export function Landing({ messages, locale }: LandingProps) {
       <motion.h1
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
         className="mt-5 max-w-md text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
       >
         {messages.title}
@@ -54,7 +54,7 @@ export function Landing({ messages, locale }: LandingProps) {
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
         className="mt-4 max-w-sm text-xs italic text-white/60 sm:text-sm"
       >
         {messages.subtitle}
@@ -64,7 +64,7 @@ export function Landing({ messages, locale }: LandingProps) {
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.8 }}
+        transition={{ duration: 0.5, delay: 0.45 }}
         className="mt-10"
       >
         <Button variant="red" mist onClick={handleStart}>
