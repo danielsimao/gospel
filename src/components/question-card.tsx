@@ -198,7 +198,7 @@ export function QuestionCard({
                               {testMessages.justifiedBadge}
                             </p>
                           </div>
-                          {showFollowUp && <FollowUp text={question.followUp} />}
+                          {answered === "justify" && <FollowUp text={question.followUp} />}
                         </>
                       )}
 
@@ -208,7 +208,7 @@ export function QuestionCard({
                         animate={{ opacity: 1 }}
                         transition={{
                           duration: 0.4,
-                          delay: answered === "justify" ? 1.2 : 0.5,
+                          delay: answered === "justify" ? 0.6 : 0.5,
                         }}
                         className="mt-4"
                         onAnimationComplete={() => {
