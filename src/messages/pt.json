@@ -645,9 +645,9 @@
       },
       {
         "slug": "what-happens-when-i-die",
-        "title": "O que Acontece Quando Eu Morrer?",
+        "title": "O Que Acontece Quando Morremos?",
         "subtitle": "A pergunta que todos fazem — e a resposta da Bíblia.",
-        "metaDescription": "O que acontece depois da morte? Explora o que a Bíblia diz sobre a eternidade, o juízo, o céu, o inferno e a esperança que muda tudo.",
+        "metaDescription": "O que acontece quando morremos? Vê o que a Bíblia diz sobre a morte, o juízo que se segue, o céu e o inferno — e o que a morte não pode tocar em Cristo.",
         "sections": [
           {
             "heading": "A marcação",
@@ -684,6 +684,36 @@
               "correct": 1,
               "reveal": "Deus fez um caminho. A questão não é se Ele o providenciou — providenciou. A questão é se tu o vais aceitar. Confia em Cristo. Abandona o pecado. Recebe a vida eterna."
             }
+          },
+          {
+            "heading": "O tribunal que vem depois",
+            "body": "O que se segue à morte não é um acerto de contas vago nem uma sensação difusa de consequência. É uma comparência. 'Todos devemos comparecer ante o tribunal de Cristo' — todos, sem excepções, sem ausências. A Bíblia descreve-o como se descreve uma data em tribunal: um lugar, um Juiz, um registo.\n\nE pensa no que podes levar contigo para esse tribunal: nada. Nenhum advogado para torcer os factos, nenhuma multidão com quem te compares, nenhuma oportunidade de emendar o registo. Tudo o que fizeste 'por meio do corpo' já consta como prova — o que toda a gente viu e o que ninguém viu.\n\nÉ por isso que este site fala tanto de um veredicto. Não por dramatismo — porque a Bíblia fala assim. Há um tribunal real depois da morte, e vais estar nele. E o Juiz será o próprio Jesus Cristo, o que significa que Aquele que foi designado para te julgar é o mesmo que veio para te salvar.",
+            "scripture": "Porque todos devemos comparecer ante o tribunal de Cristo, para que cada um receba segundo o que tiver feito por meio do corpo, ou bem, ou mal.",
+            "scriptureRef": "2 Coríntios 5:10 (ARC)",
+            "quiz": {
+              "question": "O que diz 2 Coríntios 5:10 sobre o tribunal de Cristo?",
+              "options": ["Só os piores infractores comparecerão", "Todos devemos comparecer", "É uma metáfora para a consciência"],
+              "correct": 1,
+              "reveal": "Todos. Sem excepções, sem ausências, sem nada fora do registo. E o Juiz é o mesmo Jesus que veio salvar — o que é ou a pior notícia que já ouviste, ou a melhor."
+            }
+          },
+          {
+            "heading": "O que a morte não pode tocar",
+            "body": "Agora ouve o que Jesus diz sobre quem ouviu a Sua palavra, se arrependeu do pecado e confiou nAquele que O enviou: essa pessoa 'não entrará em condenação, mas passou da morte para a vida.' Não passará — passou. Para essa pessoa, o tribunal já não tem terror, porque o caso ficou resolvido na cruz antes de ela lá chegar.\n\nÉ isto que a morte não pode tocar. Pode parar um coração; não pode desfazer um perdão. Para quem se arrependeu e confiou em Cristo, morrer deixou de ser um passo para o desconhecido — é um passo para a presença dAquele que já o conhece.\n\nRepara no que esta promessa não é. Não é para toda a gente automaticamente, e não se torna tua por a leres numa página. Pertence a quem ouve e crê — crê a sério, com a confiança que vira uma vida inteira. A promessa é sólida. A única pergunta é se te descreve a ti.",
+            "scripture": "Na verdade, na verdade vos digo que quem ouve a minha palavra e crê naquele que me enviou tem a vida eterna e não entrará em condenação, mas passou da morte para a vida.",
+            "scriptureRef": "João 5:24 (ARC)",
+            "quiz": {
+              "question": "Em João 5:24, quem 'passou da morte para a vida'?",
+              "options": ["Toda a gente, seja qual for a resposta a Jesus", "Quem ouve a palavra de Jesus e crê nAquele que O enviou", "Ninguém pode saber antes do juízo"],
+              "correct": 1,
+              "reveal": "A promessa é condicional — pertence a quem ouve e crê. Para essa pessoa, o juízo já está resolvido e a morte perdeu o poder. É sólida; a pergunta é se te descreve a ti."
+            }
+          },
+          {
+            "heading": "Hoje é o dia",
+            "body": "Eis um facto simples, dito sem truques: não sabes a data da tua própria morte. Quase ninguém sabe. As pessoas que morreram na última hora acordaram à espera de um dia normal.\n\nIsto não é uma táctica de medo — é apenas a razão pela qual 'mais tarde' é uma resposta perigosa à pergunta mais importante que alguma vez vais enfrentar. 'Mais tarde' não é um tempo em que possas viver. Todas as decisões que alguma vez tomaste, tomaste-as hoje. Esta não é diferente.\n\nO tempo de Deus é mais generoso do que o medo sugere e mais urgente do que o conforto gostaria: 'eis aqui, agora, o tempo aceitável, eis aqui, agora, o dia da salvação.' Não depois de te endireitares. Não quando fores velho. Agora — enquanto o teu coração ainda bate e a porta ainda está aberta. Se Deus te está a falar através do que leste, não guardes isto para um momento melhor. Não há nenhum.",
+            "scripture": "Porque diz: Ouvi-te em tempo aceitável e socorri-te no dia da salvação; eis aqui, agora, o tempo aceitável, eis aqui, agora, o dia da salvação.",
+            "scriptureRef": "2 Coríntios 6:2 (ARC)"
           }
         ]
       },
