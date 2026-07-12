@@ -256,7 +256,7 @@ export function QuestionCard({
       </div>
 
       {/* Row 3: Answered chips — pinned to bottom */}
-      <div className="flex min-h-[40px] flex-col items-center justify-start gap-3">
+      <div className="flex min-h-[76px] flex-col items-center justify-start gap-3">
         {state.answers.length > 0 && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -268,11 +268,14 @@ export function QuestionCard({
               if (!label) return null;
               const isJustified = answer.answer === "justify";
               return (
-                <div
+                <motion.div
                   key={i}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: isJustified ? 0.5 : 1, scale: 1 }}
+                  transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
                   className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 ${
                     isJustified
-                      ? "border-dashed border-red-900/30 bg-red-950/10 opacity-50"
+                      ? "border-dashed border-red-900/30 bg-red-950/10"
                       : "border-red-900/40 bg-red-950/25"
                   }`}
                 >
@@ -282,7 +285,7 @@ export function QuestionCard({
                   <span className="font-mono text-[10px] lowercase italic text-red-400/85">
                     {label}
                   </span>
-                </div>
+                </motion.div>
               );
             })}
           </motion.div>
