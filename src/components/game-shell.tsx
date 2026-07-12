@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import * as Sentry from "@sentry/nextjs";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { Landing } from "@/components/landing";
@@ -135,42 +136,53 @@ export function GameShell({ messages, locale }: GameShellProps) {
 
       {/* Content (offset below sticky bar) */}
       <div className="relative z-[1] flex flex-1 flex-col pt-10">
-        {state.phase === "landing" && (
-          <Landing messages={messages.landing} locale={locale} />
-        )}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={state.phase}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-1 flex-col"
+          >
+            {state.phase === "landing" && (
+              <Landing messages={messages.landing} locale={locale} />
+            )}
 
-        {state.phase === "playing" && (
-          <QuestionCard
-            question={messages.questions[state.currentQuestion]!}
-            questionIndex={state.currentQuestion}
-            score={state.score}
-            locale={locale}
-            testMessages={messages.test}
-          />
-        )}
+            {state.phase === "playing" && (
+              <QuestionCard
+                question={messages.questions[state.currentQuestion]!}
+                questionIndex={state.currentQuestion}
+                score={state.score}
+                locale={locale}
+                testMessages={messages.test}
+              />
+            )}
 
-        {state.phase === "verdict" && (
-          <VerdictScreen
-            messages={messages.verdict}
-            testMessages={messages.test}
-            state={state}
-          />
-        )}
+            {state.phase === "verdict" && (
+              <VerdictScreen
+                messages={messages.verdict}
+                testMessages={messages.test}
+                state={state}
+              />
+            )}
 
-        {state.phase === "grace" && <GraceScreen messages={messages.grace} />}
+            {state.phase === "grace" && <GraceScreen messages={messages.grace} />}
 
-        {state.phase === "invitation" && (
-          <InvitationScreen
-            messages={messages}
-            locale={locale}
-            startedAt={state.startedAt}
-            invitationResponse={state.invitationResponse}
-            onResponse={(response) => {
-              saveInvitationResponse(response);
-              dispatch({ type: "SET_INVITATION_RESPONSE", response });
-            }}
-          />
-        )}
+            {state.phase === "invitation" && (
+              <InvitationScreen
+                messages={messages}
+                locale={locale}
+                startedAt={state.startedAt}
+                invitationResponse={state.invitationResponse}
+                onResponse={(response) => {
+                  saveInvitationResponse(response);
+                  dispatch({ type: "SET_INVITATION_RESPONSE", response });
+                }}
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       <ResumeDialog

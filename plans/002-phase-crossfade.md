@@ -1,6 +1,6 @@
 # 002 — Crossfade between test phases instead of hard-swapping
 
-- **Status**: TODO
+- **Status**: DONE (commit f4ee22d)
 - **Commit**: 8eb6e36
 - **Severity**: HIGH
 - **Category**: Missed opportunity / cohesion
