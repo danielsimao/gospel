@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { TrackCommitted } from "@/components/next-steps/track-committed";
 import { TrackThinking } from "@/components/next-steps/track-thinking";
@@ -24,6 +24,8 @@ export function NextStepsClient({ nextStepsMessages, shareMessages, locale }: Ne
 
   const track = stage === "committed" ? "committed" : stage === "thinking" ? "thinking" : null;
 
+  const viewTracked = useRef(false);
+
   useEffect(() => {
     if (!ready) return;
     if (!track) {
@@ -31,6 +33,8 @@ export function NextStepsClient({ nextStepsMessages, shareMessages, locale }: Ne
       router.replace(`/${locale}`);
       return;
     }
+    if (viewTracked.current) return;
+    viewTracked.current = true;
     trackNextStepsViewed(track, locale);
   }, [ready, track, locale, router]);
 
