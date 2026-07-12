@@ -1,6 +1,6 @@
 # 004 — Respect prefers-reduced-motion across all framer animations
 
-- **Status**: DONE (pending commit)
+- **Status**: DONE (commit 596fb1c)
 - **Commit**: 8eb6e36
 - **Severity**: MEDIUM
 - **Category**: Accessibility

@@ -1,6 +1,6 @@
 # 005 — Stop the chips row growing the page mid-test; give new chips a pop-in
 
-- **Status**: DONE (pending commit)
+- **Status**: DONE (commit 07a3fe4)
 - **Commit**: 8eb6e36
 - **Severity**: MEDIUM (shift) + LOW (delight) — merged, same lines
 - **Category**: Content shift / missed opportunity

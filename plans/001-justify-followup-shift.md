@@ -1,6 +1,6 @@
 # 001 — Eliminate the two-stage layout shift on justify answers
 
-- **Status**: DONE (pending commit)
+- **Status**: DONE (commit 56dbfa6)
 - **Commit**: 8eb6e36
 - **Severity**: HIGH
 - **Category**: Purpose & frequency / content shift
