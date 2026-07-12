@@ -1,6 +1,6 @@
 # 008 — Reserve the verdict-shortcut slot from question 1
 
-- **Status**: TODO
+- **Status**: DONE (commit f6fc55b)
 - **Commit**: 1e9581f
 - **Severity**: LOW
 - **Category**: Content shift
