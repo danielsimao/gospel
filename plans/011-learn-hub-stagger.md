@@ -1,6 +1,6 @@
 # 011 — Tighten the learn-hub entrance choreography
 
-- **Status**: DONE (commit TBD)
+- **Status**: DONE (commit 8f1f4d9)
 - **Commit**: 71deab3
 - **Severity**: MEDIUM
 - **Category**: Easing & duration
