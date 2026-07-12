@@ -96,6 +96,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           "group/btn relative inline-flex items-center justify-center",
           "cursor-pointer border-none bg-transparent p-0 outline-none",
+          // outline-none kills the default focus ring — restore a visible one
+          // for keyboard users
+          "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/50",
           !isText && `pb-[${lift}px]`,
           "-webkit-tap-highlight-color-transparent",
           mistClass,
