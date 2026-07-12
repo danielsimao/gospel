@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES, type Locale } from "./i18n";
 
 const FALLBACK_SITE_URL = "http://localhost:3000";
-const BRAND_NAME = "Gospel";
+const BRAND_NAME = "If You Died Today";
 
 function shouldAddWww(hostname: string): boolean {
   return !hostname.startsWith("www.") && !hostname.endsWith(".vercel.app") && hostname.includes(".");
