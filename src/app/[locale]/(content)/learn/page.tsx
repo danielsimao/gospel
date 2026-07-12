@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
 import { LearnHub } from "@/components/learn/learn-hub";
 import { StructuredData } from "@/components/structured-data";
-import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
+import { buildPageMetadata, buildWebPageSchema, buildBreadcrumbSchema, getLocaleUrl } from "@/lib/seo";
 import type { Metadata } from "next";
 
 type Props = {
@@ -50,10 +50,16 @@ export default async function LearnPage({ params }: Props) {
     title,
     description: learn.hubSubtitle,
   });
+  const topBarBrand = messages.default.topBar?.brand ?? "Gospel";
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: topBarBrand, url: getLocaleUrl(locale) },
+    { name: learn.label, url: getLocaleUrl(locale, "/learn") },
+  ]);
 
   return (
     <>
       <StructuredData data={webPageSchema} />
+      <StructuredData data={breadcrumbSchema} />
       <LearnHub
         label={learn.label}
         subtitle={learn.hubSubtitle}

@@ -2,7 +2,14 @@ import { notFound } from "next/navigation";
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
 import { TopicPage } from "@/components/learn/topic-page";
 import { StructuredData } from "@/components/structured-data";
-import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
+import {
+  buildPageMetadata,
+  buildWebPageSchema,
+  buildArticleSchema,
+  buildBreadcrumbSchema,
+  getLocaleUrl,
+} from "@/lib/seo";
+import { TOPIC_DATES } from "@/lib/topic-dates";
 import type { Metadata } from "next";
 
 type Props = {
@@ -87,9 +94,28 @@ export default async function LearnTopicPage({ params }: Props) {
   const prevTopic = { slug: data.topics[prevIndex].slug, title: data.topics[prevIndex].title };
   const nextTopic = { slug: data.topics[nextIndex].slug, title: data.topics[nextIndex].title };
 
+  const messages = await import(`@/messages/${locale}.json`);
+  const brand = messages.default.topBar?.brand ?? "Gospel";
+  const dates = TOPIC_DATES[slug] ?? { published: "2026-07-12", modified: "2026-07-12" };
+  const articleSchema = buildArticleSchema({
+    locale,
+    slug,
+    title: topic.title,
+    description: topic.metaDescription,
+    datePublished: dates.published,
+    dateModified: dates.modified,
+  });
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: brand, url: getLocaleUrl(locale) },
+    { name: data.label, url: getLocaleUrl(locale, "/learn") },
+    { name: topic.title, url: getLocaleUrl(locale, `/learn/${slug}`) },
+  ]);
+
   return (
     <>
       <StructuredData data={webPageSchema} />
+      <StructuredData data={articleSchema} />
+      <StructuredData data={breadcrumbSchema} />
       <TopicPage
         topic={topic}
         locale={locale}
