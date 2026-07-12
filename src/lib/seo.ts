@@ -171,3 +171,52 @@ export function buildWebPageSchema({
     },
   };
 }
+
+type BuildArticleSchemaArgs = {
+  locale: Locale;
+  slug: string;
+  title: string;
+  description: string;
+  datePublished: string;
+  dateModified: string;
+};
+
+export function buildArticleSchema({
+  locale,
+  slug,
+  title,
+  description,
+  datePublished,
+  dateModified,
+}: BuildArticleSchemaArgs) {
+  const url = getLocaleUrl(locale, `/learn/${slug}`);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "@id": `${url}#article`,
+    headline: title,
+    description,
+    url,
+    inLanguage: locale,
+    mainEntityOfPage: url,
+    datePublished,
+    dateModified,
+    image: getAbsoluteUrl(`/${locale}/opengraph-image`),
+    author: { "@id": `${SITE_URL}#organization` },
+    publisher: { "@id": `${SITE_URL}#organization` },
+  };
+}
+
+export function buildBreadcrumbSchema(items: Array<{ name: string; url: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+}
