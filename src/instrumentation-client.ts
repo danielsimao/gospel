@@ -1,5 +1,17 @@
+import * as Sentry from "@sentry/nextjs";
 import { getConsent } from "@/lib/consent";
 import { initPostHog } from "@/lib/posthog";
+
+// Error tracking is not consent-gated (legitimate interest, no cross-site
+// tracking); analytics is.
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  tracesSampleRate: 1.0,
+  replaysSessionSampleRate: 0,
+  replaysOnErrorSampleRate: 1.0,
+});
+
+export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
 
 try {
   if (typeof window !== "undefined" && getConsent() === "granted") {
