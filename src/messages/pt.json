@@ -328,6 +328,68 @@
     "resetCancelButton": "Cancelar",
     "topics": [
       {
+        "slug": "am-i-a-good-person",
+        "title": "Sou uma Boa Pessoa?",
+        "subtitle": "A pergunta a que toda a gente responde depressa demais.",
+        "metaDescription": "Sou uma boa pessoa? A maioria diz que sim — descobre aqui como saber a verdade.",
+        "sections": [
+          {
+            "heading": "Toda a gente se acha boa pessoa",
+            "body": "Pergunta a quase qualquer pessoa: 'És uma boa pessoa?' A resposta é quase sempre a mesma: 'Acho que sim. Quer dizer, não sou perfeito, mas...' E aí está — a comparação. Não és perfeito comparado com quê?\n\nA maioria de nós mede-se pelos outros. Escolhemos alguém pior — um criminoso do telejornal, um vizinho que engana, um ditador dos livros de história — e ao lado dele parecemos decentes. É como ser avaliado numa curva, e nessa curva quase toda a gente passa.\n\nMas a bondade não funciona assim. Quando um jovem rico chamou a Jesus 'Bom Mestre,' Jesus travou-o de imediato: 'Porque me chamas bom? Ninguém há bom, senão um, que é Deus.' O padrão não são as outras pessoas. Nunca foi.",
+            "scripture": "E Jesus lhe disse: Porque me chamas bom? Ninguém há bom, senão um, que é Deus.",
+            "scriptureRef": "Lucas 18:19 (ARC)",
+            "quiz": {
+              "question": "Por que padrão é que a maioria das pessoas mede a sua bondade?",
+              "options": ["As outras pessoas", "A Lei de Deus", "Apenas a sua consciência"],
+              "correct": 0,
+              "reveal": "Instintivamente comparamo-nos com pessoas piores do que nós — e passamos. Mas Deus não avalia por comparação. O Seu padrão é o Seu próprio caráter perfeito."
+            }
+          },
+          {
+            "heading": "O espelho da Lei de Deus",
+            "body": "Então como te medes pelo padrão de Deus? Ele deixou-o por escrito. Os Dez Mandamentos não são uma escada que sobes para chegar ao céu — são um espelho. Olhas para eles e vês-te como realmente és.\n\nUm espelho faz uma coisa bem: mostra-te a sujidade que tens na cara. Mas nunca tentarias lavar a cara com o espelho. Ele revela o problema; não o consegue resolver.\n\nÉ exatamente para isso que a Bíblia diz que a Lei serve: 'pela lei vem o conhecimento do pecado.' A sua função é o diagnóstico, não a cura. E um diagnóstico honesto é a única coisa que a maioria de nós nunca parou para ouvir.",
+            "scripture": "Por isso, nenhuma carne será justificada diante dele pelas obras da lei, porque pela lei vem o conhecimento do pecado.",
+            "scriptureRef": "Romanos 3:20 (ARC)",
+            "quiz": {
+              "question": "Segundo Romanos 3:20, para que serve a Lei?",
+              "options": ["Para nos tornar bons", "Para nos mostrar o nosso pecado", "Para ganharmos o céu"],
+              "correct": 1,
+              "reveal": "A Lei é um espelho, não uma escada. 'Pela lei vem o conhecimento do pecado.' Revela o problema — nunca foi feita para o resolver."
+            }
+          },
+          {
+            "heading": "Faz o teste com honestidade",
+            "body": "Então olha para o espelho. Alguma vez disseste uma mentira? Uma que fosse, mesmo pequena — o que é que isso faz de ti? Alguma vez tiraste algo que não era teu, por menor que fosse o valor? Alguma vez odiaste alguém? A Bíblia diz que 'qualquer que aborrece a seu irmão é homicida.'\n\nSe fores honesto, acabaste de admitir — como todos nós — que és um mentiroso e ladrão com homicídio no coração. E isto são apenas três dos Dez Mandamentos.\n\nTalvez estejas a pensar: 'Mas cumpri quase todos os outros.' Tiago fecha essa porta. A Lei de Deus é como uma vidraça: racha-a num canto e o vidro inteiro fica partido. Tropeça num só ponto, e és culpado de todos.",
+            "scripture": "Porque qualquer que guardar toda a lei, e tropeçar num só ponto, tornou-se culpado de todos.",
+            "scriptureRef": "Tiago 2:10 (ARC)",
+            "quiz": {
+              "question": "Quebraste um mandamento mas cumpriste os outros nove. O que diz Tiago 2:10 sobre ti?",
+              "options": ["És noventa por cento bom", "És culpado de quebrar toda a Lei", "Depende da gravidade desse único mandamento"],
+              "correct": 1,
+              "reveal": "Tropeçar num só ponto é ficar 'culpado de todos.' A Lei de Deus não é uma nota de zero a dez — é uma vidraça, e uma só racha parte o vidro inteiro."
+            }
+          },
+          {
+            "heading": "Bom segundo o padrão de quem?",
+            "body": "É aqui que muita gente se agarra a uma última esperança: 'Mas Deus é bom. Um Deus bom vai certamente fechar os olhos às minhas falhas.' Pensa nisso num tribunal.\n\nImagina um juiz com um homicida culpado à sua frente. As provas são esmagadoras. E o juiz diz: 'Sou um homem bom, por isso vou deixar-te ir.' Ele é bom? É corrupto. Um bom juiz não pode ignorar o crime — é precisamente por ser bom que tem de fazer justiça.\n\nA bondade de Deus não é a tua porta de fuga. É a própria razão pela qual o teu caso tem de ir a tribunal. A Bíblia diz que absolver o culpado é abominação para Ele. Se Deus é bom — e é — então tem de julgar a mentira, o roubo e o ódio. Incluindo os teus e os meus.",
+            "scripture": "O que justifica ao ímpio e o que condena ao justo abomináveis são para o SENHOR, tanto um como o outro.",
+            "scriptureRef": "Provérbios 17:15 (ARC)",
+            "quiz": {
+              "question": "O facto de Deus ser bom ajuda o culpado no dia do juízo?",
+              "options": ["Sim — um Deus bom fecha os olhos ao pecado", "Não — um bom juiz tem de julgar", "Depende das tuas boas obras"],
+              "correct": 1,
+              "reveal": "Um juiz que deixa o culpado sair em liberdade não é bom — é corrupto. A bondade de Deus é a própria razão pela qual o pecado não pode ser ignorado. É isso que torna a cruz necessária."
+            }
+          },
+          {
+            "heading": "Descobre onde estás",
+            "body": "Então — és uma boa pessoa? Pelo padrão dos homens, talvez. Pelo padrão de Deus, já sabes a resposta. E nós também, porque estamos sentados no mesmo banco dos réus.\n\nA Bíblia não te manda presumir que está tudo bem. Diz: 'Examinai-vos a vós mesmos.' Não o teu vizinho. Não o monstro do telejornal. Tu, perante o padrão que realmente conta.\n\nEste site tem um teste curto que te leva pela Lei de Deus, mandamento a mandamento, tal como Jesus a usava. Não te vai salvar — nenhum teste pode. Mas vai dizer-te a verdade sobre onde estás. E ninguém procura a cura antes de encarar o diagnóstico.",
+            "scripture": "Examinai-vos a vós mesmos, se permaneceis na fé; provai-vos a vós mesmos. Ou não sabeis quanto a vós mesmos, que Jesus Cristo está em vós? Se não é que já estais reprovados.",
+            "scriptureRef": "2 Coríntios 13:5 (ARC)"
+          }
+        ]
+      },
+      {
         "slug": "who-is-jesus",
         "title": "Quem é Jesus?",
         "subtitle": "Mais do que um bom mestre.",

@@ -328,6 +328,68 @@
     "resetCancelButton": "Cancel",
     "topics": [
       {
+        "slug": "am-i-a-good-person",
+        "title": "Am I a Good Person?",
+        "subtitle": "The question everyone answers too quickly.",
+        "metaDescription": "Am I a good person? Most people say yes — here's how to actually find out.",
+        "sections": [
+          {
+            "heading": "Everyone thinks they're good",
+            "body": "Ask almost anyone, 'Are you a good person?' and you'll hear the same answer: 'I think so. I mean, I'm not perfect, but...' And there it is — the comparison. Not perfect compared to what?\n\nMost of us measure ourselves against other people. We pick someone worse — a criminal on the news, a neighbour who cheats, a dictator from a history book — and next to them we look decent. It's grading on a curve, and on that curve nearly everyone passes.\n\nBut goodness isn't a curve. When a rich young ruler called Jesus 'Good Teacher,' Jesus stopped him cold: 'Why do you call Me good? No one is good but One, that is, God.' The standard isn't other people. It never was.",
+            "scripture": "So Jesus said to him, 'Why do you call Me good? No one is good but One, that is, God.'",
+            "scriptureRef": "Luke 18:19 (NKJV)",
+            "quiz": {
+              "question": "What standard do most people measure their goodness by?",
+              "options": ["Other people", "God's Law", "Their conscience alone"],
+              "correct": 0,
+              "reveal": "We instinctively compare ourselves with people worse than us — and pass. But God doesn't grade on a curve. His standard is His own perfect character."
+            }
+          },
+          {
+            "heading": "The mirror of God's Law",
+            "body": "So how do you measure yourself against God's standard? He wrote it down. The Ten Commandments are not a ladder you climb to reach heaven — they're a mirror. You look into them and see yourself as you actually are.\n\nA mirror does one thing well: it shows you the dirt on your face. But you would never try to wash your face with the mirror. It can reveal the problem; it cannot fix it.\n\nThat is exactly what the Bible says the Law is for: 'by the law is the knowledge of sin.' Its job is diagnosis, not cure. And an honest diagnosis is the one thing most of us have never sat still for.",
+            "scripture": "Therefore by the deeds of the law no flesh will be justified in His sight, for by the law is the knowledge of sin.",
+            "scriptureRef": "Romans 3:20 (NKJV)",
+            "quiz": {
+              "question": "According to Romans 3:20, what is the Law's purpose?",
+              "options": ["To make us good", "To show us our sin", "To earn our way to heaven"],
+              "correct": 1,
+              "reveal": "The Law is a mirror, not a ladder. 'By the law is the knowledge of sin.' It reveals the problem — it was never designed to fix it."
+            }
+          },
+          {
+            "heading": "Take the test honestly",
+            "body": "So look in the mirror. Have you ever told a lie? Even one, even a small one — what does that make you? Have you ever taken something that didn't belong to you, whatever its value? Have you ever hated someone? The Bible says 'whoever hates his brother is a murderer.'\n\nIf you're honest, you've just admitted — like the rest of us — to being a lying thief with murder in the heart. And that's only three of the Ten Commandments.\n\nMaybe you're thinking, 'But I've kept most of the others.' James closes that door. God's Law is like a pane of glass: crack it in one corner and the whole pane is broken. Stumble in one point, and you are guilty of all.",
+            "scripture": "For whoever shall keep the whole law, and yet stumble in one point, he is guilty of all.",
+            "scriptureRef": "James 2:10 (NKJV)",
+            "quiz": {
+              "question": "You've broken one commandment but kept the other nine. What does James 2:10 say about you?",
+              "options": ["You're ninety percent good", "You're guilty of breaking the whole Law", "It depends how serious the one was"],
+              "correct": 1,
+              "reveal": "Stumble in one point and you are 'guilty of all.' God's Law isn't a score out of ten — it's a pane of glass, and one crack breaks the whole thing."
+            }
+          },
+          {
+            "heading": "Good by whose standard?",
+            "body": "Here is where many people reach for one last hope: 'But God is good. Surely a good God will overlook my failures.' Think that through in a courtroom.\n\nImagine a judge with a guilty murderer standing before him. The evidence is overwhelming. And the judge says, 'I'm a good man, so I'm letting you go.' Is he good? He's corrupt. A good judge cannot wave crime through — precisely because he is good, he must see justice done.\n\nGod's goodness is not your escape route. It is the very reason your case must come to court. The Bible says that acquitting the guilty is an abomination to Him. If God is good — and He is — then He must judge lying, theft, and hatred. Including yours and mine.",
+            "scripture": "He who justifies the wicked, and he who condemns the just, both of them alike are an abomination to the LORD.",
+            "scriptureRef": "Proverbs 17:15 (NKJV)",
+            "quiz": {
+              "question": "Does the fact that God is good help the guilty on judgment day?",
+              "options": ["Yes — a good God will overlook sin", "No — a good judge must judge", "It depends on your good deeds"],
+              "correct": 1,
+              "reveal": "A judge who lets the guilty walk free isn't good — he's corrupt. God's goodness is the very reason sin cannot be waved through. That is what makes the cross necessary."
+            }
+          },
+          {
+            "heading": "Find out where you stand",
+            "body": "So — are you a good person? By man's standard, maybe. By God's standard, you already know the answer. So do the rest of us, because we're standing in the same dock.\n\nThe Bible doesn't tell you to assume you're fine. It says, 'Examine yourselves.' Not your neighbour. Not the person the news calls a monster. Yourself, against the standard that actually counts.\n\nThis site has a short test that walks you through God's Law one commandment at a time, the way Jesus used it. It won't save you — no test can. But it will tell you the truth about where you stand. And no one looks for a cure before facing the diagnosis.",
+            "scripture": "Examine yourselves as to whether you are in the faith. Test yourselves. Do you not know yourselves, that Jesus Christ is in you?—unless indeed you are disqualified.",
+            "scriptureRef": "2 Corinthians 13:5 (NKJV)"
+          }
+        ]
+      },
+      {
         "slug": "who-is-jesus",
         "title": "Who is Jesus?",
         "subtitle": "More than a good teacher.",
