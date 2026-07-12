@@ -9,7 +9,7 @@ export function isValidLocale(locale: string): locale is Locale {
   return SUPPORTED_LOCALES.includes(locale as Locale);
 }
 
-const JOURNEY_STAGE_LEAVES: string[][] = [
+export const JOURNEY_STAGE_LEAVES: string[][] = [
   ["undecided", "heading"],
   ["undecided", "cta"],
   ["committed", "heading"],

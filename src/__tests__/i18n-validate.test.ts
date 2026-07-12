@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { validateMessages } from "@/lib/i18n";
+import { validateMessages, JOURNEY_STAGE_LEAVES } from "@/lib/i18n";
 import en from "../messages/en.json";
 import pt from "../messages/pt.json";
 
@@ -17,24 +17,7 @@ describe("validateMessages — journeyStages deep validation", () => {
     },
   );
 
-  const LEAVES: string[][] = [
-    ["undecided", "heading"],
-    ["undecided", "cta"],
-    ["committed", "heading"],
-    ["committed", "subheading"],
-    ["thinking", "reflection"],
-    ["thinking", "commitLabel"],
-    ["thinking", "retakeLabel"],
-    ["thinking", "johnCard", "label"],
-    ["thinking", "johnCard", "description"],
-    ["thinking", "johnCard", "url"],
-    ["thinking", "learnCard", "label"],
-    ["thinking", "learnCard", "description"],
-    ["dismissed", "line"],
-    ["dismissed", "retakeCta"],
-  ];
-
-  it.each(LEAVES.map((path) => [path.join(".")] as const))(
+  it.each(JOURNEY_STAGE_LEAVES.map((path) => [path.join(".")] as const))(
     "throws when home.journeyStages.%s is missing",
     (dottedPath) => {
       const clone = cloneMessages(en);
