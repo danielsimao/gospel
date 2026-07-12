@@ -686,6 +686,84 @@
             }
           }
         ]
+      },
+      {
+        "slug": "does-god-exist",
+        "title": "Does God Exist?",
+        "subtitle": "You have more evidence than you think.",
+        "metaDescription": "Does God exist? Weigh three lines of evidence — creation, conscience, and Christ — and face the real reason the question stays unsettled.",
+        "sections": [
+          {
+            "heading": "The building has a builder",
+            "body": "How do you know a building had a builder? You've never seen him. You don't know his name. There's no photo of him in the lobby. Yet you're certain he existed, because the building is standing there. Buildings don't assemble themselves.\n\nA painting is proof of a painter. A car is proof of a maker. And creation — from the sun that warms your face to the DNA coiled inside every one of your cells — is evidence of a Creator. That's not a leap in the dark. It's the same everyday reasoning you trust a hundred times a day.\n\nThis is the Bible's starting point. It never argues for God in the abstract; it points at what He made. His invisible attributes 'are clearly seen' through the things He created — so clearly, Paul says, that no one will stand before God with the excuse 'I didn't know.'",
+            "scripture": "For since the creation of the world His invisible attributes are clearly seen, being understood by the things that are made, even His eternal power and Godhead, so that they are without excuse.",
+            "scriptureRef": "Romans 1:20 (NKJV)",
+            "quiz": {
+              "question": "How do you know a building had a builder?",
+              "options": [
+                "You take it on blind faith",
+                "The building itself is the evidence",
+                "You can't know without meeting him"
+              ],
+              "correct": 1,
+              "reveal": "You've never seen the builder, but the building is all the evidence you need. Creation works the same way — made things point to a Maker."
+            }
+          },
+          {
+            "heading": "Your conscience is evidence",
+            "body": "There's a second witness, and it's closer than the stars. It's inside you. The word 'conscience' means 'with knowledge' — when you do wrong, you do it with knowledge that it's wrong.\n\nEvery culture in history has known that murder is evil, that betrayal is shameful, that courage and honesty are good. We argue about the edges, but no one seriously claims cruelty to a child is fine for those who happen to enjoy it. Some things aren't opinions. They're known.\n\nBut a moral law that stands above every culture needs a source above every culture. If right and wrong were human inventions, we could vote them out of existence. We can't — and deep down you know it. The Bible tells you why: the work of God's Law is written on your heart.",
+            "scripture": "Who show the work of the law written in their hearts, their conscience also bearing witness, and between themselves their thoughts accusing or else excusing them.",
+            "scriptureRef": "Romans 2:15 (NKJV)",
+            "quiz": {
+              "question": "What does Romans 2:15 say is written on every human heart?",
+              "options": [
+                "Nothing — we're born blank",
+                "The work of God's Law",
+                "Whatever our culture teaches us"
+              ],
+              "correct": 1,
+              "reveal": "Your conscience isn't a social invention. It's the work of God's Law written on your heart, bearing witness every time you do wrong 'with knowledge.'"
+            }
+          },
+          {
+            "heading": "God stepped into history",
+            "body": "If God had left only fingerprints — stars and consciences — you might still wonder what He's like. Kind? Distant? Angry? Fingerprints tell you someone was there; they don't show you a face.\n\nSo He showed us His face. 'No one has seen God at any time,' John writes, but the Son 'has declared Him.' Jesus of Nazareth is God making Himself known — not a feeling, not a philosophy, but a person who walked real roads in a real province of the Roman Empire, was executed under a real governor, and left behind an empty tomb His enemies could never answer with a body.\n\nThat changes the question. 'Does God exist?' stops being an abstract debate and becomes something you can examine: read what Jesus said, weigh what He did, and decide who He is. If you want to know whether God exists — and what He's like — start there.",
+            "scripture": "No one has seen God at any time. The only begotten Son, who is in the bosom of the Father, He has declared Him.",
+            "scriptureRef": "John 1:18 (NKJV)",
+            "quiz": {
+              "question": "According to John 1:18, how has the invisible God been made known?",
+              "options": [
+                "Through the Son — Jesus Christ",
+                "Through human imagination",
+                "He hasn't — He stays hidden"
+              ],
+              "correct": 0,
+              "reveal": "No one has seen God at any time — but the Son 'has declared Him.' Jesus is God making Himself known: not an idea, but a person you can examine."
+            }
+          },
+          {
+            "heading": "Why evidence isn't the real issue",
+            "body": "Here's an honest question worth sitting with: if God's existence were proven to you beyond doubt tonight, would you follow Him tomorrow? For many of us, if we're truthful, the answer is no — because the debate was never really about evidence.\n\nJesus put His finger on it: the light has come into the world, and we 'loved darkness rather than light.' Not because the light was dim, but because light exposes. If God exists, He has a rightful claim on your life — your money, your relationships, your private habits, your pride. It is remarkably convenient for Him not to exist.\n\nThis isn't an accusation aimed at atheists. It's a confession about the human heart — yours and mine alike. Honest questions deserve honest answers, and there are good ones. But before you ask for more evidence, ask what you would do with the evidence you already have.",
+            "scripture": "And this is the condemnation, that the light has come into the world, and men loved darkness rather than light, because their deeds were evil. For everyone practicing evil hates the light and does not come to the light, lest his deeds should be exposed.",
+            "scriptureRef": "John 3:19-20 (NKJV)",
+            "quiz": {
+              "question": "According to Jesus, why do people stay away from the light?",
+              "options": [
+                "There isn't enough evidence",
+                "The light would expose their deeds",
+                "God makes Himself impossible to find"
+              ],
+              "correct": 1,
+              "reveal": "'Men loved darkness rather than light, because their deeds were evil.' The obstacle is rarely the head. It's the heart — and that's true for all of us."
+            }
+          },
+          {
+            "heading": "Test it honestly",
+            "body": "God makes a promise to the honest seeker: 'You will seek Me and find Me, when you search for Me with all your heart.' Notice the condition. Not a casual glance. Not a debate you're trying to win. All your heart.\n\nSo test it. Read one of the Gospels — John is a good place to start — and ask honestly who this man is. Pray something as simple as this: 'God, if You're real, show me the truth, whatever it costs me.' If He isn't there, you've lost a few quiet minutes. If He is, you've found the reason you exist.\n\nThere's one more step for the honest. This site has a short test built on God's own Law — the standard your conscience already echoes. It won't prove God to you. It will show you where you stand before Him if He is there. And that, more than any argument, is where this question gets real.",
+            "scripture": "And you will seek Me and find Me, when you search for Me with all your heart.",
+            "scriptureRef": "Jeremiah 29:13 (NKJV)"
+          }
+        ]
       }
     ]
   },
