@@ -54,17 +54,32 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
       </motion.h1>
 
       <div className="mt-8 space-y-5">
-        {paragraphs.map((p, i) => (
-          <motion.p
-            key={i}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={stagger(i)}
-            className="text-[15px] leading-[1.85] text-white/60 sm:text-base"
-          >
-            {p}
-          </motion.p>
-        ))}
+        {paragraphs.map((p, i) => {
+          // Scripture paragraphs (quote-prefixed) get the house blockquote
+          // treatment, matching the grace screen.
+          const isScripture = /^["“]/.test(p);
+          return isScripture ? (
+            <motion.blockquote
+              key={i}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={stagger(i)}
+              className="border-l border-[#D4A843]/30 pl-4 text-left"
+            >
+              <p className="text-[15px] italic leading-[1.85] text-white/70 sm:text-base">{p}</p>
+            </motion.blockquote>
+          ) : (
+            <motion.p
+              key={i}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={stagger(i)}
+              className="text-[15px] leading-[1.85] text-white/60 sm:text-base"
+            >
+              {p}
+            </motion.p>
+          );
+        })}
       </div>
 
       <div className="mt-12 space-y-4">
