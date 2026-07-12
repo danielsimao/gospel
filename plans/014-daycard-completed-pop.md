@@ -1,6 +1,6 @@
 # 014 — Pop the COMPLETED chip when a reading day is finished
 
-- **Status**: DONE (commit TBD)
+- **Status**: DONE (commit 2f53296)
 - **Commit**: 71deab3
 - **Severity**: LOW (delight)
 - **Category**: Missed opportunity
