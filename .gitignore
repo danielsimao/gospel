@@ -43,6 +43,7 @@ next-env.d.ts
 
 # playwright / browser automation artifacts
 .playwright-mcp/
-*.png
+# one-off verification screenshots (repo root only)
+/*.png
 *.pdf
 *.webm
