@@ -9,7 +9,24 @@ export function isValidLocale(locale: string): locale is Locale {
   return SUPPORTED_LOCALES.includes(locale as Locale);
 }
 
-function validateMessages(messages: unknown, locale: string): Messages {
+const JOURNEY_STAGE_LEAVES: string[][] = [
+  ["undecided", "heading"],
+  ["undecided", "cta"],
+  ["committed", "heading"],
+  ["committed", "subheading"],
+  ["thinking", "reflection"],
+  ["thinking", "commitLabel"],
+  ["thinking", "retakeLabel"],
+  ["thinking", "johnCard", "label"],
+  ["thinking", "johnCard", "description"],
+  ["thinking", "johnCard", "url"],
+  ["thinking", "learnCard", "label"],
+  ["thinking", "learnCard", "description"],
+  ["dismissed", "line"],
+  ["dismissed", "retakeCta"],
+];
+
+export function validateMessages(messages: unknown, locale: string): Messages {
   const m = messages as Messages;
   if (!m.landing?.title || !m.landing?.cta) {
     throw new Error(`[i18n] Missing landing content for locale "${locale}"`);
@@ -26,14 +43,17 @@ function validateMessages(messages: unknown, locale: string): Messages {
     throw new Error(`[i18n] Missing required test content for locale "${locale}"`);
   }
   const stages = (m as Messages & { home?: { journeyStages?: JourneyStagesMessages } }).home
-    ?.journeyStages;
-  if (
-    !stages?.undecided?.heading ||
-    !stages?.committed?.heading ||
-    !stages?.thinking?.commitLabel ||
-    !stages?.dismissed?.retakeCta
-  ) {
-    throw new Error(`[i18n] Missing home.journeyStages content for locale "${locale}"`);
+    ?.journeyStages as unknown;
+  for (const path of JOURNEY_STAGE_LEAVES) {
+    let node: unknown = stages;
+    for (const key of path) {
+      node = node && typeof node === "object" ? (node as Record<string, unknown>)[key] : undefined;
+    }
+    if (typeof node !== "string" || node.length === 0) {
+      throw new Error(
+        `[i18n] Missing home.journeyStages.${path.join(".")} for locale "${locale}"`,
+      );
+    }
   }
   return m;
 }
