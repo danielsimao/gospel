@@ -1,6 +1,6 @@
 # 013 — Delete dead eternity motion CSS
 
-- **Status**: TODO
+- **Status**: DONE (commit TBD)
 - **Commit**: 71deab3
 - **Severity**: LOW
 - **Category**: Cohesion & tokens (cleanup)
