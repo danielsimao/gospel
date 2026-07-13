@@ -53,6 +53,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: newestPostDate,
       changeFrequency: "weekly",
       priority: 0.7,
+      alternates: { languages: getLanguageAlternates("/blog") },
     });
   }
 
@@ -63,6 +64,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(getPostDateModified(post)),
         changeFrequency: "monthly",
         priority: 0.6,
+        alternates: {
+          languages: getLanguageAlternates(`/blog/${post.slug}`, getPostLocales(post)),
+        },
       });
     }
   }
