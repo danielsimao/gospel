@@ -1,13 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { Button, ButtonArrow } from "@/components/ui/button";
-import { readProgress, getCompletedCount } from "@/lib/reading-storage";
-import { computeJourneySnapshot } from "@/lib/use-journey";
+import { useJourney, TOTAL_READING_DAYS } from "@/lib/use-journey";
 import { trackTopicCtaClicked, trackTopicNavClicked } from "@/lib/learn-analytics";
-
-const TOTAL_DAYS = 7;
 
 interface TopicNavProps {
   slug: string;
@@ -23,37 +19,21 @@ interface TopicNavProps {
   allTopicsLabel?: string;
 }
 
-function getInitialCta(
-  locale: string,
-  ctaHeading: string,
-  ctaButton: string,
-  completedCtaHeading?: string,
-  completedCtaButton?: string,
-) {
-  try {
-    const testDone = computeJourneySnapshot([]).stage !== "visitor";
-    const readingDone = getCompletedCount(readProgress(), TOTAL_DAYS) >= TOTAL_DAYS;
-
-    if (!testDone) {
-      return { heading: ctaHeading, button: ctaButton, href: `/${locale}/test` };
-    }
-
-    if (!readingDone && completedCtaHeading && completedCtaButton) {
-      return {
-        heading: completedCtaHeading,
-        button: completedCtaButton,
-        href: `/${locale}/reading-plan`,
-      };
-    }
-  } catch {}
-
-  return null;
-}
-
 export function TopicNav({ slug, locale, prevLabel, nextLabel, prevTopic, nextTopic, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, allTopicsLabel }: TopicNavProps) {
-  const [cta] = useState(() =>
-    getInitialCta(locale, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton),
-  );
+  // Server render and first client render have no reliable journey/reading
+  // state (it lives in localStorage), so no CTA renders until `ready` flips
+  // post-mount — matches FooterNextStepsLink's gate on the same hook.
+  const { stage, readingDone, ready } = useJourney();
+  const testDone = stage !== "visitor";
+  const readingComplete = readingDone >= TOTAL_READING_DAYS;
+
+  const cta = !ready
+    ? null
+    : !testDone
+      ? { heading: ctaHeading, button: ctaButton, href: `/${locale}/test` }
+      : !readingComplete && completedCtaHeading && completedCtaButton
+        ? { heading: completedCtaHeading, button: completedCtaButton, href: `/${locale}/reading-plan` }
+        : null;
 
   return (
     <nav className="mt-16">

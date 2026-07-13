@@ -53,15 +53,20 @@ interface ReadingPlanProps {
 
 export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
   const { stage } = useJourney();
-  const [progress, setProgress] = useState<Record<string, boolean>>(() =>
-    typeof window === "undefined" ? {} : readProgress(),
-  );
+  const [progress, setProgress] = useState<Record<string, boolean>>({});
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const totalDays = messages.days.length;
 
   useEffect(() => {
     trackReadingPlanViewed(locale);
-    return subscribeToStorage(() => setProgress(readProgress()));
+    // Deferred one frame: reading localStorage after paint keeps hydration
+    // stable and satisfies react-hooks/set-state-in-effect.
+    const id = requestAnimationFrame(() => setProgress(readProgress()));
+    const unsubscribe = subscribeToStorage(() => setProgress(readProgress()));
+    return () => {
+      cancelAnimationFrame(id);
+      unsubscribe();
+    };
   }, [locale]);
 
   const handleReset = useCallback(() => {
