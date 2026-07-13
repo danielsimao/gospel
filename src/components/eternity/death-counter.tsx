@@ -79,9 +79,14 @@ export const DeathCounter = memo(function DeathCounter({
       suppressHydrationWarning
       className={className}
       style={{ ...style, display: "inline-block", minWidth: "7ch", textAlign: "center" }}
-    >
-      0
-    </span>
+      // dangerouslySetInnerHTML keeps React from reconciling this text node at
+      // hydration. With a plain "0" child, hydration patched the pre-painted
+      // value back through React's virtual DOM, repainting the element ~3s in
+      // — which registered as a fresh (and final) LCP candidate and pinned
+      // LCP to hydration time. React treats innerHTML as opaque, so the
+      // parse-time pre-paint survives untouched until the first rAF tick.
+      dangerouslySetInnerHTML={{ __html: "0" }}
+    />
   );
 
   if (!fromMidnight) return span;
