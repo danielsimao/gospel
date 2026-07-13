@@ -15,7 +15,7 @@ export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
 
 try {
   if (typeof window !== "undefined" && getConsent() === "granted") {
-    initPostHog();
+    void initPostHog();
   }
 } catch (error) {
   console.warn("[instrumentation-client] Failed to initialize:", error);

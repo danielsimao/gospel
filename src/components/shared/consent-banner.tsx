@@ -39,7 +39,7 @@ export function ConsentBanner() {
 
   function handleAccept() {
     setConsent("granted");
-    initPostHog();
+    void initPostHog();
     window.dispatchEvent(new Event("consentchange"));
   }
 

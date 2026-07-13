@@ -1,12 +1,4 @@
-import posthog from "posthog-js";
-
-function safeCapture(event: string, properties?: Record<string, unknown>) {
-  try {
-    posthog.capture(event, properties);
-  } catch {
-    // Analytics must never break the app
-  }
-}
+import { capture as safeCapture, getDistinctId } from "@/lib/posthog";
 
 export function trackTestResumed(phase: string, locale: string) {
   safeCapture("test_resumed", { phase, locale });
@@ -78,7 +70,7 @@ export function trackGameAbandoned(
             event: "game_abandoned",
             properties: {
               ...payload.properties,
-              distinct_id: posthog.get_distinct_id?.() || "anonymous",
+              distinct_id: getDistinctId() || "anonymous",
             },
           }),
         );

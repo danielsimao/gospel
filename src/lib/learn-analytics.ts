@@ -1,12 +1,4 @@
-import posthog from "posthog-js";
-
-function safeCapture(event: string, properties?: Record<string, unknown>) {
-  try {
-    posthog.capture(event, properties);
-  } catch (error) {
-    console.warn("[learn-analytics] Capture failed:", error);
-  }
-}
+import { capture as safeCapture } from "@/lib/posthog";
 
 export function trackTopicPageViewed(slug: string, locale: string) {
   safeCapture("topic_page_viewed", { slug, locale });

@@ -1,12 +1,4 @@
-import posthog from "posthog-js";
-
-function safeCapture(event: string, properties?: Record<string, unknown>) {
-  try {
-    posthog.capture(event, properties);
-  } catch {
-    // Analytics must never break the app
-  }
-}
+import { capture as safeCapture } from "@/lib/posthog";
 
 export function trackHomeViewed(locale: string, stage?: string) {
   safeCapture("home_page_viewed", { locale, stage });

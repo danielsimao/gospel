@@ -3,11 +3,10 @@
 import { Suspense, useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { MotionConfig } from "framer-motion";
-import posthog from "posthog-js";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getConsent } from "@/lib/consent";
-import { initPostHog, isPostHogInitialized } from "@/lib/posthog";
+import { initPostHog } from "@/lib/posthog";
 
 function PostHogPageviewTracker() {
   const pathname = usePathname();
@@ -20,27 +19,33 @@ function PostHogPageviewTracker() {
       return;
     }
 
-    // Ensure PostHog is initialized (idempotent — handles mid-session consent)
-    initPostHog();
+    let cancelled = false;
 
-    if (!isPostHogInitialized()) return;
+    // Ensure PostHog is loaded + initialized (idempotent — handles mid-session consent)
+    initPostHog().then((ph) => {
+      if (cancelled || !ph) return;
 
-    const url = search ? `${window.location.origin}${pathname}?${search}` : `${window.location.origin}${pathname}`;
+      const url = search ? `${window.location.origin}${pathname}?${search}` : `${window.location.origin}${pathname}`;
 
-    if (lastTrackedUrlRef.current === url) {
-      return;
-    }
+      if (lastTrackedUrlRef.current === url) {
+        return;
+      }
 
-    lastTrackedUrlRef.current = url;
+      lastTrackedUrlRef.current = url;
 
-    try {
-      posthog.capture("$pageview", {
-        $current_url: url,
-        pathname,
-      });
-    } catch {
-      // Analytics must never break the app
-    }
+      try {
+        ph.capture("$pageview", {
+          $current_url: url,
+          pathname,
+        });
+      } catch {
+        // Analytics must never break the app
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [pathname, search]);
 
   return null;

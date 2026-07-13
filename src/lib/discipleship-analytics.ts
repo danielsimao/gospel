@@ -1,12 +1,4 @@
-import posthog from "posthog-js";
-
-function safeCapture(event: string, properties?: Record<string, unknown>) {
-  try {
-    posthog.capture(event, properties);
-  } catch (error) {
-    console.warn("[discipleship-analytics] Capture failed:", error);
-  }
-}
+import { capture as safeCapture } from "@/lib/posthog";
 
 export function trackNextStepsViewed(track: "committed" | "thinking", locale: string) {
   safeCapture("next_steps_viewed", { track, locale });
