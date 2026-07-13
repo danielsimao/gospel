@@ -3,7 +3,6 @@
 import { Suspense, useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { MotionConfig } from "framer-motion";
-import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getConsent } from "@/lib/consent";
 import { initPostHog } from "@/lib/posthog";
@@ -57,7 +56,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <Suspense fallback={null}>
         <PostHogPageviewTracker />
       </Suspense>
-      <Analytics />
       <SpeedInsights />
       {children}
     </MotionConfig>
