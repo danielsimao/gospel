@@ -15,6 +15,8 @@ export const JOURNEY_STAGE_LEAVES: string[][] = [
   ["undecided", "cta"],
   ["committed", "heading"],
   ["committed", "subheading"],
+  ["committed", "nextStepsCard", "label"],
+  ["committed", "nextStepsCard", "description"],
   ["thinking", "eyebrow"],
   ["thinking", "reflection"],
   ["thinking", "commitLabel"],

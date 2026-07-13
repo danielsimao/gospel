@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FooterLocaleSwitch } from "./footer-locale-switch";
+import { FooterNextStepsLink } from "./footer-next-steps-link";
 import type { Locale } from "@/lib/i18n";
 
 interface FooterMessages {
@@ -104,13 +105,7 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
               >
                 {messages.readingPlanLink}
               </Link>
-              <Link
-                href={`/${locale}/next-steps`}
-                prefetch={false}
-                className="text-sm text-white/70 transition-colors hover:text-white/80"
-              >
-                {messages.nextStepsLink}
-              </Link>
+              <FooterNextStepsLink locale={locale} label={messages.nextStepsLink} />
               <a
                 href={messages.churchUrl}
                 target="_blank"

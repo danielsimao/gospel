@@ -853,7 +853,11 @@
       },
       "committed": {
         "heading": "If you've repented and trusted in Christ, God has forgiven you — not because you earned it, but because of what Christ did.",
-        "subheading": "Grow in it:"
+        "subheading": "Grow in it:",
+        "nextStepsCard": {
+          "label": "Your next steps",
+          "description": "Prayer, church, and the people who will walk with you — where a new life takes root."
+        }
       },
       "thinking": {
         "eyebrow": "The question is still open",

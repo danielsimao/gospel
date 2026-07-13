@@ -853,7 +853,11 @@
       },
       "committed": {
         "heading": "Se te arrependeste e confiaste em Cristo, Deus perdoou-te — não porque o mereceste, mas por causa do que Cristo fez.",
-        "subheading": "Cresce nisso:"
+        "subheading": "Cresce nisso:",
+        "nextStepsCard": {
+          "label": "Os teus próximos passos",
+          "description": "Oração, igreja e as pessoas que vão caminhar contigo — onde uma vida nova cria raízes."
+        }
       },
       "thinking": {
         "eyebrow": "A pergunta continua em aberto",

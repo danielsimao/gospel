@@ -102,6 +102,7 @@ export interface JourneyStagesMessages {
   committed: {
     heading: string;
     subheading: string;
+    nextStepsCard: { label: string; description: string };
   };
   thinking: {
     eyebrow: string;

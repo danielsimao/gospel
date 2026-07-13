@@ -226,6 +226,29 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
                 shareMessages={share}
                 topicSlugs={topicSlugs}
               />
+              {/* Persistent bridge to the relational track — pray/community/church
+                  guidance must survive beyond the one-shot invitation CTA */}
+              <Link
+                href={`/${locale}/next-steps`}
+                className="group mt-3 block w-full max-w-md rounded-xl border border-[#D4A843]/25 bg-[#D4A843]/[0.03] p-5 transition-all hover:border-[#D4A843]/45"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-white/90">
+                      {home.journeyStages.committed.nextStepsCard.label}
+                    </p>
+                    <p className="mt-1 text-[13px] leading-relaxed text-white/60">
+                      {home.journeyStages.committed.nextStepsCard.description}
+                    </p>
+                  </div>
+                  <span
+                    aria-hidden="true"
+                    className="mt-0.5 text-[#D4A843]/70 transition-transform group-hover:translate-x-1"
+                  >
+                    →
+                  </span>
+                </div>
+              </Link>
             </div>
           )}
 
