@@ -220,3 +220,36 @@ export function buildBreadcrumbSchema(items: Array<{ name: string; url: string }
     })),
   };
 }
+
+type BuildHowToSchemaArgs = {
+  locale: Locale;
+  name: string;
+  description: string;
+  days: Array<{ title: string; reflection: string }>;
+};
+
+export function buildHowToSchema({
+  locale,
+  name,
+  description,
+  days,
+}: BuildHowToSchemaArgs) {
+  const url = getLocaleUrl(locale, "/reading-plan");
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "@id": `${url}#howto`,
+    name,
+    description,
+    url,
+    inLanguage: locale,
+    totalTime: "P7D",
+    step: days.map((day, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      name: day.title,
+      text: day.reflection,
+    })),
+  };
+}

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SUPPORTED_LOCALES } from "@/lib/i18n";
-import { getLocaleUrl } from "@/lib/seo";
+import { getLocaleUrl, getLanguageAlternates } from "@/lib/seo";
 import { TOPIC_DATES } from "@/lib/topic-dates";
 
 const BUILD_TIMESTAMP = new Date();
@@ -19,6 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: BUILD_TIMESTAMP,
         changeFrequency: page === "" ? "weekly" : "monthly",
         priority: page === "" ? 1.0 : page === "/test" ? 0.9 : 0.7,
+        alternates: { languages: getLanguageAlternates(page) },
       });
     }
 
@@ -30,6 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: dates ? new Date(dates.modified) : BUILD_TIMESTAMP,
         changeFrequency: "monthly",
         priority: 0.8,
+        alternates: { languages: getLanguageAlternates(`/learn/${slug}`) },
       });
     }
   }

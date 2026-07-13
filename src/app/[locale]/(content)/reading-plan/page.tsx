@@ -3,7 +3,7 @@ import { isValidLocale, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
 import { ReadingPlan } from "@/components/reading-plan/reading-plan";
 import { StructuredData } from "@/components/structured-data";
 import { PageShell } from "@/components/shared/page-shell";
-import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
+import { buildPageMetadata, buildWebPageSchema, buildHowToSchema } from "@/lib/seo";
 import type { Metadata } from "next";
 
 type Props = {
@@ -48,9 +48,20 @@ export default async function ReadingPlanPage({ params }: Props) {
     description: data.readingPlan.subtitle,
   });
 
+  const howToSchema = buildHowToSchema({
+    locale,
+    name: data.readingPlan.heading,
+    description: data.readingPlan.subtitle,
+    days: data.readingPlan.days.map((day: { title: string; reflection: string }) => ({
+      title: day.title,
+      reflection: day.reflection,
+    })),
+  });
+
   return (
     <>
       <StructuredData data={webPageSchema} />
+      <StructuredData data={howToSchema} />
       <PageShell>
         <ReadingPlan messages={data.readingPlan} locale={locale as Locale} />
       </PageShell>
