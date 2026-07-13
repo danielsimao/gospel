@@ -64,7 +64,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!topic) return {};
 
   const messages = await import(`@/messages/${locale}.json`);
-  const brand = messages.default.meta.title.split(" | ")[0];
+  const brand = messages.default.topBar.brand;
 
   return buildPageMetadata({
     locale,

@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const learn = messages.default.learn;
   if (!learn) return {};
 
-  const brand = messages.default.meta.title.split(" | ")[0];
+  const brand = messages.default.topBar.brand;
 
   return buildPageMetadata({
     locale,
@@ -42,7 +42,7 @@ export default async function LearnPage({ params }: Props) {
     throw new Error(`[learn] Missing "learn" key in ${locale}.json`);
   }
 
-  const brand = messages.default.meta.title.split(" | ")[0];
+  const brand = messages.default.topBar.brand;
   const title = `${learn.label} | ${brand}`;
   const webPageSchema = buildWebPageSchema({
     locale,
