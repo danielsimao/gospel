@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { PageShell } from "@/components/shared/page-shell";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { SaveStoryImageButton } from "./save-story-image-button";
+import { BlogViewTracker } from "./blog-view-tracker";
 import type { BlogPostContent } from "@/content/blog/types";
 import type { Locale } from "@/lib/i18n";
 
@@ -31,6 +32,7 @@ export function BlogPostPage({ slug, content, datePublished, locale, messages }:
   return (
     <PageShell>
       <article>
+        <BlogViewTracker slug={slug} locale={locale} />
         <Link
           href={`/${locale}/blog`}
           className="group mb-6 inline-flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[2px] text-white/60 transition-all hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03] hover:text-[#D4A843]/70"
