@@ -162,11 +162,6 @@
       "thinking": "I want to think about it",
       "dismissed": "Not for me"
     },
-    "resources": [
-      { "name": "Learn more at Living Waters", "url": "https://livingwaters.com/" },
-      { "name": "Read the Gospel of John", "url": "https://www.bible.com/bible/114/JHN.1.NKJV" },
-      { "name": "Find a church near you", "url": "https://www.google.com/maps/search/church+near+me" }
-    ],
     "learnMoreLabel": "Learn more about the gospel"
   },
   "share": {

@@ -162,11 +162,6 @@
       "thinking": "Quero pensar sobre isto",
       "dismissed": "Não é para mim"
     },
-    "resources": [
-      { "name": "Saber mais em Living Waters", "url": "https://livingwaters.com/" },
-      { "name": "Ler o Evangelho de Joao", "url": "https://www.bible.com/bible/212/JHN.1.ACF" },
-      { "name": "Encontrar uma igreja perto de ti", "url": "https://www.google.com/maps/search/igreja+perto+de+mim" }
-    ],
     "learnMoreLabel": "Aprende mais sobre o evangelho"
   },
   "share": {

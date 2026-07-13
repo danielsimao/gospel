@@ -187,7 +187,6 @@ export interface Messages {
     thinkingEncouragement: string;
     dismissedEncouragement?: string;
     responses: Record<InvitationResponse, string>;
-    resources: Array<{ name: string; url: string }>;
     learnMoreLabel: string;
   };
   share: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
