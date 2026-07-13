@@ -7,6 +7,7 @@ import {
   buildWebPageSchema,
   buildArticleSchema,
   buildBreadcrumbSchema,
+  buildFaqSchema,
   getLocaleUrl,
 } from "@/lib/seo";
 import { TOPIC_DATES } from "@/lib/topic-dates";
@@ -23,6 +24,7 @@ interface TopicData {
   subtitle: string;
   metaDescription: string;
   sections: Array<{ heading: string; body: string; scripture: string; scriptureRef: string }>;
+  faq?: Array<{ question: string; answer: string }>;
 }
 
 interface LearnData {
@@ -117,12 +119,14 @@ export default async function LearnTopicPage({ params }: Props) {
     { name: data.label, url: getLocaleUrl(locale, "/learn") },
     { name: topic.title, url: getLocaleUrl(locale, `/learn/${slug}`) },
   ]);
+  const faqSchema = topic.faq?.length ? buildFaqSchema({ locale, slug, faq: topic.faq }) : null;
 
   return (
     <>
       <StructuredData data={webPageSchema} />
       <StructuredData data={articleSchema} />
       <StructuredData data={breadcrumbSchema} />
+      {faqSchema && <StructuredData data={faqSchema} />}
       <TopicPage
         topic={topic}
         locale={locale}
@@ -138,6 +142,7 @@ export default async function LearnTopicPage({ params }: Props) {
         nextTopic={nextTopic}
         relatedTopics={relatedTopics}
         relatedLabel={data.relatedLabel}
+        faq={topic.faq ?? []}
       />
     </>
   );

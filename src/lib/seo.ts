@@ -208,6 +208,31 @@ export function buildArticleSchema({
   };
 }
 
+type BuildFaqSchemaArgs = {
+  locale: Locale;
+  slug: string;
+  faq: Array<{ question: string; answer: string }>;
+};
+
+export function buildFaqSchema({ locale, slug, faq }: BuildFaqSchemaArgs) {
+  const url = getLocaleUrl(locale, `/learn/${slug}`);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${url}#faq`,
+    inLanguage: locale,
+    mainEntity: faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+}
+
 export function buildBreadcrumbSchema(items: Array<{ name: string; url: string }>) {
   return {
     "@context": "https://schema.org",

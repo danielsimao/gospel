@@ -45,9 +45,10 @@ interface TopicPageProps {
   nextTopic: { slug: string; title: string } | null;
   relatedTopics: Array<{ slug: string; title: string; subtitle: string }>;
   relatedLabel: string;
+  faq: Array<{ question: string; answer: string }>;
 }
 
-export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, allTopicsLabel, prevLabel, nextLabel, prevTopic, nextTopic, relatedTopics, relatedLabel }: TopicPageProps) {
+export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, allTopicsLabel, prevLabel, nextLabel, prevTopic, nextTopic, relatedTopics, relatedLabel, faq }: TopicPageProps) {
   useEffect(() => {
     trackTopicPageViewed(topic.slug, locale);
   }, [topic.slug, locale]);
@@ -112,6 +113,32 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
                     {related.subtitle}
                   </p>
                 </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {faq.length > 0 && (
+          <div className="mt-14">
+            <div className="space-y-3">
+              {faq.map((item, i) => (
+                <details
+                  key={i}
+                  className="group rounded-xl border border-white/[0.06] bg-white/[0.015] transition-colors open:border-[#D4A843]/20"
+                >
+                  <summary className="flex cursor-pointer list-none items-start justify-between gap-3 p-5 text-sm font-semibold text-white/85 [&::-webkit-details-marker]:hidden">
+                    {item.question}
+                    <span
+                      aria-hidden="true"
+                      className="mt-0.5 shrink-0 text-white/40 transition-transform group-open:rotate-45"
+                    >
+                      +
+                    </span>
+                  </summary>
+                  <p className="px-5 pb-5 text-[13px] leading-relaxed text-white/60">
+                    {item.answer}
+                  </p>
+                </details>
               ))}
             </div>
           </div>
