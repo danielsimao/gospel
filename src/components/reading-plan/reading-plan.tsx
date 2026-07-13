@@ -8,6 +8,7 @@ import { Button, ButtonArrow } from "@/components/ui/button";
 import { subscribeToStorage } from "@/lib/client-storage";
 import { readProgress, markDayRead, getCompletedCount, clearReadingProgress } from "@/lib/reading-storage";
 import { trackReadingPlanViewed, trackReadingPlanDayCompleted, trackReadingPlanCompleted, trackReadingPlanLearnClicked, trackReadingPlanReset } from "@/lib/discipleship-analytics";
+import { useJourney } from "@/lib/use-journey";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import type { Locale } from "@/lib/i18n";
@@ -35,6 +36,8 @@ interface ReadingPlanMessages {
   continueReadingLabel: string;
   deeperLabel: string;
   deeperLink: string;
+  nextStepsLabel: string;
+  nextStepsLink: string;
   resetLabel: string;
   resetConfirmTitle: string;
   resetConfirmBody: string;
@@ -49,6 +52,7 @@ interface ReadingPlanProps {
 }
 
 export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
+  const { stage } = useJourney();
   const [progress, setProgress] = useState<Record<string, boolean>>(() =>
     typeof window === "undefined" ? {} : readProgress(),
   );
@@ -196,6 +200,17 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
               {messages.deeperLink} →
             </Link>
           </div>
+          {(stage === "committed" || stage === "thinking") && (
+            <div className="mt-6">
+              <p className="text-sm text-white/60">{messages.nextStepsLabel}</p>
+              <Link
+                href={`/${locale}/next-steps`}
+                className="mt-2 inline-flex items-center text-sm text-[#D4A843]/70 transition-colors hover:text-[#D4A843]"
+              >
+                {messages.nextStepsLink} →
+              </Link>
+            </div>
+          )}
         </m.div>
       )}
     </>
