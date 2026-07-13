@@ -106,7 +106,9 @@ export function BlogPostPage({ slug, content, datePublished, locale, messages, s
         />
 
         <ShareButtons
-          messages={shareMessages}
+          /* Share text is the post's own hook — the generic "take this test"
+             message would promise the test while linking the article. */
+          messages={{ ...shareMessages, whatsappMessage: content.hook, telegramMessage: content.hook }}
           locale={locale}
           sharePath={`/${locale}/blog/${slug}`}
           utmCampaign={slug}
