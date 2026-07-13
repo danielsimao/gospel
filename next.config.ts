@@ -13,9 +13,11 @@ const nextConfig: NextConfig = {
     // Compile-time kill switches for Sentry's tracing/debug code paths.
     // Sentry's own excludeTracing define is webpack-only; this is the
     // Turbopack-compatible equivalent (see @sentry/nextjs config/webpack.js).
+    // Values are JSON.stringify'd into the bundle; empty string is the
+    // falsy literal ("false" would be a truthy string and defeat the switch).
     define: {
-      __SENTRY_TRACING__: "false",
-      __SENTRY_DEBUG__: "false",
+      __SENTRY_TRACING__: "",
+      __SENTRY_DEBUG__: "",
     },
   },
   async headers() {
