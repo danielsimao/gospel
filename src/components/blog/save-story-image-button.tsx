@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { Download } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Download, Copy } from "lucide-react";
+import { trackStoryLinkCopied } from "@/lib/blog-analytics";
 import type { Locale } from "@/lib/i18n";
 
 interface SaveStoryImageButtonProps {
@@ -9,6 +10,8 @@ interface SaveStoryImageButtonProps {
   slug: string;
   label: string;
   hint: string;
+  copyLabel: string;
+  copiedLabel: string;
 }
 
 /**
@@ -16,8 +19,9 @@ interface SaveStoryImageButtonProps {
  * navigator.share() during the tap's transient activation, so the file is
  * pre-fetched on mount and share() is called synchronously in the handler.
  */
-export function SaveStoryImageButton({ locale, slug, label, hint }: SaveStoryImageButtonProps) {
+export function SaveStoryImageButton({ locale, slug, label, hint, copyLabel, copiedLabel }: SaveStoryImageButtonProps) {
   const fileRef = useRef<File | null>(null);
+  const [copied, setCopied] = useState(false);
   const storyUrl = `/${locale}/blog/${slug}/story`;
 
   useEffect(() => {
@@ -64,6 +68,18 @@ export function SaveStoryImageButton({ locale, slug, label, hint }: SaveStoryIma
     downloadFile(file);
   };
 
+  const copyStickerLink = async () => {
+    const url = `${window.location.origin}/${locale}/blog/${slug}?utm_source=ig_story&utm_medium=social&utm_campaign=${encodeURIComponent(slug)}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      trackStoryLinkCopied(slug);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      // Clipboard unavailable (non-secure context) — nothing to do
+    }
+  };
+
   return (
     <div>
       <button
@@ -75,6 +91,14 @@ export function SaveStoryImageButton({ locale, slug, label, hint }: SaveStoryIma
         {label}
       </button>
       <p className="mt-3 text-xs text-white/40">{hint}</p>
+      <button
+        type="button"
+        onClick={copyStickerLink}
+        className="group mt-4 inline-flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-4 py-2 font-mono text-[11px] uppercase tracking-[2px] text-white/60 transition-all hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03] hover:text-[#D4A843]/70"
+      >
+        <Copy className="size-3.5" />
+        {copied ? copiedLabel : copyLabel}
+      </button>
     </div>
   );
 }

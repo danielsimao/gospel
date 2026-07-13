@@ -71,6 +71,11 @@ export default async function BlogPostRoute({ params }: Props) {
     throw new Error(`[blog] Missing "blog" key in ${locale}.json`);
   }
 
+  const share = messages.default.share;
+  if (!share) {
+    throw new Error(`[share] Missing "share" key in ${locale}.json`);
+  }
+
   const topBarBrand = messages.default.topBar?.brand ?? "Gospel";
   const webPageSchema = buildWebPageSchema({
     locale,
@@ -108,6 +113,7 @@ export default async function BlogPostRoute({ params }: Props) {
         datePublished={post.datePublished}
         locale={locale as Locale}
         messages={blog}
+        shareMessages={share}
       />
     </>
   );

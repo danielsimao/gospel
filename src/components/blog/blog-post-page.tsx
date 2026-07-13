@@ -5,6 +5,7 @@ import { SaveStoryImageButton } from "./save-story-image-button";
 import { PersonalTurn } from "./personal-turn";
 import { BlogViewTracker } from "./blog-view-tracker";
 import { BlogStickyBar } from "./blog-sticky-bar";
+import { ShareButtons } from "@/components/share-buttons";
 import type { BlogPostContent } from "@/content/blog/types";
 import type { Locale } from "@/lib/i18n";
 
@@ -12,6 +13,8 @@ interface BlogChromeMessages {
   label: string;
   saveStoryButton: string;
   saveStoryHint: string;
+  copyLinkButton: string;
+  copyLinkCopied: string;
   referencesLabel: string;
   ctaButton: string;
   readingCtaButton: string;
@@ -25,9 +28,15 @@ interface BlogPostPageProps {
   datePublished: string;
   locale: Locale;
   messages: BlogChromeMessages;
+  shareMessages: {
+    prompt: string;
+    whatsappMessage: string;
+    telegramMessage: string;
+    linkCopied: string;
+  };
 }
 
-export function BlogPostPage({ slug, content, datePublished, locale, messages }: BlogPostPageProps) {
+export function BlogPostPage({ slug, content, datePublished, locale, messages, shareMessages }: BlogPostPageProps) {
   const formattedDate = new Intl.DateTimeFormat(locale, { dateStyle: "long" }).format(
     new Date(`${datePublished}T00:00:00Z`),
   );
@@ -96,6 +105,13 @@ export function BlogPostPage({ slug, content, datePublished, locale, messages }:
           readingCtaButton={messages.readingCtaButton}
         />
 
+        <ShareButtons
+          messages={shareMessages}
+          locale={locale}
+          sharePath={`/${locale}/blog/${slug}`}
+          utmCampaign={slug}
+        />
+
         {content.sources && content.sources.length > 0 && (
           <div className="mt-14 border-t border-white/[0.06] pt-6">
             <h3 className="font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
@@ -124,6 +140,8 @@ export function BlogPostPage({ slug, content, datePublished, locale, messages }:
             slug={slug}
             label={messages.saveStoryButton}
             hint={messages.saveStoryHint}
+            copyLabel={messages.copyLinkButton}
+            copiedLabel={messages.copyLinkCopied}
           />
         </div>
       </article>

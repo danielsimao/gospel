@@ -1105,6 +1105,8 @@
     "readingCtaButton": "Continue the reading plan",
     "stickyQuestion": "Are you a good person?",
     "stickyCta": "Find out · 2 min",
+    "copyLinkButton": "Copy link for the sticker",
+    "copyLinkCopied": "Link copied — paste it into your story's link sticker.",
     "emptyState": "No posts yet."
   },
   "footer": {

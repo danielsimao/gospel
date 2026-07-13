@@ -1105,6 +1105,8 @@
     "readingCtaButton": "Continua o plano de leitura",
     "stickyQuestion": "Tu és uma boa pessoa?",
     "stickyCta": "Descobre · 2 min",
+    "copyLinkButton": "Copiar link para o autocolante",
+    "copyLinkCopied": "Link copiado — cola-o no autocolante de link da tua história.",
     "emptyState": "Ainda não há publicações."
   },
   "footer": {

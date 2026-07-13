@@ -15,13 +15,15 @@ interface ShareButtonsProps {
   locale: Locale;
   /** Override the shared URL path. Defaults to `/${locale}`. */
   sharePath?: string;
+  /** When set, share URLs carry utm_source/<channel>, utm_medium=share, utm_campaign. */
+  utmCampaign?: string;
 }
 
 function subscribeToNavigator() {
   return () => {};
 }
 
-export function ShareButtons({ messages, locale, sharePath }: ShareButtonsProps) {
+export function ShareButtons({ messages, locale, sharePath, utmCampaign }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const canNativeShare = useSyncExternalStore(
     subscribeToNavigator,
@@ -29,24 +31,22 @@ export function ShareButtons({ messages, locale, sharePath }: ShareButtonsProps)
     () => false,
   );
 
-  function getShareUrl() {
+  function getShareUrl(channel: "whatsapp" | "telegram" | "copy" | "native") {
     const path = sharePath ?? `/${locale}`;
-    if (typeof window === "undefined") {
-      return path;
-    }
-
-    return `${window.location.origin}${path}`;
+    const base = typeof window === "undefined" ? path : `${window.location.origin}${path}`;
+    if (!utmCampaign) return base;
+    return `${base}?utm_source=${channel}&utm_medium=share&utm_campaign=${encodeURIComponent(utmCampaign)}`;
   }
 
   function shareWhatsApp() {
     trackShared("whatsapp", locale);
-    const text = encodeURIComponent(`${messages.whatsappMessage} ${getShareUrl()}`);
+    const text = encodeURIComponent(`${messages.whatsappMessage} ${getShareUrl("whatsapp")}`);
     window.open(`https://wa.me/?text=${text}`, "_blank");
   }
 
   function shareTelegram() {
     trackShared("telegram", locale);
-    const url = encodeURIComponent(getShareUrl());
+    const url = encodeURIComponent(getShareUrl("telegram"));
     const text = encodeURIComponent(messages.telegramMessage);
     window.open(
       `https://t.me/share/url?url=${url}&text=${text}`,
@@ -56,7 +56,7 @@ export function ShareButtons({ messages, locale, sharePath }: ShareButtonsProps)
 
   async function copyLink() {
     try {
-      await navigator.clipboard.writeText(getShareUrl());
+      await navigator.clipboard.writeText(getShareUrl("copy"));
       trackShared("copy", locale);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -68,7 +68,7 @@ export function ShareButtons({ messages, locale, sharePath }: ShareButtonsProps)
   async function nativeShare() {
     if (!navigator.share) return;
     try {
-      await navigator.share({ url: getShareUrl(), text: messages.whatsappMessage });
+      await navigator.share({ url: getShareUrl("native"), text: messages.whatsappMessage });
       trackShared("native", locale);
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") return;
