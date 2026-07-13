@@ -319,6 +319,7 @@
     "completedCtaButton": "Start the reading plan",
     "nextLabel": "Next",
     "prevLabel": "Previous",
+    "relatedLabel": "Keep digging",
     "resetLabel": "Reset",
     "resetConfirmTitle": "Reset your learning progress?",
     "resetConfirmBody": "This will clear all topic completions and quiz answers. You can start exploring again from the beginning.",

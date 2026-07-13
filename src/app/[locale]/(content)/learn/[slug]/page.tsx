@@ -10,6 +10,7 @@ import {
   getLocaleUrl,
 } from "@/lib/seo";
 import { TOPIC_DATES } from "@/lib/topic-dates";
+import { RELATED_TOPICS } from "@/lib/related-topics";
 import type { Metadata } from "next";
 
 type Props = {
@@ -32,6 +33,7 @@ interface LearnData {
   completedCtaButton?: string;
   allTopicsLabel?: string;
   nextLabel: string;
+  relatedLabel: string;
   prevLabel: string;
   topics: TopicData[];
 }
@@ -94,6 +96,11 @@ export default async function LearnTopicPage({ params }: Props) {
   const prevTopic = { slug: data.topics[prevIndex].slug, title: data.topics[prevIndex].title };
   const nextTopic = { slug: data.topics[nextIndex].slug, title: data.topics[nextIndex].title };
 
+  const relatedTopics = (RELATED_TOPICS[slug] ?? [])
+    .map((relatedSlug) => data.topics.find((t) => t.slug === relatedSlug))
+    .filter((t): t is TopicData => Boolean(t))
+    .map((t) => ({ slug: t.slug, title: t.title, subtitle: t.subtitle }));
+
   const messages = await import(`@/messages/${locale}.json`);
   const brand = messages.default.topBar?.brand ?? "Gospel";
   const dates = TOPIC_DATES[slug] ?? { published: "2026-07-12", modified: "2026-07-12" };
@@ -129,6 +136,8 @@ export default async function LearnTopicPage({ params }: Props) {
         nextLabel={data.nextLabel}
         prevTopic={prevTopic}
         nextTopic={nextTopic}
+        relatedTopics={relatedTopics}
+        relatedLabel={data.relatedLabel}
       />
     </>
   );
