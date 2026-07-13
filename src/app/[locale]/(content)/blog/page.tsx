@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const blog = messages.default.blog;
   if (!blog) return {};
 
-  const brand = messages.default.meta.title.split(" | ")[0];
+  const brand = messages.default.topBar.brand;
 
   return buildPageMetadata({
     locale,
@@ -48,7 +48,7 @@ export default async function BlogIndexPage({ params }: Props) {
     throw new Error(`[blog] Missing "blog" key in ${locale}.json`);
   }
 
-  const brand = messages.default.meta.title.split(" | ")[0];
+  const brand = messages.default.topBar.brand;
   const topBarBrand = messages.default.topBar?.brand ?? "Gospel";
   const posts = getPublishedPosts();
   const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: "long" });
