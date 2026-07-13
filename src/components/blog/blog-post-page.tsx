@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { PageShell } from "@/components/shared/page-shell";
-import { Button, ButtonArrow } from "@/components/ui/button";
 import { SaveStoryImageButton } from "./save-story-image-button";
+import { PersonalTurn } from "./personal-turn";
 import { BlogViewTracker } from "./blog-view-tracker";
 import type { BlogPostContent } from "@/content/blog/types";
 import type { Locale } from "@/lib/i18n";
@@ -12,8 +12,8 @@ interface BlogChromeMessages {
   saveStoryButton: string;
   saveStoryHint: string;
   referencesLabel: string;
-  ctaHeading: string;
   ctaButton: string;
+  readingCtaButton: string;
 }
 
 interface BlogPostPageProps {
@@ -84,6 +84,15 @@ export function BlogPostPage({ slug, content, datePublished, locale, messages }:
           ))}
         </div>
 
+        <PersonalTurn
+          slug={slug}
+          locale={locale}
+          setup={content.personalTurn.setup}
+          question={content.personalTurn.question}
+          ctaButton={messages.ctaButton}
+          readingCtaButton={messages.readingCtaButton}
+        />
+
         {content.sources && content.sources.length > 0 && (
           <div className="mt-14 border-t border-white/[0.06] pt-6">
             <h3 className="font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
@@ -113,16 +122,6 @@ export function BlogPostPage({ slug, content, datePublished, locale, messages }:
             label={messages.saveStoryButton}
             hint={messages.saveStoryHint}
           />
-        </div>
-
-        <div className="mt-12 text-center">
-          <p className="text-sm text-white/60">{messages.ctaHeading}</p>
-          <Link href={`/${locale}/test`} className="mt-3 inline-block">
-            <Button variant="gold" mist>
-              {messages.ctaButton}
-              <ButtonArrow />
-            </Button>
-          </Link>
         </div>
       </article>
     </PageShell>

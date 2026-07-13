@@ -37,6 +37,11 @@ const POSTS: BlogPost[] = [
             scriptureRef: "John 11:25–26",
           },
         ],
+        personalTurn: {
+          setup:
+            "Bryan Johnson will find out one day whether the protocol worked. So will you. The difference is that he is at least preparing for the exam.",
+          question: "If it happened tonight — would you be ready?",
+        },
         sources: [
           {
             label: "Bryan Johnson — Wikipedia",

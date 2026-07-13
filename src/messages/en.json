@@ -1101,8 +1101,8 @@
     "saveStoryButton": "Save story image",
     "saveStoryHint": "Post it to your Instagram story, then add a link sticker pointing to this page.",
     "referencesLabel": "References",
-    "ctaHeading": "If you died today — are you ready?",
     "ctaButton": "Take the test",
+    "readingCtaButton": "Continue the reading plan",
     "emptyState": "No posts yet."
   },
   "footer": {

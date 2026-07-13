@@ -11,6 +11,16 @@ export interface BlogPostContent {
     scripture?: string;
     scriptureRef?: string;
   }>;
+  /**
+   * The Living Waters pivot that ends every post: the story was about them —
+   * this is about you. Required: a post without the turn is commentary.
+   */
+  personalTurn: {
+    /** 1–2 sentences that swing the story onto the reader. */
+    setup: string;
+    /** The unresolved personal question, rendered large. Must end in "?". */
+    question: string;
+  };
   sources?: Array<{ label: string; url: string }>;
 }
 

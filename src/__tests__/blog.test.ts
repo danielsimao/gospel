@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import en from "@/messages/en.json";
 import pt from "@/messages/pt.json";
-import { getPublishedPosts, getPostLocales } from "@/content/blog/posts";
+import { getPublishedPosts, getPostLocales, getPostContent } from "@/content/blog/posts";
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -62,5 +62,16 @@ describe("blog registry", () => {
     const dates = posts.map((post) => post.datePublished);
     const sorted = [...dates].sort((a, b) => b.localeCompare(a));
     expect(dates).toEqual(sorted);
+  });
+
+  it("every locale's content has a personal turn with setup and question", () => {
+    for (const post of getPublishedPosts()) {
+      for (const locale of getPostLocales(post)) {
+        const content = getPostContent(post, locale)!;
+        expect(content.personalTurn.setup.length).toBeGreaterThan(20);
+        expect(content.personalTurn.question.length).toBeGreaterThan(10);
+        expect(content.personalTurn.question).toMatch(/\?/);
+      }
+    }
   });
 });
