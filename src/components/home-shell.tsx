@@ -8,6 +8,7 @@ import { ChevronDown } from "lucide-react";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { RotatingFacts } from "@/components/eternity/rotating-facts";
 import { JourneyTracker } from "@/components/journey-tracker";
+import { LatestPostCard } from "@/components/home/latest-post-card";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { hasAnsweredConsent, subscribeToConsentAnswered } from "@/lib/consent";
 import { useJourney } from "@/lib/use-journey";
@@ -45,6 +46,13 @@ interface HomeShellProps {
   share: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
   locale: Locale;
   topicSlugs: string[];
+  latestPost?: {
+    slug: string;
+    title: string;
+    hook: string;
+    datePublished: string;
+    localeAvailable: boolean;
+  } | null;
 }
 
 const RATE_CARDS = [
@@ -54,7 +62,7 @@ const RATE_CARDS = [
   { value: "155,000", key: "perDay" },
 ] as const;
 
-export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellProps) {
+export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }: HomeShellProps) {
   const journey = useJourney(topicSlugs);
   const [scrolled, setScrolled] = useState(false);
   const [isScrollable, setIsScrollable] = useState(false);
@@ -405,6 +413,10 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
                 <Button variant="text">{home.secondaryLink}</Button>
               </Link>
             </>
+          )}
+
+          {latestPost && (
+            <LatestPostCard locale={locale} eyebrow={home.blogCard.eyebrow} post={latestPost} />
           )}
         </div>
       </section>

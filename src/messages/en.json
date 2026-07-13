@@ -917,6 +917,7 @@
     "mortalityStat": "10 / 10 people will die",
     "ctaButton": "Take the test",
     "secondaryLink": "Not ready? Learn more",
+    "blogCard": { "eyebrow": "From the blog" },
     "facts": [
       "Last year, 56 million people died worldwide.",
       "Heart disease kills 17.9 million people every year.",

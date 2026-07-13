@@ -25,6 +25,7 @@ export default async function ContentLayout({ params, children }: Props) {
       <TopBar
         locale={locale as Locale}
         learnLabel={data.learn?.label ?? "Learn"}
+        blogLabel={data.blog?.label ?? "Blog"}
         messages={data.topBar}
       />
       {children}

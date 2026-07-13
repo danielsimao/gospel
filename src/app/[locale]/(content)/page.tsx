@@ -3,6 +3,7 @@ import { isValidLocale, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
 import { HomeShell } from "@/components/home-shell";
 import { StructuredData } from "@/components/structured-data";
 import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
+import { getPublishedPosts, getPostContent, getPostLocales } from "@/content/blog/posts";
 import type { HomeMessages } from "@/lib/types";
 import type { Metadata } from "next";
 
@@ -76,6 +77,22 @@ export default async function HomePage({ params }: Props) {
     description: data.meta.description,
   });
 
+  const posts = getPublishedPosts();
+  const latest = posts[0] ?? null;
+  const latestContent = latest
+    ? (getPostContent(latest, locale as Locale) ?? getPostContent(latest, "en"))
+    : null;
+  const latestPost =
+    latest && latestContent
+      ? {
+          slug: latest.slug,
+          title: latestContent.title,
+          hook: latestContent.hook,
+          datePublished: latest.datePublished,
+          localeAvailable: getPostLocales(latest).includes(locale as Locale),
+        }
+      : null;
+
   return (
     <>
       <StructuredData data={webPageSchema} />
@@ -85,6 +102,7 @@ export default async function HomePage({ params }: Props) {
         share={data.share}
         locale={locale as Locale}
         topicSlugs={data.topicSlugs}
+        latestPost={latestPost}
       />
     </>
   );

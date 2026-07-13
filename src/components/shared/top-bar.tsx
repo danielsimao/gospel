@@ -6,6 +6,7 @@ import {
   trackTopBarLearnClicked,
   trackTopBarTestClicked,
   trackTopBarReadingClicked,
+  trackTopBarBlogClicked,
 } from "@/lib/eternity-analytics";
 import type { Locale } from "@/lib/i18n";
 
@@ -18,10 +19,11 @@ interface TopBarMessages {
 interface TopBarProps {
   locale: Locale;
   learnLabel: string;
+  blogLabel: string;
   messages: TopBarMessages;
 }
 
-export function TopBar({ locale, learnLabel, messages }: TopBarProps) {
+export function TopBar({ locale, learnLabel, blogLabel, messages }: TopBarProps) {
   const journey = useJourney();
   // Reading plan is discipleship — offer it only after a response to grace
   // (committed/thinking). Undecided users saw only the verdict; dismissed
@@ -59,6 +61,15 @@ export function TopBar({ locale, learnLabel, messages }: TopBarProps) {
             className="text-white/50 transition-colors hover:text-white/70"
           >
             {messages.readingLabel}
+          </Link>
+        )}
+        {(journey.stage === "committed" || journey.stage === "thinking") && (
+          <Link
+            href={`/${locale}/blog`}
+            onClick={() => trackTopBarBlogClicked()}
+            className="text-white/50 transition-colors hover:text-white/70"
+          >
+            {blogLabel}
           </Link>
         )}
         <Link

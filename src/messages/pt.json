@@ -917,6 +917,7 @@
     "mortalityStat": "10 / 10 pessoas vão morrer",
     "ctaButton": "Faz o teste",
     "secondaryLink": "Ainda não? Sabe mais",
+    "blogCard": { "eyebrow": "Do blog" },
     "facts": [
       "No ano passado, 56 milhões de pessoas morreram em todo o mundo.",
       "As doenças cardíacas matam 17,9 milhões de pessoas por ano.",

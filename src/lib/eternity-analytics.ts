@@ -42,3 +42,11 @@ export function trackGraceRevealed() {
 export function trackGraceBeatRevealed(beatIndex: number) {
   safeCapture("grace_beat_revealed", { beat_index: beatIndex });
 }
+
+export function trackHomeBlogCardClicked(slug: string) {
+  safeCapture("home_blog_card_clicked", { slug });
+}
+
+export function trackTopBarBlogClicked() {
+  safeCapture("top_bar_blog_clicked");
+}

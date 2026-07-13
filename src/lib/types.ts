@@ -123,6 +123,7 @@ export interface HomeMessages {
   mortalityStat: string;
   ctaButton: string;
   secondaryLink: string;
+  blogCard: { eyebrow: string };
   facts: string[];
   journey: JourneyMessages;
   journeyStages: JourneyStagesMessages;
