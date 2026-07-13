@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { SectionQuiz } from "./section-quiz";
 import { markTopicCompleted } from "@/lib/learn-progress-storage";
 import { trackTopicSectionReached } from "@/lib/learn-analytics";
@@ -54,7 +54,7 @@ export function TopicSection({ heading, body, scripture, scriptureRef, index, sl
 
   return (
     <div ref={ref} className="mt-12 first:mt-0">
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 16 }}
         animate={revealed ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.8, ease: EASE_OUT_STRONG }}
@@ -89,7 +89,7 @@ export function TopicSection({ heading, body, scripture, scriptureRef, index, sl
             {scriptureRef}
           </p>
         </blockquote>
-      </motion.div>
+      </m.div>
     </div>
   );
 }

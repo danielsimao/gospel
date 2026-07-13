@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { TopicSection } from "./topic-section";
@@ -53,7 +53,7 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
   return (
     <PageShell>
       <article>
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: EASE_OUT_STRONG }}
@@ -72,7 +72,7 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
             {topic.title}
           </h1>
           <p className="mt-3 text-sm text-white/60">{topic.subtitle}</p>
-        </motion.div>
+        </m.div>
 
         <div className="mt-12">
           {topic.sections.map((section, i) => (

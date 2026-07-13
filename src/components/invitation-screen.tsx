@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Link from "next/link";
 import { ShareButtons } from "@/components/share-buttons";
 import { Button, ButtonArrow } from "@/components/ui/button";
@@ -55,7 +55,7 @@ export function InvitationScreen({
       />
       <div className="relative max-w-lg w-full text-center">
         {/* Eyebrow — red meets gold at the crossroads */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
@@ -66,10 +66,10 @@ export function InvitationScreen({
             {invitation.eyebrow}
           </span>
           <span className="h-px w-6 bg-[#D4A843]/40" />
-        </motion.div>
+        </m.div>
 
         {/* Heading — the question yields once answered */}
-        <motion.h2
+        <m.h2
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: invitationResponse ? 0.4 : 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -80,11 +80,11 @@ export function InvitationScreen({
           }
         >
           {invitation.heading}
-        </motion.h2>
+        </m.h2>
 
         {/* Response buttons — no text block, straight to the decision */}
         {!invitationResponse && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
@@ -99,12 +99,12 @@ export function InvitationScreen({
             <Button variant="text" onClick={() => handleResponse("dismissed")}>
               {invitation.responses.dismissed}
             </Button>
-          </motion.div>
+          </m.div>
         )}
 
         {/* Post-response */}
         {invitationResponse && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -161,7 +161,7 @@ export function InvitationScreen({
             )}
 
             <ShareButtons messages={shareMessages || share} locale={locale} />
-          </motion.div>
+          </m.div>
         )}
       </div>
     </div>

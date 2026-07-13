@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback, createRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { useGameDispatch } from "@/components/game-provider";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackGraceViewed } from "@/lib/analytics";
@@ -94,7 +94,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-20 text-center sm:px-6 sm:py-24">
         <div className="max-w-lg w-full">
           {/* Label */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
@@ -105,10 +105,10 @@ export function GraceScreen({ messages }: GraceScreenProps) {
               {messages.label}
             </span>
             <span className="h-px w-6 bg-[#D4A843]/40" />
-          </motion.div>
+          </m.div>
 
           {/* Beats heading */}
-          <motion.h2
+          <m.h2
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.5, ease: EASE_OUT_STRONG }}
@@ -116,7 +116,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
             style={{ textShadow: "0 0 60px rgba(212,168,67,0.2)" }}
           >
             {messages.beatsHeading}
-          </motion.h2>
+          </m.h2>
 
           {/* Beats */}
           <div className="mt-10 text-left">
@@ -128,7 +128,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
               if (!isRevealed) return null;
 
               return (
-                <motion.div
+                <m.div
                   key={i}
                   ref={beatRefs[i]}
                   initial={{ opacity: 0, y: 8 }}
@@ -152,7 +152,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
                   <p className="mt-2 text-[13px] leading-relaxed text-white/60 sm:text-sm">
                     {beat.subtitle}
                   </p>
-                </motion.div>
+                </m.div>
               );
             })}
           </div>
@@ -160,7 +160,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
           {/* Tap to continue pill — fades out when the last beat is revealed */}
           <AnimatePresence>
             {revealedCount > 0 && !allBeatsRevealed && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, transition: { duration: 0.15, delay: 0 } }}
@@ -173,19 +173,19 @@ export function GraceScreen({ messages }: GraceScreenProps) {
                   </span>
                   <ButtonArrow direction="down" />
                 </Button>
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
 
           {/* Scripture + Continue — after all beats */}
           <AnimatePresence>
             {allBeatsRevealed && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                <motion.blockquote
+                <m.blockquote
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.6 }}
@@ -197,9 +197,9 @@ export function GraceScreen({ messages }: GraceScreenProps) {
                   <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-[#D4A843]/70">
                     {messages.scriptureRef}
                   </p>
-                </motion.blockquote>
+                </m.blockquote>
 
-                <motion.div
+                <m.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.8, delay: 1.2 }}
@@ -209,8 +209,8 @@ export function GraceScreen({ messages }: GraceScreenProps) {
                     {messages.continueLabel}
                     <ButtonArrow />
                   </Button>
-                </motion.div>
-              </motion.div>
+                </m.div>
+              </m.div>
             )}
           </AnimatePresence>
         </div>

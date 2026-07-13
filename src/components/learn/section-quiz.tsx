@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { readQuizAnswer, writeQuizAnswer } from "@/lib/learn-quiz-storage";
 
 interface SectionQuizProps {
@@ -94,7 +94,7 @@ export function SectionQuiz({ quiz, topicSlug, sectionIndex }: SectionQuizProps)
       {/* Options */}
       <div className="mt-4 flex flex-col gap-2">
         {quiz.options.map((option, i) => (
-          <motion.div
+          <m.div
             key={i}
             animate={{ opacity: answered && i !== quiz.correct && i !== selected ? 0.5 : 1 }}
             transition={{ duration: 0.3 }}
@@ -104,13 +104,13 @@ export function SectionQuiz({ quiz, topicSlug, sectionIndex }: SectionQuizProps)
               state={getState(i)}
               onClick={() => handleSelect(i)}
             />
-          </motion.div>
+          </m.div>
         ))}
       </div>
 
       {/* Reveal */}
       {answered && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.15 }}
@@ -119,7 +119,7 @@ export function SectionQuiz({ quiz, topicSlug, sectionIndex }: SectionQuizProps)
           <p className="text-sm leading-relaxed text-white/55">
             {quiz.reveal}
           </p>
-        </motion.div>
+        </m.div>
       )}
     </div>
   );

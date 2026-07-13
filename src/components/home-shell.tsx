@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { RotatingFacts } from "@/components/eternity/rotating-facts";
@@ -114,22 +114,22 @@ export function HomeShell({ hero, home, share, locale, topicSlugs }: HomeShellPr
   return (
     <div className="min-h-dvh overflow-x-hidden bg-[#060404]">
       {/* Scroll hint — shown to new visitors at the top, once consent is answered and the page overflows the viewport */}
-      <motion.div
+      <m.div
         aria-hidden="true"
         className="pointer-events-none fixed inset-x-0 bottom-6 z-30 flex justify-center"
         initial={false}
         animate={{ opacity: showScrollHint ? 1 : 0 }}
         transition={{ duration: 0.5, delay: showScrollHint ? 1.2 : 0 }}
       >
-        <motion.div
+        <m.div
           className="flex flex-col items-center"
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
         >
           <ChevronDown className="size-5 text-red-400/70" strokeWidth={2.5} />
           <ChevronDown className="-mt-3 size-5 text-red-400/40" strokeWidth={2.5} />
-        </motion.div>
-      </motion.div>
+        </m.div>
+      </m.div>
 
       <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-center px-4 pt-8 pb-12 sm:px-6 sm:pt-10 sm:pb-16">
         {/* Radial vignette */}

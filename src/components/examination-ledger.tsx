@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { TOTAL_QUESTIONS } from "@/lib/questions";
 import type { Answer, TestMessages } from "@/lib/types";
 
@@ -52,7 +52,7 @@ export function ExaminationLedger({
           if (isActive) {
             return (
               <div key={i} className="relative h-[2px] flex-1 rounded-full bg-red-500">
-                <motion.div
+                <m.div
                   aria-hidden="true"
                   className="absolute inset-0 rounded-full"
                   style={{ boxShadow: "0 0 12px rgba(239,68,68,0.7)" }}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useCallback, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { useGameDispatch, useGameState } from "@/components/game-provider";
 import { FollowUp } from "@/components/follow-up";
 import { ExaminationLedger } from "@/components/examination-ledger";
@@ -110,7 +110,7 @@ export function QuestionCard({
     <div className="grid flex-1 grid-rows-[auto_1fr_auto] px-4 py-6 sm:px-6">
       {/* Row 1: Examination ledger — pinned to top; enters just behind the
           card on phase entry (mounts once, not per question) */}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: -4 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.05, ease: EASE_OUT_STRONG }}
@@ -120,12 +120,12 @@ export function QuestionCard({
           answers={state.answers}
           testMessages={testMessages}
         />
-      </motion.div>
+      </m.div>
 
       {/* Row 2: Card area + verdict shortcut — pinned to a stable top offset */}
       <div className="flex w-full max-w-xs flex-col items-center self-start justify-self-center pt-[7vh] sm:max-w-sm sm:pt-[9vh]">
           <AnimatePresence mode="popLayout">
-            <motion.div
+            <m.div
               key={questionIndex}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -155,7 +155,7 @@ export function QuestionCard({
                 {/* Buttons */}
                 <AnimatePresence mode="wait">
                   {!answered ? (
-                    <motion.div
+                    <m.div
                       key="buttons"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -169,9 +169,9 @@ export function QuestionCard({
                       <Button variant="ghost" size="sm" onClick={() => handleAnswer("justify")} className="flex-1">
                         {question.justifyLabel}
                       </Button>
-                    </motion.div>
+                    </m.div>
                   ) : (
-                    <motion.div
+                    <m.div
                       key="response"
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -188,14 +188,14 @@ export function QuestionCard({
                             </p>
                           </div>
                           {/* Honest follow-up text */}
-                          <motion.p
+                          <m.p
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.4, delay: 0.3 }}
                             className="mt-2.5 text-[13px] italic leading-relaxed text-white/60"
                           >
                             {question.honestFollowUp}
-                          </motion.p>
+                          </m.p>
                         </>
                       ) : (
                         <>
@@ -210,7 +210,7 @@ export function QuestionCard({
                       )}
 
                       {/* Action button */}
-                      <motion.div
+                      <m.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{
@@ -231,16 +231,16 @@ export function QuestionCard({
                             : testMessages.nextLabel}
                           <ButtonArrow />
                         </Button>
-                      </motion.div>
-                    </motion.div>
+                      </m.div>
+                    </m.div>
                   )}
                 </AnimatePresence>
               </div>
-            </motion.div>
+            </m.div>
           </AnimatePresence>
           <div className="mt-4 flex h-9 items-center justify-center">
             {canShowVerdictShortcut && (
-              <motion.button
+              <m.button
                 type="button"
                 onClick={() => dispatch({ type: "SHOW_VERDICT" })}
                 initial={{ opacity: 0 }}
@@ -259,7 +259,7 @@ export function QuestionCard({
                 >
                   →
                 </span>
-              </motion.button>
+              </m.button>
             )}
           </div>
       </div>
@@ -267,7 +267,7 @@ export function QuestionCard({
       {/* Row 3: Answered chips — pinned to bottom */}
       <div className="flex min-h-[76px] flex-col items-center justify-start gap-3">
         {state.answers.length > 0 && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="mt-5 flex w-full max-w-xs flex-wrap justify-center gap-1.5 sm:max-w-sm"
@@ -277,7 +277,7 @@ export function QuestionCard({
               if (!label) return null;
               const isJustified = answer.answer === "justify";
               return (
-                <motion.div
+                <m.div
                   key={i}
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: isJustified ? 0.5 : 1, scale: 1 }}
@@ -294,10 +294,10 @@ export function QuestionCard({
                   <span className="font-mono text-[10px] lowercase italic text-red-400/85">
                     {label}
                   </span>
-                </motion.div>
+                </m.div>
               );
             })}
-          </motion.div>
+          </m.div>
         )}
       </div>
     </div>

@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { MotionConfig } from "framer-motion";
+import { LazyMotion, MotionConfig, domAnimation } from "framer-motion";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getConsent } from "@/lib/consent";
 import { initPostHog } from "@/lib/posthog";
@@ -52,12 +52,14 @@ function PostHogPageviewTracker() {
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <MotionConfig reducedMotion="user">
-      <Suspense fallback={null}>
-        <PostHogPageviewTracker />
-      </Suspense>
-      <SpeedInsights />
-      {children}
-    </MotionConfig>
+    <LazyMotion features={domAnimation} strict>
+      <MotionConfig reducedMotion="user">
+        <Suspense fallback={null}>
+          <PostHogPageviewTracker />
+        </Suspense>
+        <SpeedInsights />
+        {children}
+      </MotionConfig>
+    </LazyMotion>
   );
 }

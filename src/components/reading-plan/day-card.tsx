@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EASE_OUT_STRONG } from "@/lib/motion";
@@ -50,7 +50,7 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
   }, [isCurrent]);
 
   return (
-    <motion.div
+    <m.div
       ref={cardRef}
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
@@ -78,28 +78,28 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
         </div>
         <div className="flex items-center gap-2">
           {isCompleted && (
-            <motion.span
+            <m.span
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.18, ease: EASE_OUT_STRONG }}
               className="font-mono text-[9px] uppercase tracking-[2px] text-[#D4A843]/70"
             >
               {completedLabel}
-            </motion.span>
+            </m.span>
           )}
-          <motion.div
+          <m.div
             animate={{ rotate: isExpanded ? 180 : 0 }}
             transition={{ duration: 0.3, ease: EASE_OUT_STRONG }}
           >
             <ChevronDown className="size-4 text-white/50" />
-          </motion.div>
+          </m.div>
         </div>
       </button>
 
       {/* Content — animated expand/collapse */}
       <AnimatePresence initial={false}>
         {isExpanded && (
-          <motion.div
+          <m.div
             key="content"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
@@ -143,9 +143,9 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
                 </div>
               )}
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </m.div>
   );
 }

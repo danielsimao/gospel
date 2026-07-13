@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 
 interface RotatingFactsProps {
@@ -24,7 +24,7 @@ export function RotatingFacts({ facts, interval = 6000 }: RotatingFactsProps) {
   return (
     <div className="relative h-10 overflow-hidden sm:h-12">
       <AnimatePresence>
-        <motion.p
+        <m.p
           key={index}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -33,7 +33,7 @@ export function RotatingFacts({ facts, interval = 6000 }: RotatingFactsProps) {
           className="absolute inset-0 flex items-center justify-center text-center text-xs tracking-wide text-white/60 sm:text-sm"
         >
           {facts[index]}
-        </motion.p>
+        </m.p>
       </AnimatePresence>
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 
@@ -43,7 +43,7 @@ export function ConfirmDialog({
   return (
     <AnimatePresence>
       {open && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -53,7 +53,7 @@ export function ConfirmDialog({
           aria-modal="true"
           aria-labelledby="confirm-dialog-title"
         >
-          <motion.button
+          <m.button
             type="button"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -63,7 +63,7 @@ export function ConfirmDialog({
             tabIndex={-1}
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
           />
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 8, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
@@ -90,8 +90,8 @@ export function ConfirmDialog({
                 {confirmLabel}
               </Button>
             </div>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

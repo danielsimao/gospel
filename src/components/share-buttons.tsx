@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { trackShared } from "@/lib/analytics";
 import type { Locale } from "@/lib/i18n";
 
@@ -135,13 +135,13 @@ export function ShareButtons({ messages, locale, sharePath }: ShareButtonsProps)
       </div>
 
       {copied && (
-        <motion.p
+        <m.p
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
           className="mt-3 text-sm text-white/60"
         >
           {messages.linkCopied}
-        </motion.p>
+        </m.p>
       )}
     </div>
   );

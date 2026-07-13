@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useGameDispatch } from "@/components/game-provider";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackGameStarted } from "@/lib/analytics";
@@ -20,14 +20,14 @@ export function Landing({ messages, locale }: LandingProps) {
   }
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
       className="flex flex-1 flex-col items-center justify-center px-6 text-center"
     >
       {/* Docket label */}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.05 }}
@@ -38,30 +38,30 @@ export function Landing({ messages, locale }: LandingProps) {
           {messages.label}
         </span>
         <span className="h-px w-6 bg-red-500/40" />
-      </motion.div>
+      </m.div>
 
       {/* Title */}
-      <motion.h1
+      <m.h1
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
         className="mt-5 max-w-md text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
       >
         {messages.title}
-      </motion.h1>
+      </m.h1>
 
       {/* Subtitle */}
-      <motion.p
+      <m.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.3 }}
         className="mt-4 max-w-sm text-xs italic text-white/60 sm:text-sm"
       >
         {messages.subtitle}
-      </motion.p>
+      </m.p>
 
       {/* CTA */}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.45 }}
@@ -71,7 +71,7 @@ export function Landing({ messages, locale }: LandingProps) {
           {messages.cta}
           <ButtonArrow />
         </Button>
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   );
 }

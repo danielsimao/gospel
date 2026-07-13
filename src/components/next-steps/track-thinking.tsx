@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Link from "next/link";
 import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
 import { EASE_OUT_STRONG } from "@/lib/motion";
@@ -28,18 +28,18 @@ interface TrackThinkingProps {
 export function TrackThinking({ messages, locale }: TrackThinkingProps) {
   return (
     <>
-      <motion.h1
+      <m.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: EASE_OUT_STRONG }}
         className="text-2xl font-bold tracking-tight text-white/90 sm:text-3xl"
       >
         {messages.acknowledgment}
-      </motion.h1>
+      </m.h1>
 
       <div className="mt-10 space-y-6">
         {messages.reflections.map((question, i) => (
-          <motion.div
+          <m.div
             key={i}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -47,11 +47,11 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
             className="border-l border-white/10 pl-5"
           >
             <p className="text-[15px] leading-relaxed text-white/60 sm:text-base italic">{question}</p>
-          </motion.div>
+          </m.div>
         ))}
       </div>
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.5 + messages.reflections.length * 0.3 }}
@@ -68,9 +68,9 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
         >
           {messages.readingLinkLabel} &rarr;
         </a>
-      </motion.div>
+      </m.div>
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
@@ -88,9 +88,9 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
         >
           {messages.learnLinkLabel} &rarr;
         </Link>
-      </motion.div>
+      </m.div>
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.5 + (messages.reflections.length + 2) * 0.3 }}
@@ -104,7 +104,7 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
         >
           {messages.readingPlanLabel} &rarr;
         </Link>
-      </motion.div>
+      </m.div>
     </>
   );
 }

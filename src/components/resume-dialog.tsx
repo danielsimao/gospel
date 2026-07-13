@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 
@@ -34,7 +34,7 @@ export function ResumeDialog({
   return (
     <AnimatePresence>
       {open && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -45,7 +45,7 @@ export function ResumeDialog({
           aria-labelledby="resume-dialog-title"
         >
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 8, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
@@ -72,8 +72,8 @@ export function ResumeDialog({
                 {startOverLabel}
               </Button>
             </div>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

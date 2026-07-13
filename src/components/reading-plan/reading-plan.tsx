@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Link from "next/link";
 import { DayCard } from "./day-card";
 import { Button, ButtonArrow } from "@/components/ui/button";
@@ -97,7 +97,7 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
 
   return (
     <>
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: EASE_OUT_STRONG }}
@@ -109,9 +109,9 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
           {messages.heading}
         </h1>
         <p className="mt-2 text-sm text-white/60">{messages.subtitle}</p>
-      </motion.div>
+      </m.div>
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.3 }}
@@ -134,7 +134,7 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
         <div className="flex gap-1.5">
           {messages.days.map((_, i) => (
             <div key={i} className="h-[2px] flex-1 overflow-hidden rounded-full bg-white/[0.04]">
-              <motion.div
+              <m.div
                 initial={false}
                 animate={{ width: progress[String(i + 1)] ? "100%" : "0%" }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
@@ -143,7 +143,7 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
             </div>
           ))}
         </div>
-      </motion.div>
+      </m.div>
 
       <div className="mt-8 space-y-4">
         {messages.days.map((day, i) => (
@@ -172,7 +172,7 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
       />
 
       {allComplete && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -196,7 +196,7 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
               {messages.deeperLink} →
             </Link>
           </div>
-        </motion.div>
+        </m.div>
       )}
     </>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import {
   hasAnsweredConsent,
   setConsent,
@@ -51,7 +51,7 @@ export function ConsentBanner() {
   return (
     <AnimatePresence>
       {visible && (
-        <motion.div
+        <m.div
           initial={{ y: "100%" }}
           animate={{ y: 0 }}
           exit={{ y: "100%", opacity: 0, transition: { duration: 0.15, ease: "easeIn" } }}
@@ -77,7 +77,7 @@ export function ConsentBanner() {
           </button>
         </div>
       </div>
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

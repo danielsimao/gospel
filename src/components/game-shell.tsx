@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import * as Sentry from "@sentry/nextjs";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { Landing } from "@/components/landing";
@@ -144,7 +144,7 @@ export function GameShell({ messages, locale }: GameShellProps) {
       {/* Content (offset below sticky bar) */}
       <div className="relative z-[1] flex flex-1 flex-col pt-10">
         <AnimatePresence mode="wait" initial={false}>
-          <motion.div
+          <m.div
             key={state.phase}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -188,7 +188,7 @@ export function GameShell({ messages, locale }: GameShellProps) {
                 }}
               />
             )}
-          </motion.div>
+          </m.div>
         </AnimatePresence>
       </div>
 

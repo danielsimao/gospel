@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import Link from "next/link";
 import { ShareButtons } from "@/components/share-buttons";
 import { Button, ButtonArrow } from "@/components/ui/button";
@@ -43,7 +43,7 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
 
   return (
     <>
-      <motion.h1
+      <m.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: EASE_OUT_STRONG }}
@@ -51,7 +51,7 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
         style={{ textShadow: "0 0 60px rgba(212,168,67,0.2)" }}
       >
         {messages.welcome}
-      </motion.h1>
+      </m.h1>
 
       <div className="mt-8 space-y-5">
         {paragraphs.map((p, i) => {
@@ -59,7 +59,7 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
           // treatment, matching the grace screen.
           const isScripture = /^["“]/.test(p);
           return isScripture ? (
-            <motion.blockquote
+            <m.blockquote
               key={i}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -67,9 +67,9 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
               className="border-l border-[#D4A843]/30 pl-4 text-left"
             >
               <p className="text-[15px] italic leading-[1.85] text-white/70 sm:text-base">{p}</p>
-            </motion.blockquote>
+            </m.blockquote>
           ) : (
-            <motion.p
+            <m.p
               key={i}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -77,14 +77,14 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
               className="text-[15px] leading-[1.85] text-white/60 sm:text-base"
             >
               {p}
-            </motion.p>
+            </m.p>
           );
         })}
       </div>
 
       <div className="mt-12 space-y-4">
         {/* Read */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={stagger(paragraphs.length)}
@@ -109,10 +109,10 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
               </Button>
             </Link>
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Pray */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={stagger(paragraphs.length + 1)}
@@ -123,10 +123,10 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
           <blockquote className="mt-3 border-l border-[#D4A843]/30 pl-4 text-sm italic leading-relaxed text-white/60">
             {messages.prayPrompt}
           </blockquote>
-        </motion.div>
+        </m.div>
 
         {/* Community */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={stagger(paragraphs.length + 2)}
@@ -140,10 +140,10 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
               <ButtonArrow />
             </Button>
           </a>
-        </motion.div>
+        </m.div>
 
         {/* Learn */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={stagger(paragraphs.length + 3)}
@@ -161,10 +161,10 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
               <ButtonArrow />
             </Button>
           </Link>
-        </motion.div>
+        </m.div>
       </div>
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={stagger(paragraphs.length + 4)}
@@ -174,7 +174,7 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
           messages={{ ...shareMessages, prompt: messages.shareHeading, whatsappMessage: messages.shareMessage, telegramMessage: messages.shareMessage }}
           locale={locale}
         />
-      </motion.div>
+      </m.div>
     </>
   );
 }

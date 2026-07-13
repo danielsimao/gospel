@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useGameDispatch } from "@/components/game-provider";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackVerdictReached } from "@/lib/analytics";
@@ -65,17 +65,17 @@ export function VerdictScreen({
     <div className="flex flex-1 flex-col items-center justify-center px-4 py-16 sm:px-6">
       <div className="flex w-full max-w-md flex-col items-center text-center">
         {/* Prelude */}
-        <motion.p
+        <m.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
           className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75"
         >
           {testMessages.verdict.prelude}
-        </motion.p>
+        </m.p>
 
         {/* GUILTY */}
-        <motion.p
+        <m.p
           initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.3, ease: EASE_OUT_STRONG }}
@@ -86,10 +86,10 @@ export function VerdictScreen({
           }}
         >
           {messages.title.replace(/\.$/, "")}
-        </motion.p>
+        </m.p>
 
         {/* Dynamic confession prose — always in DOM, opacity animated */}
-        <motion.p
+        <m.p
           initial={false}
           animate={{ opacity: showConfession ? 1 : 0 }}
           transition={{ duration: 0.8 }}
@@ -97,10 +97,10 @@ export function VerdictScreen({
           aria-hidden={!showConfession}
         >
           {confession}
-        </motion.p>
+        </m.p>
 
         {/* Death line — always in DOM, opacity animated */}
-        <motion.div
+        <m.div
           initial={false}
           animate={{ opacity: showDeathLine ? 1 : 0 }}
           transition={{ duration: 0.8 }}
@@ -113,10 +113,10 @@ export function VerdictScreen({
           <p className="mt-2 text-[11px] italic leading-relaxed text-white/60 sm:text-xs">
             {testMessages.verdict.deathLineTemplate}
           </p>
-        </motion.div>
+        </m.div>
 
         {/* Bridge button — always in DOM, opacity animated */}
-        <motion.div
+        <m.div
           initial={false}
           animate={{ opacity: showBridge ? 1 : 0 }}
           transition={{ duration: 0.8 }}
@@ -132,7 +132,7 @@ export function VerdictScreen({
             {testMessages.verdict.bridgeButton}
             <ButtonArrow direction="down" />
           </Button>
-        </motion.div>
+        </m.div>
       </div>
     </div>
   );
