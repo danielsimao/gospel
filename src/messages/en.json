@@ -1103,6 +1103,8 @@
     "referencesLabel": "References",
     "ctaButton": "Take the test",
     "readingCtaButton": "Continue the reading plan",
+    "stickyQuestion": "Are you a good person?",
+    "stickyCta": "Find out · 2 min",
     "emptyState": "No posts yet."
   },
   "footer": {

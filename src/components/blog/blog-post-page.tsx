@@ -4,6 +4,7 @@ import { PageShell } from "@/components/shared/page-shell";
 import { SaveStoryImageButton } from "./save-story-image-button";
 import { PersonalTurn } from "./personal-turn";
 import { BlogViewTracker } from "./blog-view-tracker";
+import { BlogStickyBar } from "./blog-sticky-bar";
 import type { BlogPostContent } from "@/content/blog/types";
 import type { Locale } from "@/lib/i18n";
 
@@ -14,6 +15,8 @@ interface BlogChromeMessages {
   referencesLabel: string;
   ctaButton: string;
   readingCtaButton: string;
+  stickyQuestion: string;
+  stickyCta: string;
 }
 
 interface BlogPostPageProps {
@@ -124,6 +127,7 @@ export function BlogPostPage({ slug, content, datePublished, locale, messages }:
           />
         </div>
       </article>
+      <BlogStickyBar slug={slug} locale={locale} question={messages.stickyQuestion} ctaLabel={messages.stickyCta} />
     </PageShell>
   );
 }
