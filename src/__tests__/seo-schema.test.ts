@@ -19,6 +19,24 @@ describe("buildArticleSchema", () => {
     expect(schema.publisher).toEqual({ "@id": `${SITE_URL}#organization` });
     expect(schema.image).toContain("/en/opengraph-image");
   });
+
+  it("supports blog posts via basePath, image, and type overrides", () => {
+    const schema = buildArticleSchema({
+      locale: "en",
+      slug: "dont-die-movement",
+      title: "title",
+      description: "desc",
+      datePublished: "2026-07-13",
+      dateModified: "2026-07-13",
+      basePath: "/blog",
+      image: `${SITE_URL}/en/blog/dont-die-movement/opengraph-image`,
+      type: "BlogPosting",
+    });
+    expect(schema["@type"]).toBe("BlogPosting");
+    expect(schema.url).toBe(`${SITE_URL}/en/blog/dont-die-movement`);
+    expect(schema.mainEntityOfPage).toBe(`${SITE_URL}/en/blog/dont-die-movement`);
+    expect(schema.image).toBe(`${SITE_URL}/en/blog/dont-die-movement/opengraph-image`);
+  });
 });
 
 describe("buildBreadcrumbSchema", () => {

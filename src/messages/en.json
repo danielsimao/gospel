@@ -978,6 +978,19 @@
       }
     ]
   },
+  "blog": {
+    "label": "Blog",
+    "indexTitle": "Blog",
+    "indexSubtitle": "Timely reflections on death, culture, and the hope of the gospel.",
+    "readMore": "Read",
+    "englishOnlyTag": "In English",
+    "saveStoryButton": "Save story image",
+    "saveStoryHint": "Post it to your Instagram story, then add a link sticker pointing to this page.",
+    "referencesLabel": "References",
+    "ctaHeading": "If you died today — are you ready?",
+    "ctaButton": "Take the test",
+    "emptyState": "No posts yet."
+  },
   "footer": {
     "exploreLabel": "Explore",
     "learnLabel": "Learn",
@@ -985,6 +998,7 @@
     "homeLink": "Home",
     "testLink": "Take the Test",
     "aboutLink": "About",
+    "blogLink": "Blog",
     "readingPlanLink": "7-Day Reading Plan",
     "nextStepsLink": "Next Steps",
     "churchLink": "Find a Church",

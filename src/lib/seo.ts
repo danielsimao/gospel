@@ -58,14 +58,18 @@ export function getLocaleUrl(locale: Locale, path = ""): string {
   return getAbsoluteUrl(getLocalePath(locale, path));
 }
 
-export function getLanguageAlternates(path = ""): Record<string, string> {
+export function getLanguageAlternates(
+  path = "",
+  locales: readonly Locale[] = SUPPORTED_LOCALES,
+): Record<string, string> {
   const languages: Record<string, string> = {};
 
-  for (const locale of SUPPORTED_LOCALES) {
+  for (const locale of locales) {
     languages[locale] = getLocaleUrl(locale, path);
   }
 
-  languages["x-default"] = getLocaleUrl(DEFAULT_LOCALE, path);
+  const xDefault = locales.includes(DEFAULT_LOCALE) ? DEFAULT_LOCALE : locales[0];
+  languages["x-default"] = getLocaleUrl(xDefault, path);
 
   return languages;
 }
@@ -80,6 +84,10 @@ type BuildPageMetadataArgs = {
   title: string;
   description: string;
   robots?: Metadata["robots"];
+  /** Locales this page exists in; hreflang is emitted only for these. Defaults to all. */
+  availableLocales?: readonly Locale[];
+  /** When set, emits og:type article with published/modified times. */
+  article?: { publishedTime: string; modifiedTime?: string };
 };
 
 export function buildPageMetadata({
@@ -88,6 +96,8 @@ export function buildPageMetadata({
   title,
   description,
   robots,
+  availableLocales,
+  article,
 }: BuildPageMetadataArgs): Metadata {
   const url = getLocaleUrl(locale, path);
 
@@ -96,15 +106,21 @@ export function buildPageMetadata({
     description,
     alternates: {
       canonical: url,
-      languages: getLanguageAlternates(path),
+      languages: getLanguageAlternates(path, availableLocales),
     },
     openGraph: {
-      type: "website",
       url,
       siteName: BRAND_NAME,
       locale: getOpenGraphLocale(locale),
       title,
       description,
+      ...(article
+        ? {
+            type: "article",
+            publishedTime: article.publishedTime,
+            modifiedTime: article.modifiedTime ?? article.publishedTime,
+          }
+        : { type: "website" }),
     },
     twitter: {
       card: "summary_large_image",
@@ -179,6 +195,11 @@ type BuildArticleSchemaArgs = {
   description: string;
   datePublished: string;
   dateModified: string;
+  /** URL section the article lives under. Defaults to /learn. */
+  basePath?: string;
+  /** Absolute image URL. Defaults to the locale's generic OG card. */
+  image?: string;
+  type?: "Article" | "BlogPosting";
 };
 
 export function buildArticleSchema({
@@ -188,12 +209,15 @@ export function buildArticleSchema({
   description,
   datePublished,
   dateModified,
+  basePath = "/learn",
+  image,
+  type = "Article",
 }: BuildArticleSchemaArgs) {
-  const url = getLocaleUrl(locale, `/learn/${slug}`);
+  const url = getLocaleUrl(locale, `${basePath}/${slug}`);
 
   return {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": type,
     "@id": `${url}#article`,
     headline: title,
     description,
@@ -202,7 +226,7 @@ export function buildArticleSchema({
     mainEntityOfPage: url,
     datePublished,
     dateModified,
-    image: getAbsoluteUrl(`/${locale}/opengraph-image`),
+    image: image ?? getAbsoluteUrl(`/${locale}/opengraph-image`),
     author: { "@id": `${SITE_URL}#organization` },
     publisher: { "@id": `${SITE_URL}#organization` },
   };

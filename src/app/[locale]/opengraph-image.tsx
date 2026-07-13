@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { loadOgFonts, type OgFont } from "@/lib/og";
 
 export const alt = "If You Died Today — Are You a Good Person?";
 
@@ -31,15 +30,9 @@ export default async function Image({
   const lang = locale === "pt" ? "pt" : "en";
   const copy = COPY[lang];
 
-  let geistSemiBold: Buffer;
-  let geistMono: Buffer;
+  let fonts: OgFont[];
   try {
-    geistSemiBold = await readFile(
-      join(process.cwd(), "node_modules/geist/dist/fonts/geist-sans/Geist-SemiBold.ttf"),
-    );
-    geistMono = await readFile(
-      join(process.cwd(), "node_modules/geist/dist/fonts/geist-mono/GeistMono-Regular.ttf"),
-    );
+    fonts = await loadOgFonts();
   } catch (error) {
     console.error("[opengraph-image] Font files not found:", error);
     // Fallback: render without custom fonts
@@ -133,20 +126,7 @@ export default async function Image({
     ),
     {
       ...size,
-      fonts: [
-        {
-          name: "Geist",
-          data: geistSemiBold,
-          style: "normal",
-          weight: 600,
-        },
-        {
-          name: "GeistMono",
-          data: geistMono,
-          style: "normal",
-          weight: 400,
-        },
-      ],
+      fonts,
     },
   );
 }
