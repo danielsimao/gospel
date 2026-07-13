@@ -10,6 +10,7 @@ interface FooterMessages {
   homeLink: string;
   testLink: string;
   aboutLink: string;
+  blogLink: string;
   readingPlanLink: string;
   nextStepsLink: string;
   churchLink: string;
@@ -69,6 +70,13 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
                 className="text-sm text-white/70 transition-colors hover:text-white/80"
               >
                 {messages.aboutLink}
+              </Link>
+              <Link
+                href={`/${locale}/blog`}
+                prefetch={false}
+                className="text-sm text-white/70 transition-colors hover:text-white/80"
+              >
+                {messages.blogLink}
               </Link>
             </nav>
           </div>

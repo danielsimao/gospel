@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { SUPPORTED_LOCALES } from "@/lib/i18n";
 import { getLocaleUrl, getLanguageAlternates } from "@/lib/seo";
 import { TOPIC_DATES } from "@/lib/topic-dates";
+import { getPublishedPosts, getPostLocales, getPostDateModified } from "@/content/blog/posts";
 
 const BUILD_TIMESTAMP = new Date();
 
@@ -32,6 +33,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: "monthly",
         priority: 0.8,
         alternates: { languages: getLanguageAlternates(`/learn/${slug}`) },
+      });
+    }
+  }
+
+  // Blog — the index exists in every locale; posts only in locales they declare
+  const posts = getPublishedPosts();
+  const newestPostDate = posts.length
+    ? new Date(
+        posts
+          .map(getPostDateModified)
+          .reduce((latest, date) => (date > latest ? date : latest)),
+      )
+    : BUILD_TIMESTAMP;
+
+  for (const locale of SUPPORTED_LOCALES) {
+    entries.push({
+      url: getLocaleUrl(locale, "/blog"),
+      lastModified: newestPostDate,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    });
+  }
+
+  for (const post of posts) {
+    for (const locale of getPostLocales(post)) {
+      entries.push({
+        url: getLocaleUrl(locale, `/blog/${post.slug}`),
+        lastModified: new Date(getPostDateModified(post)),
+        changeFrequency: "monthly",
+        priority: 0.6,
       });
     }
   }
