@@ -1106,6 +1106,11 @@
     "readingCtaButton": "Continue the reading plan",
     "stickyQuestion": "Are you a good person?",
     "stickyCta": "Find out · 2 min",
+    "stickyUndecidedQuestion": "You saw the verdict. It's still on the table.",
+    "stickyUndecidedCta": "Return",
+    "stickyThinkingQuestion": "Still weighing it?",
+    "stickyThinkingCta": "Take the next step",
+    "returnCtaButton": "Return to the verdict",
     "copyLinkButton": "Copy link for the sticker",
     "copyLinkCopied": "Link copied — paste it into your story's link sticker.",
     "emptyState": "No posts yet."

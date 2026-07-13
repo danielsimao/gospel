@@ -1106,6 +1106,11 @@
     "readingCtaButton": "Continua o plano de leitura",
     "stickyQuestion": "Tu és uma boa pessoa?",
     "stickyCta": "Descobre · 2 min",
+    "stickyUndecidedQuestion": "Viste o veredicto. Continua em cima da mesa.",
+    "stickyUndecidedCta": "Voltar",
+    "stickyThinkingQuestion": "Ainda a pesar a decisão?",
+    "stickyThinkingCta": "Dá o próximo passo",
+    "returnCtaButton": "Volta ao veredicto",
     "copyLinkButton": "Copiar link para o autocolante",
     "copyLinkCopied": "Link copiado — cola-o no autocolante de link da tua história.",
     "emptyState": "Ainda não há publicações."

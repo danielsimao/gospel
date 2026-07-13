@@ -11,6 +11,7 @@ interface PersonalTurnProps {
   setup: string;
   question: string;
   ctaButton: string;
+  returnCtaButton: string;
   readingCtaButton: string;
 }
 
@@ -20,18 +21,31 @@ interface PersonalTurnProps {
  * not tested → the test; tested but reading incomplete → reading plan;
  * fully walked → the question stands on its own.
  */
-export function PersonalTurn({ slug, locale, setup, question, ctaButton, readingCtaButton }: PersonalTurnProps) {
+export function PersonalTurn({
+  slug,
+  locale,
+  setup,
+  question,
+  ctaButton,
+  returnCtaButton,
+  readingCtaButton,
+}: PersonalTurnProps) {
   const { stage, readingDone, ready } = useJourney();
-  const testDone = stage !== "visitor";
   const readingComplete = readingDone >= TOTAL_READING_DAYS;
 
+  // Stage → CTA. Undecided users return to the verdict they walked away
+  // from; reading-plan nudges are reserved for those who responded to grace
+  // (committed/thinking) — offering discipleship to the undecided or
+  // dismissed is out of order. Dismissed: the question stands, unpushed.
   const cta = !ready
     ? null
-    : !testDone
+    : stage === "visitor"
       ? { label: ctaButton, href: `/${locale}/test` }
-      : !readingComplete
-        ? { label: readingCtaButton, href: `/${locale}/reading-plan` }
-        : null;
+      : stage === "undecided"
+        ? { label: returnCtaButton, href: `/${locale}/test` }
+        : (stage === "committed" || stage === "thinking") && !readingComplete
+          ? { label: readingCtaButton, href: `/${locale}/reading-plan` }
+          : null;
 
   return (
     <section id="personal-turn" className="mt-16 border-t border-white/[0.06] pt-10 text-center">

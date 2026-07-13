@@ -20,6 +20,11 @@ interface BlogChromeMessages {
   readingCtaButton: string;
   stickyQuestion: string;
   stickyCta: string;
+  stickyUndecidedQuestion: string;
+  stickyUndecidedCta: string;
+  stickyThinkingQuestion: string;
+  stickyThinkingCta: string;
+  returnCtaButton: string;
 }
 
 interface BlogPostPageProps {
@@ -102,6 +107,7 @@ export function BlogPostPage({ slug, content, datePublished, locale, messages, s
           setup={content.personalTurn.setup}
           question={content.personalTurn.question}
           ctaButton={messages.ctaButton}
+          returnCtaButton={messages.returnCtaButton}
           readingCtaButton={messages.readingCtaButton}
         />
 
@@ -147,7 +153,18 @@ export function BlogPostPage({ slug, content, datePublished, locale, messages, s
           />
         </div>
       </article>
-      <BlogStickyBar slug={slug} locale={locale} question={messages.stickyQuestion} ctaLabel={messages.stickyCta} />
+      <BlogStickyBar
+        slug={slug}
+        locale={locale}
+        messages={{
+          visitorQuestion: messages.stickyQuestion,
+          visitorCta: messages.stickyCta,
+          undecidedQuestion: messages.stickyUndecidedQuestion,
+          undecidedCta: messages.stickyUndecidedCta,
+          thinkingQuestion: messages.stickyThinkingQuestion,
+          thinkingCta: messages.stickyThinkingCta,
+        }}
+      />
     </PageShell>
   );
 }

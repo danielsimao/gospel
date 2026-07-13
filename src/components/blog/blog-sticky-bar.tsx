@@ -11,18 +11,24 @@ import { EASE_OUT_STRONG } from "@/lib/motion";
 interface BlogStickyBarProps {
   slug: string;
   locale: string;
-  question: string;
-  ctaLabel: string;
+  messages: {
+    visitorQuestion: string;
+    visitorCta: string;
+    undecidedQuestion: string;
+    undecidedCta: string;
+    thinkingQuestion: string;
+    thinkingCta: string;
+  };
 }
 
 /**
  * Bottom bar carrying the site's core question for cold blog readers.
- * Shows only for visitor-stage users, only after the consent banner is
- * answered (both are bottom-fixed — never stack), only past 40% scroll,
- * and hides while the personal-turn block is on screen (one ask per
- * viewport).
+ * Shows only for visitor/undecided/thinking-stage users, only after the
+ * consent banner is answered (both are bottom-fixed — never stack), only
+ * past 40% scroll, and hides while the personal-turn block is on screen
+ * (one ask per viewport).
  */
-export function BlogStickyBar({ slug, locale, question, ctaLabel }: BlogStickyBarProps) {
+export function BlogStickyBar({ slug, locale, messages }: BlogStickyBarProps) {
   const { stage, ready } = useJourney();
   const consentAnswered = useSyncExternalStore(
     subscribeToConsentAnswered,
@@ -54,11 +60,24 @@ export function BlogStickyBar({ slug, locale, question, ctaLabel }: BlogStickyBa
     return () => observer.disconnect();
   }, []);
 
-  const visible = ready && stage === "visitor" && consentAnswered && scrolledEnough && !turnVisible;
+  // Stage → ask map. Committed users have nothing left to convert; dismissed
+  // users said no and are not pursued (Living Waters — the door stays open,
+  // quietly). Undecided and thinking users are the fence-sitters this bar
+  // exists for.
+  const ask =
+    stage === "visitor"
+      ? { question: messages.visitorQuestion, cta: messages.visitorCta, href: `/${locale}/test` }
+      : stage === "undecided"
+        ? { question: messages.undecidedQuestion, cta: messages.undecidedCta, href: `/${locale}/test` }
+        : stage === "thinking"
+          ? { question: messages.thinkingQuestion, cta: messages.thinkingCta, href: `/${locale}/next-steps` }
+          : null;
+
+  const visible = ready && ask !== null && consentAnswered && scrolledEnough && !turnVisible;
 
   return (
     <AnimatePresence>
-      {visible && (
+      {visible && ask && (
         <m.div
           initial={{ y: "100%" }}
           animate={{ y: 0 }}
@@ -67,13 +86,13 @@ export function BlogStickyBar({ slug, locale, question, ctaLabel }: BlogStickyBa
           className="fixed inset-x-0 bottom-0 z-40 border-t border-white/[0.08] bg-[#060404]/95 backdrop-blur-sm"
         >
           <div className="mx-auto flex max-w-2xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-            <p className="text-sm font-semibold text-white/85">{question}</p>
+            <p className="text-sm font-semibold text-white/85">{ask.question}</p>
             <Link
-              href={`/${locale}/test`}
+              href={ask.href}
               onClick={() => trackBlogCtaClicked(slug, "sticky", stage)}
               className="shrink-0 rounded-lg bg-[#D4A843] px-4 py-2 text-[13px] font-semibold text-[#060404] transition-colors hover:bg-[#e0b854]"
             >
-              {ctaLabel}
+              {ask.cta}
             </Link>
           </div>
         </m.div>
