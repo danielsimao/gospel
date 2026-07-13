@@ -6,9 +6,14 @@ import { initPostHog } from "@/lib/posthog";
 // tracking); analytics is.
 // Session replay is PostHog's job (one rrweb recorder, not two) — no
 // Sentry replayIntegration, so no replay sample rates here.
+// Tracing is off (errors only): __SENTRY_TRACING__ is defined false at
+// build time, and this runtime filter guarantees it even if the define
+// is ever lost. This site makes almost no client fetches — tracing was
+// pure overhead on every page.
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-  tracesSampleRate: 1.0,
+  integrations: (defaultIntegrations) =>
+    defaultIntegrations.filter((integration) => integration.name !== "BrowserTracing"),
 });
 
 export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
