@@ -3,7 +3,7 @@
     "title": "Tu es uma boa pessoa?",
     "cta": "Começar o teste",
     "label": "Teste",
-    "subtitle": "A Lei de Deus. Oito perguntas. Um veredicto."
+    "subtitle": "A Lei de Deus. Seis perguntas. Um veredicto."
   },
   "resumeDialog": {
     "title": "Continuar de onde paraste?",
@@ -91,15 +91,6 @@
       "honestFollowUp": "Usaste o nome do Deus que te deu vida como uma palavra descartável. Isso é blasfémia."
     },
     {
-      "id": 6,
-      "text": "Alguma vez desejaste algo que pertencia a outra pessoa?",
-      "commandment": "Nao cobiceras",
-      "honestLabel": "Sim, ja desejei",
-      "justifyLabel": "Isso e normal",
-      "followUp": "O estilo de vida de um amigo, o relacionamento de alguem, a promocao de um colega?",
-      "honestFollowUp": "Cobiçar revela um coração que diz 'o que Deus me deu não é suficiente.' É ingratidão tornada pessoal."
-    },
-    {
       "id": 7,
       "text": "Alguma vez colocaste algo — dinheiro, carreira, relacoes — acima de Deus?",
       "commandment": "Nao teras outros deuses diante de mim",
@@ -107,15 +98,6 @@
       "justifyLabel": "Nao penso nisso",
       "followUp": "Se passaste mais tempo no telemovel do que a pensar no teu Criador...",
       "honestFollowUp": "Qualquer coisa que ames, confies ou sirvas mais do que Deus é um ídolo. Não tem de ser uma estátua."
-    },
-    {
-      "id": 8,
-      "text": "Alguma vez falhaste em honrar os teus pais?",
-      "commandment": "Honra o teu pai e a tua mae",
-      "honestLabel": "Sim, ja falhei",
-      "justifyLabel": "Sempre tentei",
-      "followUp": "Mesmo no teu coracao — ressentimento, desprezo, ingratidao?",
-      "honestFollowUp": "Não é apenas obediência exterior — Deus vê o ressentimento, os revirar de olhos, o desprezo no teu coração."
     }
   ],
   "verdict": {

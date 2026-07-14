@@ -5,7 +5,9 @@ const STORAGE_KEY = "gospel-test-session";
 
 // Bump when GameState shape changes or the question set is reordered/resized.
 // Mismatched versions are silently discarded on read.
-const CURRENT_VERSION = 2;
+// v3: question set trimmed 8 → 6 (2026-07-14) — stale sessions could hold
+// currentQuestion indices past the new end.
+const CURRENT_VERSION = 3;
 
 export interface SavedSession {
   version: number;

@@ -3,7 +3,7 @@
     "title": "Are you a good person?",
     "cta": "Begin the test",
     "label": "Test",
-    "subtitle": "God's Law. Eight questions. One verdict."
+    "subtitle": "God's Law. Six questions. One verdict."
   },
   "resumeDialog": {
     "title": "Pick up where you left off?",
@@ -91,15 +91,6 @@
       "honestFollowUp": "You used the name of the God who gave you life as a throwaway word. That is blasphemy."
     },
     {
-      "id": 6,
-      "text": "Have you ever wanted something that belonged to someone else?",
-      "commandment": "You shall not covet",
-      "honestLabel": "Yes, I have",
-      "justifyLabel": "That's just normal",
-      "followUp": "A friend's lifestyle, someone's relationship, a coworker's promotion?",
-      "honestFollowUp": "Coveting reveals a heart that says 'what God has given me is not enough.' It's ingratitude made personal."
-    },
-    {
       "id": 7,
       "text": "Have you ever put something — money, career, relationships — above God?",
       "commandment": "You shall have no other gods before Me",
@@ -107,15 +98,6 @@
       "justifyLabel": "I don't think about it",
       "followUp": "If you've spent more time on your phone than thinking about your Creator...",
       "honestFollowUp": "Anything you love, trust, or serve more than God is an idol. It doesn't have to be a statue."
-    },
-    {
-      "id": 8,
-      "text": "Have you ever failed to honor your parents?",
-      "commandment": "Honor your father and your mother",
-      "honestLabel": "Yes, I have",
-      "justifyLabel": "I've always tried",
-      "followUp": "Even in your heart — resentment, dismissiveness, ingratitude?",
-      "honestFollowUp": "Not just outward obedience — God sees the resentment, the eye-rolls, the dismissiveness in your heart."
     }
   ],
   "verdict": {

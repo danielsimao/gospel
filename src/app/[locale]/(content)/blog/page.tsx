@@ -69,11 +69,10 @@ export default async function BlogIndexPage({ params }: Props) {
       <StructuredData data={webPageSchema} />
       <StructuredData data={breadcrumbSchema} />
       <PageShell>
-        <p className="font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
-          {blog.label}
-        </p>
+        {/* No eyebrow: label and indexTitle are both "Blog" — the eyebrow
+            duplicated the h1 directly above it. */}
         <h1
-          className="mt-3 text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl"
+          className="text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl"
           style={{ textShadow: "0 0 60px rgba(212,168,67,0.2)" }}
         >
           {blog.indexTitle}
