@@ -175,6 +175,7 @@
     "dismissedReturn": "Mudaste de ideias? O plano de leitura está à tua espera — começa hoje.",
     "trackA": {
       "welcome": "Algo acabou de mudar.",
+      "welcomeReturn": "A decisão está tomada. É assim que ela cria raízes.",
       "whatHappened": "Reconheceste que quebraste a Lei de Deus. E tomaste a decisão de te arrepender — de abandonar o teu pecado — e de colocar a tua confiança somente em Jesus Cristo.\n\nSe te arrependeste genuinamente e confiaste no Salvador, Deus perdoou todos os pecados que alguma vez cometeste e concedeu-te a vida eterna. Não porque o mereceste — mas por causa do que Cristo fez na cruz.\n\n\"Assim que, se alguém está em Cristo, nova criatura é; as coisas velhas já passaram; eis que tudo se fez novo.\" — 2 Coríntios 5:17 (ACF)",
       "readHeading": "Lê",
       "readBody": "Começa pelo Evangelho de João — é o melhor lugar para conhecer Jesus pela primeira vez. Ou segue o nosso plano de leitura de 7 dias.",
@@ -192,12 +193,13 @@
       "learnBody": "Explora os fundamentos da fé — quem é Jesus, o que significa a graça, porque é que a cruz importa.",
       "learnLinkLabel": "Explorar os fundamentos",
       "shareHeading": "Partilha a Tua Decisão",
-      "shareMessage": "Acabei de tomar uma decisão que muda tudo:"
+      "shareMessage": "Tomei uma decisão que muda tudo:"
     },
     "trackB": {
       "acknowledgment": "Isso é honesto. Aqui ficam algumas coisas em que vale a pena pensar.",
+      "acknowledgmentReturn": "Ainda a pensar nisso — ainda bem. Isto vale a pena pesar.",
       "reflections": [
-        "Se o que ouviste hoje for verdade, o que é que isso mudaria na tua vida?",
+        "Se o que ouviste for verdade, o que é que isso mudaria na tua vida?",
         "Já consideraste que o desconforto que sentes pode ser a tua consciência a concordar com o padrão de Deus?",
         "O que seria preciso para investigares isto mais a fundo?"
       ],

@@ -175,6 +175,7 @@
     "dismissedReturn": "Changed your mind? The reading plan is waiting — start today.",
     "trackA": {
       "welcome": "Something just changed.",
+      "welcomeReturn": "The decision is made. This is how it takes root.",
       "whatHappened": "You acknowledged that you've broken God's Law. And you've made the decision to repent — to turn from your sin — and to place your trust in Jesus Christ alone.\n\nIf you've genuinely repented and trusted in the Saviour, God has forgiven every sin you've ever committed and granted you eternal life. Not because you earned it — but because of what Christ did on the cross.\n\n\"Therefore, if anyone is in Christ, he is a new creation; old things have passed away; behold, all things have become new.\" — 2 Corinthians 5:17 (NKJV)",
       "readHeading": "Read",
       "readBody": "Start with the Gospel of John — it's the best place to meet Jesus for the first time. Or follow our 7-day reading plan.",
@@ -192,12 +193,13 @@
       "learnBody": "Explore the foundations of the faith — who Jesus is, what grace means, why the cross matters.",
       "learnLinkLabel": "Explore the foundations",
       "shareHeading": "Share Your Decision",
-      "shareMessage": "I just made a decision that changes everything:"
+      "shareMessage": "I made a decision that changes everything:"
     },
     "trackB": {
       "acknowledgment": "That's honest. Here are some things worth thinking about.",
+      "acknowledgmentReturn": "Still thinking it through — good. These are worth weighing.",
       "reflections": [
-        "If what you heard today is true, what would that change for you?",
+        "If what you heard is true, what would that change for you?",
         "Have you ever considered that the discomfort you feel might be your conscience agreeing with God's standard?",
         "What would it take for you to investigate this further?"
       ],

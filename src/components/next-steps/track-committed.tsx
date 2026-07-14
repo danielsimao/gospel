@@ -1,15 +1,20 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { m } from "framer-motion";
 import Link from "next/link";
 import { ShareButtons } from "@/components/share-buttons";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
+import { readJourney } from "@/lib/journey-storage";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { Locale } from "@/lib/i18n";
 
+const FRESH_WINDOW_MS = 60 * 60 * 1000;
+
 interface TrackCommittedMessages {
   welcome: string;
+  welcomeReturn: string;
   whatHappened: string;
   readHeading: string;
   readBody: string;
@@ -41,6 +46,21 @@ const stagger = (i: number) => ({ duration: 0.8, delay: 0.3 + i * 0.2 });
 export function TrackCommitted({ messages, shareMessages, locale }: TrackCommittedProps) {
   const paragraphs = messages.whatHappened.split("\n\n");
 
+  // SSR and first client render show the durable opener; if the visitor
+  // arrived within an hour of responding, upgrade to the conversational
+  // one post-mount (rAF-deferred — the repo lints synchronous setState
+  // in effects). Cold returns never flash the wrong register.
+  const [isFresh, setIsFresh] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      const respondedAt = readJourney().respondedAt;
+      setIsFresh(
+        typeof respondedAt === "number" && Date.now() - respondedAt < FRESH_WINDOW_MS,
+      );
+    });
+    return () => cancelAnimationFrame(id);
+  }, []);
+
   return (
     <>
       <m.h1
@@ -50,7 +70,7 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
         className="text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl"
         style={{ textShadow: "0 0 60px rgba(212,168,67,0.2)" }}
       >
-        {messages.welcome}
+        {isFresh ? messages.welcome : messages.welcomeReturn}
       </m.h1>
 
       <div className="mt-8 space-y-5">

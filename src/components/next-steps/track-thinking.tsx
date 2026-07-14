@@ -1,13 +1,18 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { m } from "framer-motion";
 import Link from "next/link";
 import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
+import { readJourney } from "@/lib/journey-storage";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { Locale } from "@/lib/i18n";
 
+const FRESH_WINDOW_MS = 60 * 60 * 1000;
+
 interface TrackThinkingMessages {
   acknowledgment: string;
+  acknowledgmentReturn: string;
   reflections: string[];
   readingHeading: string;
   readingBody: string;
@@ -26,6 +31,21 @@ interface TrackThinkingProps {
 }
 
 export function TrackThinking({ messages, locale }: TrackThinkingProps) {
+  // SSR and first client render show the durable opener; if the visitor
+  // arrived within an hour of responding, upgrade to the conversational
+  // one post-mount (rAF-deferred — the repo lints synchronous setState
+  // in effects). Cold returns never flash the wrong register.
+  const [isFresh, setIsFresh] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      const respondedAt = readJourney().respondedAt;
+      setIsFresh(
+        typeof respondedAt === "number" && Date.now() - respondedAt < FRESH_WINDOW_MS,
+      );
+    });
+    return () => cancelAnimationFrame(id);
+  }, []);
+
   return (
     <>
       <m.h1
@@ -34,7 +54,7 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
         transition={{ duration: 1, ease: EASE_OUT_STRONG }}
         className="text-2xl font-bold tracking-tight text-white/90 sm:text-3xl"
       >
-        {messages.acknowledgment}
+        {isFresh ? messages.acknowledgment : messages.acknowledgmentReturn}
       </m.h1>
 
       <div className="mt-10 space-y-6">
