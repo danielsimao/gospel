@@ -32,6 +32,9 @@ export function GraceScreen({ messages }: GraceScreenProps) {
   // when it fades in. Subsequent beats are revealed by user tap, which
   // intentionally shifts the page.
   const [revealedCount, setRevealedCount] = useState(1);
+  // The spotlight beat. Follows the newest reveal, but tapping any earlier
+  // beat moves it back — re-reading the argument is supported, not punished.
+  const [activeIndex, setActiveIndex] = useState(0);
   const allBeatsRevealed = revealedCount >= messages.beats.length;
   const [beatRefs] = useState(() => messages.beats.map(() => createRef<HTMLDivElement>()));
 
@@ -67,6 +70,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
     const nextBeat = revealedCount;
     trackGraceBeatRevealed(nextBeat);
     setRevealedCount(nextBeat + 1);
+    setActiveIndex(nextBeat);
     // Scroll to the newly revealed beat after a short delay for the animation
     setTimeout(() => {
       beatRefs[nextBeat]?.current?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -122,7 +126,9 @@ export function GraceScreen({ messages }: GraceScreenProps) {
           <div className="mt-10 text-left">
             {messages.beats.map((beat, i) => {
               const isRevealed = i < revealedCount;
-              const isActive = i === revealedCount - 1;
+              // Once every beat is revealed the spotlight lifts entirely —
+              // the whole argument reads as one document before Continue.
+              const isActive = allBeatsRevealed || i === activeIndex;
               const isGold = i >= 2;
 
               if (!isRevealed) return null;
@@ -133,13 +139,30 @@ export function GraceScreen({ messages }: GraceScreenProps) {
                   ref={beatRefs[i]}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{
-                    opacity: isActive ? 1 : 0.32,
+                    // Rest state stays readable (this is the gospel argument,
+                    // not decoration) while the active beat still leads.
+                    opacity: isActive ? 1 : 0.6,
                     y: 0,
                   }}
                   transition={{ duration: 0.5, ease: "easeOut", delay: i === 0 ? 1.5 : 0 }}
-                  className="border-t border-white/[0.04] py-4 first:border-t-0 first:pt-0"
+                  onClick={allBeatsRevealed ? undefined : () => setActiveIndex(i)}
+                  role={allBeatsRevealed ? undefined : "button"}
+                  tabIndex={allBeatsRevealed ? undefined : 0}
+                  onKeyDown={
+                    allBeatsRevealed
+                      ? undefined
+                      : (e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            setActiveIndex(i);
+                          }
+                        }
+                  }
+                  className={`border-t border-white/[0.04] py-4 first:border-t-0 first:pt-0 ${
+                    allBeatsRevealed ? "" : "cursor-pointer"
+                  }`}
                 >
-                  <p className="mb-2 font-mono text-[8px] uppercase tracking-[2.5px] text-[#D4A843]/70">
+                  <p className="mb-2 font-mono text-[9px] uppercase tracking-[2.5px] text-[#D4A843]/70">
                     {ROMAN[i] ?? String(i + 1)}
                   </p>
                   <p

@@ -46,10 +46,12 @@ export function VerdictScreen({
       trackVerdictReached(totalHonest, totalJustify, durationMs);
     }
 
-    // Staggered reveals
-    const t1 = setTimeout(() => setShowConfession(true), 1200);
-    const t2 = setTimeout(() => setShowDeathLine(true), 2400);
-    const t3 = setTimeout(() => setShowBridge(true), 3600);
+    // Staggered reveals — compressed: a reader should never sit in front of
+    // a finished screen waiting for the only button to exist. Order:
+    // GUILTY (0.3s) → standard line (0.8s) → confession → count → bridge.
+    const t1 = setTimeout(() => setShowConfession(true), 1400);
+    const t2 = setTimeout(() => setShowDeathLine(true), 2200);
+    const t3 = setTimeout(() => setShowBridge(true), 2900);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
@@ -88,12 +90,24 @@ export function VerdictScreen({
           {messages.title.replace(/\.$/, "")}
         </m.p>
 
-        {/* Dynamic confession prose — always in DOM, opacity animated */}
+        {/* The standard — why the verdict stands. This copy existed in the
+            messages all along but was never rendered. */}
+        <m.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+          className="mt-4 max-w-sm text-[13px] italic leading-relaxed text-white/55 sm:text-sm"
+        >
+          {messages.subtitle}
+        </m.p>
+
+        {/* Dynamic confession prose — the personalized center of the screen.
+            Always in DOM, opacity animated. */}
         <m.p
           initial={false}
           animate={{ opacity: showConfession ? 1 : 0 }}
           transition={{ duration: 0.8 }}
-          className="mt-5 max-w-sm text-[15px] leading-relaxed text-white/80 sm:text-base"
+          className="mt-6 max-w-sm text-base leading-relaxed text-white/85 sm:text-lg"
           aria-hidden={!showConfession}
         >
           {confession}
@@ -110,7 +124,7 @@ export function VerdictScreen({
           <p className="font-mono text-3xl font-extrabold tabular-nums text-red-500 sm:text-4xl">
             {deathCount.toLocaleString()}
           </p>
-          <p className="mt-2 text-[11px] italic leading-relaxed text-white/60 sm:text-xs">
+          <p className="mt-2 text-xs italic leading-relaxed text-white/60 sm:text-[13px]">
             {testMessages.verdict.deathLineTemplate}
           </p>
         </m.div>
