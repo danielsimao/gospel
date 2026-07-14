@@ -76,19 +76,25 @@ export function VerdictScreen({
           {testMessages.verdict.prelude}
         </m.p>
 
-        {/* GUILTY */}
-        <m.p
-          initial={{ opacity: 0, scale: 0.85 }}
+        {/* GUILTY — stamped verdict block. Entrance lands from above
+            (1.15 → 1, composite-only) instead of growing in: a stamp hit,
+            not a bloom. Double hairlines frame it as an official record. */}
+        <m.div
+          initial={{ opacity: 0, scale: 1.15 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.3, ease: EASE_OUT_STRONG }}
-          className="mt-4 text-5xl font-black uppercase tracking-[0.15em] text-red-500 sm:text-6xl md:text-7xl"
-          style={{
-            textShadow:
-              "0 0 80px rgba(239,68,68,0.35), 0 0 160px rgba(239,68,68,0.12), 0 4px 40px rgba(0,0,0,0.8)",
-          }}
+          transition={{ duration: 0.55, delay: 0.3, ease: EASE_OUT_STRONG }}
+          className="mt-4 w-full max-w-sm border-y-2 border-red-500/30 py-4 sm:py-5"
         >
-          {messages.title.replace(/\.$/, "")}
-        </m.p>
+          <p
+            className="text-5xl font-black uppercase tracking-[0.15em] text-red-500 sm:text-6xl md:text-7xl"
+            style={{
+              textShadow:
+                "0 0 80px rgba(239,68,68,0.35), 0 0 160px rgba(239,68,68,0.12), 0 4px 40px rgba(0,0,0,0.8)",
+            }}
+          >
+            {messages.title.replace(/\.$/, "")}
+          </p>
+        </m.div>
 
         {/* The standard — why the verdict stands. This copy existed in the
             messages all along but was never rendered. */}
@@ -112,6 +118,41 @@ export function VerdictScreen({
         >
           {confession}
         </m.p>
+
+        {/* The evidence — the ledger chips carried through from the test.
+            The verdict cites the record; the record is laid on the table. */}
+        {state.answers.length > 0 && (
+          <m.div
+            initial={false}
+            animate={{ opacity: showConfession ? 1 : 0 }}
+            transition={{ duration: 0.8, delay: 0.25 }}
+            className="mt-5 flex max-w-sm flex-wrap justify-center gap-1.5"
+            aria-hidden={!showConfession}
+          >
+            {state.answers.map((answer, i) => {
+              const label = testMessages.verdictLabels[answer.commandment];
+              if (!label) return null;
+              const isJustified = answer.answer === "justify";
+              return (
+                <span
+                  key={i}
+                  className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 ${
+                    isJustified
+                      ? "border-dashed border-red-900/30 bg-red-950/10 opacity-50"
+                      : "border-red-900/40 bg-red-950/25"
+                  }`}
+                >
+                  <span className="font-mono text-[9px] tabular-nums text-red-400/75">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="font-mono text-[10px] lowercase italic text-red-400/85">
+                    {label}
+                  </span>
+                </span>
+              );
+            })}
+          </m.div>
+        )}
 
         {/* Death line — always in DOM, opacity animated */}
         <m.div
