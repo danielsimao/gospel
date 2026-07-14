@@ -155,8 +155,8 @@
     "eyebrow": "A decisão",
     "heading": "O que vais fazer com isto?",
     "committedEncouragement": "Hoje \u00e9 o in\u00edcio.",
-    "thinkingEncouragement": "N\u00e3o tenhas pressa. Isto estar\u00e1 aqui quando estiveres pronto.",
-    "dismissedEncouragement": "Tudo bem. A porta continua aberta.",
+    "thinkingEncouragement": "Pensa nisso a s\u00e9rio \u2014 \u00e9 justo. S\u00f3 n\u00e3o deixes que o 'depois' se torne, sem dares conta, um 'nunca'. Ningu\u00e9m tem o amanh\u00e3 prometido.",
+    "dismissedEncouragement": "A porta continua aberta \u2014 mas ningu\u00e9m tem o amanh\u00e3 prometido para a atravessar.",
     "responses": {
       "committed": "Vou arrepender-me e confiar em Cristo",
       "thinking": "Quero pensar sobre isto",
@@ -172,7 +172,7 @@
   },
   "nextSteps": {
     "cta": "E agora?",
-    "dismissedReturn": "Mudaste de ideias? O plano de leitura está sempre aberto.",
+    "dismissedReturn": "Mudaste de ideias? O plano de leitura está à tua espera — começa hoje.",
     "trackA": {
       "welcome": "Algo acabou de mudar.",
       "whatHappened": "Reconheceste que quebraste a Lei de Deus. E tomaste a decisão de te arrepender — de abandonar o teu pecado — e de colocar a tua confiança somente em Jesus Cristo.\n\nSe te arrependeste genuinamente e confiaste no Salvador, Deus perdoou todos os pecados que alguma vez cometeste e concedeu-te a vida eterna. Não porque o mereceste — mas por causa do que Cristo fez na cruz.\n\n\"Assim que, se alguém está em Cristo, nova criatura é; as coisas velhas já passaram; eis que tudo se fez novo.\" — 2 Coríntios 5:17 (ACF)",
@@ -202,14 +202,14 @@
         "O que seria preciso para investigares isto mais a fundo?"
       ],
       "readingHeading": "Uma coisa para ler",
-      "readingBody": "Quando estiveres pronto, lê João capítulo 3. É uma conversa entre Jesus e um homem que tinha perguntas como as tuas.",
+      "readingBody": "Lê João capítulo 3 — hoje, não um dia destes. É uma conversa entre Jesus e um homem que tinha perguntas como as tuas.",
       "readingLink": "https://www.bible.com/bible/212/JHN.3.ARC",
       "readingLinkLabel": "Ler João 3",
       "readingPlanLabel": "Plano de leitura de 7 dias",
       "learnHeading": "Queres os fundamentos?",
       "learnBody": "Explicações curtas e honestas sobre as perguntas essenciais — quem Jesus afirmou ser, porque é que importa, o que é a graça.",
       "learnLinkLabel": "Explorar os temas",
-      "comeBack": "Este site estará aqui sempre que estiveres pronto. Guarda nos favoritos, ou começa o plano de leitura quando achares que é a altura."
+      "comeBack": "Volta a isto — mas não o deixes na prateleira. Nunca é tarde demais enquanto respiras. Nunca é seguro contar com outra oportunidade."
     }
   },
   "readingPlan": {
@@ -916,7 +916,7 @@
     "provocativeQuestion": "Se morresses hoje, onde passarias a eternidade?",
     "mortalityStat": "10 / 10 pessoas vão morrer",
     "ctaButton": "Faz o teste",
-    "secondaryLink": "Ainda não? Sabe mais",
+    "secondaryLink": "Tens perguntas primeiro? Sabe mais",
     "blogCard": { "eyebrow": "Do blog" },
     "facts": [
       "No ano passado, 56 milhões de pessoas morreram em todo o mundo.",
@@ -986,7 +986,7 @@
         "retakeLabel": "Faz o teste outra vez"
       },
       "dismissed": {
-        "line": "Está bem. A porta continua aberta.",
+        "line": "A porta continua aberta. O amanhã não está prometido.",
         "retakeCta": "Faz o teste outra vez"
       }
     }

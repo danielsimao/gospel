@@ -155,8 +155,8 @@
     "eyebrow": "The decision",
     "heading": "What will you do with this?",
     "committedEncouragement": "Today is the beginning.",
-    "thinkingEncouragement": "Take your time. This will be here when you're ready.",
-    "dismissedEncouragement": "That's okay. The door stays open.",
+    "thinkingEncouragement": "Think it through honestly — that's fair. Just don't let 'later' quietly become 'never'. No one is promised tomorrow.",
+    "dismissedEncouragement": "The door stays open — but no one is promised tomorrow to walk through it.",
     "responses": {
       "committed": "I will repent and trust in Christ",
       "thinking": "I want to think about it",
@@ -172,7 +172,7 @@
   },
   "nextSteps": {
     "cta": "What now?",
-    "dismissedReturn": "Changed your mind? The reading plan is always open.",
+    "dismissedReturn": "Changed your mind? The reading plan is waiting — start today.",
     "trackA": {
       "welcome": "Something just changed.",
       "whatHappened": "You acknowledged that you've broken God's Law. And you've made the decision to repent — to turn from your sin — and to place your trust in Jesus Christ alone.\n\nIf you've genuinely repented and trusted in the Saviour, God has forgiven every sin you've ever committed and granted you eternal life. Not because you earned it — but because of what Christ did on the cross.\n\n\"Therefore, if anyone is in Christ, he is a new creation; old things have passed away; behold, all things have become new.\" — 2 Corinthians 5:17 (NKJV)",
@@ -202,14 +202,14 @@
         "What would it take for you to investigate this further?"
       ],
       "readingHeading": "One thing to read",
-      "readingBody": "When you're ready, read John chapter 3. It's a conversation between Jesus and a man who had questions just like yours.",
+      "readingBody": "Read John chapter 3 — today, not someday. It's a conversation between Jesus and a man who had questions just like yours.",
       "readingLink": "https://www.bible.com/bible/114/JHN.3.NKJV",
       "readingLinkLabel": "Read John 3",
       "readingPlanLabel": "7-day reading plan",
       "learnHeading": "Want the foundations?",
       "learnBody": "Short, honest explanations of the core questions — who Jesus claimed to be, why it matters, what grace is.",
       "learnLinkLabel": "Explore the topics",
-      "comeBack": "This site will be here whenever you're ready. Bookmark it, or start the reading plan when the time is right."
+      "comeBack": "Come back to this — but don't shelve it. It's never too late while you're breathing. It's never safe to count on another chance."
     }
   },
   "readingPlan": {
@@ -916,7 +916,7 @@
     "provocativeQuestion": "If you died today, where will you spend eternity?",
     "mortalityStat": "10 / 10 people will die",
     "ctaButton": "Take the test",
-    "secondaryLink": "Not ready? Learn more",
+    "secondaryLink": "Have questions first? Learn more",
     "blogCard": { "eyebrow": "From the blog" },
     "facts": [
       "Last year, 56 million people died worldwide.",
@@ -986,7 +986,7 @@
         "retakeLabel": "Take the test again"
       },
       "dismissed": {
-        "line": "That's okay. The door stays open.",
+        "line": "The door stays open. Tomorrow isn't promised.",
         "retakeCta": "Take the test again"
       }
     }
