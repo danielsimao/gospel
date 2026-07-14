@@ -166,4 +166,41 @@ describe("gameReducer", () => {
       expect(state.score).toBe(Math.max(0, INITIAL_SCORE - totalHonestDrain));
     });
   });
+
+  describe("UNDO_ANSWER", () => {
+    it("pops the last answer, restores score exactly, and clears currentAnswer", () => {
+      let state = gameReducer(initialGameState, { type: "START_GAME" });
+      const scoreBefore = state.score;
+      state = gameReducer(state, { type: "ANSWER_QUESTION", answer: "honest" });
+      expect(state.answers).toHaveLength(1);
+      state = gameReducer(state, { type: "UNDO_ANSWER" });
+      expect(state.answers).toHaveLength(0);
+      expect(state.score).toBe(scoreBefore);
+      expect(state.currentAnswer).toBeNull();
+      expect(state.showFollowUp).toBe(false);
+      expect(state.currentQuestion).toBe(0);
+      expect(state.questionStartedAt).not.toBeNull();
+    });
+
+    it("restores score exactly across multiple answers (fold replay)", () => {
+      let state = gameReducer(initialGameState, { type: "START_GAME" });
+      state = gameReducer(state, { type: "ANSWER_QUESTION", answer: "honest" });
+      state = gameReducer(state, { type: "ADVANCE_AFTER_FOLLOWUP" });
+      const scoreAfterQ1 = state.score;
+      state = gameReducer(state, { type: "ANSWER_QUESTION", answer: "justify" });
+      state = gameReducer(state, { type: "UNDO_ANSWER" });
+      expect(state.score).toBe(scoreAfterQ1);
+      expect(state.answers).toHaveLength(1);
+    });
+
+    it("is a no-op when nothing is answered or phase is not playing", () => {
+      let state = gameReducer(initialGameState, { type: "START_GAME" });
+      expect(gameReducer(state, { type: "UNDO_ANSWER" })).toBe(state);
+      state = gameReducer(state, { type: "ANSWER_QUESTION", answer: "honest" });
+      state = gameReducer(state, { type: "ADVANCE_AFTER_FOLLOWUP" });
+      // advanced — currentAnswer is null again, undo must not eat the recorded answer
+      const afterAdvance = gameReducer(state, { type: "UNDO_ANSWER" });
+      expect(afterAdvance).toBe(state);
+    });
+  });
 });

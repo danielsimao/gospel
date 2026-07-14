@@ -60,6 +60,31 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
     }
 
+    case "UNDO_ANSWER": {
+      // Mis-tap protection only: valid while the answer awaits confirmation
+      // (Next not yet tapped). Once ADVANCE_AFTER_FOLLOWUP runs, testimony
+      // is recorded and there is no way back — by design.
+      if (state.phase !== "playing") return state;
+      if (!state.currentAnswer || state.answers.length === 0) return state;
+
+      const remaining = state.answers.slice(0, -1);
+      // Replay the drains from scratch — exact inverse even when the
+      // per-answer clamp at 0 made subtraction non-invertible.
+      const score = remaining.reduce(
+        (s, a) => Math.max(0, s + a.scoreChange),
+        INITIAL_SCORE,
+      );
+
+      return {
+        ...state,
+        score,
+        answers: remaining,
+        currentAnswer: null,
+        showFollowUp: false,
+        questionStartedAt: Date.now(),
+      };
+    }
+
     case "SHOW_FOLLOWUP":
       if (state.phase !== "playing" || state.currentAnswer !== "justify") {
         return state;

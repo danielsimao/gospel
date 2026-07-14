@@ -47,6 +47,7 @@ export type GameAction =
   | { type: "SHOW_GRACE" }
   | { type: "SHOW_INVITATION" }
   | { type: "SET_INVITATION_RESPONSE"; response: InvitationResponse }
+  | { type: "UNDO_ANSWER" }
   | {
       type: "RESUME_SESSION";
       session: {
