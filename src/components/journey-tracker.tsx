@@ -2,13 +2,8 @@
 
 import Link from "next/link";
 import { ShareButtons } from "@/components/share-buttons";
-import { resetJourney } from "@/lib/journey-storage";
 import { TOTAL_READING_DAYS, type JourneySnapshot } from "@/lib/use-journey";
-import { clearSession } from "@/lib/test-session-storage";
-import {
-  trackHomeJourneyStepClicked,
-  trackHomeRetakeClicked,
-} from "@/lib/eternity-analytics";
+import { trackHomeJourneyStepClicked } from "@/lib/eternity-analytics";
 import type { JourneyMessages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 
@@ -158,17 +153,6 @@ export function JourneyTracker({
         }
       />
 
-      <Link
-        href={`/${locale}/test`}
-        onClick={() => {
-          trackHomeRetakeClicked();
-          resetJourney();
-          clearSession();
-        }}
-        className="mt-3 self-center font-mono text-[10px] uppercase tracking-[2px] text-white/40 transition-colors hover:text-white/60"
-      >
-        {messages.retakeLabel}
-      </Link>
     </div>
   );
 }

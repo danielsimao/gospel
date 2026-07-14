@@ -268,6 +268,21 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
                   </span>
                 </div>
               </Link>
+              {/* Retake — quiet sentence-case escape hatch at the very end.
+                  It resets the whole journey; it must never wear the mono-
+                  uppercase header costume or sit between card groups (it
+                  read as a section title for whatever followed). */}
+              <Link
+                href={`/${locale}/test`}
+                onClick={() => {
+                  trackHomeRetakeClicked();
+                  resetJourney();
+                  clearSession();
+                }}
+                className="mt-5 text-[11px] text-white/30 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/50"
+              >
+                {home.journey.retakeLabel}
+              </Link>
             </div>
           )}
 
@@ -380,6 +395,8 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
               >
                 {home.journeyStages.thinking.commitLabel}
               </Button>
+              {/* Quiet sentence-case retake — mono-uppercase here read as a
+                  section header for the block below it. */}
               <Link
                 href={`/${locale}/test`}
                 onClick={() => {
@@ -387,7 +404,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
                   resetJourney();
                   clearSession();
                 }}
-                className="mt-1 font-mono text-[10px] uppercase tracking-[2px] text-white/35 transition-colors hover:text-white/55"
+                className="mt-2 text-[11px] text-white/30 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/50"
               >
                 {home.journeyStages.thinking.retakeLabel}
               </Link>
