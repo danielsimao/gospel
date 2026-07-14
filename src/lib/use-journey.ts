@@ -12,6 +12,10 @@ export interface JourneySnapshot {
   stage: JourneyStage;
   readingDone: number;
   learnDone: number;
+  /** Whole days since the verdict was reached; null before the test. */
+  daysSinceTest: number | null;
+  /** Whole days since the invitation response; null before a response. */
+  daysSinceResponse: number | null;
   /** false on the server and the first client render; true once localStorage has been read. */
   ready: boolean;
 }
@@ -20,21 +24,33 @@ const EMPTY_SNAPSHOT: JourneySnapshot = {
   stage: "visitor",
   readingDone: 0,
   learnDone: 0,
+  daysSinceTest: null,
+  daysSinceResponse: null,
   ready: false,
 };
+
+const DAY_MS = 86_400_000;
+
+function daysSince(timestamp: number | null): number | null {
+  if (typeof timestamp !== "number") return null;
+  return Math.max(0, Math.floor((Date.now() - timestamp) / DAY_MS));
+}
 
 /** Pure snapshot read for init-once call sites that don't need subscriptions. */
 export function computeJourneySnapshot(
   topicSlugs: readonly string[],
 ): JourneySnapshot {
   try {
+    const record = readJourney();
     return {
-      stage: deriveStage(readJourney()),
+      stage: deriveStage(record),
       readingDone: getCompletedCount(readProgress(), TOTAL_READING_DAYS),
       learnDone: topicSlugs.reduce(
         (n, slug) => (isTopicCompleted(slug) ? n + 1 : n),
         0,
       ),
+      daysSinceTest: daysSince(record.testCompletedAt),
+      daysSinceResponse: daysSince(record.respondedAt),
       ready: true,
     };
   } catch {

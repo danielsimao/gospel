@@ -23,22 +23,22 @@
     "backLabel": "Sair",
     "changeAnswerLabel": "Mudar a minha resposta",
     "verdictLabels": {
-      "9th": "mentiroso",
-      "8th": "ladrao",
-      "7th": "adultero",
-      "6th": "assassino de coracao",
-      "3rd": "blasfemo",
-      "10th": "cobicoso",
-      "1st": "idolatra",
-      "5th": "desonrador"
+      "9th": "um mentiroso",
+      "8th": "um ladrão",
+      "7th": "um adúltero",
+      "6th": "um assassino no coração",
+      "3rd": "um blasfemo",
+      "10th": "um cobiçoso",
+      "1st": "um idólatra",
+      "5th": "um desonrador"
     },
     "verdict": {
       "prelude": "O veredicto",
       "deathLineTemplate": "pessoas morreram enquanto respondias. Tu podes ser o pr\u00f3ximo.",
       "bridgeButton": "Ha alguma esperanca?",
-      "confessionAdmitted": "Um {list} — pela tua propria confissao.",
-      "confessionDenied": "Um {list} — pelas tuas evasivas.",
-      "confessionBoth": "Um {admitted} — pela tua propria confissao. E um {denied} — pelas tuas evasivas.",
+      "confessionAdmitted": "És {list} — pela tua própria confissão.",
+      "confessionDenied": "És {list} — pelas tuas evasivas.",
+      "confessionBoth": "És {admitted} — pela tua própria confissão. E {denied} — pelas tuas evasivas.",
       "separator": "e",
       "useOxfordComma": false,
       "noneLabel": "Culpado na mesma."
@@ -942,9 +942,16 @@
       "retakeLabel": "Fazer o teste novamente"
     },
     "journeyStages": {
+      "since": {
+        "today": "hoje mesmo",
+        "yesterday": "ontem",
+        "daysAgo": "há {n} dias",
+        "weeksAgo": "há {n} semanas"
+      },
       "undecided": {
         "eyebrow": "O veredicto mantém-se",
         "heading": "Viste o veredicto. O que vais fazer com ele?",
+        "sinceLine": "Isso foi {when}. A pergunta continua à espera.",
         "cta": "Volta onde ficaste"
       },
       "committed": {
@@ -957,6 +964,7 @@
       },
       "thinking": {
         "eyebrow": "A pergunta continua em aberto",
+        "sinceLine": "Disseste que ias pensar nisso {when}.",
         "reflection": "O desconforto que sentes pode ser a tua consciência a concordar com o padrão de Deus. Leva-o a sério.",
         "johnCard": {
           "label": "Lê João 3",

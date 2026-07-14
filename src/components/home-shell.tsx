@@ -55,6 +55,17 @@ interface HomeShellProps {
   } | null;
 }
 
+/** "earlier today" / "yesterday" / "{n} days ago" / "{n} weeks ago" — pure. */
+function sincePhrase(
+  days: number,
+  m: { today: string; yesterday: string; daysAgo: string; weeksAgo: string },
+): string {
+  if (days <= 0) return m.today;
+  if (days === 1) return m.yesterday;
+  if (days < 14) return m.daysAgo.replace("{n}", String(days));
+  return m.weeksAgo.replace("{n}", String(Math.floor(days / 7)));
+}
+
 const RATE_CARDS = [
   { value: "1.8", key: "perSecond" },
   { value: "108", key: "perMinute" },
@@ -273,6 +284,16 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
               <h1 className="mt-3 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-4 sm:text-3xl">
                 {home.journeyStages.undecided.heading}
               </h1>
+              {/* Temporal mirror — the honest urgency device: how long "later"
+                  has already lasted, stated once, no pressure mechanics. */}
+              {journey.daysSinceTest !== null && (
+                <p className="mt-3 max-w-sm text-center text-[13px] italic leading-relaxed text-white/55">
+                  {home.journeyStages.undecided.sinceLine.replace(
+                    "{when}",
+                    sincePhrase(journey.daysSinceTest, home.journeyStages.since),
+                  )}
+                </p>
+              )}
               <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
                 <Button variant="gold" size="lg" mist>
                   {home.journeyStages.undecided.cta}
@@ -292,6 +313,14 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
                 </span>
                 <span className="h-px w-6 bg-[#D4A843]/30" />
               </div>
+              {journey.daysSinceResponse !== null && (
+                <p className="text-center text-[13px] italic leading-relaxed text-white/55">
+                  {home.journeyStages.thinking.sinceLine.replace(
+                    "{when}",
+                    sincePhrase(journey.daysSinceResponse, home.journeyStages.since),
+                  )}
+                </p>
+              )}
               <p className="text-center text-sm leading-relaxed text-white/70">
                 {home.journeyStages.thinking.reflection}
               </p>

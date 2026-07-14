@@ -91,7 +91,7 @@ export function JourneyTracker({
   const shareState = stateFor("share");
 
   return (
-    <div className="mt-10 flex w-full max-w-md flex-col gap-3 sm:mt-14">
+    <div className="mt-10 flex w-full max-w-md flex-col sm:mt-14">
       <JourneyCard
         number="01"
         state={testState}
@@ -103,6 +103,8 @@ export function JourneyTracker({
         }
         /* Test has no href: complete → plain div, active would be handled by new-visitor branch */
       />
+
+      <Rail filled={testComplete} />
 
       <JourneyCard
         number="02"
@@ -119,6 +121,8 @@ export function JourneyTracker({
         }
       />
 
+      <Rail filled={readingComplete} />
+
       <JourneyCard
         number="03"
         state={learnState}
@@ -131,6 +135,8 @@ export function JourneyTracker({
         }
         onClick={() => trackHomeJourneyStepClicked("learn", learnState)}
       />
+
+      <Rail filled={learnComplete} />
 
       <JourneyCard
         number="04"
@@ -164,6 +170,20 @@ export function JourneyTracker({
         {messages.retakeLabel}
       </Link>
     </div>
+  );
+}
+
+/**
+ * Vertical connector between journey cards — the timeline rail. Gold once
+ * the step above is complete, faint otherwise. Replaces the old flex gap,
+ * so the card rhythm stays ~16px.
+ */
+function Rail({ filled }: { filled: boolean }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`h-4 w-px self-center ${filled ? "bg-[#D4A843]/45" : "bg-white/[0.08]"}`}
+    />
   );
 }
 

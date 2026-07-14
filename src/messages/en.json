@@ -942,9 +942,16 @@
       "retakeLabel": "Take the test again"
     },
     "journeyStages": {
+      "since": {
+        "today": "earlier today",
+        "yesterday": "yesterday",
+        "daysAgo": "{n} days ago",
+        "weeksAgo": "{n} weeks ago"
+      },
       "undecided": {
         "eyebrow": "The verdict stands",
         "heading": "You've seen the verdict. What will you do with it?",
+        "sinceLine": "That was {when}. The question is still waiting.",
         "cta": "Return to where you left off"
       },
       "committed": {
@@ -957,6 +964,7 @@
       },
       "thinking": {
         "eyebrow": "The question is still open",
+        "sinceLine": "You said you'd think about it {when}.",
         "reflection": "The discomfort you feel might be your conscience agreeing with God's standard. Take it seriously.",
         "johnCard": {
           "label": "Read John 3",

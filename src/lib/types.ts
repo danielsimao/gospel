@@ -95,9 +95,16 @@ export interface JourneyMessages {
 }
 
 export interface JourneyStagesMessages {
+  since: {
+    today: string;
+    yesterday: string;
+    daysAgo: string;
+    weeksAgo: string;
+  };
   undecided: {
     eyebrow: string;
     heading: string;
+    sinceLine: string;
     cta: string;
   };
   committed: {
@@ -107,6 +114,7 @@ export interface JourneyStagesMessages {
   };
   thinking: {
     eyebrow: string;
+    sinceLine: string;
     reflection: string;
     johnCard: { label: string; description: string; url: string };
     learnCard: { label: string; description: string };
