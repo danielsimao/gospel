@@ -141,6 +141,7 @@ export interface TestMessages {
   seeVerdictLabel: string;
   commandmentLabel: string;
   backLabel: string;
+  changeAnswerLabel: string;
   verdictLabels: Record<string, string>;
   verdict: {
     prelude: string;

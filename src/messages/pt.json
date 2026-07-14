@@ -20,7 +20,8 @@
     "nextLabel": "Seguinte",
     "seeVerdictLabel": "Ver veredicto",
     "commandmentLabel": "Mandamento",
-    "backLabel": "Voltar",
+    "backLabel": "Sair",
+    "changeAnswerLabel": "Mudar a minha resposta",
     "verdictLabels": {
       "9th": "mentiroso",
       "8th": "ladrao",

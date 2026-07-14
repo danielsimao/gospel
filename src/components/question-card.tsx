@@ -6,7 +6,7 @@ import { useGameDispatch, useGameState } from "@/components/game-provider";
 import { FollowUp } from "@/components/follow-up";
 import { ExaminationLedger } from "@/components/examination-ledger";
 import { Button, ButtonArrow } from "@/components/ui/button";
-import { trackQuestionAnswered, trackFollowupShown } from "@/lib/analytics";
+import { trackQuestionAnswered, trackFollowupShown, trackAnswerChanged } from "@/lib/analytics";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import { QUESTION_CONFIGS, TOTAL_QUESTIONS } from "@/lib/questions";
 import type { AnswerType, TestMessages } from "@/lib/types";
@@ -107,7 +107,7 @@ export function QuestionCard({
   const canShowVerdictShortcut = state.answers.length >= 3 && !isLastQuestion;
 
   return (
-    <div className="grid flex-1 grid-rows-[auto_1fr_auto] px-4 py-6 sm:px-6">
+    <div className="grid flex-1 grid-rows-[auto_1fr] px-4 py-6 sm:px-6">
       {/* Row 1: Examination ledger — pinned to top; enters just behind the
           card on phase entry (mounts once, not per question) */}
       <m.div
@@ -232,12 +232,59 @@ export function QuestionCard({
                           <ButtonArrow />
                         </Button>
                       </m.div>
+
+                      <m.button
+                        type="button"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.4, delay: answered === "justify" ? 0.8 : 0.7 }}
+                        onClick={() => {
+                          if (answered) trackAnswerChanged(question.id, answered);
+                          dispatch({ type: "UNDO_ANSWER" });
+                        }}
+                        className="mt-3 w-full text-center font-mono text-[10px] uppercase tracking-[2px] text-white/35 transition-colors hover:text-white/55"
+                      >
+                        {testMessages.changeAnswerLabel}
+                      </m.button>
                     </m.div>
                   )}
                 </AnimatePresence>
               </div>
             </m.div>
           </AnimatePresence>
+          {state.answers.length > 0 && (
+            <m.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mt-5 flex w-full max-w-xs flex-wrap justify-center gap-1.5 sm:max-w-sm"
+            >
+              {state.answers.map((answer, i) => {
+                const label = testMessages.verdictLabels[answer.commandment];
+                if (!label) return null;
+                const isJustified = answer.answer === "justify";
+                return (
+                  <m.div
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: isJustified ? 0.5 : 1, scale: 1 }}
+                    transition={{ duration: 0.18, ease: EASE_OUT_STRONG }}
+                    className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 ${
+                      isJustified
+                        ? "border-dashed border-red-900/30 bg-red-950/10"
+                        : "border-red-900/40 bg-red-950/25"
+                    }`}
+                  >
+                    <span className="font-mono text-[9px] tabular-nums text-red-400/75">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="font-mono text-[10px] lowercase italic text-red-400/85">
+                      {label}
+                    </span>
+                  </m.div>
+                );
+              })}
+            </m.div>
+          )}
           <div className="mt-4 flex h-9 items-center justify-center">
             {canShowVerdictShortcut && (
               <m.button
@@ -262,43 +309,6 @@ export function QuestionCard({
               </m.button>
             )}
           </div>
-      </div>
-
-      {/* Row 3: Answered chips — pinned to bottom */}
-      <div className="flex min-h-[76px] flex-col items-center justify-start gap-3">
-        {state.answers.length > 0 && (
-          <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mt-5 flex w-full max-w-xs flex-wrap justify-center gap-1.5 sm:max-w-sm"
-          >
-            {state.answers.map((answer, i) => {
-              const label = testMessages.verdictLabels[answer.commandment];
-              if (!label) return null;
-              const isJustified = answer.answer === "justify";
-              return (
-                <m.div
-                  key={i}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: isJustified ? 0.5 : 1, scale: 1 }}
-                  transition={{ duration: 0.18, ease: EASE_OUT_STRONG }}
-                  className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 ${
-                    isJustified
-                      ? "border-dashed border-red-900/30 bg-red-950/10"
-                      : "border-red-900/40 bg-red-950/25"
-                  }`}
-                >
-                  <span className="font-mono text-[9px] tabular-nums text-red-400/75">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="font-mono text-[10px] lowercase italic text-red-400/85">
-                    {label}
-                  </span>
-                </m.div>
-              );
-            })}
-          </m.div>
-        )}
       </div>
     </div>
   );

@@ -39,6 +39,10 @@ export function trackFollowupShown(questionId: number) {
   safeCapture("question_followup_shown", { questionId });
 }
 
+export function trackAnswerChanged(questionId: number, from: "honest" | "justify") {
+  safeCapture("answer_changed", { questionId, from });
+}
+
 export function trackGameAbandoned(
   lastQuestionId: number,
   scoreAtExit: number,

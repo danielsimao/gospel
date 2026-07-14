@@ -20,7 +20,8 @@
     "nextLabel": "Next",
     "seeVerdictLabel": "See verdict",
     "commandmentLabel": "Commandment",
-    "backLabel": "Back",
+    "backLabel": "Exit",
+    "changeAnswerLabel": "Change my answer",
     "verdictLabels": {
       "9th": "a liar",
       "8th": "a thief",
