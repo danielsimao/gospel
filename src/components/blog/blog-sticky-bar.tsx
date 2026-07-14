@@ -21,12 +21,18 @@ interface BlogStickyBarProps {
   };
 }
 
+/** Scroll must be idle this long before the bar may appear — a reader
+ *  mid-fling never sees it; someone who pauses to read does. */
+const SCROLL_IDLE_MS = 450;
+
 /**
  * Bottom bar carrying the site's core question for cold blog readers.
  * Shows only for visitor/undecided/thinking-stage users, only after the
- * consent banner is answered (both are bottom-fixed — never stack), only
- * past 40% scroll, and hides while the personal-turn block is on screen
- * (one ask per viewport).
+ * consent banner is answered (both are bottom-fixed — never stack), and
+ * hides while the personal-turn block is on screen (one ask per viewport).
+ * Appearance is deliberately calm: passing 40% scroll only ARMS the bar
+ * (latched — scrolling back up doesn't re-hide it); it actually slides in
+ * only once scrolling pauses, so it never flashes past a moving reader.
  */
 export function BlogStickyBar({ slug, locale, messages }: BlogStickyBarProps) {
   const { stage, ready } = useJourney();
@@ -35,27 +41,50 @@ export function BlogStickyBar({ slug, locale, messages }: BlogStickyBarProps) {
     hasAnsweredConsent,
     () => false,
   );
-  const [scrolledEnough, setScrolledEnough] = useState(false);
+  const [shown, setShown] = useState(false);
   const [turnVisible, setTurnVisible] = useState(false);
 
   useEffect(() => {
+    let armed = false; // latched once 40% is crossed — never disarms
+    let idleTimer: ReturnType<typeof setTimeout>;
+
     function onScroll() {
       const doc = document.documentElement;
       const scrollable = doc.scrollHeight - window.innerHeight;
-      setScrolledEnough(scrollable > 0 && window.scrollY / scrollable >= 0.4);
+      // Arm halfway to the personal-turn block (capped at 40% of the page).
+      // Below-turn chrome (references, share, footer) inflates the page, so
+      // a plain 40%-of-scroll threshold can sit a flash away from the
+      // turn-yield point on mobile — content distance is the honest measure.
+      const turn = document.getElementById("personal-turn");
+      const turnEntryY = turn
+        ? turn.getBoundingClientRect().top + window.scrollY - window.innerHeight
+        : Infinity;
+      const armPoint = Math.min(scrollable * 0.4, turnEntryY * 0.5);
+      if (scrollable > 0 && window.scrollY >= armPoint) {
+        armed = true;
+      }
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        // Both latches: once the bar has appeared it stays through further
+        // scrolling — appearing mid-motion (or blinking per scroll step) is
+        // exactly the aggression this timer exists to avoid.
+        if (armed) setShown(true);
+      }, SCROLL_IDLE_MS);
     }
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      clearTimeout(idleTimer);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   useEffect(() => {
     const turn = document.getElementById("personal-turn");
     if (!turn) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setTurnVisible(entry.isIntersecting),
-      { rootMargin: "0px 0px 10% 0px" },
-    );
+    // No anticipatory margin — yield only while the block is genuinely on
+    // screen, otherwise the visible window shrinks to a flash on short posts.
+    const observer = new IntersectionObserver(([entry]) => setTurnVisible(entry.isIntersecting));
     observer.observe(turn);
     return () => observer.disconnect();
   }, []);
@@ -73,7 +102,7 @@ export function BlogStickyBar({ slug, locale, messages }: BlogStickyBarProps) {
           ? { question: messages.thinkingQuestion, cta: messages.thinkingCta, href: `/${locale}/next-steps` }
           : null;
 
-  const visible = ready && ask !== null && consentAnswered && scrolledEnough && !turnVisible;
+  const visible = ready && ask !== null && consentAnswered && shown && !turnVisible;
 
   return (
     <AnimatePresence>
