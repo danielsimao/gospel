@@ -1,6 +1,6 @@
 {
   "landing": {
-    "title": "Tu es uma boa pessoa?",
+    "title": "Tu és uma boa pessoa?",
     "cta": "Começar o teste",
     "label": "Teste",
     "subtitle": "A Lei de Deus. Seis perguntas. Um veredicto."
@@ -13,7 +13,7 @@
   "test": {
     "caseLabel": "Teste",
     "guiltLabel": "Culpa",
-    "counterLabel": "morreram desde que abriste esta pagina",
+    "counterLabel": "morreram desde que abriste esta página",
     "liveBadge": "ao vivo",
     "answeredBadge": "Admitiu",
     "justifiedBadge": "Negou",
@@ -35,7 +35,7 @@
     "verdict": {
       "prelude": "O veredicto",
       "deathLineTemplate": "pessoas morreram enquanto respondias. Tu podes ser o pr\u00f3ximo.",
-      "bridgeButton": "Ha alguma esperanca?",
+      "bridgeButton": "Há alguma esperança?",
       "confessionAdmitted": "És {list} — pela tua própria confissão.",
       "confessionDenied": "És {list} — pelas tuas evasivas.",
       "confessionBoth": "És {admitted} — pela tua própria confissão. E {denied} — pelas tuas evasivas.",
@@ -48,61 +48,61 @@
     {
       "id": 1,
       "text": "Alguma vez mentiste — mesmo uma mentira pequena?",
-      "commandment": "Nao diras falso testemunho",
-      "honestLabel": "Sim, ja menti",
+      "commandment": "Não dirás falso testemunho",
+      "honestLabel": "Sim, já menti",
       "justifyLabel": "Nada de grave",
-      "followUp": "E uma 'mentirinha' para nao magoar alguem?",
+      "followUp": "E uma 'mentirinha' para não magoar alguém?",
       "honestFollowUp": "Mesmo uma só mentira. Uma 'mentirinha piedosa,' um exagero, uma meia-verdade — pelo padrão de Deus, isso faz de ti um mentiroso."
     },
     {
       "id": 2,
-      "text": "Alguma vez tiraste algo que nao era teu — mesmo algo pequeno?",
-      "commandment": "Nao furtaras",
-      "honestLabel": "Sim, ja tirei",
+      "text": "Alguma vez tiraste algo que não era teu — mesmo algo pequeno?",
+      "commandment": "Não furtarás",
+      "honestLabel": "Sim, já tirei",
       "justifyLabel": "Nada significativo",
       "followUp": "Alguma vez ficaste com troco a mais, ou fizeste download de algo sem pagar?",
       "honestFollowUp": "Independentemente do valor — uma caneta, o tempo de alguém, o crédito pelo trabalho de outro. O valor não importa. O acto importa."
     },
     {
       "id": 3,
-      "text": "Alguma vez olhaste para alguem com desejo impuro?",
-      "commandment": "Nao adulteraras",
-      "honestLabel": "Sim, ja olhei",
-      "justifyLabel": "Acho que nao",
-      "followUp": "Jesus disse: 'qualquer que atentar numa mulher para a cobicar, ja em seu coracao cometeu adulterio com ela.' — Mateus 5:28 (ACF)",
+      "text": "Alguma vez olhaste para alguém com desejo impuro?",
+      "commandment": "Não adulterarás",
+      "honestLabel": "Sim, já olhei",
+      "justifyLabel": "Acho que não",
+      "followUp": "Jesus disse: 'qualquer que atentar numa mulher para a cobiçar, já em seu coração cometeu adultério com ela.' — Mateus 5:28 (ACF)",
       "honestFollowUp": "Jesus disse que olhar com desejo é adultério no coração. Não pelo padrão da cultura — pelo padrão de Deus."
     },
     {
       "id": 4,
-      "text": "Alguma vez tiveste tanta raiva que desejaste mal a alguem?",
-      "commandment": "Nao mataras",
-      "honestLabel": "Sim, ja tive",
+      "text": "Alguma vez tiveste tanta raiva que desejaste mal a alguém?",
+      "commandment": "Não matarás",
+      "honestLabel": "Sim, já tive",
       "justifyLabel": "Nunca tanto assim",
-      "followUp": "Mesmo um momento de odio — Jesus disse: 'qualquer que, sem motivo, se encolerizar contra seu irmao, estara sujeito a julgamento.' — Mateus 5:22 (ACF)",
+      "followUp": "Mesmo um momento de ódio — Jesus disse: 'qualquer que, sem motivo, se encolerizar contra seu irmão, estará sujeito a julgamento.' — Mateus 5:22 (ACF)",
       "honestFollowUp": "Jesus equiparou a ira injusta ao homicídio. O ódio no teu coração é suficiente."
     },
     {
       "id": 5,
-      "text": "Alguma vez usaste o nome de Deus como palavrao?",
-      "commandment": "Nao tomaras o nome do Senhor teu Deus em vao",
-      "honestLabel": "Sim, ja usei",
-      "justifyLabel": "Nao de proposito",
-      "followUp": "Mesmo um 'Ai meu Deus' descuidado — usar o nome do Criador sem reverencia?",
+      "text": "Alguma vez usaste o nome de Deus como palavrão?",
+      "commandment": "Não tomarás o nome do Senhor teu Deus em vão",
+      "honestLabel": "Sim, já usei",
+      "justifyLabel": "Não de propósito",
+      "followUp": "Mesmo um 'Ai meu Deus' descuidado — usar o nome do Criador sem reverência?",
       "honestFollowUp": "Usaste o nome do Deus que te deu vida como uma palavra descartável. Isso é blasfémia."
     },
     {
       "id": 7,
-      "text": "Alguma vez colocaste algo — dinheiro, carreira, relacoes — acima de Deus?",
-      "commandment": "Nao teras outros deuses diante de mim",
-      "honestLabel": "Sim, ja coloquei",
-      "justifyLabel": "Nao penso nisso",
-      "followUp": "Se passaste mais tempo no telemovel do que a pensar no teu Criador...",
+      "text": "Alguma vez colocaste algo — dinheiro, carreira, relações — acima de Deus?",
+      "commandment": "Não terás outros deuses diante de mim",
+      "honestLabel": "Sim, já coloquei",
+      "justifyLabel": "Não penso nisso",
+      "followUp": "Se passaste mais tempo no telemóvel do que a pensar no teu Criador...",
       "honestFollowUp": "Qualquer coisa que ames, confies ou sirvas mais do que Deus é um ídolo. Não tem de ser uma estátua."
     }
   ],
   "verdict": {
     "title": "Culpado.",
-    "subtitle": "Pelo padrao perfeito de Deus, nenhum de nos e suficientemente bom."
+    "subtitle": "Pelo padrão perfeito de Deus, nenhum de nós é suficientemente bom."
   },
   "grace": {
     "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unig\u00e9nito, para que todo aquele que nele cr\u00ea n\u00e3o pere\u00e7a, mas tenha a vida eterna.",
@@ -148,9 +148,9 @@
     "learnMoreLabel": "Aprende mais sobre o evangelho"
   },
   "share": {
-    "prompt": "Partilha com alguem",
-    "whatsappMessage": "Tu es uma boa pessoa? Faz este teste e descobre:",
-    "telegramMessage": "Tu es uma boa pessoa? Faz este teste e descobre:",
+    "prompt": "Partilha com alguém",
+    "whatsappMessage": "Tu és uma boa pessoa? Faz este teste e descobre:",
+    "telegramMessage": "Tu és uma boa pessoa? Faz este teste e descobre:",
     "linkCopied": "Link copiado!"
   },
   "nextSteps": {
@@ -894,8 +894,8 @@
     ]
   },
   "meta": {
-    "title": "Tu es uma Boa Pessoa? | Faz o Teste",
-    "description": "A maioria das pessoas pensa que e boa. Descobre onde realmente estas."
+    "title": "Tu és uma Boa Pessoa? | Faz o Teste",
+    "description": "A maioria das pessoas pensa que é boa. Descobre onde realmente estás."
   },
   "home": {
     "provocativeQuestion": "Se morresses hoje, onde passarias a eternidade?",
@@ -994,7 +994,7 @@
       "perDay": "por dia"
     },
     "counter": {
-      "label": "pessoas morreram desde que abriste esta pagina",
+      "label": "pessoas morreram desde que abriste esta página",
       "liveBadge": "ao vivo"
     },
     "meta": {
