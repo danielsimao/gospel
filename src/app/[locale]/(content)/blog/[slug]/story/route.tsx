@@ -80,7 +80,7 @@ export async function GET(
               color: OG_GOLD,
             }}
           >
-            GOSPEL
+            {locale === "pt" ? "SE MORRESSES HOJE" : "IF YOU DIED TODAY"}
           </div>
 
           <div

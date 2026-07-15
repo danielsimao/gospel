@@ -176,7 +176,11 @@
       "learnBody": "Explora os fundamentos da fé — quem é Jesus, o que significa a graça, porque é que a cruz importa.",
       "learnLinkLabel": "Explorar os fundamentos",
       "shareHeading": "Partilha a Tua Decisão",
-      "shareMessage": "Tomei uma decisão que muda tudo:"
+      "shareMessage": "Tomei uma decisão que muda tudo:",
+      "storyButton": "Guardar imagem para a história",
+      "storyHint": "Publica-a na tua história do Instagram e adiciona um autocolante de link a apontar para o teste.",
+      "storyCopyButton": "Copiar link do teste para o autocolante",
+      "storyCopied": "Link copiado — cola-o no autocolante de link da tua história."
     },
     "trackB": {
       "acknowledgment": "Isso é honesto. Aqui ficam algumas coisas em que vale a pena pensar.",
@@ -194,6 +198,9 @@
       "learnHeading": "Queres os fundamentos?",
       "learnBody": "Explicações curtas e honestas sobre as perguntas essenciais — quem Jesus afirmou ser, porque é que importa, o que é a graça.",
       "learnLinkLabel": "Explorar os temas",
+      "talkLabel": "Queres falar com uma pessoa real sobre isto?",
+      "talkLink": "Conversa em needGod.net",
+      "talkUrl": "https://needgod.net/",
       "comeBack": "Volta a isto — mas não o deixes na prateleira. Nunca é tarde demais enquanto respiras. Nunca é seguro contar com outra oportunidade."
     }
   },

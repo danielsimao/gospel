@@ -7,11 +7,16 @@ import type { Locale } from "@/lib/i18n";
 
 interface SaveStoryImageButtonProps {
   locale: Locale;
+  /** Campaign id: names the PNG file, tags the UTM, labels analytics. */
   slug: string;
   label: string;
   hint: string;
   copyLabel: string;
   copiedLabel: string;
+  /** Story-PNG endpoint. Defaults to the blog post's story route. */
+  storyPath?: string;
+  /** Path the copied sticker link points at. Defaults to the blog post. */
+  stickerPath?: string;
 }
 
 /**
@@ -19,10 +24,19 @@ interface SaveStoryImageButtonProps {
  * navigator.share() during the tap's transient activation, so the file is
  * pre-fetched on mount and share() is called synchronously in the handler.
  */
-export function SaveStoryImageButton({ locale, slug, label, hint, copyLabel, copiedLabel }: SaveStoryImageButtonProps) {
+export function SaveStoryImageButton({
+  locale,
+  slug,
+  label,
+  hint,
+  copyLabel,
+  copiedLabel,
+  storyPath,
+  stickerPath,
+}: SaveStoryImageButtonProps) {
   const fileRef = useRef<File | null>(null);
   const [copied, setCopied] = useState(false);
-  const storyUrl = `/${locale}/blog/${slug}/story`;
+  const storyUrl = storyPath ?? `/${locale}/blog/${slug}/story`;
 
   useEffect(() => {
     let cancelled = false;
@@ -69,7 +83,8 @@ export function SaveStoryImageButton({ locale, slug, label, hint, copyLabel, cop
   };
 
   const copyStickerLink = async () => {
-    const url = `${window.location.origin}/${locale}/blog/${slug}?utm_source=ig_story&utm_medium=social&utm_campaign=${encodeURIComponent(slug)}`;
+    const target = stickerPath ?? `/${locale}/blog/${slug}`;
+    const url = `${window.location.origin}${target}?utm_source=ig_story&utm_medium=social&utm_campaign=${encodeURIComponent(slug)}`;
     try {
       await navigator.clipboard.writeText(url);
       trackStoryLinkCopied(slug);

@@ -176,7 +176,11 @@
       "learnBody": "Explore the foundations of the faith — who Jesus is, what grace means, why the cross matters.",
       "learnLinkLabel": "Explore the foundations",
       "shareHeading": "Share Your Decision",
-      "shareMessage": "I made a decision that changes everything:"
+      "shareMessage": "I made a decision that changes everything:",
+      "storyButton": "Save a story image",
+      "storyHint": "Post it to your Instagram story, then add a link sticker pointing to the test.",
+      "storyCopyButton": "Copy test link for the sticker",
+      "storyCopied": "Link copied — paste it into your story's link sticker."
     },
     "trackB": {
       "acknowledgment": "That's honest. Here are some things worth thinking about.",
@@ -194,6 +198,9 @@
       "learnHeading": "Want the foundations?",
       "learnBody": "Short, honest explanations of the core questions — who Jesus claimed to be, why it matters, what grace is.",
       "learnLinkLabel": "Explore the topics",
+      "talkLabel": "Want to talk to a real person about this?",
+      "talkLink": "Chat at needGod.net",
+      "talkUrl": "https://needgod.net/",
       "comeBack": "Come back to this — but don't shelve it. It's never too late while you're breathing. It's never safe to count on another chance."
     }
   },

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { m } from "framer-motion";
 import Link from "next/link";
 import { ShareButtons } from "@/components/share-buttons";
+import { SaveStoryImageButton } from "@/components/blog/save-story-image-button";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
 import { readJourney } from "@/lib/journey-storage";
@@ -33,6 +34,10 @@ interface TrackCommittedMessages {
   learnLinkLabel: string;
   shareHeading: string;
   shareMessage: string;
+  storyButton: string;
+  storyHint: string;
+  storyCopyButton: string;
+  storyCopied: string;
 }
 
 interface TrackCommittedProps {
@@ -194,6 +199,20 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
           messages={{ ...shareMessages, prompt: messages.shareHeading, whatsappMessage: messages.shareMessage, telegramMessage: messages.shareMessage }}
           locale={locale}
         />
+        {/* Testimony story graphic — the journey itself as the shareable
+            unit. The sticker link points at the test (UTM: testimony). */}
+        <div className="mt-8 text-center">
+          <SaveStoryImageButton
+            locale={locale}
+            slug="testimony"
+            label={messages.storyButton}
+            hint={messages.storyHint}
+            copyLabel={messages.storyCopyButton}
+            copiedLabel={messages.storyCopied}
+            storyPath={`/${locale}/testimony/story`}
+            stickerPath={`/${locale}/test`}
+          />
+        </div>
       </m.div>
     </>
   );

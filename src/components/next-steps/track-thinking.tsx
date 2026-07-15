@@ -22,6 +22,9 @@ interface TrackThinkingMessages {
   learnHeading: string;
   learnBody: string;
   learnLinkLabel: string;
+  talkLabel: string;
+  talkLink: string;
+  talkUrl: string;
   comeBack: string;
 }
 
@@ -108,6 +111,26 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
         >
           {messages.learnLinkLabel} &rarr;
         </Link>
+      </m.div>
+
+      {/* A website cannot disciple — the method's follow-up is human work.
+          needGod.net runs live, Living-Waters-aligned conversations. */}
+      <m.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.5 + (messages.reflections.length + 1) * 0.3 + 0.15 }}
+        className="mt-10 text-center"
+      >
+        <p className="text-sm leading-relaxed text-white/60">{messages.talkLabel}</p>
+        <a
+          href={messages.talkUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => trackNextStepsActionClicked("talk", "thinking")}
+          className="mt-2 inline-flex items-center text-sm text-[#D4A843]/70 transition-colors hover:text-[#D4A843]"
+        >
+          {messages.talkLink} &rarr;
+        </a>
       </m.div>
 
       <m.div
