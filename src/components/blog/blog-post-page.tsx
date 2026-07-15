@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { PageShell } from "@/components/shared/page-shell";
 import { SaveStoryImageButton } from "./save-story-image-button";
+import { OwnerTools } from "./owner-tools";
 import { PersonalTurn } from "./personal-turn";
 import { BlogViewTracker } from "./blog-view-tracker";
 import { BlogStickyBar } from "./blog-sticky-bar";
@@ -142,16 +143,18 @@ export function BlogPostPage({ slug, content, datePublished, locale, messages, s
           </div>
         )}
 
-        <div className="mt-14 border-t border-white/[0.06] pt-8 text-center">
-          <SaveStoryImageButton
-            locale={locale}
-            slug={slug}
-            label={messages.saveStoryButton}
-            hint={messages.saveStoryHint}
-            copyLabel={messages.copyLinkButton}
-            copiedLabel={messages.copyLinkCopied}
-          />
-        </div>
+        <OwnerTools>
+          <div className="mt-14 border-t border-white/[0.06] pt-8 text-center">
+            <SaveStoryImageButton
+              locale={locale}
+              slug={slug}
+              label={messages.saveStoryButton}
+              hint={messages.saveStoryHint}
+              copyLabel={messages.copyLinkButton}
+              copiedLabel={messages.copyLinkCopied}
+            />
+          </div>
+        </OwnerTools>
       </article>
       <BlogStickyBar
         slug={slug}

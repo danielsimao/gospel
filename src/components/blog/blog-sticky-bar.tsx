@@ -42,7 +42,7 @@ export function BlogStickyBar({ slug, locale, messages }: BlogStickyBarProps) {
     () => false,
   );
   const [shown, setShown] = useState(false);
-  const [turnVisible, setTurnVisible] = useState(false);
+  const [turnSeen, setTurnSeen] = useState(false);
 
   useEffect(() => {
     let armed = false; // latched once 40% is crossed — never disarms
@@ -82,9 +82,13 @@ export function BlogStickyBar({ slug, locale, messages }: BlogStickyBarProps) {
   useEffect(() => {
     const turn = document.getElementById("personal-turn");
     if (!turn) return;
-    // No anticipatory margin — yield only while the block is genuinely on
-    // screen, otherwise the visible window shrinks to a flash on short posts.
-    const observer = new IntersectionObserver(([entry]) => setTurnVisible(entry.isIntersecting));
+    // The bar exists only until the reader meets the personal turn. Once the
+    // turn block has been on screen — read slowly into or flung past — the
+    // bar retires for good: a fast scroller pausing at the bottom would
+    // otherwise get the bar stacked on top of the page's own endgame asks.
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) setTurnSeen(true);
+    });
     observer.observe(turn);
     return () => observer.disconnect();
   }, []);
@@ -102,7 +106,7 @@ export function BlogStickyBar({ slug, locale, messages }: BlogStickyBarProps) {
           ? { question: messages.thinkingQuestion, cta: messages.thinkingCta, href: `/${locale}/next-steps` }
           : null;
 
-  const visible = ready && ask !== null && consentAnswered && shown && !turnVisible;
+  const visible = ready && ask !== null && consentAnswered && shown && !turnSeen;
 
   return (
     <AnimatePresence>
