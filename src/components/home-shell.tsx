@@ -207,8 +207,10 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
             </div>
           )}
 
-          {/* Death globe — one red ping per ~0.5s, drag to spin */}
-          <div className="mt-6 w-full sm:mt-10" style={{ minHeight: "min(380px, 90vw)" }}>
+          {/* Death globe — one red ping per ~0.5s, drag to spin. The wrapper
+              mirrors the globe's own max-w + square aspect so the reserved
+              box is exact (globe mounts post-hydration; no reflow). */}
+          <div className="mx-auto mt-6 aspect-square w-full max-w-[380px] sm:mt-10 sm:max-w-[440px]">
             <DeathGlobe />
           </div>
 
