@@ -17,13 +17,16 @@ interface ShareButtonsProps {
   sharePath?: string;
   /** When set, share URLs carry utm_source/<channel>, utm_medium=share, utm_campaign. */
   utmCampaign?: string;
+  /** When set, the copy button copies "<copyText> <url>" instead of the bare URL —
+      so a pasted share still carries the message, not just a link. */
+  copyText?: string;
 }
 
 function subscribeToNavigator() {
   return () => {};
 }
 
-export function ShareButtons({ messages, locale, sharePath, utmCampaign }: ShareButtonsProps) {
+export function ShareButtons({ messages, locale, sharePath, utmCampaign, copyText }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const canNativeShare = useSyncExternalStore(
     subscribeToNavigator,
@@ -56,7 +59,8 @@ export function ShareButtons({ messages, locale, sharePath, utmCampaign }: Share
 
   async function copyLink() {
     try {
-      await navigator.clipboard.writeText(getShareUrl("copy"));
+      const url = getShareUrl("copy");
+      await navigator.clipboard.writeText(copyText ? `${copyText} ${url}` : url);
       trackShared("copy", locale);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);

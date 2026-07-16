@@ -238,6 +238,7 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
           locale={locale}
           sharePath={`/${locale}/test`}
           utmCampaign="testimony"
+          copyText={messages.shareMessage}
         />
         {/* Testimony story graphic — the journey itself as the shareable
             unit. The sticker link points at the test (UTM: testimony). */}
