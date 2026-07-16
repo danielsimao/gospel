@@ -103,7 +103,11 @@ export function DeathGlobe() {
           baseColor: [1, 1, 1],
           markerColor: [220 / 255, 38 / 255, 38 / 255],
           glowColor: [0.12, 0.1, 0.06],
-          opacity: 0.85,
+          // Fully opaque: a translucent sphere (the old opacity: 0.85) let
+          // far-side pings bleed through the body of the earth. Opaque, cobe
+          // occludes back-hemisphere markers correctly.
+          // Slight elevation lifts pings crisply off the surface (cobe v2).
+          markerElevation: 0.012,
           markers: [],
         });
         canvas.style.opacity = "1";
