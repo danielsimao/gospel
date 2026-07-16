@@ -183,7 +183,12 @@
       "storyCopied": "Link copied — paste it into your story's link sticker.",
       "streetHeading": "Take it to the street",
       "streetBody": "Print a sheet of cards with the question and a code that opens the test. Leave one with a tip, hand one to a friend — the conversation starts itself.",
-      "streetLinkLabel": "Print cards"
+      "streetLinkLabel": "Print cards",
+      "bands": {
+        "today": "Today",
+        "week": "This week",
+        "grow": "As you grow"
+      }
     },
     "trackB": {
       "acknowledgment": "That's honest. Here are some things worth thinking about.",

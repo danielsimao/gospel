@@ -183,7 +183,12 @@
       "storyCopied": "Link copiado — cola-o no autocolante de link da tua história.",
       "streetHeading": "Leva-o para a rua",
       "streetBody": "Imprime uma folha de cartões com a pergunta e um código que abre o teste. Deixa um com a gorjeta, dá um a um amigo — a conversa começa sozinha.",
-      "streetLinkLabel": "Imprimir cartões"
+      "streetLinkLabel": "Imprimir cartões",
+      "bands": {
+        "today": "Hoje",
+        "week": "Esta semana",
+        "grow": "À medida que cresces"
+      }
     },
     "trackB": {
       "acknowledgment": "Isso é honesto. Aqui ficam algumas coisas em que vale a pena pensar.",

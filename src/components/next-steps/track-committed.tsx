@@ -41,6 +41,7 @@ interface TrackCommittedMessages {
   storyHint: string;
   storyCopyButton: string;
   storyCopied: string;
+  bands: { today: string; week: string; grow: string };
 }
 
 interface TrackCommittedProps {
@@ -50,6 +51,19 @@ interface TrackCommittedProps {
 }
 
 const stagger = (i: number) => ({ duration: 0.8, delay: 0.3 + i * 0.2 });
+
+/** Temporal band header — the page's answer to "what do I do first?" */
+function BandHeader({ label, tone }: { label: string; tone: "gold" | "dim" }) {
+  const hairline = tone === "gold" ? "bg-[#D4A843]/40" : "bg-white/[0.12]";
+  const text = tone === "gold" ? "text-[#D4A843]/75" : "text-white/45";
+  return (
+    <div className="mb-3 mt-10 flex items-center gap-2 first:mt-0">
+      <span className={`h-px w-6 ${hairline}`} />
+      <span className={`font-mono text-[9px] uppercase tracking-[3px] ${text}`}>{label}</span>
+      <span className={`h-px flex-1 ${hairline} opacity-40`} />
+    </div>
+  );
+}
 
 export function TrackCommitted({ messages, shareMessages, locale }: TrackCommittedProps) {
   const paragraphs = messages.whatHappened.split("\n\n");
@@ -110,7 +124,9 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
         })}
       </div>
 
-      <div className="mt-12 space-y-4">
+      <div className="mt-12">
+        <BandHeader label={messages.bands.today} tone="gold" />
+        <div className="space-y-4">
         {/* Read */}
         <m.div
           initial={{ opacity: 0, y: 8 }}
@@ -152,7 +168,10 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
             {messages.prayPrompt}
           </blockquote>
         </m.div>
+        </div>
 
+        <BandHeader label={messages.bands.week} tone="dim" />
+        <div className="space-y-4">
         {/* Community */}
         <m.div
           initial={{ opacity: 0, y: 8 }}
@@ -169,13 +188,16 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
             </Button>
           </a>
         </m.div>
+        </div>
 
+        <BandHeader label={messages.bands.grow} tone="dim" />
+        <div className="space-y-4">
         {/* Learn */}
         <m.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={stagger(paragraphs.length + 3)}
-          className="rounded-xl border border-[#D4A843]/20 bg-[#D4A843]/[0.02] p-5"
+          className="rounded-xl border border-white/[0.08] bg-white/[0.015] p-5"
         >
           <h3 className="text-sm font-semibold tracking-wide text-[#D4A843]">{messages.learnHeading}</h3>
           <p className="mt-2 text-sm leading-relaxed text-white/60">{messages.learnBody}</p>
@@ -197,7 +219,7 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={stagger(paragraphs.length + 4)}
-          className="rounded-xl border border-[#D4A843]/20 bg-[#D4A843]/[0.02] p-5"
+          className="rounded-xl border border-white/[0.08] bg-white/[0.015] p-5"
         >
           <h3 className="text-sm font-semibold tracking-wide text-[#D4A843]">{messages.streetHeading}</h3>
           <p className="mt-2 text-sm leading-relaxed text-white/60">{messages.streetBody}</p>
@@ -212,14 +234,14 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
             </Button>
           </Link>
         </m.div>
-      </div>
-
-      <m.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={stagger(paragraphs.length + 4)}
-        className="mt-12"
-      >
+        {/* Pass it on — every share mechanic grouped as one card, not
+            three floating systems. */}
+        <m.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={stagger(paragraphs.length + 5)}
+          className="rounded-xl border border-white/[0.08] bg-white/[0.015] p-5"
+        >
         <ShareButtons
           messages={{ ...shareMessages, prompt: messages.shareHeading, whatsappMessage: messages.shareMessage, telegramMessage: messages.shareMessage }}
           locale={locale}
@@ -238,7 +260,9 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
             stickerPath={`/${locale}/test`}
           />
         </div>
-      </m.div>
+        </m.div>
+        </div>
+      </div>
     </>
   );
 }
