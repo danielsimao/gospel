@@ -7,6 +7,7 @@ import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackVerdictReached } from "@/lib/analytics";
 import { buildConfession } from "@/lib/confession";
 import { EASE_OUT_STRONG } from "@/lib/motion";
+import { VerdictEmblem } from "@/components/emblems";
 import type { GameState, TestMessages } from "@/lib/types";
 
 interface VerdictScreenProps {
@@ -68,6 +69,16 @@ export function VerdictScreen({
       {/* aria-live: the confession, count, and bridge fade in on timers —
           without a live region, screen readers never hear them arrive. */}
       <div aria-live="polite" className="flex w-full max-w-md flex-col items-center text-center">
+        {/* The scales — the court's emblem, arriving with the prelude */}
+        <m.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          aria-hidden="true"
+        >
+          <VerdictEmblem className="mb-3 size-6 text-red-400/60" strokeWidth={1.6} />
+        </m.div>
+
         {/* Prelude */}
         <m.p
           initial={{ opacity: 0 }}

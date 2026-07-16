@@ -12,6 +12,7 @@ import { readJourney, deriveStage } from "@/lib/journey-storage";
 import { trackLearnProgressReset } from "@/lib/learn-analytics";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { PageShell } from "@/components/shared/page-shell";
+import { TopicEmblem } from "@/components/emblems";
 import { LEARN_BANDS } from "@/lib/learn-bands";
 import type { Locale } from "@/lib/i18n";
 
@@ -255,6 +256,11 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
                 <span className="font-mono text-[10px] tabular-nums text-[#D4A843]/70">
                   {String(i + 1).padStart(2, "0")}
                 </span>
+                <TopicEmblem
+                  slug={topic.slug}
+                  className="size-5 shrink-0 text-[#D4A843]/60 transition-colors group-hover:text-[#D4A843]/80"
+                  strokeWidth={1.7}
+                />
                 <div>
                   <p className="text-[15px] font-semibold text-white/85 sm:text-base">{topic.title}</p>
                   <p className="mt-0.5 text-xs text-white/60">{topic.subtitle}</p>
