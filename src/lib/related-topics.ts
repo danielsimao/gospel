@@ -10,7 +10,7 @@ export const RELATED_TOPICS: Record<string, string[]> = {
   "why-the-cross": ["who-is-jesus", "how-can-my-sins-be-forgiven"],
   "how-can-my-sins-be-forgiven": ["what-is-repentance", "why-the-cross"],
   "what-is-repentance": ["how-can-my-sins-be-forgiven", "what-is-sin"],
-  "what-happens-when-i-die": ["am-i-a-good-person", "does-god-exist"],
+  "what-happens-when-i-die": ["is-there-life-after-death", "why-are-you-afraid-to-die"],
   "does-god-exist": ["who-is-jesus", "what-happens-when-i-die"],
   "is-there-life-after-death": ["what-happens-when-i-die", "does-god-exist"],
   "what-is-the-meaning-of-life": ["does-god-exist", "is-there-life-after-death"],
