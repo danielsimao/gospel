@@ -14,4 +14,5 @@ export const TOPIC_DATES: Record<string, { published: string; modified: string }
   "does-god-exist": { published: "2026-07-12", modified: "2026-07-12" },
   "is-there-life-after-death": { published: "2026-07-16", modified: "2026-07-16" },
   "what-is-the-meaning-of-life": { published: "2026-07-16", modified: "2026-07-16" },
+  "why-are-you-afraid-to-die": { published: "2026-07-16", modified: "2026-07-16" },
 };
