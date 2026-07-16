@@ -206,6 +206,10 @@
       "learnHeading": "Queres os fundamentos?",
       "learnBody": "Explicações curtas e honestas sobre as perguntas essenciais — quem Jesus afirmou ser, porque é que importa, o que é a graça.",
       "learnLinkLabel": "Explorar os temas",
+      "bands": {
+        "today": "Hoje",
+        "deeper": "Para ires mais fundo"
+      },
       "talkLabel": "Queres falar com uma pessoa real sobre isto?",
       "talkLink": "Conversa em needGod.net",
       "talkUrl": "https://needgod.net/",

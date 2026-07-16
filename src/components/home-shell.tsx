@@ -251,7 +251,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
                   guidance must survive beyond the one-shot invitation CTA */}
               <Link
                 href={`/${locale}/next-steps`}
-                className="group mt-3 block w-full max-w-md rounded-xl border border-[#D4A843]/25 bg-[#D4A843]/[0.03] p-5 transition-all hover:border-[#D4A843]/45"
+                className="group mt-3 block w-full max-w-md rounded-xl border border-white/[0.08] bg-white/[0.015] p-5 transition-all hover:border-[#D4A843]/35"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>

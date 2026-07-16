@@ -207,15 +207,20 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
           the final band rather than disappearing. */}
       <div className="mt-10 flex flex-col gap-8">
         {LEARN_BANDS.map((band, bandIdx) => {
-          const bandSlugs = new Set(band.slugs);
+          // Render in band.slugs order (the argument's order), not the
+          // messages-array order — otherwise numbering reads 10…14, 09.
+          const inBand = band.slugs
+            .map((slug) => topics.find((t) => t.slug === slug))
+            .filter((t): t is Topic => Boolean(t));
           const banded =
             bandIdx === LEARN_BANDS.length - 1
-              ? topics.filter(
-                  (t) =>
-                    bandSlugs.has(t.slug) ||
-                    !LEARN_BANDS.some((b) => b.slugs.includes(t.slug)),
-                )
-              : topics.filter((t) => bandSlugs.has(t.slug));
+              ? [
+                  ...inBand,
+                  ...topics.filter(
+                    (t) => !LEARN_BANDS.some((b) => b.slugs.includes(t.slug)),
+                  ),
+                ]
+              : inBand;
           if (banded.length === 0) return null;
           const hairline =
             band.key === "law"

@@ -206,6 +206,10 @@
       "learnHeading": "Want the foundations?",
       "learnBody": "Short, honest explanations of the core questions — who Jesus claimed to be, why it matters, what grace is.",
       "learnLinkLabel": "Explore the topics",
+      "bands": {
+        "today": "Today",
+        "deeper": "Going deeper"
+      },
       "talkLabel": "Want to talk to a real person about this?",
       "talkLink": "Chat at needGod.net",
       "talkUrl": "https://needgod.net/",

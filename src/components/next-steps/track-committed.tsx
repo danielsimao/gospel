@@ -5,6 +5,7 @@ import { m } from "framer-motion";
 import Link from "next/link";
 import { ShareButtons } from "@/components/share-buttons";
 import { SaveStoryImageButton } from "@/components/blog/save-story-image-button";
+import { BandHeader } from "./band-header";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
 import { readJourney } from "@/lib/journey-storage";
@@ -52,18 +53,6 @@ interface TrackCommittedProps {
 
 const stagger = (i: number) => ({ duration: 0.8, delay: 0.3 + i * 0.2 });
 
-/** Temporal band header — the page's answer to "what do I do first?" */
-function BandHeader({ label, tone }: { label: string; tone: "gold" | "dim" }) {
-  const hairline = tone === "gold" ? "bg-[#D4A843]/40" : "bg-white/[0.12]";
-  const text = tone === "gold" ? "text-[#D4A843]/75" : "text-white/45";
-  return (
-    <div className="mb-3 mt-10 flex items-center gap-2 first:mt-0">
-      <span className={`h-px w-6 ${hairline}`} />
-      <span className={`font-mono text-[9px] uppercase tracking-[3px] ${text}`}>{label}</span>
-      <span className={`h-px flex-1 ${hairline} opacity-40`} />
-    </div>
-  );
-}
 
 export function TrackCommitted({ messages, shareMessages, locale }: TrackCommittedProps) {
   const paragraphs = messages.whatHappened.split("\n\n");

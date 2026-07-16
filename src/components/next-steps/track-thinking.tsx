@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { m } from "framer-motion";
 import Link from "next/link";
 import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
+import { BandHeader } from "./band-header";
 import { readJourney } from "@/lib/journey-storage";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { Locale } from "@/lib/i18n";
@@ -22,6 +23,7 @@ interface TrackThinkingMessages {
   learnHeading: string;
   learnBody: string;
   learnLinkLabel: string;
+  bands: { today: string; deeper: string };
   talkLabel: string;
   talkLink: string;
   talkUrl: string;
@@ -74,13 +76,15 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
         ))}
       </div>
 
+      <div className="mt-12">
+      <BandHeader label={messages.bands.today} tone="gold" />
       <m.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.5 + messages.reflections.length * 0.3 }}
-        className="mt-12 rounded-xl border border-white/10 bg-white/[0.02] p-5"
+        className="rounded-xl border border-[#D4A843]/25 bg-[#D4A843]/[0.03] p-5"
       >
-        <h3 className="text-sm font-semibold tracking-wide text-white/70">{messages.readingHeading}</h3>
+        <h3 className="text-sm font-semibold tracking-wide text-[#D4A843]">{messages.readingHeading}</h3>
         <p className="mt-2 text-sm leading-relaxed text-white/60">{messages.readingBody}</p>
         <a
           href={messages.readingLink}
@@ -93,33 +97,13 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
         </a>
       </m.div>
 
-      <m.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{
-          duration: 0.8,
-          delay: 0.5 + (messages.reflections.length + 1) * 0.3,
-        }}
-        className="mt-5 rounded-xl border border-white/10 bg-white/[0.02] p-5"
-      >
-        <h3 className="text-sm font-semibold tracking-wide text-white/70">{messages.learnHeading}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-white/60">{messages.learnBody}</p>
-        <Link
-          href={`/${locale}/learn`}
-          onClick={() => trackNextStepsActionClicked("learn", "thinking")}
-          className="mt-3 inline-flex items-center rounded-lg border border-white/15 px-4 py-2 text-xs font-medium text-white/60 transition-colors hover:bg-white/5 min-h-[44px]"
-        >
-          {messages.learnLinkLabel} &rarr;
-        </Link>
-      </m.div>
-
       {/* A website cannot disciple — the method's follow-up is human work.
-          needGod.net runs live, Living-Waters-aligned conversations. */}
+          A real conversation is a today act, so it lives in the TODAY band. */}
       <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.5 + (messages.reflections.length + 1) * 0.3 + 0.15 }}
-        className="mt-10 text-center"
+        transition={{ duration: 0.8, delay: 0.5 + messages.reflections.length * 0.3 + 0.15 }}
+        className="mt-5 text-center"
       >
         <p className="text-sm leading-relaxed text-white/60">{messages.talkLabel}</p>
         <a
@@ -131,6 +115,27 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
         >
           {messages.talkLink} &rarr;
         </a>
+      </m.div>
+
+      <BandHeader label={messages.bands.deeper} tone="dim" />
+      <m.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.8,
+          delay: 0.5 + (messages.reflections.length + 1) * 0.3,
+        }}
+        className="rounded-xl border border-white/10 bg-white/[0.02] p-5"
+      >
+        <h3 className="text-sm font-semibold tracking-wide text-white/70">{messages.learnHeading}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-white/60">{messages.learnBody}</p>
+        <Link
+          href={`/${locale}/learn`}
+          onClick={() => trackNextStepsActionClicked("learn", "thinking")}
+          className="mt-3 inline-flex items-center rounded-lg border border-white/15 px-4 py-2 text-xs font-medium text-white/60 transition-colors hover:bg-white/5 min-h-[44px]"
+        >
+          {messages.learnLinkLabel} &rarr;
+        </Link>
       </m.div>
 
       <m.div
@@ -148,6 +153,7 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
           {messages.readingPlanLabel} &rarr;
         </Link>
       </m.div>
+      </div>
     </>
   );
 }
