@@ -315,6 +315,18 @@
     "nextLabel": "Seguinte",
     "prevLabel": "Anterior",
     "relatedLabel": "Continua a escavar",
+    "bands": {
+      "law": "Começa aqui",
+      "questions": "As grandes perguntas",
+      "rescue": "O resgate"
+    },
+    "feedback": {
+      "question": "Isto respondeu à tua pergunta?",
+      "yes": "Sim",
+      "no": "Nem por isso",
+      "thanks": "Obrigado.",
+      "followup": "Diz-nos o que faltou: contact@ifyoudiedtoday.com"
+    },
     "resetLabel": "Reiniciar",
     "resetConfirmTitle": "Reiniciar o progresso de aprendizagem?",
     "resetConfirmBody": "Isto vai limpar todos os temas concluídos e respostas aos quizzes. Podes começar a explorar de novo desde o início.",

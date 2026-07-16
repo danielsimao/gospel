@@ -16,6 +16,10 @@ export function trackTopicNavClicked(slug: string, direction: "next" | "prev", l
   safeCapture("topic_nav_clicked", { slug, direction, locale });
 }
 
+export function trackTopicFeedback(slug: string, locale: string, answer: "yes" | "no") {
+  safeCapture("topic_feedback", { slug, locale, answer });
+}
+
 export function trackLearnProgressReset(locale: string) {
   safeCapture("learn_progress_reset", { locale });
 }

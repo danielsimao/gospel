@@ -315,6 +315,18 @@
     "nextLabel": "Next",
     "prevLabel": "Previous",
     "relatedLabel": "Keep digging",
+    "bands": {
+      "law": "Start here",
+      "questions": "The big questions",
+      "rescue": "The rescue"
+    },
+    "feedback": {
+      "question": "Did this answer your question?",
+      "yes": "Yes",
+      "no": "Not really",
+      "thanks": "Thank you.",
+      "followup": "Tell us what's missing: contact@ifyoudiedtoday.com"
+    },
     "resetLabel": "Reset",
     "resetConfirmTitle": "Reset your learning progress?",
     "resetConfirmBody": "This will clear all topic completions and quiz answers. You can start exploring again from the beginning.",

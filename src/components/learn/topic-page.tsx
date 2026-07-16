@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { TopicSection } from "./topic-section";
 import { TopicNav } from "./topic-nav";
+import { TopicFeedback } from "./topic-feedback";
 import { trackTopicPageViewed } from "@/lib/learn-analytics";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import { PageShell } from "@/components/shared/page-shell";
@@ -45,10 +46,11 @@ interface TopicPageProps {
   nextTopic: { slug: string; title: string } | null;
   relatedTopics: Array<{ slug: string; title: string; subtitle: string }>;
   relatedLabel: string;
+  feedbackMessages: { question: string; yes: string; no: string; thanks: string; followup: string };
   faq: Array<{ question: string; answer: string }>;
 }
 
-export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, allTopicsLabel, prevLabel, nextLabel, prevTopic, nextTopic, relatedTopics, relatedLabel, faq }: TopicPageProps) {
+export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, allTopicsLabel, prevLabel, nextLabel, prevTopic, nextTopic, relatedTopics, relatedLabel, faq, feedbackMessages }: TopicPageProps) {
   useEffect(() => {
     trackTopicPageViewed(topic.slug, locale);
   }, [topic.slug, locale]);
@@ -143,6 +145,8 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
             </div>
           </div>
         )}
+
+        <TopicFeedback slug={topic.slug} locale={locale} messages={feedbackMessages} />
 
         <TopicNav
           slug={topic.slug}

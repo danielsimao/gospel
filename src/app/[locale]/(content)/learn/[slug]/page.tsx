@@ -36,6 +36,7 @@ interface LearnData {
   allTopicsLabel?: string;
   nextLabel: string;
   relatedLabel: string;
+  feedback: { question: string; yes: string; no: string; thanks: string; followup: string };
   prevLabel: string;
   topics: TopicData[];
 }
@@ -142,6 +143,7 @@ export default async function LearnTopicPage({ params }: Props) {
         nextTopic={nextTopic}
         relatedTopics={relatedTopics}
         relatedLabel={data.relatedLabel}
+        feedbackMessages={data.feedback}
         faq={topic.faq ?? []}
       />
     </>

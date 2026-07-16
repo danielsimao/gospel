@@ -12,6 +12,7 @@ import { readJourney, deriveStage } from "@/lib/journey-storage";
 import { trackLearnProgressReset } from "@/lib/learn-analytics";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { PageShell } from "@/components/shared/page-shell";
+import { LEARN_BANDS } from "@/lib/learn-bands";
 import type { Locale } from "@/lib/i18n";
 
 const TOTAL_READING_DAYS = 7;
@@ -43,6 +44,7 @@ interface LearnHubProps {
   resetConfirmButton: string;
   resetCancelButton: string;
   shareMessages: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
+  bandLabels: { law: string; questions: string; rescue: string };
   topics: Topic[];
   locale: Locale;
 }
@@ -92,7 +94,7 @@ function getEmptyLearnHubState(): LearnHubSnapshot {
   };
 }
 
-export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, allCompleteTestCta, allCompleteReadingCta, allCompleteShareCta, resetLabel, resetConfirmTitle, resetConfirmBody, resetConfirmButton, resetCancelButton, shareMessages, topics, locale }: LearnHubProps) {
+export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, allCompleteTestCta, allCompleteReadingCta, allCompleteShareCta, resetLabel, resetConfirmTitle, resetConfirmBody, resetConfirmButton, resetCancelButton, shareMessages, bandLabels, topics, locale }: LearnHubProps) {
   const [snapshot, setSnapshot] = useState<LearnHubSnapshot>(() =>
     typeof window === "undefined"
       ? getEmptyLearnHubState()
@@ -198,8 +200,49 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
         </div>
       )}
 
-      <div className="mt-10 flex flex-col gap-3">
-        {topics.map((topic, i) => {
+      {/* The argument's arc, made visible: Law → the big questions → the
+          rescue. Bands are grouping, not prerequisites — every topic stays
+          an entry-anywhere page. Unbanded topics (drift guard) fall into
+          the final band rather than disappearing. */}
+      <div className="mt-10 flex flex-col gap-8">
+        {LEARN_BANDS.map((band, bandIdx) => {
+          const bandSlugs = new Set(band.slugs);
+          const banded =
+            bandIdx === LEARN_BANDS.length - 1
+              ? topics.filter(
+                  (t) =>
+                    bandSlugs.has(t.slug) ||
+                    !LEARN_BANDS.some((b) => b.slugs.includes(t.slug)),
+                )
+              : topics.filter((t) => bandSlugs.has(t.slug));
+          if (banded.length === 0) return null;
+          const hairline =
+            band.key === "law"
+              ? "bg-red-500/40"
+              : band.key === "rescue"
+                ? "bg-[#D4A843]/40"
+                : "bg-white/[0.14]";
+          const eyebrow =
+            band.key === "law"
+              ? "text-red-400/75"
+              : band.key === "rescue"
+                ? "text-[#D4A843]/75"
+                : "text-white/50";
+          return (
+            <div key={band.key}>
+              <div className="mb-3 flex items-center gap-2">
+                <span className={`h-px w-6 ${hairline}`} />
+                <span className={`font-mono text-[9px] uppercase tracking-[3px] ${eyebrow}`}>
+                  {bandLabels[band.key]}
+                </span>
+                <span className={`h-px flex-1 ${hairline} opacity-40`} />
+              </div>
+              <div className="flex flex-col gap-3">
+                {banded.map((topic) => {
+                  // Number by display position (bands reorder the array).
+                  const displayOrder = LEARN_BANDS.flatMap((b) => b.slugs);
+                  const pos = displayOrder.indexOf(topic.slug);
+                  const i = pos === -1 ? displayOrder.length : pos;
           const isDone = snapshot.completed.has(topic.slug);
           return (
             <Link
@@ -230,6 +273,10 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
                 </span>
               </div>
             </Link>
+          );
+                })}
+              </div>
+            </div>
           );
         })}
       </div>

@@ -63,6 +63,7 @@ export default async function LearnPage({ params }: Props) {
       <LearnHub
         label={learn.label}
         subtitle={learn.hubSubtitle}
+        bandLabels={learn.bands}
         progressLabel={learn.progressLabel}
         allCompleteHeading={learn.allCompleteHeading}
         allCompleteTestCta={learn.allCompleteTestCta}
