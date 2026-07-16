@@ -123,7 +123,9 @@ export function GraceScreen({ messages }: GraceScreenProps) {
           </m.h2>
 
           {/* Beats */}
-          <div className="mt-10 text-left">
+          {/* aria-live: beats are revealed by taps — announce each arrival
+              to screen readers instead of silently growing the page. */}
+          <div aria-live="polite" className="mt-10 text-left">
             {messages.beats.map((beat, i) => {
               const isRevealed = i < revealedCount;
               // Once every beat is revealed the spotlight lifts entirely —

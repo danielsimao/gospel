@@ -26,10 +26,11 @@ interface TopBarProps {
 export function TopBar({ locale, learnLabel, blogLabel, messages }: TopBarProps) {
   const journey = useJourney();
   // Reading plan is discipleship — offer it only after a response to grace
-  // (committed/thinking). Undecided users saw only the verdict; dismissed
-  // users said no. Neither should be nudged into a reading habit here.
+  // (committed/thinking). Dismissed users said no and get no nudge here.
+  // The test link serves visitors AND undecided users — for the undecided
+  // it resumes their session at the verdict, the one door they still need.
   const stage: "pre-test" | "pre-reading" | "done" =
-    journey.stage === "visitor"
+    journey.stage === "visitor" || journey.stage === "undecided"
       ? "pre-test"
       : (journey.stage === "committed" || journey.stage === "thinking") &&
           journey.readingDone < TOTAL_READING_DAYS
@@ -37,7 +38,7 @@ export function TopBar({ locale, learnLabel, blogLabel, messages }: TopBarProps)
         : "done";
 
   return (
-    <div className="relative z-10 flex items-center justify-between px-4 pt-4 sm:px-6 sm:pt-5">
+    <div className="print-hide relative z-10 flex items-center justify-between px-4 pt-4 sm:px-6 sm:pt-5">
       <Link
         href={`/${locale}`}
         className="text-[13px] font-bold tracking-tight text-white/70 transition-colors hover:text-white/65"

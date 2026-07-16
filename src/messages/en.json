@@ -180,7 +180,10 @@
       "storyButton": "Save a story image",
       "storyHint": "Post it to your Instagram story, then add a link sticker pointing to the test.",
       "storyCopyButton": "Copy test link for the sticker",
-      "storyCopied": "Link copied — paste it into your story's link sticker."
+      "storyCopied": "Link copied — paste it into your story's link sticker.",
+      "streetHeading": "Take it to the street",
+      "streetBody": "Print a sheet of cards with the question and a code that opens the test. Leave one with a tip, hand one to a friend — the conversation starts itself.",
+      "streetLinkLabel": "Print cards"
     },
     "trackB": {
       "acknowledgment": "That's honest. Here are some things worth thinking about.",
@@ -1036,7 +1039,7 @@
       },
       {
         "title": "Contact",
-        "body": "If you have questions about this privacy policy, you can reach us through the project's GitHub repository."
+        "body": "If you have questions about this privacy policy — or anything else on this site — write to contact@ifyoudiedtoday.com."
       }
     ]
   },
@@ -1114,6 +1117,13 @@
     "copyLinkButton": "Copy link for the sticker",
     "copyLinkCopied": "Link copied — paste it into your story's link sticker.",
     "emptyState": "No posts yet."
+  },
+  "cards": {
+    "title": "Street cards",
+    "subtitle": "The question, printable. A sheet of eight cards, each with a code that opens the test.",
+    "instructions": "Print on A4 card stock and cut along the dashed lines. Dark ink coverage is heavy — a print shop gives the best result. Every scan lands on the test and is counted, so you'll know the cards are working.",
+    "printButton": "Print the sheet",
+    "metaDescription": "Print street cards with the question — are you a good person? — and a QR code that opens the test."
   },
   "footer": {
     "exploreLabel": "Explore",

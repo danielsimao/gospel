@@ -155,3 +155,13 @@
     @apply font-sans;
   }
 }
+/* Print: white page, no chrome — the /cards sheet is the only intended
+   print surface; cards force their own dark ink via print-color-adjust. */
+@media print {
+  body {
+    background: #ffffff !important;
+  }
+  .print-hide {
+    display: none !important;
+  }
+}

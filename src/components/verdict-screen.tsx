@@ -65,7 +65,9 @@ export function VerdictScreen({
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-4 py-16 sm:px-6">
-      <div className="flex w-full max-w-md flex-col items-center text-center">
+      {/* aria-live: the confession, count, and bridge fade in on timers —
+          without a live region, screen readers never hear them arrive. */}
+      <div aria-live="polite" className="flex w-full max-w-md flex-col items-center text-center">
         {/* Prelude */}
         <m.p
           initial={{ opacity: 0 }}
@@ -136,16 +138,16 @@ export function VerdictScreen({
               return (
                 <span
                   key={i}
-                  className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 ${
+                  className={`flex items-center gap-1.5 rounded-full border px-3 py-1 ${
                     isJustified
                       ? "border-dashed border-red-900/30 bg-red-950/10 opacity-50"
                       : "border-red-900/40 bg-red-950/25"
                   }`}
                 >
-                  <span className="font-mono text-[9px] tabular-nums text-red-400/75">
+                  <span className="font-mono text-[10px] tabular-nums text-red-400/75">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="font-mono text-[10px] lowercase italic text-red-400/85">
+                  <span className="font-mono text-[11px] lowercase italic text-red-400/85">
                     {label}
                   </span>
                 </span>

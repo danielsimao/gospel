@@ -34,6 +34,9 @@ interface TrackCommittedMessages {
   learnLinkLabel: string;
   shareHeading: string;
   shareMessage: string;
+  streetHeading: string;
+  streetBody: string;
+  streetLinkLabel: string;
   storyButton: string;
   storyHint: string;
   storyCopyButton: string;
@@ -183,6 +186,28 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
           >
             <Button variant="gold" size="sm">
               {messages.learnLinkLabel}
+              <ButtonArrow />
+            </Button>
+          </Link>
+        </m.div>
+
+        {/* Street cards — the physical bridge. Equipping the committed to
+            hand the question to people who will never find the URL. */}
+        <m.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={stagger(paragraphs.length + 4)}
+          className="rounded-xl border border-[#D4A843]/20 bg-[#D4A843]/[0.02] p-5"
+        >
+          <h3 className="text-sm font-semibold tracking-wide text-[#D4A843]">{messages.streetHeading}</h3>
+          <p className="mt-2 text-sm leading-relaxed text-white/60">{messages.streetBody}</p>
+          <Link
+            href={`/${locale}/cards`}
+            onClick={() => trackNextStepsActionClicked("cards", "committed")}
+            className="mt-3 inline-block"
+          >
+            <Button variant="gold" size="sm">
+              {messages.streetLinkLabel}
               <ButtonArrow />
             </Button>
           </Link>

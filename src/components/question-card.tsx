@@ -268,16 +268,16 @@ export function QuestionCard({
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: isJustified ? 0.5 : 1, scale: 1 }}
                     transition={{ duration: 0.18, ease: EASE_OUT_STRONG }}
-                    className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 ${
+                    className={`flex items-center gap-1.5 rounded-full border px-3 py-1 ${
                       isJustified
                         ? "border-dashed border-red-900/30 bg-red-950/10"
                         : "border-red-900/40 bg-red-950/25"
                     }`}
                   >
-                    <span className="font-mono text-[9px] tabular-nums text-red-400/75">
+                    <span className="font-mono text-[10px] tabular-nums text-red-400/75">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span className="font-mono text-[10px] lowercase italic text-red-400/85">
+                    <span className="font-mono text-[11px] lowercase italic text-red-400/85">
                       {label}
                     </span>
                   </m.div>

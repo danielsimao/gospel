@@ -180,7 +180,10 @@
       "storyButton": "Guardar imagem para a história",
       "storyHint": "Publica-a na tua história do Instagram e adiciona um autocolante de link a apontar para o teste.",
       "storyCopyButton": "Copiar link do teste para o autocolante",
-      "storyCopied": "Link copiado — cola-o no autocolante de link da tua história."
+      "storyCopied": "Link copiado — cola-o no autocolante de link da tua história.",
+      "streetHeading": "Leva-o para a rua",
+      "streetBody": "Imprime uma folha de cartões com a pergunta e um código que abre o teste. Deixa um com a gorjeta, dá um a um amigo — a conversa começa sozinha.",
+      "streetLinkLabel": "Imprimir cartões"
     },
     "trackB": {
       "acknowledgment": "Isso é honesto. Aqui ficam algumas coisas em que vale a pena pensar.",
@@ -1036,7 +1039,7 @@
       },
       {
         "title": "Contacto",
-        "body": "Se tiveres perguntas sobre esta política de privacidade, podes contactar-nos através do repositório GitHub do projeto."
+        "body": "Se tiveres perguntas sobre esta política de privacidade — ou sobre qualquer outra coisa neste site — escreve para contact@ifyoudiedtoday.com."
       }
     ]
   },
@@ -1114,6 +1117,13 @@
     "copyLinkButton": "Copiar link para o autocolante",
     "copyLinkCopied": "Link copiado — cola-o no autocolante de link da tua história.",
     "emptyState": "Ainda não há publicações."
+  },
+  "cards": {
+    "title": "Cartões de rua",
+    "subtitle": "A pergunta, em papel. Uma folha de oito cartões, cada um com um código que abre o teste.",
+    "instructions": "Imprime em cartolina A4 e corta pelas linhas tracejadas. A cobertura de tinta escura é pesada — uma gráfica dá o melhor resultado. Cada leitura do código abre o teste e é contada, por isso vais saber que os cartões estão a dar fruto.",
+    "printButton": "Imprimir a folha",
+    "metaDescription": "Imprime cartões de rua com a pergunta — tu és uma boa pessoa? — e um código QR que abre o teste."
   },
   "footer": {
     "exploreLabel": "Explorar",

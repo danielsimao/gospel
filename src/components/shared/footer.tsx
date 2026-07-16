@@ -40,7 +40,7 @@ interface FooterProps {
 
 export function Footer({ messages, learnTopics, locale }: FooterProps) {
   return (
-    <footer className="relative z-[1] border-t border-white/[0.08] bg-[#060404]">
+    <footer className="print-hide relative z-[1] border-t border-white/[0.08] bg-[#060404]">
       <div className="mx-auto max-w-2xl px-6 py-16 sm:px-8 sm:py-20">
         {/* 3-column grid — stacks on mobile */}
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-12">

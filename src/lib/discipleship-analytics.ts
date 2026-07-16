@@ -5,7 +5,7 @@ export function trackNextStepsViewed(track: "committed" | "thinking", locale: st
 }
 
 export function trackNextStepsActionClicked(
-  action: "read" | "pray" | "community" | "share" | "reading_plan" | "learn" | "talk",
+  action: "read" | "pray" | "community" | "share" | "reading_plan" | "learn" | "talk" | "cards",
   track: "committed" | "thinking",
 ) {
   safeCapture("next_steps_action_clicked", { action, track });
