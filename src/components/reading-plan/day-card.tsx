@@ -55,7 +55,7 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`rounded-xl border overflow-hidden ${
+      className={`relative rounded-xl border overflow-hidden ${
         isCurrent
           ? "border-[#D4A843]/30 bg-[#D4A843]/[0.02] border-l-2 border-l-[#D4A843]"
           : isCompleted
@@ -63,6 +63,16 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
           : "border-white/[0.06] bg-white/[0.015]"
       }`}
     >
+      {/* Ghost day numeral — decorative watermark, gold when current */}
+      <span
+        aria-hidden="true"
+        className={`pointer-events-none absolute -top-3 right-8 font-mono text-6xl font-bold tabular-nums leading-none ${
+          isCurrent ? "text-[#D4A843]/[0.08]" : "text-white/[0.04]"
+        }`}
+      >
+        {String(day).padStart(2, "0")}
+      </span>
+
       {/* Header — always visible, toggles expand on click */}
       <button
         type="button"

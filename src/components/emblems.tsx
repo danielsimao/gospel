@@ -22,17 +22,17 @@ import type { ComponentType } from "react";
  * set provides — drawn on the same 24-grid, 2px-stroke conventions.
  */
 
-type EmblemProps = Pick<LucideProps, "className" | "strokeWidth" | "size" | "aria-hidden">;
+type EmblemProps = Pick<LucideProps, "className" | "strokeWidth" | "size" | "color" | "aria-hidden">;
 
 /** Latin cross on the hill. Cross outline from Tabler Icons (MIT), ground arc ours. */
-function CrossOnHill({ className, strokeWidth = 2, size = 24, ...rest }: EmblemProps) {
+function CrossOnHill({ className, strokeWidth = 2, size = 24, color = "currentColor", ...rest }: EmblemProps) {
   return (
     <svg
       width={size}
       height={size}
       viewBox="0 0 24 24"
       fill="none"
-      stroke="currentColor"
+      stroke={color}
       strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -46,14 +46,14 @@ function CrossOnHill({ className, strokeWidth = 2, size = 24, ...rest }: EmblemP
 }
 
 /** Shepherd's crook — no icon set has one. */
-function ShepherdStaff({ className, strokeWidth = 2, size = 24, ...rest }: EmblemProps) {
+function ShepherdStaff({ className, strokeWidth = 2, size = 24, color = "currentColor", ...rest }: EmblemProps) {
   return (
     <svg
       width={size}
       height={size}
       viewBox="0 0 24 24"
       fill="none"
-      stroke="currentColor"
+      stroke={color}
       strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"

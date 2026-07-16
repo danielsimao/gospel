@@ -155,6 +155,12 @@
     @apply font-sans;
   }
 }
+/* Text selection carries the site's grace color */
+::selection {
+  background: rgba(212, 168, 67, 0.3);
+  color: #ffffff;
+}
+
 /* Print: white page, no chrome — the /cards sheet is the only intended
    print surface; cards force their own dark ink via print-color-adjust. */
 @media print {

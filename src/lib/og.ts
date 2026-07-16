@@ -12,6 +12,16 @@ export interface OgFont {
   weight: 400 | 600;
 }
 
+/** Like loadOgFonts, but returns null instead of throwing — callers render with Satori's built-in fallback font. */
+export async function loadOgFontsSafe(): Promise<OgFont[] | null> {
+  try {
+    return await loadOgFonts();
+  } catch (error) {
+    console.error("[og] Font files not found:", error);
+    return null;
+  }
+}
+
 /** Geist SemiBold (display) + GeistMono Regular (labels). Throws if the font files are missing. */
 export async function loadOgFonts(): Promise<OgFont[]> {
   const [geistSemiBold, geistMono] = await Promise.all([

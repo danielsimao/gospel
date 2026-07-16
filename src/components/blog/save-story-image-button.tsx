@@ -59,7 +59,9 @@ export function SaveStoryImageButton({
     anchor.href = url;
     anchor.download = file.name;
     anchor.click();
-    URL.revokeObjectURL(url);
+    // Deferred: iOS Safari can cancel the save if the blob URL dies before
+    // the share/download sheet has finished reading it.
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
   };
 
   const handleClick = () => {
