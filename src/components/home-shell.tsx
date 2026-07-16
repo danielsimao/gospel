@@ -23,8 +23,8 @@ import {
 import type { HomeMessages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 
-const WorldMap = dynamic(
-  () => import("@/components/eternity/world-map").then((mod) => mod.WorldMap),
+const DeathGlobe = dynamic(
+  () => import("@/components/eternity/death-globe").then((mod) => mod.DeathGlobe),
   {
     ssr: false,
     loading: () => null,
@@ -104,7 +104,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
   }, []);
 
   // Only hint at scrolling when there is actually content below the fold.
-  // The WorldMap mounts after first paint (ssr: false), so re-measure on any
+  // The DeathGlobe mounts after first paint (ssr: false), so re-measure on any
   // layout change via ResizeObserver, not just on mount.
   useEffect(() => {
     const root = document.documentElement;
@@ -114,7 +114,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
     measure();
     window.addEventListener("resize", measure);
 
-    // ResizeObserver catches the late WorldMap mount; degrade to resize-only
+    // ResizeObserver catches the late DeathGlobe mount; degrade to resize-only
     // where it's unavailable (older webviews, jsdom) instead of throwing.
     if (typeof ResizeObserver === "undefined") {
       return () => window.removeEventListener("resize", measure);
@@ -207,9 +207,9 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
             </div>
           )}
 
-          {/* World map */}
-          <div className="mt-6 w-full sm:mt-10 sm:max-w-2xl" style={{ aspectRatio: "600 / 340" }}>
-            <WorldMap />
+          {/* Death globe — one red ping per ~0.5s, drag to spin */}
+          <div className="mt-6 w-full sm:mt-10" style={{ minHeight: "min(380px, 90vw)" }}>
+            <DeathGlobe />
           </div>
 
           {/* === Bottom CTA section — adapts to journey stage === */}
