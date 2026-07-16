@@ -195,7 +195,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
             </Link>
           ) : (
             <div className="mt-3">
-              <ShareButtons messages={shareMessages} locale={locale} sharePath="/test" />
+              <ShareButtons messages={shareMessages} locale={locale} sharePath={`/${locale}/test`} utmCampaign="learn" />
             </div>
           )}
         </div>

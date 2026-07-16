@@ -146,7 +146,8 @@ export function JourneyTracker({
               <ShareButtons
                 messages={shareMessages}
                 locale={locale}
-                sharePath="/test"
+                sharePath={`/${locale}/test`}
+                utmCampaign="tracker"
               />
             </div>
           ) : null

@@ -231,9 +231,13 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
           transition={stagger(paragraphs.length + 5)}
           className="rounded-xl border border-white/[0.08] bg-white/[0.015] p-5"
         >
+        {/* Same destination and campaign as the story sticker below — one
+            card, one link: the test, tagged testimony. */}
         <ShareButtons
           messages={{ ...shareMessages, prompt: messages.shareHeading, whatsappMessage: messages.shareMessage, telegramMessage: messages.shareMessage }}
           locale={locale}
+          sharePath={`/${locale}/test`}
+          utmCampaign="testimony"
         />
         {/* Testimony story graphic — the journey itself as the shareable
             unit. The sticker link points at the test (UTM: testimony). */}

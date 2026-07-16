@@ -160,7 +160,12 @@ export function InvitationScreen({
               </p>
             )}
 
-            <ShareButtons messages={shareMessages || share} locale={locale} />
+            <ShareButtons
+              messages={shareMessages || share}
+              locale={locale}
+              sharePath={`/${locale}/test`}
+              utmCampaign="invitation"
+            />
           </m.div>
         )}
       </div>
