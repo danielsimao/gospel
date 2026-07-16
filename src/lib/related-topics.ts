@@ -17,4 +17,5 @@ export const RELATED_TOPICS: Record<string, string[]> = {
   "why-are-you-afraid-to-die": ["what-happens-when-i-die", "is-there-life-after-death"],
   "how-can-i-be-saved": ["what-is-repentance", "how-can-my-sins-be-forgiven"],
   "why-does-god-allow-suffering": ["does-god-exist", "is-there-life-after-death"],
+  "what-is-the-gospel": ["why-the-cross", "how-can-i-be-saved"],
 };
