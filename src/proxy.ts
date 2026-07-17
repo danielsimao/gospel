@@ -21,13 +21,22 @@ export default function proxy(request: NextRequest) {
 
   if (pathnameHasLocale) return NextResponse.next();
 
+  // Bare domain gets the locale home REWRITTEN, not redirected — the 307
+  // round trip cost ~330ms of blank screen on every first visit. The /en
+  // page's canonical/hreflang metadata still points search engines at the
+  // locale URL, and every in-app link is locale-prefixed from there.
+  if (pathname === "/") {
+    return NextResponse.rewrite(
+      new URL(`/${preferredLocale(request)}`, request.url),
+    );
+  }
+
   // Locale-less deep links (typed or shared without /en) get the locale
   // prefixed instead of 404ing: /test → /en/test, /learn/... → /en/learn/...
+  // These stay redirects so the canonical locale URL lands in the address
+  // bar for sharing.
   return NextResponse.redirect(
-    new URL(
-      `/${preferredLocale(request)}${pathname === "/" ? "" : pathname}`,
-      request.url,
-    ),
+    new URL(`/${preferredLocale(request)}${pathname}`, request.url),
   );
 }
 
