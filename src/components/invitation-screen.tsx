@@ -82,6 +82,20 @@ export function InvitationScreen({
           {invitation.heading}
         </m.h2>
 
+        {/* The fact, pressed before the choice — the form itself stays fully
+            released (Living Waters: never gate the answer, never confirm-shame
+            the exit). Yields with the heading once answered. */}
+        {!invitationResponse && (
+          <m.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="mx-auto mt-4 max-w-sm text-[13px] italic leading-relaxed text-white/50"
+          >
+            {invitation.urgencyLine}
+          </m.p>
+        )}
+
         {/* Response buttons — no text block, straight to the decision */}
         {!invitationResponse && (
           <m.div

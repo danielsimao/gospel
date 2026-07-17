@@ -137,6 +137,7 @@
   "invitation": {
     "eyebrow": "The decision",
     "heading": "What will you do with this?",
+    "urgencyLine": "Before you answer — remember the count. 1.8 every second. This decision has a deadline, and no one is told when.",
     "committedEncouragement": "Today is the beginning.",
     "thinkingEncouragement": "Think it through honestly — that's fair. Just don't let 'later' quietly become 'never'. No one is promised tomorrow.",
     "dismissedEncouragement": "The door stays open — but no one is promised tomorrow to walk through it.",

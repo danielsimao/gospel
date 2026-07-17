@@ -194,6 +194,7 @@ export interface Messages {
   invitation: {
     eyebrow: string;
     heading: string;
+    urgencyLine: string;
     committedEncouragement: string;
     thinkingEncouragement: string;
     dismissedEncouragement?: string;
