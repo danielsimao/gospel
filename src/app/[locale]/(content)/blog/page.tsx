@@ -68,7 +68,7 @@ export default async function BlogIndexPage({ params }: Props) {
     <>
       <StructuredData data={webPageSchema} />
       <StructuredData data={breadcrumbSchema} />
-      <PageShell>
+      <PageShell width="wide">
         {/* No eyebrow: label and indexTitle are both "Blog" — the eyebrow
             duplicated the h1 directly above it. */}
         <h1

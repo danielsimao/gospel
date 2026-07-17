@@ -143,7 +143,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
     .replace("{total}", String(totalCount));
 
   return (
-    <PageShell>
+    <PageShell width="wide">
       <div className="animate-[fadeInUp_0.5s_ease-out_both]">
         <p className="font-mono text-[9px] uppercase tracking-[4px] text-[#D4A843]/70">{label}</p>
         <h1

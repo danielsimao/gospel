@@ -49,7 +49,7 @@ export function BlogPostPage({ slug, content, datePublished, locale, messages, s
   );
 
   return (
-    <PageShell>
+    <PageShell width="wide">
       <article>
         <BlogViewTracker slug={slug} locale={locale} />
         <Link
