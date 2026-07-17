@@ -24,20 +24,15 @@ interface BlogAskCardProps {
   };
 }
 
-/** Card appears after this much reading time even without scrolling. */
-const DWELL_MS = 8000;
-/** …or once this fraction of the page has been scrolled. */
-const SCROLL_FRACTION = 0.25;
+/** Small settle delay so the card doesn't fight the page's own entrance. */
+const APPEAR_DELAY_MS = 3000;
 
 const DISMISS_KEY_PREFIX = "blog-ask-dismissed-";
 
 /**
- * Floating ask card for cold blog readers — replaces the old scroll-armed
- * bottom bar, whose idle-timer/arm-point/permanent-retire heuristics made it
- * feel broken. This one is predictable: it appears after 25% scroll or 8s
- * dwell (whichever first), stays until dismissed, and retires
- * once the reader reaches the personal-turn block (one ask per viewport;
- * every transition fires at most once per page view — no scroll yo-yo).
+ * Floating ask card for cold blog readers. Fully decoupled from scroll:
+ * appears once shortly after load and stays until the reader dismisses it
+ * (×) or clicks through — nothing about scrolling shows or hides it.
  * Dismiss is per-post — an accidental tap never kills the channel for good.
  * Shows only for visitor/undecided/thinking stages and only after the consent
  * banner is answered (both are bottom-fixed — never stack). `?preview=<stage>`
@@ -52,25 +47,11 @@ export function BlogAskCard({ slug, locale, messages }: BlogAskCardProps) {
   );
   const [shown, setShown] = useState(false);
   const [dismissed, setDismissed] = useState(false);
-  const [turnReached, setTurnReached] = useState(false);
   const [previewStage, setPreviewStage] = useState<JourneyStage | null>(null);
 
-  // Appear on 25% scroll or 8s dwell — whichever comes first. Both latch.
   useEffect(() => {
-    const timer = setTimeout(() => setShown(true), DWELL_MS);
-    function onScroll() {
-      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-      if (scrollable > 0 && window.scrollY >= scrollable * SCROLL_FRACTION) {
-        setShown(true);
-        window.removeEventListener("scroll", onScroll);
-      }
-    }
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("scroll", onScroll);
-    };
+    const timer = setTimeout(() => setShown(true), APPEAR_DELAY_MS);
+    return () => clearTimeout(timer);
   }, []);
 
   // Per-post dismissal + owner preview override, both client-only state.
@@ -88,20 +69,6 @@ export function BlogAskCard({ slug, locale, messages }: BlogAskCardProps) {
     });
     return () => cancelAnimationFrame(id);
   }, [slug]);
-
-  // One-way retire: once the reader reaches the personal turn, the page's
-  // own endgame ask has been made — the card leaves for the rest of this
-  // page view. No scroll-coupled return (a card that yo-yos with scroll
-  // reads as a glitch, and re-asking a reader who met the turn is pursuit).
-  useEffect(() => {
-    const turn = document.getElementById("personal-turn");
-    if (!turn) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) setTurnReached(true);
-    });
-    observer.observe(turn);
-    return () => observer.disconnect();
-  }, []);
 
   const stage = previewStage ?? journeyStage;
 
@@ -148,8 +115,7 @@ export function BlogAskCard({ slug, locale, messages }: BlogAskCardProps) {
     ask !== null &&
     consentAnswered &&
     shown &&
-    !dismissed &&
-    !turnReached;
+    !dismissed;
 
   return (
     <AnimatePresence>
