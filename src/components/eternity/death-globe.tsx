@@ -135,7 +135,10 @@ export function DeathGlobe() {
         if (visible) start();
         else stop();
       },
-      { rootMargin: "100px" },
+      // Wide margin: WebGL init + texture sampling take a beat — starting
+      // well before the globe enters view means it's already spinning when
+      // the reader arrives, instead of visibly "filling in".
+      { rootMargin: "400px" },
     );
     io.observe(container);
 
@@ -189,7 +192,7 @@ export function DeathGlobe() {
           cursor: "grab",
           touchAction: "pan-y",
           opacity: 0,
-          transition: "opacity 1s ease",
+          transition: "opacity 0.5s ease",
         }}
       />
     </div>
