@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { m, AnimatePresence } from "framer-motion";
 import { X, MirrorRound, Scale, Compass } from "lucide-react";
@@ -117,7 +118,14 @@ export function BlogAskCard({ slug, locale, messages }: BlogAskCardProps) {
     shown &&
     !dismissed;
 
-  return (
+  // Portal to <body>: PageShell's content wrapper is `relative z-[1]`, a
+  // stacking context that traps the card's z-index below the footer (also
+  // z-[1], later in the DOM). `shown` is only ever set client-side, so
+  // document is available here and the portal persists once created —
+  // AnimatePresence exit animations still run on dismiss.
+  if (!shown) return null;
+
+  return createPortal(
     <AnimatePresence>
       {visible && ask && (
         <m.aside
@@ -154,6 +162,7 @@ export function BlogAskCard({ slug, locale, messages }: BlogAskCardProps) {
           </Link>
         </m.aside>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }
