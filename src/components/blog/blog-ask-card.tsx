@@ -35,8 +35,9 @@ const DISMISS_KEY_PREFIX = "blog-ask-dismissed-";
  * Floating ask card for cold blog readers — replaces the old scroll-armed
  * bottom bar, whose idle-timer/arm-point/permanent-retire heuristics made it
  * feel broken. This one is predictable: it appears after 25% scroll or 8s
- * dwell (whichever first), stays until dismissed, and steps aside only while
- * the personal-turn block is at or above the viewport (one ask per viewport).
+ * dwell (whichever first), stays until dismissed, and retires
+ * once the reader reaches the personal-turn block (one ask per viewport;
+ * every transition fires at most once per page view — no scroll yo-yo).
  * Dismiss is per-post — an accidental tap never kills the channel for good.
  * Shows only for visitor/undecided/thinking stages and only after the consent
  * banner is answered (both are bottom-fixed — never stack). `?preview=<stage>`
@@ -51,7 +52,7 @@ export function BlogAskCard({ slug, locale, messages }: BlogAskCardProps) {
   );
   const [shown, setShown] = useState(false);
   const [dismissed, setDismissed] = useState(false);
-  const [inTurnZone, setInTurnZone] = useState(false);
+  const [turnReached, setTurnReached] = useState(false);
   const [previewStage, setPreviewStage] = useState<JourneyStage | null>(null);
 
   // Appear on 25% scroll or 8s dwell — whichever comes first. Both latch.
@@ -88,14 +89,15 @@ export function BlogAskCard({ slug, locale, messages }: BlogAskCardProps) {
     return () => cancelAnimationFrame(id);
   }, [slug]);
 
-  // Step aside while the personal turn is on screen or above the fold —
-  // the page's own endgame ask owns that viewport. Scrolling back up
-  // brings the card back (no permanent retire).
+  // One-way retire: once the reader reaches the personal turn, the page's
+  // own endgame ask has been made — the card leaves for the rest of this
+  // page view. No scroll-coupled return (a card that yo-yos with scroll
+  // reads as a glitch, and re-asking a reader who met the turn is pursuit).
   useEffect(() => {
     const turn = document.getElementById("personal-turn");
     if (!turn) return;
     const observer = new IntersectionObserver(([entry]) => {
-      setInTurnZone(entry.isIntersecting || entry.boundingClientRect.top < 0);
+      if (entry.isIntersecting) setTurnReached(true);
     });
     observer.observe(turn);
     return () => observer.disconnect();
@@ -147,7 +149,7 @@ export function BlogAskCard({ slug, locale, messages }: BlogAskCardProps) {
     consentAnswered &&
     shown &&
     !dismissed &&
-    !inTurnZone;
+    !turnReached;
 
   return (
     <AnimatePresence>
