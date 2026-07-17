@@ -5,7 +5,7 @@ import { SaveStoryImageButton } from "./save-story-image-button";
 import { OwnerTools } from "./owner-tools";
 import { PersonalTurn } from "./personal-turn";
 import { BlogViewTracker } from "./blog-view-tracker";
-import { BlogStickyBar } from "./blog-sticky-bar";
+import { BlogAskCard } from "./blog-ask-card";
 import { ShareButtons } from "@/components/share-buttons";
 import type { BlogPostContent } from "@/content/blog/types";
 import type { Locale } from "@/lib/i18n";
@@ -20,6 +20,7 @@ interface BlogChromeMessages {
   ctaButton: string;
   readingCtaButton: string;
   stickyQuestion: string;
+  cardDismissLabel: string;
   stickyCta: string;
   stickyUndecidedQuestion: string;
   stickyUndecidedCta: string;
@@ -156,7 +157,7 @@ export function BlogPostPage({ slug, content, datePublished, locale, messages, s
           </div>
         </OwnerTools>
       </article>
-      <BlogStickyBar
+      <BlogAskCard
         slug={slug}
         locale={locale}
         messages={{
@@ -166,6 +167,7 @@ export function BlogPostPage({ slug, content, datePublished, locale, messages, s
           undecidedCta: messages.stickyUndecidedCta,
           thinkingQuestion: messages.stickyThinkingQuestion,
           thinkingCta: messages.stickyThinkingCta,
+          dismissLabel: messages.cardDismissLabel,
         }}
       />
     </PageShell>

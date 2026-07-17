@@ -10,10 +10,14 @@ export function trackBlogScrollDepth(slug: string, quartile: 25 | 50 | 75 | 100)
 
 export function trackBlogCtaClicked(
   slug: string,
-  position: "sticky" | "personal_turn",
+  position: "sticky" | "card" | "personal_turn",
   stage: string,
 ) {
   safeCapture("blog_cta_clicked", { slug, position, stage });
+}
+
+export function trackBlogCardDismissed(slug: string, stage: string) {
+  safeCapture("blog_card_dismissed", { slug, stage });
 }
 
 export function trackStoryLinkCopied(slug: string) {
