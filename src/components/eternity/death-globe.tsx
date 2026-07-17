@@ -74,7 +74,7 @@ export function DeathGlobe() {
       if (!globe) return;
       const now = performance.now();
       pings = pings.filter((p) => now - p.bornAt < PING_LIFE_MS);
-      if (!reducedMotion && pointerStart === null) phi += 0.0035;
+      if (!reducedMotion && pointerStart === null) phi -= 0.0035;
       globe.update({
         phi: phi + releasedDelta + pointerDelta,
         markers: pings.map((p) => ({
