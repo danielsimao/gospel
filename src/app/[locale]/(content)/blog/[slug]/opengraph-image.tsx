@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { notFound } from "next/navigation";
 import { isValidLocale, type Locale } from "@/lib/i18n";
 import { getPost, getPostContent, getPostLocales, getPublishedPosts } from "@/content/blog/posts";
-import { loadOgFonts, OG_BACKGROUND, OG_GOLD, OG_VIGNETTE } from "@/lib/og";
+import { loadOgFontsSafe, OG_BACKGROUND, OG_GOLD, OG_VIGNETTE } from "@/lib/og";
 
 export const alt = "If You Died Today — Blog";
 
@@ -39,7 +39,7 @@ export default async function Image({
   const content = post && getPostContent(post, locale as Locale);
   if (!post || !content) notFound();
 
-  const fonts = await loadOgFonts();
+  const fonts = await loadOgFontsSafe();
   const titleSize = content.title.length > 60 ? 44 : content.title.length > 40 ? 52 : 60;
 
   return new ImageResponse(
@@ -134,7 +134,7 @@ export default async function Image({
     ),
     {
       ...size,
-      fonts,
+      ...(fonts ? { fonts } : {}),
     },
   );
 }

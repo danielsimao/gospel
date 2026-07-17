@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { isValidLocale, SUPPORTED_LOCALES } from "@/lib/i18n";
-import { loadOgFonts, OG_BACKGROUND, OG_VIGNETTE } from "@/lib/og";
+import { loadOgFontsSafe, OG_BACKGROUND, OG_VIGNETTE } from "@/lib/og";
 
 // 1080×1920 Instagram Story graphic for sharing the journey itself —
 // offered on the committed track. First-person testimony framing; the
@@ -42,7 +42,7 @@ export async function GET(
   }
 
   const copy = COPY[locale];
-  const fonts = await loadOgFonts();
+  const fonts = await loadOgFontsSafe();
 
   return new ImageResponse(
     (
@@ -192,7 +192,7 @@ export async function GET(
     {
       width: WIDTH,
       height: HEIGHT,
-      fonts,
+      ...(fonts ? { fonts } : {}),
     },
   );
 }

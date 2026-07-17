@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { isValidLocale, type Locale } from "@/lib/i18n";
 import { getPost, getPostContent, getPostLocales, getPublishedPosts } from "@/content/blog/posts";
-import { loadOgFonts, OG_BACKGROUND, OG_GOLD, OG_VIGNETTE } from "@/lib/og";
+import { loadOgFontsSafe, OG_BACKGROUND, OG_GOLD, OG_VIGNETTE } from "@/lib/og";
 
 // 1080×1920 Instagram Story graphic. Content stays inside IG's safe zones:
 // ≥250px from the top (avatar/progress bar), ≥340px from the bottom
@@ -34,7 +34,7 @@ export async function GET(
     return new Response(null, { status: 404 });
   }
 
-  const fonts = await loadOgFonts();
+  const fonts = await loadOgFontsSafe();
   const titleSize = content.title.length > 60 ? 64 : content.title.length > 40 ? 72 : 84;
 
   return new ImageResponse(
@@ -137,7 +137,7 @@ export async function GET(
     {
       width: WIDTH,
       height: HEIGHT,
-      fonts,
+      ...(fonts ? { fonts } : {}),
     },
   );
 }
