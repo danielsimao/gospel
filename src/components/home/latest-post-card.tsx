@@ -35,12 +35,20 @@ export function LatestPostCard({ locale, eyebrow, post }: LatestPostCardProps) {
   const href = post.localeAvailable ? `/${locale}/blog/${post.slug}` : `/en/blog/${post.slug}`;
 
   return (
-    <div className="mt-14 w-full max-w-md">
-      <p className="font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">{eyebrow}</p>
+    <div className="mt-16 w-full max-w-md sm:mt-20">
+      {/* Own quiet band — divider + centered eyebrow declare a chapter break
+          so the card reads as "meanwhile, from the blog", not an appendix
+          bolted under the invitation CTA. */}
+      <div aria-hidden="true" className="h-px bg-white/[0.08]" />
+      <div className="mt-8 flex items-center justify-center gap-2">
+        <span aria-hidden="true" className="h-px w-6 bg-[#D4A843]/40" />
+        <p className="font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">{eyebrow}</p>
+        <span aria-hidden="true" className="h-px w-6 bg-[#D4A843]/40" />
+      </div>
       <Link
         href={href}
         onClick={() => trackHomeBlogCardClicked(post.slug)}
-        className="group mt-3 block rounded-xl border border-white/[0.06] bg-white/[0.015] p-5 transition-all hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03]"
+        className="group mt-4 block rounded-xl border border-white/[0.06] bg-white/[0.015] p-5 transition-all hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03]"
       >
         <div className="flex items-start justify-between gap-3">
           <div>
