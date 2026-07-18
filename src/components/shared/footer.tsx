@@ -6,6 +6,7 @@ import type { Locale } from "@/lib/i18n";
 interface FooterMessages {
   exploreLabel: string;
   learnLabel: string;
+  allTopicsLabel: string;
   growLabel: string;
   homeLink: string;
   testLink: string;
@@ -41,9 +42,9 @@ interface FooterProps {
 export function Footer({ messages, learnTopics, locale }: FooterProps) {
   return (
     <footer className="print-hide relative z-[1] border-t border-white/[0.08] bg-[#060404]">
-      <div className="mx-auto max-w-2xl px-6 py-16 sm:px-8 sm:py-20">
+      <div className="mx-auto max-w-2xl px-6 py-12 sm:px-8 sm:py-14">
         {/* 3-column grid — stacks on mobile */}
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-12">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-10">
           {/* Explore */}
           <div>
             <h4 className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
@@ -87,7 +88,9 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
               {messages.learnLabel}
             </h4>
             <nav className="flex flex-col gap-2.5">
-              {learnTopics.map((topic) => (
+              {/* First few only — 14 stacked links dwarfed the other columns
+                  (and made the mobile footer a scroll wall). Hub links them all. */}
+              {learnTopics.slice(0, 5).map((topic) => (
                 <Link
                   key={topic.slug}
                   href={`/${locale}/learn/${topic.slug}`}
@@ -97,6 +100,13 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
                   {topic.title}
                 </Link>
               ))}
+              <Link
+                href={`/${locale}/learn`}
+                prefetch={false}
+                className="text-sm text-[#D4A843]/70 transition-colors hover:text-[#D4A843]/90"
+              >
+                {messages.allTopicsLabel} &rarr;
+              </Link>
             </nav>
           </div>
 
@@ -143,7 +153,7 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
         </div>
 
         {/* Divider */}
-        <div className="mt-14 h-px bg-white/[0.08]" />
+        <div className="mt-10 h-px bg-white/[0.08]" />
 
         {/* Legal row */}
         <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
@@ -174,7 +184,7 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
         </div>
 
         {/* Scripture */}
-        <p className="mt-8 text-center text-xs italic leading-relaxed text-white/60">
+        <p className="mt-6 text-center text-xs italic leading-relaxed text-white/60">
           &ldquo;{messages.scripture}&rdquo;
         </p>
         <p className="mt-2 text-center font-mono text-[10px] uppercase tracking-widest text-[#D4A843]/70">
@@ -182,7 +192,7 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
         </p>
 
         {/* Bottom row */}
-        <div className="mt-8 flex items-center justify-between">
+        <div className="mt-6 flex items-center justify-between">
           <span className="font-mono text-[11px] text-white/50">ifyoudiedtoday.com</span>
           <div className="flex items-center gap-2.5 font-mono text-[11px]">
             <FooterLocaleSwitch locale={locale} />
