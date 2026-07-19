@@ -23,6 +23,26 @@ function pingSize(ageMs: number): number {
   return MAX_MARKER_SIZE * swell * fade;
 }
 
+// Reduced motion (which Android also reports under battery saver / "remove
+// animations") disables auto-rotation — so instead of freezing wherever it
+// loaded, the globe parks facing the densest population hemisphere: a view
+// centered on ~32°E covers 37 of 44 population centers, so the death pings
+// still land where the reader can see them.
+const STATIC_VIEW_LNG = 32;
+// cobe's longitude→phi mapping, from its "rotate to location" example.
+const STATIC_PHI = Math.PI - ((STATIC_VIEW_LNG * Math.PI) / 180 - Math.PI / 2);
+
+function lngDistance(a: number, b: number): number {
+  const d = Math.abs(a - b) % 360;
+  return d > 180 ? 360 - d : d;
+}
+
+// When parked, only spawn pings on the visible hemisphere (with margin for
+// the sphere's edge foreshortening).
+const VISIBLE_CENTERS = POPULATION_CENTERS.filter(
+  (c) => lngDistance(c[0], STATIC_VIEW_LNG) < 80,
+);
+
 /**
  * The homepage deaths visual as a 3D globe: slowly rotating, drag/touch to
  * spin, one red ping per ~556ms at a random population center. Falls back to
@@ -40,7 +60,7 @@ export function DeathGlobe() {
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    let phi = 0.3;
+    let phi = reducedMotion ? STATIC_PHI : 0.3;
     let width = 0;
     let pings: Ping[] = [];
     let globe: ReturnType<typeof createGlobe> | null = null;
@@ -61,7 +81,8 @@ export function DeathGlobe() {
 
     const addPing = () => {
       if (!visible || document.hidden) return;
-      const center = POPULATION_CENTERS[Math.floor(Math.random() * POPULATION_CENTERS.length)];
+      const pool = reducedMotion ? VISIBLE_CENTERS : POPULATION_CENTERS;
+      const center = pool[Math.floor(Math.random() * pool.length)];
       pings.push({
         // POPULATION_CENTERS is [lng, lat]; cobe wants [lat, lng]. Jitter like the 2D map.
         location: [center[1] + (Math.random() - 0.5) * 2, center[0] + (Math.random() - 0.5) * 2],
