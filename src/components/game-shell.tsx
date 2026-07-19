@@ -66,6 +66,7 @@ export function GameShell({ messages, locale }: GameShellProps) {
         questionStartedAt: pendingResume.questionStartedAt,
         savedAt: pendingResume.savedAt,
         graceReached: pendingResume.graceReached,
+        invitationReached: pendingResume.invitationReached,
         invitationResponse: pendingResume.invitationResponse,
       },
     });

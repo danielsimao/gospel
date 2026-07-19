@@ -91,6 +91,21 @@ describe("test-session-storage", () => {
     });
   });
 
+  describe("invitationReached", () => {
+    it("round-trips invitationReached", () => {
+      writeSession({ ...playingState, phase: "invitation", invitationReached: true });
+      expect(readSession()?.invitationReached).toBe(true);
+    });
+
+    it("defaults invitationReached to false for sessions saved before the field", () => {
+      writeSession({ ...playingState, phase: "grace" });
+      const raw = JSON.parse(storage.get("gospel-test-session")!);
+      delete raw.invitationReached;
+      storage.set("gospel-test-session", JSON.stringify(raw));
+      expect(readSession()?.invitationReached).toBe(false);
+    });
+  });
+
   describe("clearSession", () => {
     it("removes the session from storage", () => {
       writeSession(playingState);

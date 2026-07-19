@@ -22,6 +22,7 @@ export interface SavedSession {
   questionStartedAt: number | null;
   savedAt: number;
   graceReached: boolean;
+  invitationReached: boolean;
   invitationResponse: InvitationResponse | null;
 }
 
@@ -33,7 +34,10 @@ export function readSession(): SavedSession | null {
     const parsed = JSON.parse(raw) as Partial<SavedSession>;
     if (parsed.version !== CURRENT_VERSION) return null;
     if (!parsed.phase || parsed.phase === "landing") return null;
-    return parsed as SavedSession;
+    return {
+      ...parsed,
+      invitationReached: parsed.invitationReached === true,
+    } as SavedSession;
   } catch (error) {
     console.warn("[test-session-storage] Failed to read session:", error);
     return null;
@@ -56,6 +60,7 @@ export function writeSession(state: GameState): void {
       questionStartedAt: state.questionStartedAt,
       savedAt: Date.now(),
       graceReached: state.graceReached,
+      invitationReached: state.invitationReached,
       invitationResponse: state.invitationResponse,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
