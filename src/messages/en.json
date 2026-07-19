@@ -1575,10 +1575,6 @@
         "body": "This site exists to present the gospel of Jesus Christ clearly, honestly, and without compromise. We believe every person will stand before God and give an account of their life. Our goal is to help you consider that reality before it's too late."
       },
       {
-        "title": "What we believe",
-        "body": "We hold to the historic Christian faith as revealed in the Bible. We believe that all people have sinned and fall short of God's glory, that the wages of sin is death, and that God demonstrates His love for us in that while we were still sinners, Christ died for us. Salvation is by grace alone, through faith alone, in Christ alone."
-      },
-      {
         "title": "The test",
         "body": "The moral examination on this site is based on the Ten Commandments — God's moral standard. It is not designed to condemn, but to show every person their need for a Saviour. As the apostle Paul wrote: 'Through the law we become conscious of our sin' (Romans 3:20)."
       },
@@ -1586,7 +1582,52 @@
         "title": "Who built this",
         "body": "This site was built by Christians who want to share the good news with as many people as possible. It is not affiliated with any specific church or denomination. It is a free resource and always will be."
       }
-    ]
+    ],
+    "beliefs": {
+      "title": "What we believe",
+      "intro": "The historic Christian faith, as revealed in the Bible. Nothing novel — and we would not want it any other way.",
+      "items": [
+        {
+          "title": "The Bible",
+          "body": "The Bible is the Word of God — breathed out by Him, fully true, and the final authority for what we believe and how we live.",
+          "ref": "2 Timothy 3:16"
+        },
+        {
+          "title": "One God",
+          "body": "There is one God, eternally existing in three persons: Father, Son, and Holy Spirit. He created all things — including you — which is why He has the right to judge all things, including you.",
+          "ref": "Matthew 28:19"
+        },
+        {
+          "title": "Jesus Christ",
+          "body": "Jesus Christ is God the Son: born of a virgin, sinless in life, crucified in our place, bodily risen from the dead, and returning to judge the living and the dead.",
+          "ref": "1 Corinthians 15:3–4"
+        },
+        {
+          "title": "Sin",
+          "body": "Every person has broken God's moral law — in deed, in word, and in thought. Sin is not a flaw to manage but guilt before a holy Judge, and its wage is death.",
+          "ref": "Romans 6:23"
+        },
+        {
+          "title": "Salvation",
+          "body": "No one can earn their way back to God. Salvation is His gift — by grace alone, through faith alone, in Christ alone — received in repentance and faith, never deserved.",
+          "ref": "Ephesians 2:8–9"
+        },
+        {
+          "title": "Judgment and eternity",
+          "body": "It is appointed for every person to die once, and after that the judgment. Scripture speaks of two eternal destinations, and no third: everlasting life with God, or everlasting separation from Him.",
+          "ref": "Hebrews 9:27"
+        },
+        {
+          "title": "The good news",
+          "body": "God commands all people everywhere to repent — and He turns away none who come to Him through Christ. That is the reason this site exists.",
+          "ref": "Acts 17:30"
+        }
+      ]
+    },
+    "cta": {
+      "heading": "Now you know where we stand. The more important question is where you do.",
+      "button": "Take the test"
+    }
   },
   "blog": {
     "label": "Blog",

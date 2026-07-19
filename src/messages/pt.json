@@ -1575,10 +1575,6 @@
         "body": "Este site existe para apresentar o evangelho de Jesus Cristo de forma clara, honesta e sem compromisso. Acreditamos que toda a pessoa estará diante de Deus e prestará contas da sua vida. O nosso objetivo é ajudar-te a considerar essa realidade antes que seja tarde demais."
       },
       {
-        "title": "No que acreditamos",
-        "body": "Mantemos a fé cristã histórica tal como revelada na Bíblia. Acreditamos que todos pecaram e estão destituídos da glória de Deus, que o salário do pecado é a morte, e que Deus demonstra o Seu amor por nós pelo facto de Cristo ter morrido por nós quando ainda éramos pecadores. A salvação é somente pela graça, somente pela fé, somente em Cristo."
-      },
-      {
         "title": "O teste",
         "body": "O exame moral neste site é baseado nos Dez Mandamentos — o padrão moral de Deus. Não foi concebido para condenar, mas para mostrar a cada pessoa a sua necessidade de um Salvador. Como o apóstolo Paulo escreveu: 'Pela lei vem o conhecimento do pecado' (Romanos 3:20)."
       },
@@ -1586,7 +1582,52 @@
         "title": "Quem construiu isto",
         "body": "Este site foi construído por cristãos que querem partilhar as boas novas com o maior número possível de pessoas. Não está afiliado a nenhuma igreja ou denominação específica. É um recurso gratuito e será sempre."
       }
-    ]
+    ],
+    "beliefs": {
+      "title": "No que acreditamos",
+      "intro": "A fé cristã histórica, como revelada na Bíblia. Nada de novo — e não o quereríamos de outra forma.",
+      "items": [
+        {
+          "title": "A Bíblia",
+          "body": "A Bíblia é a Palavra de Deus — inspirada por Ele, totalmente verdadeira e a autoridade final para aquilo em que acreditamos e para a forma como vivemos.",
+          "ref": "2 Timóteo 3:16"
+        },
+        {
+          "title": "Um só Deus",
+          "body": "Há um só Deus, que existe eternamente em três pessoas: Pai, Filho e Espírito Santo. Ele criou todas as coisas — incluindo-te a ti — e por isso tem o direito de julgar todas as coisas, incluindo-te a ti.",
+          "ref": "Mateus 28:19"
+        },
+        {
+          "title": "Jesus Cristo",
+          "body": "Jesus Cristo é Deus Filho: nascido de uma virgem, sem pecado, crucificado no nosso lugar, ressuscitado corporalmente dos mortos, e que voltará para julgar os vivos e os mortos.",
+          "ref": "1 Coríntios 15:3–4"
+        },
+        {
+          "title": "O pecado",
+          "body": "Toda a pessoa quebrou a lei moral de Deus — em actos, em palavras e em pensamentos. O pecado não é um defeito a gerir, mas culpa diante de um Juiz santo — e o seu salário é a morte.",
+          "ref": "Romanos 6:23"
+        },
+        {
+          "title": "A salvação",
+          "body": "Ninguém consegue comprar o caminho de volta para Deus. A salvação é dom d'Ele — só pela graça, só pela fé, só em Cristo — recebida em arrependimento e fé, nunca merecida.",
+          "ref": "Efésios 2:8–9"
+        },
+        {
+          "title": "O juízo e a eternidade",
+          "body": "Aos homens está ordenado morrerem uma vez, vindo depois disso o juízo. A Escritura fala de dois destinos eternos, sem terceira opção: vida eterna com Deus, ou separação eterna d'Ele.",
+          "ref": "Hebreus 9:27"
+        },
+        {
+          "title": "As boas novas",
+          "body": "Deus ordena a todos, em toda a parte, que se arrependam — e não rejeita ninguém que venha a Ele por Cristo. É por isso que este site existe.",
+          "ref": "Actos 17:30"
+        }
+      ]
+    },
+    "cta": {
+      "heading": "Agora sabes onde estamos. A pergunta mais importante é onde estás tu.",
+      "button": "Faz o teste"
+    }
   },
   "blog": {
     "label": "Blog",
