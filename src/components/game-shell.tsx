@@ -35,6 +35,13 @@ interface GameShellProps {
 
 const PHASE_ORDER = ["landing", "playing", "verdict", "grace", "invitation"] as const;
 
+// Per-page-load nonce. Marker entries survive a reload with their state
+// objects intact; without a nonce a stale marker from the previous load
+// reads as a live entry and back can be mistaken for browser-forward. Every
+// entry we stamp carries { n, i } so popstate can reject foreign markers and
+// read the true stack index instead of guessing from the phase pair.
+const HISTORY_NONCE = Math.random().toString(36).slice(2);
+
 export function GameShell({ messages, locale }: GameShellProps) {
   const state = useGameState();
   const dispatch = useGameDispatch();
@@ -163,10 +170,14 @@ export function GameShell({ messages, locale }: GameShellProps) {
     }
 
     const forward = PHASE_ORDER.indexOf(curr) > PHASE_ORDER.indexOf(prev);
+    const n = HISTORY_NONCE;
 
     if (curr === "verdict" && forward) {
       // Baseline — back from the verdict leaves /test, as today.
-      window.history.replaceState({ gospelTestPhase: "verdict" }, "");
+      window.history.replaceState(
+        { ...window.history.state, gospelTestPhase: "verdict", n, i: 0 },
+        "",
+      );
       depthRef.current = 0;
       return;
     }
@@ -175,18 +186,22 @@ export function GameShell({ messages, locale }: GameShellProps) {
       if (prev === "landing") {
         // Resumed straight into a later phase — synthesize the stack so
         // the re-read links have real entries beneath them.
-        window.history.replaceState({ gospelTestPhase: "verdict" }, "");
+        window.history.replaceState(
+          { ...window.history.state, gospelTestPhase: "verdict", n, i: 0 },
+          "",
+        );
         depthRef.current = 0;
-        window.history.pushState({ gospelTestPhase: "grace" }, "");
+        window.history.pushState({ gospelTestPhase: "grace", n, i: 1 }, "");
         depthRef.current = 1;
         if (curr === "invitation") {
-          window.history.pushState({ gospelTestPhase: "invitation" }, "");
+          window.history.pushState({ gospelTestPhase: "invitation", n, i: 2 }, "");
           depthRef.current = 2;
         }
         return;
       }
-      window.history.pushState({ gospelTestPhase: curr }, "");
-      depthRef.current += 1;
+      const i = depthRef.current + 1;
+      window.history.pushState({ gospelTestPhase: curr, n, i }, "");
+      depthRef.current = i;
     }
   }, [state.phase]);
 
@@ -196,35 +211,49 @@ export function GameShell({ messages, locale }: GameShellProps) {
         // Landing event of the post-response unwind: strip the marker so
         // the next back press exits the page.
         unwindingRef.current = false;
-        window.history.replaceState({}, "");
+        window.history.replaceState(
+          { ...window.history.state, gospelTestPhase: undefined, n: undefined, i: undefined },
+          "",
+        );
         return;
       }
-      const target = (e.state as { gospelTestPhase?: string } | null)
-        ?.gospelTestPhase;
-      if (!target) return; // left our range — App Router handles it
-
+      // Reset unconditionally — a link-driven back must not leave the flag
+      // set for a later browser-driven press to misread.
       const via = viaLinkRef.current ? "link" : "browser";
       viaLinkRef.current = false;
-      const phase = prevPhaseRef.current;
 
-      if (target === "verdict" && phase === "grace") {
+      const entry = e.state as
+        | { gospelTestPhase?: string; n?: string; i?: number }
+        | null;
+      const target = entry?.gospelTestPhase;
+      if (!target) return; // left our range — App Router handles it
+      if (entry?.n !== HISTORY_NONCE) return; // foreign marker (prior load) — inert
+
+      const phase = prevPhaseRef.current;
+      // Direction from the stamped index vs. our live depth, not the phase
+      // pair (a stale pair could otherwise read backward as forward). The
+      // phase pair still gates dispatch so illegal transitions stay inert.
+      const i = entry.i ?? 0;
+      const backward = i < depthRef.current;
+      const forward = i > depthRef.current;
+
+      if (backward && target === "verdict" && phase === "grace") {
         trackTestBack("grace", "verdict", via);
-        depthRef.current = Math.max(0, depthRef.current - 1);
+        depthRef.current = i;
         poppingRef.current = true;
         dispatch({ type: "BACK_TO_VERDICT" });
-      } else if (target === "grace" && phase === "invitation") {
+      } else if (backward && target === "grace" && phase === "invitation") {
         if (stateRef.current.invitationResponse) return; // recorded — inert
         trackTestBack("invitation", "grace", via);
-        depthRef.current = Math.max(0, depthRef.current - 1);
+        depthRef.current = i;
         poppingRef.current = true;
         dispatch({ type: "BACK_TO_GRACE" });
-      } else if (target === "grace" && phase === "verdict") {
-        // Browser forward
-        depthRef.current += 1;
+      } else if (forward && target === "grace" && phase === "verdict") {
+        depthRef.current = i;
         poppingRef.current = true;
         dispatch({ type: "SHOW_GRACE" });
-      } else if (target === "invitation" && phase === "grace") {
-        depthRef.current += 1;
+      } else if (forward && target === "invitation" && phase === "grace") {
+        depthRef.current = i;
         poppingRef.current = true;
         dispatch({ type: "SHOW_INVITATION" });
       }
