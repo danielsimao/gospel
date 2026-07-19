@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { m, AnimatePresence } from "framer-motion";
 import * as Sentry from "@sentry/nextjs";
@@ -15,6 +15,7 @@ import {
   trackGameAbandoned,
   trackTestResumed,
   trackTestRestarted,
+  trackTestBack,
 } from "@/lib/analytics";
 import { QUESTION_CONFIGS } from "@/lib/questions";
 import {
@@ -32,9 +33,17 @@ interface GameShellProps {
   locale: Locale;
 }
 
+const PHASE_ORDER = ["landing", "playing", "verdict", "grace", "invitation"] as const;
+
 export function GameShell({ messages, locale }: GameShellProps) {
   const state = useGameState();
   const dispatch = useGameDispatch();
+
+  // Current-state mirror for the once-registered popstate handler.
+  const stateRef = useRef(state);
+  useEffect(() => {
+    stateRef.current = state;
+  });
 
   // Read any saved session post-mount (server renders no dialog; a lazy
   // initializer here caused hydration mismatches for resuming users). Only
@@ -127,6 +136,116 @@ export function GameShell({ messages, locale }: GameShellProps) {
     locale,
   ]);
 
+  // --- Back-navigation history integration -------------------------------
+  // One path: re-read links call history.back(); popstate dispatches the
+  // reducer action. Entries exist only for verdict/grace/invitation —
+  // questions are one-way and get none.
+  const prevPhaseRef = useRef(state.phase);
+  const depthRef = useRef(0); // entries pushed beyond the verdict baseline
+  const unwindingRef = useRef(false);
+  const viaLinkRef = useRef(false);
+  // Set by the popstate handler before it dispatches: the phase change it
+  // triggers is a MOVE along existing history, so the phase effect must sync
+  // state without pushing a new entry (a re-push would clobber the forward
+  // stack and double-count depth). depthRef is owned by the handler here.
+  const poppingRef = useRef(false);
+
+  useEffect(() => {
+    const prev = prevPhaseRef.current;
+    const curr = state.phase;
+    prevPhaseRef.current = curr;
+    if (prev === curr) return;
+
+    if (poppingRef.current) {
+      // Phase change came from popstate — history already reflects it.
+      poppingRef.current = false;
+      return;
+    }
+
+    const forward = PHASE_ORDER.indexOf(curr) > PHASE_ORDER.indexOf(prev);
+
+    if (curr === "verdict" && forward) {
+      // Baseline — back from the verdict leaves /test, as today.
+      window.history.replaceState({ gospelTestPhase: "verdict" }, "");
+      depthRef.current = 0;
+      return;
+    }
+
+    if ((curr === "grace" || curr === "invitation") && forward) {
+      if (prev === "landing") {
+        // Resumed straight into a later phase — synthesize the stack so
+        // the re-read links have real entries beneath them.
+        window.history.replaceState({ gospelTestPhase: "verdict" }, "");
+        depthRef.current = 0;
+        window.history.pushState({ gospelTestPhase: "grace" }, "");
+        depthRef.current = 1;
+        if (curr === "invitation") {
+          window.history.pushState({ gospelTestPhase: "invitation" }, "");
+          depthRef.current = 2;
+        }
+        return;
+      }
+      window.history.pushState({ gospelTestPhase: curr }, "");
+      depthRef.current += 1;
+    }
+  }, [state.phase]);
+
+  useEffect(() => {
+    function onPopState(e: PopStateEvent) {
+      if (unwindingRef.current) {
+        // Landing event of the post-response unwind: strip the marker so
+        // the next back press exits the page.
+        unwindingRef.current = false;
+        window.history.replaceState({}, "");
+        return;
+      }
+      const target = (e.state as { gospelTestPhase?: string } | null)
+        ?.gospelTestPhase;
+      if (!target) return; // left our range — App Router handles it
+
+      const via = viaLinkRef.current ? "link" : "browser";
+      viaLinkRef.current = false;
+      const phase = prevPhaseRef.current;
+
+      if (target === "verdict" && phase === "grace") {
+        trackTestBack("grace", "verdict", via);
+        depthRef.current = Math.max(0, depthRef.current - 1);
+        poppingRef.current = true;
+        dispatch({ type: "BACK_TO_VERDICT" });
+      } else if (target === "grace" && phase === "invitation") {
+        if (stateRef.current.invitationResponse) return; // recorded — inert
+        trackTestBack("invitation", "grace", via);
+        depthRef.current = Math.max(0, depthRef.current - 1);
+        poppingRef.current = true;
+        dispatch({ type: "BACK_TO_GRACE" });
+      } else if (target === "grace" && phase === "verdict") {
+        // Browser forward
+        depthRef.current += 1;
+        poppingRef.current = true;
+        dispatch({ type: "SHOW_GRACE" });
+      } else if (target === "invitation" && phase === "grace") {
+        depthRef.current += 1;
+        poppingRef.current = true;
+        dispatch({ type: "SHOW_INVITATION" });
+      }
+      // Anything else: inert entry (e.g. stale forward after unwind).
+    }
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, [dispatch]);
+
+  // Response recorded → unwind our pushed entries so hardware back exits.
+  const responseRef = useRef(state.invitationResponse);
+  useEffect(() => {
+    const had = responseRef.current;
+    responseRef.current = state.invitationResponse;
+    if (!had && state.invitationResponse && depthRef.current > 0) {
+      unwindingRef.current = true;
+      window.history.go(-depthRef.current);
+      depthRef.current = 0;
+    }
+  }, [state.invitationResponse]);
+
   return (
     <main className="relative min-h-dvh overflow-x-hidden bg-[#060404] flex flex-col">
       {/* Radial vignette */}
@@ -175,7 +294,16 @@ export function GameShell({ messages, locale }: GameShellProps) {
               />
             )}
 
-            {state.phase === "grace" && <GraceScreen messages={messages.grace} />}
+            {state.phase === "grace" && (
+              <GraceScreen
+                messages={messages.grace}
+                returning={state.invitationReached}
+                onBack={() => {
+                  viaLinkRef.current = true;
+                  window.history.back();
+                }}
+              />
+            )}
 
             {state.phase === "invitation" && (
               <InvitationScreen
@@ -186,6 +314,10 @@ export function GameShell({ messages, locale }: GameShellProps) {
                 onResponse={(response) => {
                   saveInvitationResponse(response);
                   dispatch({ type: "SET_INVITATION_RESPONSE", response });
+                }}
+                onBack={() => {
+                  viaLinkRef.current = true;
+                  window.history.back();
                 }}
               />
             )}

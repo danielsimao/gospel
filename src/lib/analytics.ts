@@ -8,6 +8,10 @@ export function trackTestRestarted(locale: string) {
   safeCapture("test_restarted", { locale });
 }
 
+export function trackTestBack(from: string, to: string, via: "link" | "browser") {
+  safeCapture("test_back", { from, to, via });
+}
+
 export function trackGameStarted(locale: string) {
   safeCapture("game_started", {
     locale,

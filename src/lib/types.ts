@@ -194,6 +194,7 @@ export interface Messages {
     beatsHeading: string;
     beats: Array<{ headline: string; subtitle: string }>;
     tapContinue: string;
+    rereadVerdict: string;
   };
   invitation: {
     eyebrow: string;

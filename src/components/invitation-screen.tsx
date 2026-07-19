@@ -17,6 +17,7 @@ interface InvitationScreenProps {
   startedAt: number;
   invitationResponse: InvitationResponse | null;
   onResponse: (response: InvitationResponse) => void;
+  onBack: () => void;
   shareMessages?: {
     prompt: string;
     whatsappMessage: string;
@@ -31,6 +32,7 @@ export function InvitationScreen({
   startedAt,
   invitationResponse,
   onResponse,
+  onBack,
   shareMessages,
 }: InvitationScreenProps) {
   const { invitation, share } = messages;
@@ -113,6 +115,13 @@ export function InvitationScreen({
             <Button variant="text" onClick={() => handleResponse("dismissed")}>
               {invitation.responses.dismissed}
             </Button>
+            <button
+              type="button"
+              onClick={onBack}
+              className="mt-3 text-[11px] text-white/30 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/50"
+            >
+              {invitation.rereadGrace}
+            </button>
           </m.div>
         )}
 

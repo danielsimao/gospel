@@ -25,9 +25,12 @@ export function VerdictScreen({
 }: VerdictScreenProps) {
   const dispatch = useGameDispatch();
   const hasTracked = useRef(false);
-  const [showConfession, setShowConfession] = useState(false);
-  const [showDeathLine, setShowDeathLine] = useState(false);
-  const [showBridge, setShowBridge] = useState(false);
+  // Grace is only reachable through the full verdict, so graceReached
+  // exactly means "verdict fully seen" — re-entry replays nothing.
+  const returning = state.graceReached;
+  const [showConfession, setShowConfession] = useState(returning);
+  const [showDeathLine, setShowDeathLine] = useState(returning);
+  const [showBridge, setShowBridge] = useState(returning);
 
   const confession = buildConfession(state.answers, testMessages);
 
@@ -36,7 +39,7 @@ export function VerdictScreen({
   const deathCount = Math.floor((durationMs / 1000) * DEATHS_PER_SECOND);
 
   useEffect(() => {
-    if (!hasTracked.current) {
+    if (!hasTracked.current && !returning) {
       hasTracked.current = true;
       const totalHonest = state.answers.filter(
         (a) => a.answer === "honest",
@@ -46,6 +49,9 @@ export function VerdictScreen({
       ).length;
       trackVerdictReached(totalHonest, totalJustify, durationMs);
     }
+
+    // Re-read: every stage is already shown, no timers to run.
+    if (returning) return;
 
     // Staggered reveals — compressed: a reader should never sit in front of
     // a finished screen waiting for the only button to exist. Order:
@@ -58,7 +64,7 @@ export function VerdictScreen({
       clearTimeout(t2);
       clearTimeout(t3);
     };
-  }, [state.answers, durationMs]);
+  }, [state.answers, durationMs, returning]);
 
   function handleBridgeClick() {
     dispatch({ type: "SHOW_GRACE" });
@@ -95,7 +101,7 @@ export function VerdictScreen({
         <m.div
           initial={{ opacity: 0, scale: 1.15 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.55, delay: 0.3, ease: EASE_OUT_STRONG }}
+          transition={{ duration: 0.55, delay: returning ? 0 : 0.3, ease: EASE_OUT_STRONG }}
           className="mt-4 w-full max-w-sm border-y-2 border-red-500/30 py-4 sm:py-5"
         >
           <p

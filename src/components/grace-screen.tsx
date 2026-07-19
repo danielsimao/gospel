@@ -20,10 +20,13 @@ interface GraceScreenProps {
     beatsHeading: string;
     beats: Array<{ headline: string; subtitle: string }>;
     tapContinue: string;
+    rereadVerdict: string;
   };
+  returning: boolean;
+  onBack: () => void;
 }
 
-export function GraceScreen({ messages }: GraceScreenProps) {
+export function GraceScreen({ messages, returning, onBack }: GraceScreenProps) {
   const dispatch = useGameDispatch();
   const startTime = useRef(0);
   const maxScrollDepth = useRef(0);
@@ -31,7 +34,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
   // Beat 1 is reserved in the layout from mount to avoid a content shift
   // when it fades in. Subsequent beats are revealed by user tap, which
   // intentionally shifts the page.
-  const [revealedCount, setRevealedCount] = useState(1);
+  const [revealedCount, setRevealedCount] = useState(returning ? messages.beats.length : 1);
   // The spotlight beat. Follows the newest reveal, but tapping any earlier
   // beat moves it back — re-reading the argument is supported, not punished.
   const [activeIndex, setActiveIndex] = useState(0);
@@ -61,8 +64,10 @@ export function GraceScreen({ messages }: GraceScreenProps) {
   // (see useState(1) above) — its visual fade-in is delayed via motion
   // transition so the title animates first without causing a layout shift.
   useEffect(() => {
+    if (returning) return; // re-read, already counted
     trackGraceRevealed();
     trackGraceBeatRevealed(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fire once per mount
   }, []);
 
   const handleTapContinue = useCallback(() => {
@@ -146,7 +151,7 @@ export function GraceScreen({ messages }: GraceScreenProps) {
                     opacity: isActive ? 1 : 0.6,
                     y: 0,
                   }}
-                  transition={{ duration: 0.5, ease: "easeOut", delay: i === 0 ? 1.5 : 0 }}
+                  transition={{ duration: 0.5, ease: "easeOut", delay: i === 0 && !returning ? 1.5 : 0 }}
                   onClick={allBeatsRevealed ? undefined : () => setActiveIndex(i)}
                   role={allBeatsRevealed ? undefined : "button"}
                   tabIndex={allBeatsRevealed ? undefined : 0}
@@ -238,6 +243,17 @@ export function GraceScreen({ messages }: GraceScreenProps) {
               </m.div>
             )}
           </AnimatePresence>
+
+          {/* Quiet walk-back — re-reading the verdict, not reopening it */}
+          <div className="mt-8 flex justify-center">
+            <button
+              type="button"
+              onClick={onBack}
+              className="text-[11px] text-white/30 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/50"
+            >
+              {messages.rereadVerdict}
+            </button>
+          </div>
         </div>
       </div>
     </div>
