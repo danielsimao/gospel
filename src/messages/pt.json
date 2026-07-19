@@ -107,6 +107,7 @@
   "grace": {
     "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unig\u00e9nito, para que todo aquele que nele cr\u00ea n\u00e3o pere\u00e7a, mas tenha a vida eterna.",
     "scriptureRef": "Jo\u00e3o 3:16 (ARC)",
+    "rereadVerdict": "Reler o veredicto",
     "continueLabel": "Continuar",
     "label": "Gra\u00e7a",
     "beatsHeading": "Mas Deus\u2026",
@@ -138,6 +139,7 @@
     "eyebrow": "A decisão",
     "heading": "O que vais fazer com isto?",
     "urgencyLine": "Antes de responderes — lembra-te da contagem. 1,8 por segundo. Esta decis\u00e3o tem um prazo, e ningu\u00e9m sabe qual \u00e9.",
+    "rereadGrace": "Reler a graça",
     "committedEncouragement": "Hoje \u00e9 o in\u00edcio.",
     "thinkingEncouragement": "Pensa nisso a s\u00e9rio \u2014 \u00e9 justo. S\u00f3 n\u00e3o deixes que o 'depois' se torne, sem dares conta, um 'nunca'. Ningu\u00e9m tem o amanh\u00e3 prometido.",
     "dismissedEncouragement": "A porta continua aberta \u2014 mas ningu\u00e9m tem o amanh\u00e3 prometido para a atravessar.",

@@ -107,6 +107,7 @@
   "grace": {
     "scripture": "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.",
     "scriptureRef": "John 3:16 (NKJV)",
+    "rereadVerdict": "Re-read the verdict",
     "continueLabel": "Continue",
     "label": "Grace",
     "beatsHeading": "But God\u2026",
@@ -138,6 +139,7 @@
     "eyebrow": "The decision",
     "heading": "What will you do with this?",
     "urgencyLine": "Before you answer — remember the count. 1.8 every second. This decision has a deadline, and no one is told when.",
+    "rereadGrace": "Re-read grace",
     "committedEncouragement": "Today is the beginning.",
     "thinkingEncouragement": "Think it through honestly — that's fair. Just don't let 'later' quietly become 'never'. No one is promised tomorrow.",
     "dismissedEncouragement": "The door stays open — but no one is promised tomorrow to walk through it.",

@@ -199,6 +199,7 @@ export interface Messages {
     eyebrow: string;
     heading: string;
     urgencyLine: string;
+    rereadGrace: string;
     committedEncouragement: string;
     thinkingEncouragement: string;
     dismissedEncouragement?: string;
