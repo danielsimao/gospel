@@ -11,6 +11,7 @@ export const initialGameState: GameState = {
   startedAt: 0,
   completedAt: null,
   graceReached: false,
+  invitationReached: false,
   invitationResponse: null,
   questionStartedAt: null,
 };
@@ -144,7 +145,22 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...state,
         phase: "invitation",
+        invitationReached: true,
       };
+
+    case "BACK_TO_VERDICT":
+      // Re-reading the recorded testimony, not reopening it — answers,
+      // score and completion stay exactly as they were.
+      if (state.phase !== "grace") return state;
+      return { ...state, phase: "verdict" };
+
+    case "BACK_TO_GRACE":
+      // Only while the invitation is unanswered. A recorded response
+      // closes the book.
+      if (state.phase !== "invitation" || state.invitationResponse) {
+        return state;
+      }
+      return { ...state, phase: "grace" };
 
     case "SET_INVITATION_RESPONSE":
       if (state.phase !== "invitation") return state;
@@ -180,6 +196,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             ? action.session.showFollowUp
             : false,
         graceReached: action.session.graceReached,
+        invitationReached: action.session.invitationReached,
         invitationResponse: action.session.invitationResponse,
         startedAt: now - activeElapsedMs,
         completedAt:

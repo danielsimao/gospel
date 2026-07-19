@@ -34,6 +34,7 @@ export interface GameState {
   startedAt: number;
   completedAt: number | null;
   graceReached: boolean;
+  invitationReached: boolean;
   invitationResponse: InvitationResponse | null;
   questionStartedAt: number | null;
 }
@@ -48,6 +49,8 @@ export type GameAction =
   | { type: "SHOW_INVITATION" }
   | { type: "SET_INVITATION_RESPONSE"; response: InvitationResponse }
   | { type: "UNDO_ANSWER" }
+  | { type: "BACK_TO_VERDICT" }
+  | { type: "BACK_TO_GRACE" }
   | {
       type: "RESUME_SESSION";
       session: {
@@ -62,6 +65,7 @@ export type GameAction =
         questionStartedAt: number | null;
         savedAt: number;
         graceReached: boolean;
+        invitationReached: boolean;
         invitationResponse: InvitationResponse | null;
       };
     };

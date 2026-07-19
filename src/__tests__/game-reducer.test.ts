@@ -203,4 +203,80 @@ describe("gameReducer", () => {
       expect(afterAdvance).toBe(state);
     });
   });
+
+  describe("back navigation", () => {
+    function reachInvitation(): GameState {
+      let state = gameReducer(initialGameState, { type: "START_GAME" });
+      state = { ...state, phase: "verdict", completedAt: Date.now() };
+      state = gameReducer(state, { type: "SHOW_GRACE" });
+      state = gameReducer(state, { type: "SHOW_INVITATION" });
+      return state;
+    }
+
+    it("SHOW_INVITATION marks invitationReached", () => {
+      const state = reachInvitation();
+      expect(state.invitationReached).toBe(true);
+    });
+
+    it("BACK_TO_VERDICT returns from grace, preserving progress flags", () => {
+      let state = gameReducer(initialGameState, { type: "START_GAME" });
+      state = { ...state, phase: "verdict", completedAt: 123 };
+      state = gameReducer(state, { type: "SHOW_GRACE" });
+      state = gameReducer(state, { type: "BACK_TO_VERDICT" });
+      expect(state.phase).toBe("verdict");
+      expect(state.graceReached).toBe(true);
+      expect(state.completedAt).toBe(123);
+    });
+
+    it("BACK_TO_VERDICT is a no-op outside grace", () => {
+      const state = reachInvitation();
+      expect(gameReducer(state, { type: "BACK_TO_VERDICT" })).toBe(state);
+    });
+
+    it("BACK_TO_GRACE returns from an unanswered invitation", () => {
+      let state = reachInvitation();
+      state = gameReducer(state, { type: "BACK_TO_GRACE" });
+      expect(state.phase).toBe("grace");
+      expect(state.invitationReached).toBe(true);
+    });
+
+    it("BACK_TO_GRACE is a no-op once a response is recorded", () => {
+      let state = reachInvitation();
+      state = gameReducer(state, {
+        type: "SET_INVITATION_RESPONSE",
+        response: "committed",
+      });
+      expect(gameReducer(state, { type: "BACK_TO_GRACE" })).toBe(state);
+    });
+
+    it("forward again after going back works (grace → invitation)", () => {
+      let state = reachInvitation();
+      state = gameReducer(state, { type: "BACK_TO_GRACE" });
+      state = gameReducer(state, { type: "SHOW_INVITATION" });
+      expect(state.phase).toBe("invitation");
+    });
+
+    it("RESUME_SESSION carries invitationReached", () => {
+      const session = {
+        phase: "invitation" as const,
+        currentQuestion: 7,
+        score: 0,
+        answers: [],
+        currentAnswer: null,
+        showFollowUp: false,
+        startedAt: 1000,
+        completedAt: 2000,
+        questionStartedAt: null,
+        savedAt: 3000,
+        graceReached: true,
+        invitationReached: true,
+        invitationResponse: null,
+      };
+      const state = gameReducer(initialGameState, {
+        type: "RESUME_SESSION",
+        session,
+      });
+      expect(state.invitationReached).toBe(true);
+    });
+  });
 });
