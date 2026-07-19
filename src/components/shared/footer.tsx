@@ -47,10 +47,10 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-10">
           {/* Explore */}
           <div>
-            <h4 className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
+            <h2 className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
               {messages.exploreLabel}
-            </h4>
-            <nav className="flex flex-col gap-2.5">
+            </h2>
+            <nav aria-label={messages.exploreLabel} className="flex flex-col gap-2.5">
               <Link
                 href={`/${locale}`}
                 prefetch={false}
@@ -84,10 +84,10 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
 
           {/* Learn */}
           <div>
-            <h4 className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
+            <h2 className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
               {messages.learnLabel}
-            </h4>
-            <nav className="flex flex-col gap-2.5">
+            </h2>
+            <nav aria-label={messages.learnLabel} className="flex flex-col gap-2.5">
               {/* First few only — 14 stacked links dwarfed the other columns
                   (and made the mobile footer a scroll wall). Hub links them all. */}
               {learnTopics.slice(0, 5).map((topic) => (
@@ -112,10 +112,10 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
 
           {/* Grow */}
           <div>
-            <h4 className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
+            <h2 className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
               {messages.growLabel}
-            </h4>
-            <nav className="flex flex-col gap-2.5">
+            </h2>
+            <nav aria-label={messages.growLabel} className="flex flex-col gap-2.5">
               <Link
                 href={`/${locale}/reading-plan`}
                 prefetch={false}
@@ -160,7 +160,7 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
           <Link
             href={`/${locale}/privacy`}
             prefetch={false}
-            className="font-mono text-[11px] text-white/40 transition-colors hover:text-white/60"
+            className="font-mono text-[11px] text-white/55 transition-colors hover:text-white/60"
           >
             {messages.privacyLink}
           </Link>
@@ -168,7 +168,7 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
           <Link
             href={`/${locale}/terms`}
             prefetch={false}
-            className="font-mono text-[11px] text-white/40 transition-colors hover:text-white/60"
+            className="font-mono text-[11px] text-white/55 transition-colors hover:text-white/60"
           >
             {messages.termsLink}
           </Link>
@@ -177,7 +177,7 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
             href={messages.needHelpUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-mono text-[11px] text-white/40 transition-colors hover:text-white/60"
+            className="font-mono text-[11px] text-white/55 transition-colors hover:text-white/60"
           >
             {messages.needHelpLink}
           </a>

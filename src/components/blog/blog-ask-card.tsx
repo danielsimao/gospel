@@ -139,7 +139,7 @@ export function BlogAskCard({ slug, locale, messages }: BlogAskCardProps) {
             type="button"
             onClick={dismiss}
             aria-label={messages.dismissLabel}
-            className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-md text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white/70"
+            className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-md text-white/55 transition-colors hover:bg-white/[0.06] hover:text-white/70"
           >
             <X className="size-4" />
           </button>

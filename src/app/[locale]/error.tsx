@@ -20,7 +20,7 @@ export default function LocaleError({
     <div className="flex min-h-dvh flex-col items-center justify-center bg-[#060404] px-6 py-16 text-center">
       <div className="flex items-center gap-2">
         <span className="h-px w-6 bg-red-500/40" />
-        <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
+        <span className="font-mono text-[10px] uppercase tracking-[3px] text-red-400/80">
           Error
         </span>
         <span className="h-px w-6 bg-red-500/40" />

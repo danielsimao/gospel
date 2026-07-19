@@ -55,7 +55,7 @@ export function LatestPostCard({ locale, eyebrow, post }: LatestPostCardProps) {
             <p className="text-sm font-semibold text-white/85 group-hover:text-white/95">{post.title}</p>
             <p className="mt-1 text-[13px] leading-relaxed text-white/55">{post.hook}</p>
           </div>
-          <span aria-hidden="true" className="mt-0.5 text-white/40 transition-transform group-hover:translate-x-1">
+          <span aria-hidden="true" className="mt-0.5 text-white/55 transition-transform group-hover:translate-x-1">
             →
           </span>
         </div>

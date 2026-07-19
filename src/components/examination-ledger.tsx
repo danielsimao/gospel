@@ -26,10 +26,10 @@ export function ExaminationLedger({
   return (
     <div className="flex flex-col items-center">
       <div className="mb-3 flex items-center gap-2">
-        <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
+        <span className="font-mono text-[10px] uppercase tracking-[3px] text-red-400/80">
           {testMessages.caseLabel}
         </span>
-        <span className="font-mono text-[9px] tabular-nums text-red-400/75">
+        <span className="font-mono text-[10px] tabular-nums text-red-400/80">
           {String(displayIndex).padStart(2, "0")} /{" "}
           {String(TOTAL_QUESTIONS).padStart(2, "0")}
         </span>

@@ -64,7 +64,7 @@ export function InvitationScreen({
           className="mb-4 flex items-center justify-center gap-2"
         >
           <span className="h-px w-6 bg-red-500/40" />
-          <span className="font-mono text-[9px] uppercase tracking-[3px] text-white/60">
+          <span className="font-mono text-[10px] uppercase tracking-[3px] text-white/60">
             {invitation.eyebrow}
           </span>
           <span className="h-px w-6 bg-[#D4A843]/40" />

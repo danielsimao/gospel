@@ -84,7 +84,7 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
           <span className="font-mono text-[10px] uppercase tracking-[2px] text-[#D4A843]/70">
             {dayLabel} {day}
           </span>
-          <h3 className="text-base font-semibold text-white/90 sm:text-lg">{messages.title}</h3>
+          <h2 className="text-base font-semibold text-white/90 sm:text-lg">{messages.title}</h2>
         </div>
         <div className="flex items-center gap-2">
           {isCompleted && (

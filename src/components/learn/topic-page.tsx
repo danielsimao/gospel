@@ -114,7 +114,7 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
                     {item.question}
                     <span
                       aria-hidden="true"
-                      className="mt-0.5 shrink-0 text-white/40 transition-transform group-open:rotate-45"
+                      className="mt-0.5 shrink-0 text-white/55 transition-transform group-open:rotate-45"
                     >
                       +
                     </span>

@@ -107,7 +107,7 @@ export function SaveStoryImageButton({
         <Download className="size-3.5" />
         {label}
       </button>
-      <p className="mt-3 text-xs text-white/40">{hint}</p>
+      <p className="mt-3 text-xs text-white/55">{hint}</p>
       <button
         type="button"
         onClick={copyStickerLink}

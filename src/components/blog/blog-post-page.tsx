@@ -60,7 +60,7 @@ export function BlogPostPage({ slug, content, datePublished, locale, messages, s
           {messages.label}
         </Link>
 
-        <p className="mt-3 font-mono text-[10px] uppercase tracking-[2.5px] text-white/40">
+        <p className="mt-3 font-mono text-[11px] uppercase tracking-[2.5px] text-white/55">
           {formattedDate}
         </p>
         <h1
