@@ -38,14 +38,17 @@ export function TopBar({ locale, learnLabel, blogLabel, messages }: TopBarProps)
         : "done";
 
   return (
-    <div className="print-hide relative z-10 flex items-center justify-between px-4 pt-4 sm:px-6 sm:pt-5">
+    <header className="print-hide relative z-10 flex items-center justify-between px-4 pt-4 sm:px-6 sm:pt-5">
       <Link
         href={`/${locale}`}
         className="text-[13px] font-bold tracking-tight text-white/70 transition-colors hover:text-white/65"
       >
         {messages.brand}
       </Link>
-      <nav className="flex items-center gap-4 text-[13px] font-medium tracking-tight">
+      <nav
+        aria-label={locale === "pt" ? "Navegação principal" : "Main navigation"}
+        className="flex items-center gap-4 text-[13px] font-medium tracking-tight"
+      >
         {stage === "pre-test" && (
           <Link
             href={`/${locale}/test`}
@@ -81,6 +84,6 @@ export function TopBar({ locale, learnLabel, blogLabel, messages }: TopBarProps)
           {learnLabel}
         </Link>
       </nav>
-    </div>
+    </header>
   );
 }

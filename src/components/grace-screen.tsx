@@ -110,7 +110,7 @@ export function GraceScreen({ messages, returning, onBack }: GraceScreenProps) {
             className="mb-4 flex items-center justify-center gap-2"
           >
             <span className="h-px w-6 bg-[#D4A843]/40" />
-            <span className="font-mono text-[9px] uppercase tracking-[3px] text-[#D4A843]/60">
+            <span className="font-mono text-[10px] uppercase tracking-[3px] text-[#D4A843]/75">
               {messages.label}
             </span>
             <span className="h-px w-6 bg-[#D4A843]/40" />
@@ -169,7 +169,7 @@ export function GraceScreen({ messages, returning, onBack }: GraceScreenProps) {
                     allBeatsRevealed ? "" : "cursor-pointer"
                   }`}
                 >
-                  <p className="mb-2 font-mono text-[9px] uppercase tracking-[2.5px] text-[#D4A843]/70">
+                  <p className="mb-2 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
                     {ROMAN[i] ?? String(i + 1)}
                   </p>
                   <p

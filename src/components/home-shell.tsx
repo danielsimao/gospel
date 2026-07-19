@@ -131,7 +131,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
     journey.stage === "visitor" && !scrolled && consentAnswered && isScrollable;
 
   return (
-    <div className="min-h-dvh overflow-x-hidden bg-[#060404]">
+    <main className="min-h-dvh overflow-x-hidden bg-[#060404]">
       {/* Scroll hint — shown to new visitors at the top, once consent is answered and the page overflows the viewport */}
       <m.div
         aria-hidden="true"
@@ -156,7 +156,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
 
         <div className="relative z-[1] flex w-full flex-col items-center">
           {/* Label */}
-          <p className="font-mono text-[9px] uppercase tracking-[4px] text-white/50 sm:text-[10px] sm:tracking-[5px]">
+          <p className="font-mono text-[10px] uppercase tracking-[4px] text-white/50 sm:text-[10px] sm:tracking-[5px]">
             {hero.label}
           </p>
 
@@ -193,7 +193,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
                 <p className="font-mono text-xl font-bold tabular-nums text-red-400/80 sm:text-2xl">
                   {card.value}
                 </p>
-                <p className="mt-1 font-mono text-[8px] uppercase tracking-[1.5px] text-white/50 sm:text-[9px] sm:tracking-[2px]">
+                <p className="mt-1 font-mono text-[10px] uppercase tracking-[1.5px] text-white/50 sm:text-[10px] sm:tracking-[2px]">
                   {hero[card.key]}
                 </p>
               </div>
@@ -293,7 +293,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
               {/* Red docket eyebrow — the verdict is still on the table */}
               <div className="mt-10 flex items-center gap-2 sm:mt-14">
                 <span className="h-px w-6 bg-red-500/40" />
-                <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/80 sm:text-[10px] sm:tracking-[4px]">
+                <span className="font-mono text-[10px] uppercase tracking-[3px] text-red-400/80 sm:text-[10px] sm:tracking-[4px]">
                   {home.journeyStages.undecided.eyebrow}
                 </span>
                 <span className="h-px w-6 bg-red-500/40" />
@@ -325,7 +325,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
               {/* Dim gold eyebrow — leaning toward grace, not there yet */}
               <div className="flex items-center gap-2">
                 <span className="h-px w-6 bg-[#D4A843]/30" />
-                <span className="font-mono text-[9px] uppercase tracking-[3px] text-[#D4A843]/60">
+                <span className="font-mono text-[10px] uppercase tracking-[3px] text-[#D4A843]/75">
                   {home.journeyStages.thinking.eyebrow}
                 </span>
                 <span className="h-px w-6 bg-[#D4A843]/30" />
@@ -381,7 +381,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
                   </div>
                   <span
                     aria-hidden="true"
-                    className="mt-0.5 text-white/40 transition-transform group-hover:translate-x-1"
+                    className="mt-0.5 text-white/55 transition-transform group-hover:translate-x-1"
                   >
                     →
                   </span>
@@ -468,6 +468,6 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
           )}
         </div>
       </section>
-    </div>
+    </main>
   );
 }

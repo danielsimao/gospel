@@ -134,7 +134,7 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
             <button
               type="button"
               onClick={() => setResetDialogOpen(true)}
-              className="font-mono text-[10px] uppercase tracking-[2px] text-white/40 transition-colors hover:text-white/60"
+              className="font-mono text-[10px] uppercase tracking-[2px] text-white/55 transition-colors hover:text-white/60"
             >
               {messages.resetLabel}
             </button>

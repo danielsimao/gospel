@@ -97,11 +97,11 @@ export default async function BlogIndexPage({ params }: Props) {
                 className="group mt-8 block border-t border-white/[0.06] pt-8 first:mt-0 first:border-t-0 first:pt-0"
               >
                 <div className="flex items-center gap-3">
-                  <span className="font-mono text-[10px] uppercase tracking-[2.5px] text-white/40">
+                  <span className="font-mono text-[11px] uppercase tracking-[2.5px] text-white/55">
                     {dateFormatter.format(new Date(`${post.datePublished}T00:00:00Z`))}
                   </span>
                   {!localizedContent && (
-                    <span className="rounded border border-white/[0.1] px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[1.5px] text-white/40">
+                    <span className="rounded border border-white/[0.1] px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[1.5px] text-white/55">
                       {blog.englishOnlyTag}
                     </span>
                   )}
@@ -110,7 +110,7 @@ export default async function BlogIndexPage({ params }: Props) {
                   {content.title}
                 </h2>
                 <p className="mt-2 text-[15px] leading-[1.7] text-white/50">{content.hook}</p>
-                <p className="mt-3 font-mono text-[10px] uppercase tracking-[2px] text-[#D4A843]/60 transition-colors group-hover:text-[#D4A843]/90">
+                <p className="mt-3 font-mono text-[10px] uppercase tracking-[2px] text-[#D4A843]/75 transition-colors group-hover:text-[#D4A843]/90">
                   {blog.readMore} →
                 </p>
               </Link>

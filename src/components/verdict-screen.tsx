@@ -90,7 +90,7 @@ export function VerdictScreen({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
-          className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75"
+          className="font-mono text-[10px] uppercase tracking-[3px] text-red-400/80"
         >
           {testMessages.verdict.prelude}
         </m.p>
@@ -161,7 +161,7 @@ export function VerdictScreen({
                       : "border-red-900/40 bg-red-950/25"
                   }`}
                 >
-                  <span className="font-mono text-[10px] tabular-nums text-red-400/75">
+                  <span className="font-mono text-[10px] tabular-nums text-red-400/80">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="font-mono text-[11px] lowercase italic text-red-400/85">

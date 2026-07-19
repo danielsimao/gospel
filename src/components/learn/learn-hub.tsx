@@ -145,7 +145,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
   return (
     <PageShell width="wide">
       <div className="animate-[fadeInUp_0.5s_ease-out_both]">
-        <p className="font-mono text-[9px] uppercase tracking-[4px] text-[#D4A843]/70">{label}</p>
+        <p className="font-mono text-[10px] uppercase tracking-[4px] text-[#D4A843]/70">{label}</p>
         <h1
           className="mt-3 text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl"
           style={{ textShadow: "0 0 60px rgba(212,168,67,0.2)" }}
@@ -164,7 +164,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
             <button
               type="button"
               onClick={() => setResetDialogOpen(true)}
-              className="font-mono text-[10px] uppercase tracking-[2px] text-white/40 transition-colors hover:text-white/60"
+              className="font-mono text-[10px] uppercase tracking-[2px] text-white/55 transition-colors hover:text-white/60"
             >
               {resetLabel}
             </button>
@@ -230,7 +230,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
                 : "bg-white/[0.14]";
           const eyebrow =
             band.key === "law"
-              ? "text-red-400/75"
+              ? "text-red-400/80"
               : band.key === "rescue"
                 ? "text-[#D4A843]/75"
                 : "text-white/50";
@@ -238,7 +238,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
             <div key={band.key}>
               <div className="mb-3 flex items-center gap-2">
                 <span className={`h-px w-6 ${hairline}`} />
-                <span className={`font-mono text-[9px] uppercase tracking-[3px] ${eyebrow}`}>
+                <span className={`font-mono text-[10px] uppercase tracking-[3px] ${eyebrow}`}>
                   {bandLabels[band.key]}
                 </span>
                 <span className={`h-px flex-1 ${hairline} opacity-40`} />

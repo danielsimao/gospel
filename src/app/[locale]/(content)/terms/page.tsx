@@ -54,7 +54,7 @@ export default async function TermsPage({ params }: Props) {
         <h1 className="font-mono text-2xl font-medium tracking-tight text-white sm:text-3xl">
           {data.heading}
         </h1>
-        <p className="mt-2 font-mono text-xs text-white/40">
+        <p className="mt-2 font-mono text-xs text-white/55">
           {data.lastUpdated}
         </p>
 

@@ -137,7 +137,7 @@ export function QuestionCard({
                 {/* Commandment accent */}
                 <div className="mb-3 flex items-center gap-2">
                   <span className="h-px w-6 bg-red-500/40" />
-                  <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
+                  <span className="font-mono text-[10px] uppercase tracking-[3px] text-red-400/80">
                     {testMessages.commandmentLabel} {roman}
                   </span>
                 </div>
@@ -274,7 +274,7 @@ export function QuestionCard({
                         : "border-red-900/40 bg-red-950/25"
                     }`}
                   >
-                    <span className="font-mono text-[10px] tabular-nums text-red-400/75">
+                    <span className="font-mono text-[10px] tabular-nums text-red-400/80">
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <span className="font-mono text-[11px] lowercase italic text-red-400/85">

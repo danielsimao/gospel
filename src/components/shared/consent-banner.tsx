@@ -56,6 +56,8 @@ export function ConsentBanner() {
           animate={{ y: 0 }}
           exit={{ y: "100%", opacity: 0, transition: { duration: 0.15, ease: "easeIn" } }}
           transition={{ duration: 0.3, ease: EASE_OUT_STRONG }}
+          role="region"
+          aria-label={copy.message}
           className="fixed inset-x-0 bottom-0 z-50 border-t border-white/[0.08] bg-[#060404]/95 backdrop-blur-sm"
         >
       <div className="mx-auto flex max-w-2xl items-center justify-between gap-4 px-6 py-3 sm:px-8">
@@ -65,7 +67,7 @@ export function ConsentBanner() {
         <div className="flex shrink-0 gap-2">
           <button
             onClick={handleDecline}
-            className="font-mono text-[11px] text-white/40 transition-colors hover:text-white/60"
+            className="font-mono text-[11px] text-white/55 transition-colors hover:text-white/60"
           >
             {copy.decline}
           </button>
