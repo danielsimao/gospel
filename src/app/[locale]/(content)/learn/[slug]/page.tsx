@@ -36,7 +36,6 @@ interface LearnData {
   allTopicsLabel?: string;
   nextLabel: string;
   feedback: { question: string; yes: string; no: string; thanks: string; followup: string };
-  prevLabel: string;
   topics: TopicData[];
 }
 
@@ -106,14 +105,10 @@ export default async function LearnTopicPage({ params }: Props) {
     ...data.topics.filter((t) => !displayOrder.includes(t.slug)),
   ];
   const orderIndex = orderedTopics.findIndex((t) => t.slug === slug);
-  const prevTopic =
-    orderIndex > 0
-      ? { slug: orderedTopics[orderIndex - 1].slug, title: orderedTopics[orderIndex - 1].title }
-      : null;
-  const nextTopic =
-    orderIndex < orderedTopics.length - 1
-      ? { slug: orderedTopics[orderIndex + 1].slug, title: orderedTopics[orderIndex + 1].title }
-      : null;
+  const next = orderIndex < orderedTopics.length - 1 ? orderedTopics[orderIndex + 1] : null;
+  const nextTopic = next
+    ? { slug: next.slug, title: next.title, subtitle: next.subtitle, number: orderIndex + 2 }
+    : null;
 
   const messages = await import(`@/messages/${locale}.json`);
   const brand = messages.default.topBar?.brand ?? "Gospel";
@@ -148,9 +143,7 @@ export default async function LearnTopicPage({ params }: Props) {
         completedCtaHeading={data.completedCtaHeading}
         completedCtaButton={data.completedCtaButton}
         allTopicsLabel={data.allTopicsLabel}
-        prevLabel={data.prevLabel}
         nextLabel={data.nextLabel}
-        prevTopic={prevTopic}
         nextTopic={nextTopic}
         feedbackMessages={data.feedback}
         faq={topic.faq ?? []}

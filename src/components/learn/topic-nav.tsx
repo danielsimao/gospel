@@ -2,16 +2,15 @@
 
 import Link from "next/link";
 import { Button, ButtonArrow } from "@/components/ui/button";
+import { TopicEmblem } from "@/components/emblems";
 import { useJourney, TOTAL_READING_DAYS } from "@/lib/use-journey";
 import { trackTopicCtaClicked, trackTopicNavClicked } from "@/lib/learn-analytics";
 
 interface TopicNavProps {
   slug: string;
   locale: string;
-  prevLabel: string;
   nextLabel: string;
-  prevTopic: { slug: string; title: string } | null;
-  nextTopic: { slug: string; title: string } | null;
+  nextTopic: { slug: string; title: string; subtitle: string; number: number } | null;
   ctaHeading: string;
   ctaButton: string;
   completedCtaHeading?: string;
@@ -19,7 +18,7 @@ interface TopicNavProps {
   allTopicsLabel?: string;
 }
 
-export function TopicNav({ slug, locale, prevLabel, nextLabel, prevTopic, nextTopic, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, allTopicsLabel }: TopicNavProps) {
+export function TopicNav({ slug, locale, nextLabel, nextTopic, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, allTopicsLabel }: TopicNavProps) {
   // Server render and first client render have no reliable journey/reading
   // state (it lives in localStorage), so no CTA renders until `ready` flips
   // post-mount — matches FooterNextStepsLink's gate on the same hook.
@@ -52,47 +51,52 @@ export function TopicNav({ slug, locale, prevLabel, nextLabel, prevTopic, nextTo
         </div>
       )}
 
-      {/* ── Navigation: prev / all topics / next ── */}
-      <div className="border-t border-white/[0.06] pt-6">
-        <div className="flex items-start justify-between">
-          {prevTopic ? (
-            <Link
-              href={`/${locale}/learn/${prevTopic.slug}`}
-              onClick={() => trackTopicNavClicked(slug, "prev", locale)}
-              className="group max-w-[40%] text-sm text-white/70 transition-colors hover:text-white/60"
-            >
-              <span className="block font-mono text-[10px] uppercase tracking-[2px] text-white/60 group-hover:text-white/70">{prevLabel}</span>
-              <span className="mt-1 block">← {prevTopic.title}</span>
-            </Link>
-          ) : (
-            <div />
-          )}
-          {nextTopic ? (
-            <Link
-              href={`/${locale}/learn/${nextTopic.slug}`}
-              onClick={() => trackTopicNavClicked(slug, "next", locale)}
-              className="group max-w-[40%] text-right text-sm text-white/70 transition-colors hover:text-white/60"
-            >
-              <span className="block font-mono text-[10px] uppercase tracking-[2px] text-white/60 group-hover:text-white/70">{nextLabel}</span>
-              <span className="mt-1 block">{nextTopic.title} →</span>
-            </Link>
-          ) : (
-            <div />
-          )}
+      {/* ── Next up: the argument's next stop, in the hub's row vocabulary.
+          One object on one axis — no prev (the browser and the hub cover
+          going back), no two-column skeleton to collapse on the arc's
+          endpoints. Absent on the last topic; the CTA carries the tail. ── */}
+      {nextTopic && (
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
+            {nextLabel}
+          </p>
+          <Link
+            href={`/${locale}/learn/${nextTopic.slug}`}
+            onClick={() => trackTopicNavClicked(slug, "next", locale)}
+            className="group mt-3 flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.015] px-5 py-3.5 transition-all hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03] sm:px-6"
+          >
+            <div className="flex items-center gap-4">
+              <span className="font-mono text-[10px] tabular-nums text-[#D4A843]/70">
+                {String(nextTopic.number).padStart(2, "0")}
+              </span>
+              <TopicEmblem
+                slug={nextTopic.slug}
+                className="size-5 shrink-0 text-[#D4A843]/60 transition-colors group-hover:text-[#D4A843]/80"
+                strokeWidth={1.7}
+              />
+              <div>
+                <p className="text-[15px] font-semibold text-white/85 sm:text-base">{nextTopic.title}</p>
+                <p className="mt-0.5 text-xs text-white/60">{nextTopic.subtitle}</p>
+              </div>
+            </div>
+            <span className="text-white/50 transition-all group-hover:translate-x-1 group-hover:text-[#D4A843]/70">
+              &rarr;
+            </span>
+          </Link>
         </div>
+      )}
 
-        {/* All topics — centered below prev/next */}
-        {allTopicsLabel && (
-          <div className="mt-5 text-center">
-            <Link
-              href={`/${locale}/learn`}
-              className="inline-flex items-center gap-1.5 text-xs text-white/50 transition-colors hover:text-white/70"
-            >
-              ← {allTopicsLabel}
-            </Link>
-          </div>
-        )}
-      </div>
+      {/* All topics — one quiet centered line */}
+      {allTopicsLabel && (
+        <div className="mt-6 text-center">
+          <Link
+            href={`/${locale}/learn`}
+            className="inline-flex items-center gap-1.5 text-xs text-white/50 transition-colors hover:text-white/70"
+          >
+            &larr; {allTopicsLabel}
+          </Link>
+        </div>
+      )}
     </nav>
   );
 }

@@ -41,15 +41,13 @@ interface TopicPageProps {
   completedCtaHeading?: string;
   completedCtaButton?: string;
   allTopicsLabel?: string;
-  prevLabel: string;
   nextLabel: string;
-  prevTopic: { slug: string; title: string } | null;
-  nextTopic: { slug: string; title: string } | null;
+  nextTopic: { slug: string; title: string; subtitle: string; number: number } | null;
   feedbackMessages: { question: string; yes: string; no: string; thanks: string; followup: string };
   faq: Array<{ question: string; answer: string }>;
 }
 
-export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, allTopicsLabel, prevLabel, nextLabel, prevTopic, nextTopic, faq, feedbackMessages }: TopicPageProps) {
+export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, allTopicsLabel, nextLabel, nextTopic, faq, feedbackMessages }: TopicPageProps) {
   useEffect(() => {
     trackTopicPageViewed(topic.slug, locale);
   }, [topic.slug, locale]);
@@ -129,9 +127,7 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
         <TopicNav
           slug={topic.slug}
           locale={locale}
-          prevLabel={prevLabel}
           nextLabel={nextLabel}
-          prevTopic={prevTopic}
           nextTopic={nextTopic}
           ctaHeading={ctaHeading}
           ctaButton={ctaButton}
