@@ -235,7 +235,11 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
                 ? "text-[#D4A843]/75"
                 : "text-white/50";
           return (
-            <div key={band.key}>
+            <div
+              key={band.key}
+              className="animate-[fadeInUp_0.5s_ease-out_both]"
+              style={{ animationDelay: `${120 + bandIdx * 80}ms` }}
+            >
               <div className="mb-3 flex items-center gap-2">
                 <span className={`h-px w-6 ${hairline}`} />
                 <span className={`font-mono text-[9px] uppercase tracking-[3px] ${eyebrow}`}>
@@ -243,7 +247,10 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
                 </span>
                 <span className={`h-px flex-1 ${hairline} opacity-40`} />
               </div>
-              <div className="flex flex-col gap-3">
+              {/* One grouped container per band — 14 separate boxes read as
+                  14 obligations; one container per band reads as a path with
+                  stops. overflow-hidden keeps row hovers inside the corners. */}
+              <div className="divide-y divide-white/[0.05] overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.015]">
                 {banded.map((topic) => {
                   // Number by display position (bands reorder the array).
                   const displayOrder = LEARN_BANDS.flatMap((b) => b.slugs);
@@ -254,8 +261,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
             <Link
               key={topic.slug}
               href={`/${locale}/learn/${topic.slug}`}
-              className="group flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.015] px-5 py-4 transition-all hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.02] sm:px-6 sm:py-5 animate-[fadeInUp_0.5s_ease-out_both]"
-              style={{ animationDelay: `${120 + i * 40}ms` }}
+              className="group flex items-center justify-between px-5 py-3 transition-colors hover:bg-[#D4A843]/[0.03] sm:px-6 sm:py-3.5"
             >
               <div className="flex items-center gap-4">
                 <span className="font-mono text-[10px] tabular-nums text-[#D4A843]/70">
