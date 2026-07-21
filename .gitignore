@@ -47,3 +47,6 @@ next-env.d.ts
 /*.png
 *.pdf
 *.webm
+
+# agent scratch (ledger, brainstorm sandboxes)
+.superpowers/
