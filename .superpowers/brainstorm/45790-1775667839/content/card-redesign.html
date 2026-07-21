@@ -1,0 +1,135 @@
+<h2>Question card — post-answer state redesign</h2>
+<p class="subtitle">Problem: After admitting a sin, the card just says "ANSWERED" — not what they were found guilty of.</p>
+
+<style>
+  .phone {
+    max-width: 380px;
+    margin: 0 auto;
+    background: #060404;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 40px 20px 32px;
+    min-height: 500px;
+    position: relative;
+    overflow: hidden;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  .card {
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 24px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+    position: relative;
+  }
+  .card-corner {
+    position: absolute; right: 16px; top: 16px;
+    font-family: ui-monospace, monospace; font-size: 10px; color: rgba(255,255,255,0.15);
+  }
+  .card-label {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+  }
+  .card-label .line { width: 24px; height: 1px; background: rgba(239,68,68,0.4); }
+  .card-label span { font-family: ui-monospace, monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 3px; color: rgba(239,68,68,0.6); }
+  .card-question {
+    font-size: 17px; font-weight: 600; line-height: 1.4; color: rgba(255,255,255,0.95);
+  }
+  .card-verdict {
+    margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(239,68,68,0.2);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .verdict-dot { width: 6px; height: 6px; border-radius: 50%; background: rgb(239,68,68); }
+  .verdict-label {
+    font-family: ui-monospace, monospace; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2px; color: rgb(239,68,68);
+  }
+  .verdict-word {
+    font-family: ui-monospace, monospace; font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 2px; color: rgba(248,113,113,0.85);
+  }
+  .next-btn {
+    margin-top: 16px; width: 100%; padding: 12px; border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.03);
+    font-size: 12px; color: rgba(255,255,255,0.6); text-align: center;
+    cursor: pointer; transition: all 0.3s;
+  }
+  .next-btn:hover { border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); }
+  .see-verdict-btn {
+    margin-top: 12px; width: 100%; padding: 10px; border-radius: 10px;
+    border: 1px solid rgba(239,68,68,0.2); background: rgba(127,29,29,0.15);
+    font-size: 11px; color: rgba(248,113,113,0.7); text-align: center;
+    cursor: pointer; transition: all 0.3s;
+    font-family: ui-monospace, monospace; text-transform: uppercase; letter-spacing: 1.5px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .see-verdict-btn .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(239,68,68,0.5); }
+  .see-verdict-btn:hover { border-color: rgba(239,68,68,0.4); background: rgba(127,29,29,0.25); }
+  .state-tag {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 8px; text-transform: uppercase; letter-spacing: 1.5px;
+    margin-bottom: 12px; font-family: ui-monospace, monospace;
+  }
+  .state-tag.current { background: rgba(212,168,67,0.15); color: rgba(212,168,67,0.7); }
+  .state-tag.proposed { background: rgba(52,211,153,0.15); color: rgba(52,211,153,0.7); }
+</style>
+
+<div class="split">
+  <!-- CURRENT -->
+  <div>
+    <div class="state-tag current">Current</div>
+    <div class="phone">
+      <div class="card">
+        <div class="card-corner">04</div>
+        <div class="card-label"><div class="line"></div><span>Answered</span></div>
+        <div class="card-question">Have you ever been so angry you wished someone harm?</div>
+
+        <div class="card-verdict">
+          <div class="verdict-dot" style="width:4px;height:4px;"></div>
+          <span style="font-family: ui-monospace, monospace; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: rgba(248,113,113,0.8);">Answered</span>
+        </div>
+
+        <div class="next-btn">Next →</div>
+      </div>
+
+      <div style="margin-top: 16px; text-align: center; font-size: 10px; color: rgba(255,255,255,0.25);">
+        ↑ User sees "Answered" but no verdict word.<br/>The word "murderer at heart" is only in the chip below.
+      </div>
+    </div>
+  </div>
+
+  <!-- PROPOSED -->
+  <div>
+    <div class="state-tag proposed">Proposed</div>
+    <div class="phone">
+      <div class="card">
+        <div class="card-corner">04</div>
+        <div class="card-label"><div class="line"></div><span>Guilty</span></div>
+        <div class="card-question">Have you ever been so angry you wished someone harm?</div>
+
+        <div class="card-verdict">
+          <div class="verdict-dot"></div>
+          <span class="verdict-word">murderer at heart</span>
+        </div>
+
+        <div class="next-btn">Next →</div>
+        <div class="see-verdict-btn">
+          <span class="dot"></span>
+          See verdict →
+        </div>
+      </div>
+
+      <div style="margin-top: 16px; text-align: center; font-size: 10px; color: rgba(255,255,255,0.25);">
+        ↑ Verdict word shown IN the card.<br/>"See verdict" button moves INSIDE card, below Next.<br/>Label changes from "Answered" to "Guilty".
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 24px;">
+  <h3>Changes</h3>
+  <ul style="font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.8;">
+    <li><strong>Verdict word inside card</strong> — after honest answer, show "murderer at heart" / "liar" / "thief" etc. in red, right below the question. No more guessing.</li>
+    <li><strong>Label changes</strong> — "ANSWERED" becomes "GUILTY" for honest answers. "DENIED" for justify answers (existing behavior preserved).</li>
+    <li><strong>"See verdict" moves inside card</strong> — below the Next button, inside the card border. Feels like a natural escape from the card rather than floating below the page.</li>
+    <li><strong>For justify answers</strong> — keep existing flow: "DENIED" label + follow-up text + Next. No verdict word (they denied it).</li>
+  </ul>
+</div>

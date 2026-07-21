@@ -45,13 +45,11 @@ interface TopicPageProps {
   nextLabel: string;
   prevTopic: { slug: string; title: string } | null;
   nextTopic: { slug: string; title: string } | null;
-  relatedTopics: Array<{ slug: string; title: string; subtitle: string }>;
-  relatedLabel: string;
   feedbackMessages: { question: string; yes: string; no: string; thanks: string; followup: string };
   faq: Array<{ question: string; answer: string }>;
 }
 
-export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, allTopicsLabel, prevLabel, nextLabel, prevTopic, nextTopic, relatedTopics, relatedLabel, faq, feedbackMessages }: TopicPageProps) {
+export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, allTopicsLabel, prevLabel, nextLabel, prevTopic, nextTopic, faq, feedbackMessages }: TopicPageProps) {
   useEffect(() => {
     trackTopicPageViewed(topic.slug, locale);
   }, [topic.slug, locale]);
@@ -141,30 +139,6 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
           completedCtaButton={completedCtaButton}
           allTopicsLabel={allTopicsLabel}
         />
-
-        {relatedTopics.length > 0 && (
-          <div className="mt-14">
-            <h2 className="font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
-              {relatedLabel}
-            </h2>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {relatedTopics.map((related) => (
-                <Link
-                  key={related.slug}
-                  href={`/${locale}/learn/${related.slug}`}
-                  className="group block rounded-xl border border-white/[0.06] bg-white/[0.015] p-5 transition-all hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03]"
-                >
-                  <p className="text-sm font-semibold text-white/85 group-hover:text-white/95">
-                    {related.title}
-                  </p>
-                  <p className="mt-1 text-[13px] leading-relaxed text-white/55">
-                    {related.subtitle}
-                  </p>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
 
         <TopicFeedback slug={topic.slug} locale={locale} messages={feedbackMessages} />
       </article>

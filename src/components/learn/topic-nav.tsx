@@ -37,6 +37,21 @@ export function TopicNav({ slug, locale, prevLabel, nextLabel, prevTopic, nextTo
 
   return (
     <nav className="mt-16">
+      {/* ── CTA first: the journey ask (test → reading plan) is the page's
+          one primary action — same stage-aware ask as the blog card and
+          hub. Sequence navigation is the secondary voice below it. ── */}
+      {cta && (
+        <div className="mb-12 text-center">
+          <p className="text-sm text-white/60">{cta.heading}</p>
+          <Link href={cta.href} onClick={() => trackTopicCtaClicked(slug, locale)} className="mt-3 inline-block">
+            <Button variant="gold" mist>
+              {cta.button}
+              <ButtonArrow />
+            </Button>
+          </Link>
+        </div>
+      )}
+
       {/* ── Navigation: prev / all topics / next ── */}
       <div className="border-t border-white/[0.06] pt-6">
         <div className="flex items-start justify-between">
@@ -78,19 +93,6 @@ export function TopicNav({ slug, locale, prevLabel, nextLabel, prevTopic, nextTo
           </div>
         )}
       </div>
-
-      {/* ── CTA: the parting call-to-action ── */}
-      {cta && (
-        <div className="mt-12 text-center">
-          <p className="text-sm text-white/60">{cta.heading}</p>
-          <Link href={cta.href} onClick={() => trackTopicCtaClicked(slug, locale)} className="mt-3 inline-block">
-            <Button variant="gold" mist>
-              {cta.button}
-              <ButtonArrow />
-            </Button>
-          </Link>
-        </div>
-      )}
     </nav>
   );
 }

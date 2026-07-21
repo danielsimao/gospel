@@ -1,0 +1,183 @@
+<h2>Footer layout options</h2>
+<p class="subtitle">Shown at the bottom of every page. Same dark theme.</p>
+
+<style>
+  .footer-mock {
+    max-width: 600px;
+    margin: 0 auto;
+    background: #060404;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 32px 28px 24px;
+    position: relative;
+    overflow: hidden;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  .footer-mock::before {
+    content: "· · · page content above · · ·";
+    display: block;
+    text-align: center;
+    font-size: 10px;
+    color: rgba(255,255,255,0.15);
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    margin-bottom: 24px;
+  }
+  .footer-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin: 20px 0;
+  }
+  .footer-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+  .footer-col h4 {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: rgba(212,168,67,0.5);
+    margin: 0 0 10px;
+    font-family: ui-monospace, monospace;
+  }
+  .footer-col a {
+    display: block;
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    text-decoration: none;
+    padding: 3px 0;
+    transition: color 0.2s;
+  }
+  .footer-col a:hover { color: rgba(255,255,255,0.6); }
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: rgba(255,255,255,0.15);
+  }
+  .footer-minimal {
+    text-align: center;
+  }
+  .footer-minimal-links {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .footer-minimal-links a {
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-minimal-links a:hover { color: rgba(255,255,255,0.6); }
+  .footer-scripture {
+    font-size: 11px;
+    font-style: italic;
+    color: rgba(255,255,255,0.2);
+    text-align: center;
+    margin-top: 16px;
+  }
+</style>
+
+<div class="options">
+
+  <!-- OPTION A -->
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>3-column footer with categories</h3>
+      <p>Organized links: Explore (test, chat, home), Learn (5 topics), Resources (reading plan, next steps). Clean, discoverable.</p>
+
+      <div class="footer-mock" style="margin-top: 12px;">
+        <div class="footer-cols">
+          <div class="footer-col">
+            <h4>Explore</h4>
+            <a href="#">Home</a>
+            <a href="#">Take the Test</a>
+            <a href="#">Chat</a>
+          </div>
+          <div class="footer-col">
+            <h4>Learn</h4>
+            <a href="#">Who is Jesus?</a>
+            <a href="#">What is Sin?</a>
+            <a href="#">Why the Cross?</a>
+            <a href="#">What is Repentance?</a>
+            <a href="#">What Happens When I Die?</a>
+          </div>
+          <div class="footer-col">
+            <h4>Grow</h4>
+            <a href="#">7-Day Reading Plan</a>
+            <a href="#">Next Steps</a>
+            <a href="#">Find a Church</a>
+          </div>
+        </div>
+        <div class="footer-divider"></div>
+        <div class="footer-bottom">
+          <span>gospel.ruisimao.com</span>
+          <span>EN · PT</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION B -->
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Minimal single-row footer</h3>
+      <p>Just the key links in a horizontal row. Less visual weight. Fits the dramatic, minimal aesthetic better.</p>
+
+      <div class="footer-mock" style="margin-top: 12px;">
+        <div class="footer-minimal">
+          <div class="footer-minimal-links">
+            <a href="#">Home</a>
+            <a href="#">Test</a>
+            <a href="#">Chat</a>
+            <a href="#">Learn</a>
+            <a href="#">Reading Plan</a>
+          </div>
+          <div class="footer-divider"></div>
+          <div class="footer-scripture">"For God so loved the world..." — John 3:16</div>
+          <div style="margin-top: 10px; font-size: 10px; color: rgba(255,255,255,0.12);">EN · PT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION C -->
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Compact 2-row footer</h3>
+      <p>Top row: categorized links (2 groups). Bottom row: scripture + locale. Middle ground between A and B.</p>
+
+      <div class="footer-mock" style="margin-top: 12px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="footer-col">
+            <h4>Experience</h4>
+            <a href="#">Take the Test</a>
+            <a href="#">Chat</a>
+            <a href="#">7-Day Reading Plan</a>
+          </div>
+          <div class="footer-col">
+            <h4>Learn</h4>
+            <a href="#">Who is Jesus?</a>
+            <a href="#">What is Sin?</a>
+            <a href="#">Why the Cross?</a>
+            <a href="#">What is Repentance?</a>
+            <a href="#">What Happens When I Die?</a>
+          </div>
+        </div>
+        <div class="footer-divider"></div>
+        <div class="footer-bottom">
+          <span style="font-style: italic; color: rgba(255,255,255,0.18);">"For God so loved the world..." — John 3:16</span>
+          <span>EN · PT</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

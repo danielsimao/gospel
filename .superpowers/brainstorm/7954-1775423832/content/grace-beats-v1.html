@@ -1,0 +1,195 @@
+<h2>Proposed beat structure</h2>
+<p class="subtitle">4 beats, each tapped to reveal. Earlier beats dim but remain visible.</p>
+
+<style>
+  .phone-frame {
+    max-width: 380px;
+    margin: 0 auto;
+    background: #0a0a0a;
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 48px 28px;
+    min-height: 600px;
+    position: relative;
+    overflow: hidden;
+  }
+  .phone-frame::before {
+    content: "";
+    position: absolute;
+    inset: -80px;
+    background: radial-gradient(ellipse at 50% 40%, rgba(212,168,67,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .beat {
+    position: relative;
+    padding: 20px 0;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+  .beat:first-of-type { border-top: none; }
+  .beat.locked {
+    opacity: 0.25;
+    filter: blur(2px);
+  }
+  .beat.revealed.dim {
+    opacity: 0.38;
+  }
+  .beat.revealed.active {
+    opacity: 1;
+  }
+  .beat-label {
+    font-family: ui-monospace, monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: rgba(212,168,67,0.5);
+    margin-bottom: 10px;
+  }
+  .beat-text {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: rgba(255,255,255,0.95);
+    letter-spacing: -0.01em;
+  }
+  .beat-text.gold { color: #D4A843; }
+  .tap-hint {
+    margin-top: 18px;
+    padding: 12px 16px;
+    border: 1px solid rgba(212,168,67,0.25);
+    border-radius: 10px;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(212,168,67,0.75);
+    font-family: ui-monospace, monospace;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse { 50% { opacity: 0.5; } }
+  .tap-hint:hover { background: rgba(212,168,67,0.05); cursor: pointer; }
+  .heading {
+    font-size: 14px;
+    font-weight: 600;
+    color: #D4A843;
+    text-align: center;
+    margin-bottom: 24px;
+    letter-spacing: 0.02em;
+  }
+  .heading-main {
+    font-size: 32px;
+    font-weight: 800;
+    color: #D4A843;
+    text-align: center;
+    margin-bottom: 28px;
+    text-shadow: 0 0 40px rgba(212,168,67,0.25);
+  }
+</style>
+
+<div class="options">
+
+  <!-- OPTION A: 4 beats, last is revealed -->
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>4 beats — terse & gospel-sequenced</h3>
+      <p>Verdict → Payment → Person → Response</p>
+
+      <div class="phone-frame" style="margin-top: 16px;">
+        <div class="heading-main">But God…</div>
+
+        <div class="beat revealed dim">
+          <div class="beat-label">I</div>
+          <div class="beat-text">You're guilty. The fine is eternal.</div>
+        </div>
+
+        <div class="beat revealed dim">
+          <div class="beat-label">II</div>
+          <div class="beat-text">Someone paid it in full.</div>
+        </div>
+
+        <div class="beat revealed active">
+          <div class="beat-label">III</div>
+          <div class="beat-text gold">Jesus Christ — God in flesh — lived the life you couldn't, died the death you deserved, and rose.</div>
+        </div>
+
+        <div class="beat locked">
+          <div class="beat-label">IV</div>
+          <div class="beat-text">Turn from sin. Trust in Him. Live.</div>
+        </div>
+
+        <div class="tap-hint">Tap to continue ↓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION B: 3 beats, more expansive -->
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>3 beats — breath between each</h3>
+      <p>Fewer, heavier beats. Each one a complete thought.</p>
+
+      <div class="phone-frame" style="margin-top: 16px;">
+        <div class="heading-main">But God…</div>
+
+        <div class="beat revealed dim">
+          <div class="beat-label">I</div>
+          <div class="beat-text">The fine you owe is infinite.<br/>You cannot pay it.</div>
+        </div>
+
+        <div class="beat revealed active">
+          <div class="beat-label">II</div>
+          <div class="beat-text gold">So Jesus paid it for you —<br/>with His own life.</div>
+        </div>
+
+        <div class="beat locked">
+          <div class="beat-label">III</div>
+          <div class="beat-text">Turn. Trust. Live.</div>
+        </div>
+
+        <div class="tap-hint">Tap to continue ↓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION C: 5 beats, more granular -->
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>5 beats — most granular</h3>
+      <p>Each truth gets its own reveal. More clicks, stronger pacing.</p>
+
+      <div class="phone-frame" style="margin-top: 16px;">
+        <div class="heading-main">But God…</div>
+
+        <div class="beat revealed dim">
+          <div class="beat-label">I</div>
+          <div class="beat-text">The verdict stands. You are guilty.</div>
+        </div>
+
+        <div class="beat revealed dim">
+          <div class="beat-label">II</div>
+          <div class="beat-text">But the Judge loved you.</div>
+        </div>
+
+        <div class="beat revealed active">
+          <div class="beat-label">III</div>
+          <div class="beat-text gold">So He paid your fine Himself —<br/>in the person of Jesus Christ.</div>
+        </div>
+
+        <div class="beat locked">
+          <div class="beat-label">IV</div>
+          <div class="beat-text">He died. He rose. Death is defeated.</div>
+        </div>
+
+        <div class="beat locked">
+          <div class="beat-label">V</div>
+          <div class="beat-text">Turn from sin. Trust in Him. Live.</div>
+        </div>
+
+        <div class="tap-hint">Tap to continue ↓</div>
+      </div>
+    </div>
+  </div>
+
+</div>

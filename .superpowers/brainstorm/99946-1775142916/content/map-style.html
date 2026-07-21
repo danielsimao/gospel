@@ -1,0 +1,118 @@
+<h2>World Map Style: What look are you going for?</h2>
+<p class="subtitle">The map sits in the hero/stats section with death pulses. Click to select.</p>
+
+<div class="cards">
+
+  <!-- Option A: Outlined continents -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0c0a09; border-radius:8px; overflow:hidden; height:240px; display:flex; align-items:center; justify-content:center; position:relative;">
+        <svg viewBox="0 0 600 300" style="width:90%; height:auto;">
+          <!-- Simplified continent outlines -->
+          <path d="M120,60 C130,50 160,45 170,55 L180,70 L175,90 L165,110 L155,130 L145,120 L130,100 L115,80 Z" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+          <path d="M170,140 L175,155 L180,170 L185,190 L190,210 L185,230 L175,240 L165,235 L160,220 L155,200 L160,180 L165,160 Z" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+          <path d="M280,50 L320,45 L340,55 L335,70 L320,80 L300,85 L285,75 Z" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+          <path d="M290,90 L310,85 L330,95 L335,110 L330,130 L320,150 L310,170 L300,185 L290,175 L285,155 L280,130 L285,110 Z" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+          <path d="M340,40 L400,35 L450,40 L480,50 L470,65 L440,60 L400,55 L370,50 Z" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+          <path d="M380,60 L430,55 L470,65 L490,80 L485,100 L470,110 L450,105 L430,95 L410,85 L395,75 Z" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+          <path d="M440,180 L470,175 L490,185 L485,200 L475,210 L455,205 L445,195 Z" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+          <!-- Pulse examples -->
+          <circle cx="310" cy="120" r="3" fill="#DC2626" opacity="0.8">
+            <animate attributeName="r" from="3" to="15" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.8" to="0" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="430" cy="80" r="3" fill="#DC2626" opacity="0.6">
+            <animate attributeName="r" from="3" to="15" dur="2s" begin="0.7s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.6" to="0" dur="2s" begin="0.7s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="165" cy="100" r="3" fill="#DC2626" opacity="0.7">
+            <animate attributeName="r" from="3" to="15" dur="2s" begin="1.3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.7" to="0" dur="2s" begin="1.3s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. Outlined Continents</h3>
+      <p>Thin stroke outlines of continents. Minimal, elegant. Red pulses stand out clearly against the empty shapes. Very lightweight.</p>
+    </div>
+  </div>
+
+  <!-- Option B: Filled low-opacity -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0c0a09; border-radius:8px; overflow:hidden; height:240px; display:flex; align-items:center; justify-content:center; position:relative;">
+        <svg viewBox="0 0 600 300" style="width:90%; height:auto;">
+          <!-- Filled continents -->
+          <path d="M120,60 C130,50 160,45 170,55 L180,70 L175,90 L165,110 L155,130 L145,120 L130,100 L115,80 Z" fill="rgba(255,255,255,0.06)" stroke="none"/>
+          <path d="M170,140 L175,155 L180,170 L185,190 L190,210 L185,230 L175,240 L165,235 L160,220 L155,200 L160,180 L165,160 Z" fill="rgba(255,255,255,0.06)" stroke="none"/>
+          <path d="M280,50 L320,45 L340,55 L335,70 L320,80 L300,85 L285,75 Z" fill="rgba(255,255,255,0.06)" stroke="none"/>
+          <path d="M290,90 L310,85 L330,95 L335,110 L330,130 L320,150 L310,170 L300,185 L290,175 L285,155 L280,130 L285,110 Z" fill="rgba(255,255,255,0.06)" stroke="none"/>
+          <path d="M340,40 L400,35 L450,40 L480,50 L470,65 L440,60 L400,55 L370,50 Z" fill="rgba(255,255,255,0.06)" stroke="none"/>
+          <path d="M380,60 L430,55 L470,65 L490,80 L485,100 L470,110 L450,105 L430,95 L410,85 L395,75 Z" fill="rgba(255,255,255,0.06)" stroke="none"/>
+          <path d="M440,180 L470,175 L490,185 L485,200 L475,210 L455,205 L445,195 Z" fill="rgba(255,255,255,0.06)" stroke="none"/>
+          <!-- Pulses -->
+          <circle cx="310" cy="120" r="3" fill="#DC2626" opacity="0.8">
+            <animate attributeName="r" from="3" to="15" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.8" to="0" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="430" cy="80" r="3" fill="#DC2626" opacity="0.6">
+            <animate attributeName="r" from="3" to="15" dur="2s" begin="0.7s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.6" to="0" dur="2s" begin="0.7s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="170" cy="160" r="3" fill="#DC2626" opacity="0.7">
+            <animate attributeName="r" from="3" to="15" dur="2s" begin="1.3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.7" to="0" dur="2s" begin="1.3s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. Filled Continents (Low Opacity)</h3>
+      <p>Solid continent shapes at very low opacity (6%). Subtle but gives the map more presence. Death pulses glow on top of the landmass shapes. Clean, modern.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Dotted grid (improved) -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#0c0a09; border-radius:8px; overflow:hidden; height:240px; display:flex; align-items:center; justify-content:center; position:relative;">
+        <svg viewBox="0 0 600 300" style="width:90%; height:auto;">
+          <defs>
+            <pattern id="grid-dots" width="6" height="6" patternUnits="userSpaceOnUse">
+              <circle cx="3" cy="3" r="0.8" fill="rgba(255,255,255,0.2)"/>
+            </pattern>
+            <clipPath id="continents">
+              <path d="M120,60 C130,50 160,45 170,55 L180,70 L175,90 L165,110 L155,130 L145,120 L130,100 L115,80 Z"/>
+              <path d="M170,140 L175,155 L180,170 L185,190 L190,210 L185,230 L175,240 L165,235 L160,220 L155,200 L160,180 L165,160 Z"/>
+              <path d="M280,50 L320,45 L340,55 L335,70 L320,80 L300,85 L285,75 Z"/>
+              <path d="M290,90 L310,85 L330,95 L335,110 L330,130 L320,150 L310,170 L300,185 L290,175 L285,155 L280,130 L285,110 Z"/>
+              <path d="M340,40 L400,35 L450,40 L480,50 L470,65 L440,60 L400,55 L370,50 Z"/>
+              <path d="M380,60 L430,55 L470,65 L490,80 L485,100 L470,110 L450,105 L430,95 L410,85 L395,75 Z"/>
+              <path d="M440,180 L470,175 L490,185 L485,200 L475,210 L455,205 L445,195 Z"/>
+            </clipPath>
+          </defs>
+          <rect width="600" height="300" fill="url(#grid-dots)" clip-path="url(#continents)"/>
+          <!-- Pulses -->
+          <circle cx="310" cy="120" r="3" fill="#DC2626" opacity="0.8">
+            <animate attributeName="r" from="3" to="15" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.8" to="0" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="430" cy="80" r="3" fill="#DC2626" opacity="0.6">
+            <animate attributeName="r" from="3" to="15" dur="2s" begin="0.7s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.6" to="0" dur="2s" begin="0.7s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="170" cy="160" r="3" fill="#DC2626" opacity="0.7">
+            <animate attributeName="r" from="3" to="15" dur="2s" begin="1.3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.7" to="0" dur="2s" begin="1.3s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. Dotted Grid (Proper Clip-Path)</h3>
+      <p>Uniform dot grid clipped to real continent shapes. Like the original concept but done properly — dots are evenly spaced, continent shapes from real geo data. Gives a "data visualization" feel that matches the ticker aesthetic.</p>
+    </div>
+  </div>
+
+</div>

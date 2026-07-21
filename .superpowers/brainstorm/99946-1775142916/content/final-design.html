@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Death Ticker — Final Design</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0c0a09; color: #e7e5e4; font-family: system-ui, -apple-system, sans-serif; }
+
+  .sticky-counter {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(12,10,9,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(248,113,113,0.1);
+    padding: 10px 24px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .live-dot {
+    width: 7px; height: 7px; background: #f87171; border-radius: 50%;
+    box-shadow: 0 0 10px rgba(248,113,113,0.6);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .counter-text {
+    font-family: 'JetBrains Mono', 'SF Mono', monospace;
+    color: #f87171; font-size: 15px; font-weight: 700;
+    text-shadow: 0 0 20px rgba(248,113,113,0.3);
+  }
+  .counter-label {
+    color: rgba(255,255,255,0.35); font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+
+  section { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; }
+
+  /* SECTION 1: Hero Stats */
+  .hero-section { padding-top: 100px; }
+  .hero-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 72px; font-weight: 800;
+    color: #f87171;
+    text-shadow: 0 0 40px rgba(248,113,113,0.3);
+    letter-spacing: -2px;
+  }
+  .hero-subtitle {
+    color: rgba(255,255,255,0.5); font-size: 18px; margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+  .hero-label {
+    color: rgba(255,255,255,0.25); font-size: 11px;
+    text-transform: uppercase; letter-spacing: 3px; margin-bottom: 16px;
+  }
+
+  .rate-cards {
+    display: flex; gap: 12px; margin-top: 40px; flex-wrap: wrap; justify-content: center;
+  }
+  .rate-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px; padding: 20px 28px; text-align: center;
+    min-width: 120px;
+  }
+  .rate-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px; font-weight: 700; color: #f87171;
+  }
+  .rate-label {
+    color: rgba(255,255,255,0.35); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 2px; margin-top: 6px;
+  }
+
+  .map-container {
+    margin-top: 48px; width: 100%; max-width: 700px;
+    background: rgba(255,255,255,0.01);
+    border-radius: 12px; padding: 24px;
+    display: flex; align-items: center; justify-content: center;
+    height: 200px;
+    border: 1px solid rgba(255,255,255,0.03);
+    position: relative; overflow: hidden;
+  }
+  .map-placeholder {
+    color: rgba(255,255,255,0.15); font-size: 13px;
+    font-style: italic;
+  }
+  .map-pulse {
+    position: absolute; width: 8px; height: 8px;
+    background: #DC2626; border-radius: 50%;
+    animation: map-ping 2s ease-out infinite;
+  }
+  @keyframes map-ping {
+    0% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 0 rgba(220,38,38,0.6); }
+    100% { transform: scale(0.3); opacity: 0; box-shadow: 0 0 0 15px rgba(220,38,38,0); }
+  }
+
+  .scroll-hint {
+    margin-top: 48px; color: rgba(255,255,255,0.15);
+    animation: bob 2s ease-in-out infinite;
+  }
+  @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+
+  /* SECTION 2: Law */
+  .law-section {
+    background: linear-gradient(180deg, transparent, rgba(255,255,255,0.01), transparent);
+  }
+  .law-heading {
+    font-size: 42px; font-weight: 800; text-align: center;
+    line-height: 1.2; max-width: 500px;
+    color: rgba(255,255,255,0.92);
+  }
+  .commandment {
+    margin-top: 40px; max-width: 520px; width: 100%;
+    padding: 24px; border-left: 2px solid rgba(255,255,255,0.1);
+  }
+  .commandment-q {
+    font-size: 18px; color: rgba(255,255,255,0.8); font-weight: 500;
+  }
+  .commandment-a {
+    font-size: 14px; color: rgba(255,255,255,0.45); margin-top: 8px;
+    line-height: 1.6;
+  }
+  .commandment-verdict {
+    font-size: 14px; color: #f87171; margin-top: 8px; font-weight: 600;
+  }
+
+  .law-scripture {
+    margin-top: 48px; max-width: 480px; text-align: center;
+    padding: 24px; border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .scripture-text {
+    font-size: 16px; color: rgba(255,255,255,0.6);
+    font-style: italic; line-height: 1.7;
+  }
+  .scripture-ref {
+    font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 8px;
+  }
+
+  /* SECTION 3: Grace */
+  .grace-section {
+    position: relative;
+  }
+  .grace-glow {
+    position: absolute; inset: 0; z-index: 0;
+    background: conic-gradient(from 0deg at 50% 40%, transparent 0deg, rgba(212,168,67,0.08) 60deg, transparent 120deg, rgba(212,168,67,0.06) 240deg, transparent 300deg);
+    filter: blur(60px);
+  }
+  .grace-content { position: relative; z-index: 1; max-width: 560px; text-align: center; }
+  .grace-heading {
+    font-size: 38px; font-weight: 700; color: #D4A843;
+  }
+  .grace-body {
+    font-size: 17px; color: rgba(255,255,255,0.7);
+    line-height: 1.8; margin-top: 28px;
+  }
+  .grace-scripture {
+    margin-top: 32px; padding: 20px;
+    border-left: 2px solid rgba(212,168,67,0.4);
+    text-align: left;
+  }
+  .grace-scripture-text {
+    font-size: 15px; color: rgba(255,255,255,0.65);
+    font-style: italic; line-height: 1.7;
+  }
+  .grace-scripture-ref {
+    font-size: 12px; color: rgba(212,168,67,0.6); margin-top: 8px;
+  }
+
+  /* SECTION 4: CTA */
+  .cta-section { min-height: 80vh; }
+  .cta-heading {
+    font-size: 32px; font-weight: 700; text-align: center;
+  }
+  .cta-subtitle {
+    color: rgba(255,255,255,0.5); font-size: 16px;
+    margin-top: 8px; text-align: center;
+  }
+  .cta-buttons {
+    display: flex; flex-direction: column; gap: 12px;
+    margin-top: 36px; width: 100%; max-width: 360px;
+  }
+  .cta-btn {
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px 24px; border-radius: 10px;
+    font-size: 15px; font-weight: 500; text-decoration: none;
+    min-height: 52px; transition: all 0.2s;
+  }
+  .cta-primary {
+    background: rgba(212,168,67,0.08);
+    border: 1px solid rgba(212,168,67,0.3);
+    color: #D4A843;
+  }
+  .cta-secondary {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.6);
+  }
+  .resources {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-top: 24px; width: 100%; max-width: 360px;
+  }
+  .resource-link {
+    padding: 12px 16px; border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.45); font-size: 13px;
+    text-decoration: none; display: block;
+  }
+  .share-row {
+    display: flex; gap: 12px; margin-top: 32px;
+  }
+  .share-btn {
+    width: 44px; height: 44px; border-radius: 8px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.4); font-size: 18px;
+  }
+
+  .design-label {
+    position: fixed; top: 12px; right: 16px; z-index: 100;
+    background: rgba(212,168,67,0.15); color: #D4A843;
+    padding: 4px 10px; border-radius: 4px;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+
+<div class="design-label">Design Mockup</div>
+
+<!-- STICKY COUNTER -->
+<div class="sticky-counter">
+  <div class="live-dot"></div>
+  <span class="counter-text">4,271</span>
+  <span class="counter-label">people have died since you opened this page</span>
+</div>
+
+<!-- SECTION 1: HERO / STATS -->
+<section class="hero-section">
+  <div class="hero-label">Since you opened this page</div>
+  <div class="hero-counter">4,271</div>
+  <div class="hero-subtitle">people have died</div>
+
+  <div class="rate-cards">
+    <div class="rate-card">
+      <div class="rate-value">1.8</div>
+      <div class="rate-label">per second</div>
+    </div>
+    <div class="rate-card">
+      <div class="rate-value">108</div>
+      <div class="rate-label">per minute</div>
+    </div>
+    <div class="rate-card">
+      <div class="rate-value">6,500</div>
+      <div class="rate-label">per hour</div>
+    </div>
+    <div class="rate-card">
+      <div class="rate-value">155,000</div>
+      <div class="rate-label">per day</div>
+    </div>
+  </div>
+
+  <div class="map-container">
+    <div class="map-pulse" style="top:35%; left:55%;"></div>
+    <div class="map-pulse" style="top:45%; left:60%; animation-delay:0.7s;"></div>
+    <div class="map-pulse" style="top:50%; left:25%; animation-delay:1.2s;"></div>
+    <div class="map-pulse" style="top:30%; left:45%; animation-delay:0.4s;"></div>
+    <span class="map-placeholder">[ World map with filled continents + death pulses — react-simple-maps ]</span>
+  </div>
+
+  <div class="scroll-hint">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+  </div>
+</section>
+
+<!-- SECTION 2: LAW -->
+<section class="law-section">
+  <h2 class="law-heading">Are you ready to face God?</h2>
+
+  <div class="commandment">
+    <p class="commandment-q">Have you ever told a lie?</p>
+    <p class="commandment-a">Even once — a "white lie," an exaggeration, a half-truth. What does that make you?</p>
+    <p class="commandment-verdict">A liar.</p>
+  </div>
+
+  <div class="commandment">
+    <p class="commandment-q">Have you ever stolen anything?</p>
+    <p class="commandment-a">Regardless of the value — a pen, someone's time, credit for someone else's work.</p>
+    <p class="commandment-verdict">A thief.</p>
+  </div>
+
+  <div class="commandment">
+    <p class="commandment-q">Have you ever used God's name as a curse word?</p>
+    <p class="commandment-a">Instead of using a four-letter word, you've used the name of the God who gave you life.</p>
+    <p class="commandment-verdict">A blasphemer.</p>
+  </div>
+
+  <div class="law-scripture">
+    <p class="scripture-text">"For whoever keeps the whole law and yet stumbles at just one point is guilty of breaking all of it."</p>
+    <p class="scripture-ref">— James 2:10</p>
+  </div>
+</section>
+
+<!-- SECTION 3: GRACE -->
+<section class="grace-section">
+  <div class="grace-glow"></div>
+  <div class="grace-content">
+    <h2 class="grace-heading">But God...</h2>
+    <p class="grace-body">
+      You're guilty. The death counter above keeps ticking — and one of those numbers will be yours. But here is the good news: God became a man — Jesus Christ — lived a perfect life, and willingly died on the cross to pay the fine for your sins. Then He rose from the dead, defeating death itself.
+    </p>
+    <p class="grace-body">
+      If you repent (turn from sin) and trust in Jesus Christ, God will forgive every sin you've ever committed and grant you eternal life. That's not earned — it's a free gift.
+    </p>
+    <div class="grace-scripture">
+      <p class="grace-scripture-text">"But God demonstrates His own love for us in this: While we were still sinners, Christ died for us."</p>
+      <p class="grace-scripture-ref">— Romans 5:8</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: CTA -->
+<section class="cta-section">
+  <h2 class="cta-heading">What will you do?</h2>
+  <p class="cta-subtitle">The counter is still ticking.</p>
+
+  <div class="cta-buttons">
+    <a href="#" class="cta-btn cta-primary">Take the Good Person Test →</a>
+    <a href="#" class="cta-btn cta-secondary">Talk to someone about this →</a>
+  </div>
+
+  <div class="resources">
+    <a href="#" class="resource-link">Are You a Good Person? — Living Waters →</a>
+    <a href="#" class="resource-link">needGod.net →</a>
+  </div>
+
+  <div class="share-row">
+    <div class="share-btn">W</div>
+    <div class="share-btn">T</div>
+    <div class="share-btn">🔗</div>
+  </div>
+</section>
+
+</body>
+</html>

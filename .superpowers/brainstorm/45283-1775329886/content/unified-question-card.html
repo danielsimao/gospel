@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #060404;
+    color: #e7e5e4;
+    font-family: "Geist", "SF Pro Text", -apple-system, sans-serif;
+    padding: 0;
+    min-height: 100vh;
+  }
+  .vignette {
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 0%, #060404 75%);
+    pointer-events: none;
+  }
+  .sticky-bar {
+    position: sticky; top: 0; z-index: 10;
+    border-bottom: 1px solid rgba(127,29,29,0.4);
+    background: rgba(6,4,4,0.94);
+    backdrop-filter: blur(16px);
+  }
+  .sticky-inner {
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; padding: 8px 16px;
+  }
+  .sticky-dot-wrap { display: flex; align-items: center; gap: 6px; }
+  .sticky-dot {
+    position: relative; display: inline-flex; width: 8px; height: 8px;
+  }
+  .sticky-dot::before {
+    content: ''; position: absolute; inset: 0; border-radius: 50%;
+    background: rgb(239, 68, 68); opacity: 0.4;
+    animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  .sticky-dot::after {
+    content: ''; position: relative; display: inline-flex; width: 8px; height: 8px;
+    border-radius: 50%; background: rgb(239, 68, 68);
+    box-shadow: 0 0 6px rgba(239,68,68,0.8);
+  }
+  @keyframes ping {
+    75%, 100% { transform: scale(2); opacity: 0; }
+  }
+  .sticky-divider {
+    width: 1px; height: 12px; background: rgba(255,255,255,0.06);
+  }
+  .sticky-counter {
+    font-family: "Geist Mono", "SF Mono", monospace;
+    font-size: 13px; font-weight: 700; color: #f87171;
+    letter-spacing: 0.05em;
+  }
+  .sticky-label {
+    font-size: 10px; color: rgba(255,255,255,0.25);
+    letter-spacing: 0.1em;
+  }
+  .live-badge {
+    font-family: "Geist Mono", monospace; font-size: 9px;
+    font-weight: 600; text-transform: uppercase;
+    letter-spacing: 2px; color: rgba(248,113,113,0.6);
+  }
+  .gradient-line {
+    height: 1px; width: 100%;
+    background: linear-gradient(90deg, transparent, rgba(239,68,68,0.2), transparent);
+  }
+
+  .test-screen {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 56px 16px 32px;
+    min-height: calc(100vh - 40px);
+    justify-content: center;
+  }
+
+  .case-header {
+    display: flex; flex-direction: column; align-items: center;
+    max-width: 400px; padding: 0 8px; margin-bottom: 24px;
+  }
+  .case-tag {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+  }
+  .case-label {
+    font-family: "Geist Mono", monospace; font-size: 9px;
+    text-transform: uppercase; letter-spacing: 3px;
+    color: rgba(248,113,113,0.5);
+  }
+  .case-number {
+    font-family: "Geist Mono", monospace; font-size: 9px;
+    color: rgba(248,113,113,0.5); font-feature-settings: "tnum";
+  }
+  .test-title {
+    font-size: 28px; font-weight: 700; text-align: center;
+    line-height: 1.2; letter-spacing: -0.01em;
+    color: rgba(255,255,255,0.9);
+  }
+  .test-subtitle {
+    margin-top: 8px; font-family: "Geist Mono", monospace;
+    font-size: 10px; text-transform: uppercase;
+    letter-spacing: 3px; color: rgba(255,255,255,0.25);
+  }
+
+  /* Score / progress — thin mono readout */
+  .score-rail {
+    width: 100%; max-width: 384px; margin-top: 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .score-label {
+    font-family: "Geist Mono", monospace; font-size: 9px;
+    text-transform: uppercase; letter-spacing: 2px;
+    color: rgba(255,255,255,0.3);
+  }
+  .score-track {
+    flex: 1; height: 2px; background: rgba(255,255,255,0.04);
+    position: relative; overflow: hidden; border-radius: 1px;
+  }
+  .score-fill {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 67%; background: rgb(239, 68, 68);
+    box-shadow: 0 0 8px rgba(239,68,68,0.5);
+    transition: width 0.6s ease;
+  }
+  .score-value {
+    font-family: "Geist Mono", monospace; font-size: 11px;
+    font-weight: 700; color: #f87171;
+    font-feature-settings: "tnum"; min-width: 32px; text-align: right;
+  }
+
+  /* Question card */
+  .q-card-container {
+    position: relative; width: 100%; max-width: 384px;
+    margin-top: 24px;
+  }
+  .q-card {
+    position: relative; overflow: hidden;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    padding: 28px;
+  }
+  .q-index-badge {
+    position: absolute; top: 16px; right: 16px;
+    font-family: "Geist Mono", monospace; font-size: 10px;
+    color: rgba(255,255,255,0.15); font-feature-settings: "tnum";
+  }
+  .q-category {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+  }
+  .q-category-line {
+    width: 24px; height: 1px; background: rgba(239,68,68,0.4);
+  }
+  .q-category-label {
+    font-family: "Geist Mono", monospace; font-size: 9px;
+    text-transform: uppercase; letter-spacing: 3px;
+    color: rgba(248,113,113,0.6);
+  }
+  .q-commandment {
+    font-family: "Geist Mono", monospace; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 2px;
+    color: rgba(255,255,255,0.35); margin-bottom: 8px;
+  }
+  .q-text {
+    font-size: 17px; font-weight: 600;
+    line-height: 1.35; color: rgba(255,255,255,0.95);
+  }
+  .q-buttons {
+    margin-top: 20px; display: flex; gap: 8px;
+  }
+  .q-btn {
+    flex: 1; border-radius: 12px; padding: 14px 16px;
+    font-size: 14px; font-weight: 600; letter-spacing: 0.02em;
+    min-height: 48px; cursor: pointer;
+    transition: all 0.3s;
+    border: 1px solid;
+  }
+  .q-btn-yes {
+    border-color: rgba(185,28,28,0.4);
+    background: rgba(69,10,10,0.4);
+    color: rgb(252, 165, 165);
+  }
+  .q-btn-yes:hover {
+    border-color: rgba(220,38,38,0.6);
+    background: rgba(127,29,29,0.4);
+  }
+  .q-btn-no {
+    border-color: rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.02);
+    color: rgba(255,255,255,0.5);
+  }
+  .q-btn-no:hover {
+    border-color: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.7);
+  }
+
+  /* Answered chips */
+  .chips-row {
+    margin-top: 20px; display: flex; flex-wrap: wrap; gap: 6px;
+    justify-content: center; max-width: 384px;
+  }
+  .chip {
+    display: flex; align-items: center; gap: 6px;
+    border-radius: 999px; padding: 4px 10px;
+    border: 1px solid rgba(127,29,29,0.3);
+    background: rgba(69,10,10,0.2);
+  }
+  .chip-num {
+    font-family: "Geist Mono", monospace; font-size: 9px;
+    color: rgba(248,113,113,0.5); font-feature-settings: "tnum";
+  }
+  .chip-status {
+    font-family: "Geist Mono", monospace; font-size: 9px;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: rgba(248,113,113,0.7);
+  }
+
+  .label {
+    position: fixed; top: 8px; right: 12px; z-index: 100;
+    background: rgba(212,168,67,0.15); color: #D4A843;
+    padding: 3px 8px; border-radius: 3px;
+    font-family: "Geist Mono", monospace;
+    font-size: 9px; text-transform: uppercase; letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+
+<div class="label">Test game — unified aesthetic</div>
+<div class="vignette"></div>
+
+<!-- Same sticky counter as death ticker -->
+<div class="sticky-bar">
+  <div class="sticky-inner">
+    <div class="sticky-dot-wrap">
+      <span class="sticky-dot"></span>
+      <span class="live-badge">live</span>
+    </div>
+    <span class="sticky-divider"></span>
+    <span class="sticky-counter">487,203</span>
+    <span class="sticky-label">died today</span>
+  </div>
+  <div class="gradient-line"></div>
+</div>
+
+<div class="test-screen">
+  <div class="case-header">
+    <div class="case-tag">
+      <span class="case-label">Examination</span>
+      <span class="case-number">03 / 08</span>
+    </div>
+    <h2 class="test-title">Have you ever looked at someone with lust?</h2>
+    <p class="test-subtitle">Answer honestly</p>
+  </div>
+
+  <!-- Score rail -->
+  <div class="score-rail">
+    <span class="score-label">Score</span>
+    <div class="score-track">
+      <div class="score-fill"></div>
+    </div>
+    <span class="score-value">67</span>
+  </div>
+
+  <!-- Question card -->
+  <div class="q-card-container">
+    <div class="q-card">
+      <div class="q-index-badge">03</div>
+      <div class="q-category">
+        <span class="q-category-line"></span>
+        <span class="q-category-label">Commandment VII</span>
+      </div>
+      <p class="q-commandment">You shall not commit adultery</p>
+      <p class="q-text">Have you ever looked at someone with lust?</p>
+
+      <div class="q-buttons">
+        <button class="q-btn q-btn-yes">Yes, I have</button>
+        <button class="q-btn q-btn-no">I don't think so</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Answered chips -->
+  <div class="chips-row">
+    <div class="chip">
+      <span class="chip-num">01</span>
+      <span class="chip-status">guilty</span>
+    </div>
+    <div class="chip">
+      <span class="chip-num">02</span>
+      <span class="chip-status">guilty</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -11,7 +11,7 @@ import {
   getLocaleUrl,
 } from "@/lib/seo";
 import { TOPIC_DATES } from "@/lib/topic-dates";
-import { RELATED_TOPICS } from "@/lib/related-topics";
+import { LEARN_BANDS } from "@/lib/learn-bands";
 import type { Metadata } from "next";
 
 type Props = {
@@ -35,7 +35,6 @@ interface LearnData {
   completedCtaButton?: string;
   allTopicsLabel?: string;
   nextLabel: string;
-  relatedLabel: string;
   feedback: { question: string; yes: string; no: string; thanks: string; followup: string };
   prevLabel: string;
   topics: TopicData[];
@@ -94,15 +93,27 @@ export default async function LearnTopicPage({ params }: Props) {
     title: topic.title,
     description: topic.metaDescription,
   });
-  const prevIndex = topicIndex > 0 ? topicIndex - 1 : data.topics.length - 1;
-  const nextIndex = topicIndex < data.topics.length - 1 ? topicIndex + 1 : 0;
-  const prevTopic = { slug: data.topics[prevIndex].slug, title: data.topics[prevIndex].title };
-  const nextTopic = { slug: data.topics[nextIndex].slug, title: data.topics[nextIndex].title };
-
-  const relatedTopics = (RELATED_TOPICS[slug] ?? [])
-    .map((relatedSlug) => data.topics.find((t) => t.slug === relatedSlug))
-    .filter((t): t is TopicData => Boolean(t))
-    .map((t) => ({ slug: t.slug, title: t.title, subtitle: t.subtitle }));
+  // Prev/next follow the hub's band display order (01–14), not the raw
+  // messages-array order — the tail must agree with the hub about what
+  // comes next. No wraparound: the arc has a start and an end, and the
+  // last stop's "next" is the parting CTA, not topic 01 again. Unbanded
+  // topics (drift guard) append at the end, mirroring the hub.
+  const displayOrder = LEARN_BANDS.flatMap((b) => b.slugs);
+  const orderedTopics = [
+    ...displayOrder
+      .map((s) => data.topics.find((t) => t.slug === s))
+      .filter((t): t is TopicData => Boolean(t)),
+    ...data.topics.filter((t) => !displayOrder.includes(t.slug)),
+  ];
+  const orderIndex = orderedTopics.findIndex((t) => t.slug === slug);
+  const prevTopic =
+    orderIndex > 0
+      ? { slug: orderedTopics[orderIndex - 1].slug, title: orderedTopics[orderIndex - 1].title }
+      : null;
+  const nextTopic =
+    orderIndex < orderedTopics.length - 1
+      ? { slug: orderedTopics[orderIndex + 1].slug, title: orderedTopics[orderIndex + 1].title }
+      : null;
 
   const messages = await import(`@/messages/${locale}.json`);
   const brand = messages.default.topBar?.brand ?? "Gospel";
@@ -141,8 +152,6 @@ export default async function LearnTopicPage({ params }: Props) {
         nextLabel={data.nextLabel}
         prevTopic={prevTopic}
         nextTopic={nextTopic}
-        relatedTopics={relatedTopics}
-        relatedLabel={data.relatedLabel}
         feedbackMessages={data.feedback}
         faq={topic.faq ?? []}
       />
