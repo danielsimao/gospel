@@ -65,7 +65,7 @@ export default async function LocaleLayout({ params, children }: Props) {
               the dead. Those who repent and put their trust in Him pass from death to life. Not
               because they earned it — because He paid it.
             </p>
-            <p>For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life. — John 3:16 (NKJV)</p>
+            <p>For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life. — John 3:16</p>
             <hr />
             <p>
               A maioria das pessoas acha que sim. Mas à luz da Lei de Deus — alguma vez mentiste,
@@ -79,7 +79,7 @@ export default async function LocaleLayout({ params, children }: Props) {
               Quem se arrepende e confia n&apos;Ele passa da morte para a vida. Não por merecer —
               porque Ele pagou.
             </p>
-            <p>Porque Deus amou o mundo de tal maneira que deu o seu Filho unigénito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna. — João 3:16 (ARC)</p>
+            <p>Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna. — João 3:16</p>
             <p>This experience works best with JavaScript enabled. / Esta experiência funciona melhor com JavaScript activado.</p>
           </div>
         </noscript>

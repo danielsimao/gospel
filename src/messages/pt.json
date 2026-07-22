@@ -34,7 +34,7 @@
     },
     "verdict": {
       "prelude": "O veredicto",
-      "deathLineTemplate": "pessoas morreram enquanto respondias. Tu podes ser o pr\u00f3ximo.",
+      "deathLineTemplate": "pessoas morreram enquanto respondias. Tu podes ser o próximo.",
       "bridgeButton": "Há alguma esperança?",
       "confessionAdmitted": "És {list} — pela tua própria confissão.",
       "confessionDenied": "És {list} — pelas tuas evasivas.",
@@ -69,7 +69,7 @@
       "commandment": "Não adulterarás",
       "honestLabel": "Sim, já olhei",
       "justifyLabel": "Acho que não",
-      "followUp": "Jesus disse: 'qualquer que atentar numa mulher para a cobiçar, já em seu coração cometeu adultério com ela.' — Mateus 5:28 (ARC)",
+      "followUp": "Jesus disse: 'qualquer que atentar numa mulher para a cobiçar, já em seu coração cometeu adultério com ela.' — Mateus 5:28",
       "honestFollowUp": "Jesus disse que olhar com desejo é adultério no coração. Não pelo padrão da cultura — pelo padrão de Deus."
     },
     {
@@ -78,7 +78,7 @@
       "commandment": "Não matarás",
       "honestLabel": "Sim, já tive",
       "justifyLabel": "Nunca tanto assim",
-      "followUp": "Mesmo um momento de ódio — Jesus disse: 'qualquer que, sem motivo, se encolerizar contra seu irmão, será réu de juízo.' — Mateus 5:22 (ARC)",
+      "followUp": "Mesmo um momento de ódio — Jesus disse: 'qualquer que, sem motivo, se encolerizar contra seu irmão, será réu de juízo.' — Mateus 5:22",
       "honestFollowUp": "Jesus equiparou a ira injusta ao homicídio. O ódio no teu coração é suficiente."
     },
     {
@@ -105,32 +105,32 @@
     "subtitle": "Pelo padrão perfeito de Deus, nenhum de nós é suficientemente bom."
   },
   "grace": {
-    "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unig\u00e9nito, para que todo aquele que nele cr\u00ea n\u00e3o pere\u00e7a, mas tenha a vida eterna.",
-    "scriptureRef": "Jo\u00e3o 3:16 (ARC)",
+    "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.",
+    "scriptureRef": "João 3:16",
     "rereadVerdict": "Reler o veredicto",
     "continueLabel": "Continuar",
-    "label": "Gra\u00e7a",
-    "beatsHeading": "Mas Deus\u2026",
+    "label": "Graça",
+    "beatsHeading": "Mas Deus…",
     "beats": [
       {
-        "headline": "\u00c9s culpado. A multa \u00e9 eterna.",
-        "subtitle": "Quebraste a Lei de Deus \u2014 n\u00e3o uma vez, mas repetidamente. E a pena pelo pecado n\u00e3o \u00e9 uma multa que possas pagar. \u00c9 a morte."
+        "headline": "És culpado. A multa é eterna.",
+        "subtitle": "Quebraste a Lei de Deus — não uma vez, mas repetidamente. E a pena pelo pecado não é uma multa que possas pagar. É a morte."
       },
       {
-        "headline": "Imagina que est\u00e1s perante um Juiz justo. N\u00e3o podes pagar. A justi\u00e7a exige a morte.",
-        "subtitle": "Um bom juiz n\u00e3o pode deixar um criminoso culpado sair livre. E Deus \u00e9 o supremo bom Juiz. A tua culpa tem de ser respondida."
+        "headline": "Imagina que estás perante um Juiz justo. Não podes pagar. A justiça exige a morte.",
+        "subtitle": "Um bom juiz não pode deixar um criminoso culpado sair livre. E Deus é o supremo bom Juiz. A tua culpa tem de ser respondida."
       },
       {
-        "headline": "Mas algu\u00e9m entra no tribunal e paga a tua multa por inteiro.",
-        "subtitle": "Cada c\u00eantimo. O juiz pode agora legalmente absolver o teu caso \u2014 n\u00e3o porque est\u00e1 a ignorar a justi\u00e7a, mas porque a justi\u00e7a foi satisfeita."
+        "headline": "Mas alguém entra no tribunal e paga a tua multa por inteiro.",
+        "subtitle": "Cada cêntimo. O juiz pode agora legalmente absolver o teu caso — não porque está a ignorar a justiça, mas porque a justiça foi satisfeita."
       },
       {
-        "headline": "Jesus Cristo \u2014 Deus em carne \u2014 viveu a vida que n\u00e3o conseguiste, morreu a morte que merecias, e ressuscitou.",
-        "subtitle": "H\u00e1 dois mil anos, o Criador entrou na Sua cria\u00e7\u00e3o. Viveu perfeitamente, tomou o teu castigo na cruz, e tr\u00eas dias depois venceu a pr\u00f3pria morte."
+        "headline": "Jesus Cristo — Deus em carne — viveu a vida que não conseguiste, morreu a morte que merecias, e ressuscitou.",
+        "subtitle": "Há dois mil anos, o Criador entrou na Sua criação. Viveu perfeitamente, tomou o teu castigo na cruz, e três dias depois venceu a própria morte."
       },
       {
-        "headline": "Arrepende-te \u2014 abandona o teu pecado. Confia s\u00f3 em Cristo. Deus vai perdoar-te e conceder-te a vida eterna.",
-        "subtitle": "N\u00e3o se trata de uma ora\u00e7\u00e3o ou de ser religioso. Trata-se de abandonar o pecado e colocar a tua confian\u00e7a n'Aquele que pagou tudo."
+        "headline": "Arrepende-te — abandona o teu pecado. Confia só em Cristo. Deus vai perdoar-te e conceder-te a vida eterna.",
+        "subtitle": "Não se trata de uma oração ou de ser religioso. Trata-se de abandonar o pecado e colocar a tua confiança n'Aquele que pagou tudo."
       }
     ],
     "tapContinue": "Toca para continuar"
@@ -138,11 +138,11 @@
   "invitation": {
     "eyebrow": "A decisão",
     "heading": "O que vais fazer com isto?",
-    "urgencyLine": "Antes de responderes — lembra-te da contagem. 1,8 por segundo. Esta decis\u00e3o tem um prazo, e ningu\u00e9m sabe qual \u00e9.",
+    "urgencyLine": "Antes de responderes — lembra-te da contagem. 1,8 por segundo. Esta decisão tem um prazo, e ninguém sabe qual é.",
     "rereadGrace": "Reler a graça",
-    "committedEncouragement": "Hoje \u00e9 o in\u00edcio.",
-    "thinkingEncouragement": "Pensa nisso a s\u00e9rio \u2014 \u00e9 justo. S\u00f3 n\u00e3o deixes que o 'depois' se torne, sem dares conta, um 'nunca'. Ningu\u00e9m tem o amanh\u00e3 prometido.",
-    "dismissedEncouragement": "A porta continua aberta \u2014 mas ningu\u00e9m tem o amanh\u00e3 prometido para a atravessar.",
+    "committedEncouragement": "Hoje é o início.",
+    "thinkingEncouragement": "Pensa nisso a sério — é justo. Só não deixes que o 'depois' se torne, sem dares conta, um 'nunca'. Ninguém tem o amanhã prometido.",
+    "dismissedEncouragement": "A porta continua aberta — mas ninguém tem o amanhã prometido para a atravessar.",
     "responses": {
       "committed": "Vou arrepender-me e confiar em Cristo",
       "thinking": "Quero pensar sobre isto",
@@ -162,7 +162,7 @@
     "trackA": {
       "welcome": "Algo acabou de mudar.",
       "welcomeReturn": "A decisão está tomada. É assim que ela cria raízes.",
-      "whatHappened": "Reconheceste que quebraste a Lei de Deus. E tomaste a decisão de te arrepender — de abandonar o teu pecado — e de colocar a tua confiança somente em Jesus Cristo.\n\nSe te arrependeste genuinamente e confiaste no Salvador, Deus perdoou todos os pecados que alguma vez cometeste e concedeu-te a vida eterna. Não porque o mereceste — mas por causa do que Cristo fez na cruz.\n\n\"Assim que, se alguém está em Cristo, nova criatura é; as coisas velhas já passaram; eis que tudo se fez novo.\" — 2 Coríntios 5:17 (ACF)",
+      "whatHappened": "Reconheceste que quebraste a Lei de Deus. E tomaste a decisão de te arrepender — de abandonar o teu pecado — e de colocar a tua confiança somente em Jesus Cristo.\n\nSe te arrependeste genuinamente e confiaste no Salvador, Deus perdoou todos os pecados que alguma vez cometeste e concedeu-te a vida eterna. Não porque o mereceste — mas por causa do que Cristo fez na cruz.\n\n\"Assim que, se alguém está em Cristo, nova criatura é; as coisas velhas já passaram; eis que tudo se fez novo.\" — 2 Coríntios 5:17",
       "readHeading": "Lê",
       "readBody": "Começa pelo Evangelho de João — é o melhor lugar para conhecer Jesus pela primeira vez. Ou segue o nosso plano de leitura de 7 dias.",
       "readLink": "https://www.bible.com/bible/212/JHN.1.ARC",
@@ -244,8 +244,8 @@
         "title": "O Princípio",
         "passage": "João 1:1-18",
         "passageUrl": "https://www.bible.com/bible/212/JHN.1.ARC",
-        "keyVerse": "E o Verbo se fez carne, e habitou entre nós, e vimos a sua glória, como a glória do unigénito do Pai, cheio de graça e de verdade.",
-        "keyVerseRef": "João 1:14 (ARC)",
+        "keyVerse": "E o Verbo se fez carne, e habitou entre nós, e vimos a sua glória, como a glória do unigênito do Pai, cheio de graça e de verdade.",
+        "keyVerseRef": "João 1:14",
         "reflection": "Antes de Jesus nascer em Belém, Ele existia eternamente como Deus. Não foi criado — foi o Criador que entrou na Sua criação. O mesmo Deus cuja Lei te condenou é o Deus que se fez homem para te salvar.",
         "prayer": "Deus, ajuda-me a compreender quem Jesus realmente é — não apenas um bom mestre, mas o Verbo feito carne. Abre os meus olhos enquanto leio. Amém."
       },
@@ -254,7 +254,7 @@
         "passage": "João 3:1-21",
         "passageUrl": "https://www.bible.com/bible/212/JHN.3.ARC",
         "keyVerse": "Jesus respondeu, e disse-lhe: Na verdade, na verdade te digo que aquele que não nascer de novo, não pode ver o reino de Deus.",
-        "keyVerseRef": "João 3:3 (ARC)",
+        "keyVerseRef": "João 3:3",
         "reflection": "Nicodemos era um líder religioso — uma 'boa pessoa' por qualquer padrão. Mas Jesus disse-lhe que ser bom não era suficiente. Precisas de um começo completamente novo. Foi isso que aconteceu quando confiaste em Cristo — nasceste de novo.",
         "prayer": "Senhor, obrigado por me dares um novo começo. Ajuda-me a viver como alguém que nasceu de novo — não tentando merecer o Teu amor, mas descansando nele. Amém."
       },
@@ -262,8 +262,8 @@
         "title": "Água Viva",
         "passage": "João 4:1-26",
         "passageUrl": "https://www.bible.com/bible/212/JHN.4.ARC",
-        "keyVerse": "Jesus respondeu, e disse-lhe: Qualquer que beber desta água tornará a ter sede; mas aquele que beber da água que eu lhe der nunca terá sede.",
-        "keyVerseRef": "João 4:13-14 (ARC)",
+        "keyVerse": "Jesus respondeu, e disse-lhe: Qualquer que beber desta água tornará a ter sede; Mas aquele que beber da água que eu lhe der nunca terá sede, porque a água que eu lhe der se fará nele uma fonte de água que salte para a vida eterna.",
+        "keyVerseRef": "João 4:13-14",
         "reflection": "Jesus encontrou esta mulher no seu pior momento — envergonhada, sozinha, a evitar os outros. Não a condenou. Ofereceu-lhe algo que a satisfaria para sempre. Ele encontra-te da mesma forma — onde quer que estejas, como quer que te sintas.",
         "prayer": "Jesus, tentei preencher a minha vida com coisas que não duram. Sê a minha água viva. Satisfaz a sede que nada mais consegue. Amém."
       },
@@ -272,7 +272,7 @@
         "passage": "João 10:1-18",
         "passageUrl": "https://www.bible.com/bible/212/JHN.10.ARC",
         "keyVerse": "Eu sou o bom Pastor; o bom Pastor dá a sua vida pelas ovelhas.",
-        "keyVerseRef": "João 10:11 (ARC)",
+        "keyVerseRef": "João 10:11",
         "reflection": "Um mercenário foge quando o perigo vem. Mas Jesus — o Bom Pastor — voluntariamente deu a Sua vida. Ninguém a tirou d'Ele. Escolheu a cruz porque te escolheu a ti.",
         "prayer": "Bom Pastor, obrigado por não fugires quando Te custou tudo. Ajuda-me a ouvir a Tua voz e a seguir para onde me guias. Amém."
       },
@@ -281,7 +281,7 @@
         "passage": "João 14:1-14",
         "passageUrl": "https://www.bible.com/bible/212/JHN.14.ARC",
         "keyVerse": "Disse-lhe Jesus: Eu sou o caminho, e a verdade e a vida; ninguém vem ao Pai, senão por mim.",
-        "keyVerseRef": "João 14:6 (ARC)",
+        "keyVerseRef": "João 14:6",
         "reflection": "Esta é a afirmação mais exclusiva e mais inclusiva alguma vez feita. Exclusiva — há apenas um caminho. Inclusiva — qualquer um pode segui-lo. Jesus não disse 'Eu mostro-te o caminho.' Disse 'Eu SOU o caminho.'",
         "prayer": "Senhor, num mundo de muitas vozes e muitos caminhos, dá-me confiança de que Tu és o caminho. Ajuda-me a confiar em Ti mesmo quando não compreendo. Amém."
       },
@@ -290,7 +290,7 @@
         "passage": "João 15:1-17",
         "passageUrl": "https://www.bible.com/bible/212/JHN.15.ARC",
         "keyVerse": "Eu sou a videira, vós as varas; quem está em mim, e eu nele, esse dá muito fruto; porque sem mim nada podeis fazer.",
-        "keyVerseRef": "João 15:5 (ARC)",
+        "keyVerseRef": "João 15:5",
         "reflection": "A vida cristã não é sobre esforçar-te mais. É sobre permaneceres conectado. Um ramo não se esforça para produzir fruto — simplesmente fica ligado à videira. O teu trabalho é permanecer. Fica perto. Lê. Ora. Confia.",
         "prayer": "Jesus, ensina-me o que significa permanecer em Ti — não actuar para Ti, mas permanecer no Teu amor e deixar-Te trabalhar através de mim. Amém."
       },
@@ -299,7 +299,7 @@
         "passage": "João 20:1-31",
         "passageUrl": "https://www.bible.com/bible/212/JHN.20.ARC",
         "keyVerse": "Disse-lhe Jesus: Porque me viste, Tomé, creste; bem-aventurados os que não viram e creram.",
-        "keyVerseRef": "João 20:29 (ARC)",
+        "keyVerseRef": "João 20:29",
         "reflection": "Tomé duvidou. Jesus não o rejeitou — apareceu-lhe. Se tens dúvidas, leva-as a Deus. Ele não tem medo das tuas perguntas. A ressurreição é o fundamento de tudo — se Jesus ressuscitou, então tudo o que Ele disse é verdade.",
         "prayer": "Senhor ressuscitado, fortalece a minha fé. Quando as dúvidas vierem, lembra-me de que estás vivo e que as Tuas promessas são seguras. Ajuda-me a viver corajosamente para Ti. Amém."
       }
@@ -323,7 +323,7 @@
     "ctaHeading": "Pronto para te examinares?",
     "ctaButton": "Faz o teste",
     "completedCtaHeading": "Continua a tua jornada",
-    "completedCtaButton": "Come\u00e7ar o plano de leitura",
+    "completedCtaButton": "Começar o plano de leitura",
     "nextLabel": "Seguinte",
     "prevLabel": "Anterior",
     "relatedLabel": "Continua a escavar",
@@ -354,11 +354,15 @@
           {
             "heading": "Toda a gente se acha boa pessoa",
             "body": "Pergunta a quase qualquer pessoa: 'És uma boa pessoa?' A resposta é quase sempre a mesma: 'Acho que sim. Quer dizer, não sou perfeito, mas...' E aí está — a comparação. Não és perfeito comparado com quê?\n\nA maioria de nós mede-se pelos outros. Escolhemos alguém pior — um criminoso do telejornal, um vizinho que engana, um ditador dos livros de história — e ao lado dele parecemos decentes. É como ser avaliado por comparação — e, comparado com eles, quase toda a gente passa.\n\nMas a bondade não funciona assim. Quando um jovem rico chamou a Jesus 'Bom Mestre,' Jesus travou-o de imediato: 'Porque me chamas bom? Ninguém há bom, senão um, que é Deus.' O padrão não são as outras pessoas. Nunca foi.",
-            "scripture": "Jesus lhe disse: Porque me chamas bom? Ninguém há bom, senão um, que é Deus.",
-            "scriptureRef": "Lucas 18:19 (ARC)",
+            "scripture": "Jesus lhe disse: Por que me chamas bom? Ninguém há bom, senão um, que é Deus.",
+            "scriptureRef": "Lucas 18:19",
             "quiz": {
               "question": "Por que padrão é que a maioria das pessoas mede a sua bondade?",
-              "options": ["As outras pessoas", "A Lei de Deus", "Apenas a sua consciência"],
+              "options": [
+                "As outras pessoas",
+                "A Lei de Deus",
+                "Apenas a sua consciência"
+              ],
               "correct": 0,
               "reveal": "Instintivamente comparamo-nos com pessoas piores do que nós — e passamos. Mas Deus não avalia por comparação. O Seu padrão é o Seu próprio caráter perfeito."
             }
@@ -366,11 +370,15 @@
           {
             "heading": "O espelho da Lei de Deus",
             "body": "Então como te medes pelo padrão de Deus? Ele deixou-o por escrito. Os Dez Mandamentos não são uma escada que sobes para chegar ao céu — são um espelho. Olhas para eles e vês-te como realmente és.\n\nUm espelho faz uma coisa bem: mostra-te a sujidade que tens na cara. Mas nunca tentarias lavar a cara com o espelho. Ele revela o problema; não o consegue resolver.\n\nÉ exatamente para isso que a Bíblia diz que a Lei serve: 'pela lei vem o conhecimento do pecado.' A sua função é o diagnóstico, não a cura. E um diagnóstico honesto é a única coisa que a maioria de nós nunca parou para ouvir.",
-            "scripture": "Por isso, nenhuma carne será justificada diante dele pelas obras da lei, porque pela lei vem o conhecimento do pecado.",
-            "scriptureRef": "Romanos 3:20 (ARC)",
+            "scripture": "Por isso nenhuma carne será justificada diante dele pelas obras da lei, porque pela lei vem o conhecimento do pecado.",
+            "scriptureRef": "Romanos 3:20",
             "quiz": {
               "question": "Segundo Romanos 3:20, para que serve a Lei?",
-              "options": ["Para nos tornar bons", "Para nos mostrar o nosso pecado", "Para ganharmos o céu"],
+              "options": [
+                "Para nos tornar bons",
+                "Para nos mostrar o nosso pecado",
+                "Para ganharmos o céu"
+              ],
               "correct": 1,
               "reveal": "A Lei é um espelho, não uma escada. 'Pela lei vem o conhecimento do pecado.' Revela o problema — nunca foi feita para o resolver."
             }
@@ -378,11 +386,15 @@
           {
             "heading": "Faz o teste com honestidade",
             "body": "Então olha para o espelho. Alguma vez disseste uma mentira? Uma que fosse, mesmo pequena — o que é que isso faz de ti? Alguma vez tiraste algo que não era teu, por menor que fosse o valor? Alguma vez odiaste alguém? A Bíblia diz que 'qualquer que aborrece a seu irmão é homicida.'\n\nSe fores honesto, acabaste de admitir — como todos nós — que és um mentiroso e ladrão com homicídio no coração. E isto são apenas três dos Dez Mandamentos.\n\nTalvez estejas a pensar: 'Mas cumpri quase todos os outros.' Tiago fecha essa porta. A Lei de Deus é como uma vidraça: racha-a num canto e o vidro inteiro fica partido. Tropeça num só ponto, e és culpado de todos.",
-            "scripture": "Porque qualquer que guardar toda a lei, e tropeçar num só ponto, tornou-se culpado de todos.",
-            "scriptureRef": "Tiago 2:10 (ARC)",
+            "scripture": "Porque qualquer que guardar toda a lei, e tropeçar em um só ponto, tornou-se culpado de todos.",
+            "scriptureRef": "Tiago 2:10",
             "quiz": {
               "question": "Quebraste um mandamento mas cumpriste os outros nove. O que diz Tiago 2:10 sobre ti?",
-              "options": ["És noventa por cento bom", "És culpado de quebrar toda a Lei", "Depende da gravidade desse único mandamento"],
+              "options": [
+                "És noventa por cento bom",
+                "És culpado de quebrar toda a Lei",
+                "Depende da gravidade desse único mandamento"
+              ],
               "correct": 1,
               "reveal": "Tropeçar num só ponto é ficar 'culpado de todos.' A Lei de Deus não é uma nota de zero a dez — é uma vidraça, e uma só racha parte o vidro inteiro."
             }
@@ -390,11 +402,15 @@
           {
             "heading": "Bom segundo o padrão de quem?",
             "body": "É aqui que muita gente se agarra a uma última esperança: 'Mas Deus é bom. Um Deus bom vai certamente fechar os olhos às minhas falhas.' Pensa nisso num tribunal.\n\nImagina um juiz com um homicida culpado à sua frente. As provas são esmagadoras. E o juiz diz: 'Sou um homem bom, por isso vou deixar-te ir.' Ele é bom? É corrupto. Um bom juiz não pode ignorar o crime — é precisamente por ser bom que tem de fazer justiça.\n\nA bondade de Deus não é a tua porta de fuga. É a própria razão pela qual o teu caso tem de ir a tribunal. A Bíblia diz que absolver o culpado é abominação para Ele. Se Deus é bom — e é — então tem de julgar a mentira, o roubo e o ódio. Incluindo os teus e os meus.",
-            "scripture": "O que justifica o ímpio e o que condena o justo abomináveis são para o SENHOR, tanto um como o outro.",
-            "scriptureRef": "Provérbios 17:15 (ARC)",
+            "scripture": "O que justifica o ímpio, e o que condena o justo, tanto um como o outro são abomináveis ao Senhor.",
+            "scriptureRef": "Provérbios 17:15",
             "quiz": {
               "question": "O facto de Deus ser bom ajuda o culpado no dia do juízo?",
-              "options": ["Sim — um Deus bom fecha os olhos ao pecado", "Não — um bom juiz tem de julgar", "Depende das tuas boas obras"],
+              "options": [
+                "Sim — um Deus bom fecha os olhos ao pecado",
+                "Não — um bom juiz tem de julgar",
+                "Depende das tuas boas obras"
+              ],
               "correct": 1,
               "reveal": "Um juiz que deixa o culpado sair em liberdade não é bom — é corrupto. A bondade de Deus é a própria razão pela qual o pecado não pode ser ignorado. É isso que torna a cruz necessária."
             }
@@ -403,7 +419,7 @@
             "heading": "Descobre onde estás",
             "body": "Então — és uma boa pessoa? Pelo padrão dos homens, talvez. Pelo padrão de Deus, já sabes a resposta. E nós também, porque estamos sentados no mesmo banco dos réus.\n\nA Bíblia não te manda presumir que está tudo bem. Diz: 'Examinai-vos a vós mesmos.' Não o teu vizinho. Não o monstro do telejornal. Tu, perante o padrão que realmente conta.\n\nEste site tem um teste curto que te leva pela Lei de Deus, mandamento a mandamento, tal como Jesus a usava. Não te vai salvar — nenhum teste pode. Mas vai dizer-te a verdade sobre onde estás. E ninguém procura a cura antes de encarar o diagnóstico.",
             "scripture": "Examinai-vos a vós mesmos, se permaneceis na fé; provai-vos a vós mesmos. Ou não sabeis quanto a vós mesmos, que Jesus Cristo está em vós? Se não é que já estais reprovados.",
-            "scriptureRef": "2 Coríntios 13:5 (ARC)"
+            "scriptureRef": "2 Coríntios 13:5"
           }
         ],
         "faq": [
@@ -431,10 +447,14 @@
             "heading": "Mais do que um bom mestre",
             "body": "A maioria das pessoas aceita chamar Jesus de bom mestre. Mas Jesus não deixou essa opção em aberto. Ele afirmou ser Deus — não um deus, não divino, mas o próprio Deus. 'Eu e o Pai somos um' (João 10:30).\n\nC.S. Lewis colocou a questão de forma simples: um homem que disse o tipo de coisas que Jesus disse não seria um grande mestre de moral. Seria um lunático, um mentiroso, ou seria exatamente quem afirmou ser — o Senhor.\n\nAs pessoas que O ouviram entenderam perfeitamente o que Ele estava a afirmar. Pegaram em pedras para O matar por blasfémia. Não se apedreja alguém por dizer 'sede bondosos para o vosso próximo.'",
             "scripture": "Eu e o Pai somos um.",
-            "scriptureRef": "João 10:30 (ARC)",
+            "scriptureRef": "João 10:30",
             "quiz": {
               "question": "Se Jesus afirmou ser Deus, quais são as únicas opções lógicas?",
-              "options": ["Era um grande professor de moral", "Era um lunático, um mentiroso, ou é o Senhor", "Estava a falar metaforicamente"],
+              "options": [
+                "Era um grande professor de moral",
+                "Era um lunático, um mentiroso, ou é o Senhor",
+                "Estava a falar metaforicamente"
+              ],
               "correct": 1,
               "reveal": "Um simples professor não afirma ser Deus. Ou era delirante, estava a enganar deliberadamente, ou estava a dizer a verdade. C.S. Lewis chamou-lhe o trilema 'Senhor, Mentiroso ou Lunático' — não há quarta opção."
             }
@@ -442,23 +462,27 @@
           {
             "heading": "O Verbo feito carne",
             "body": "O Evangelho de João começa com uma afirmação extraordinária: 'No princípio era o Verbo, e o Verbo estava com Deus, e o Verbo era Deus.' E depois: 'E o Verbo se fez carne, e habitou entre nós.'\n\nAntes de Belém, antes da manjedoura, antes de Maria — Jesus existia eternamente como Deus. Não foi criado. Foi o Criador que entrou na Sua própria criação. As mãos que moldaram o universo deixaram-se pregar numa cruz.",
-            "scripture": "E o Verbo se fez carne, e habitou entre nós, e vimos a sua glória, como a glória do unigénito do Pai, cheio de graça e de verdade.",
-            "scriptureRef": "João 1:14 (ARC)"
+            "scripture": "E o Verbo se fez carne, e habitou entre nós, e vimos a sua glória, como a glória do unigênito do Pai, cheio de graça e de verdade.",
+            "scriptureRef": "João 1:14"
           },
           {
             "heading": "O que Ele fez",
             "body": "Jesus viveu a única vida sem pecado da história da humanidade. Curou doentes, deu vista aos cegos e ressuscitou mortos. Tinha autoridade sobre a natureza, as doenças, os demónios e a própria morte.\n\nMas Ele não veio principalmente para curar ou ensinar. Veio para morrer. Disse repetidamente aos Seus discípulos que seria entregue, crucificado e que ressuscitaria ao terceiro dia. A Sua morte não foi um acidente nem uma tragédia — foi o plano desde o princípio.",
-            "scripture": "Que, sendo em forma de Deus, não teve por usurpação ser igual a Deus, mas aniquilou-se a si mesmo, tomando a forma de servo, fazendo-se semelhante aos homens.",
-            "scriptureRef": "Filipenses 2:6-7 (ARC)"
+            "scripture": "Que, sendo em forma de Deus, não teve por usurpação ser igual a Deus, Mas fez a si mesmo de nenhuma reputação, tomando a forma de servo, fazendo-se semelhante aos homens;",
+            "scriptureRef": "Filipenses 2:6-7"
           },
           {
             "heading": "Porque é que isto importa para ti",
             "body": "Se Jesus é quem disse ser — Deus em carne — então tudo o que Ele disse carrega o peso da autoridade divina. Quando disse 'Eu sou o caminho, e a verdade e a vida; ninguém vem ao Pai, senão por mim,' não estava a oferecer uma opção entre muitas. Estava a afirmar um facto.\n\nSe Ele ressuscitou dos mortos (e as evidências são convincentes), então as Suas afirmações estão validadas. A morte não O conseguiu reter. E se a morte não O conseguiu reter, então a Sua promessa de vida eterna a todos os que confiam n'Ele não é um desejo piedoso — é a promessa mais fiável alguma vez feita.",
             "scripture": "Disse-lhe Jesus: Eu sou o caminho, e a verdade e a vida; ninguém vem ao Pai, senão por mim.",
-            "scriptureRef": "João 14:6 (ARC)",
+            "scriptureRef": "João 14:6",
             "quiz": {
               "question": "Se Jesus verdadeiramente ressuscitou dos mortos, o que significa isso sobre as Suas afirmações?",
-              "options": ["São inspiradoras mas inverificáveis", "São validadas — Ele é quem disse ser", "Não muda nada"],
+              "options": [
+                "São inspiradoras mas inverificáveis",
+                "São validadas — Ele é quem disse ser",
+                "Não muda nada"
+              ],
               "correct": 1,
               "reveal": "A ressurreição é a prova definitiva. Se a morte não O pôde reter, então a Sua promessa de vida eterna é a promessa mais fiável alguma vez feita."
             }
@@ -488,11 +512,15 @@
           {
             "heading": "O padrão de Deus",
             "body": "Os Dez Mandamentos não são sugestões. São a lei moral de Deus — um reflexo perfeito do Seu carácter. Dizem-nos o que é certo e o que é errado, não com base em cultura ou opinião, mas com base na natureza do próprio Deus.\n\nNão mentirás. Não roubarás. Não cometerás adultério. Não cobiçarás. Não terás outros deuses diante de mim. Estas não são regras arbitrárias — revelam o que um Deus santo exige dos seres que criou à Sua imagem.",
-            "scripture": "Porque qualquer que guardar toda a lei, e tropeçar num só ponto, tornou-se culpado de todos.",
-            "scriptureRef": "Tiago 2:10 (ARC)",
+            "scripture": "Porque qualquer que guardar toda a lei, e tropeçar em um só ponto, tornou-se culpado de todos.",
+            "scriptureRef": "Tiago 2:10",
             "quiz": {
               "question": "Segundo Tiago 2:10, quantos mandamentos precisas de quebrar para seres culpado?",
-              "options": ["Todos os dez", "A maioria deles", "Apenas um"],
+              "options": [
+                "Todos os dez",
+                "A maioria deles",
+                "Apenas um"
+              ],
               "correct": 2,
               "reveal": "Apenas um. 'Qualquer que guardar toda a lei, e tropeçar num só ponto, tornou-se culpado de todos.' O padrão de Deus é a perfeição, não a melhoria."
             }
@@ -501,16 +529,20 @@
             "heading": "Não é só homicídio e roubo",
             "body": "Jesus elevou o padrão a um nível impossível. Disse que a ira sem causa é o mesmo que homicídio aos olhos de Deus. Que olhar para alguém com desejo é o mesmo que adultério. Que odiar o teu irmão faz de ti um assassino no coração.\n\nO pecado não é apenas o que fazes — é o que pensas, o que desejas, o que alimentas em segredo. Deus não vê apenas as tuas acções. Vê o teu coração. E por esse padrão, cada um de nós é culpado.",
             "scripture": "Eu, porém, vos digo, que qualquer que atentar numa mulher para a cobiçar, já em seu coração cometeu adultério com ela.",
-            "scriptureRef": "Mateus 5:28 (ARC)"
+            "scriptureRef": "Mateus 5:28"
           },
           {
             "heading": "Todos pecaram",
             "body": "Romanos 3:23 não diz 'alguns pecaram' ou 'pessoas realmente más pecaram.' Diz todos. Todo o ser humano que alguma vez viveu — excepto Jesus — quebrou a Lei de Deus.\n\nIsto não é sobre ser 'suficientemente bom.' É sobre ser perfeito — porque esse é o padrão de Deus. E nenhum de nós é. Nem o líder religioso, nem o filósofo moral, nem a pessoa que faz voluntariado todos os fins de semana. Todos pecaram.",
-            "scripture": "Porque todos pecaram e destituídos estão da glória de Deus.",
-            "scriptureRef": "Romanos 3:23 (ARC)",
+            "scripture": "Porque todos pecaram e destituídos estão da glória de Deus;",
+            "scriptureRef": "Romanos 3:23",
             "quiz": {
               "question": "Segundo o padrão de Deus, quão bom precisas de ser para entrar no céu?",
-              "options": ["Melhor do que a maioria das pessoas", "Bom o suficiente para superar o mau", "Perfeito"],
+              "options": [
+                "Melhor do que a maioria das pessoas",
+                "Bom o suficiente para superar o mau",
+                "Perfeito"
+              ],
               "correct": 2,
               "reveal": "Perfeito. O padrão de Deus não é 'bom o suficiente' — é perfeição moral. E 'todos pecaram e destituídos estão da glória de Deus.' É por isso que precisamos de um Salvador."
             }
@@ -518,8 +550,8 @@
           {
             "heading": "A consequência",
             "body": "O pecado não é uma infracção menor. É traição cósmica contra o Criador do universo. E a penalidade não é uma palmadinha no pulso — é a morte. Não apenas a morte física, mas a separação eterna de Deus.\n\nEsta é a realidade que torna o evangelho urgente. Se o pecado não tivesse consequência, não haveria necessidade de um Salvador. Mas o pecado tem consequência. E é permanente. É por isso que o que vem a seguir — o que Deus fez a respeito — é a melhor notícia que alguma vez ouvirás.",
-            "scripture": "Porque o salário do pecado é a morte, mas o dom gratuito de Deus é a vida eterna, por Cristo Jesus, nosso Senhor.",
-            "scriptureRef": "Romanos 6:23 (ARC)"
+            "scripture": "Porque o salário do pecado é a morte, mas o dom gratuito de Deus é a vida eterna, por Cristo Jesus nosso Senhor.",
+            "scriptureRef": "Romanos 6:23"
           }
         ],
         "faq": [
@@ -546,17 +578,21 @@
           {
             "heading": "O problema",
             "body": "Deus enfrenta o que parece ser um dilema impossível. Ele é perfeitamente justo — não pode ignorar o pecado, varrê-lo para debaixo do tapete ou fingir que não aconteceu. Um bom juiz não deixa criminosos culpados sair em liberdade.\n\nMas Deus também é perfeitamente amoroso. Não quer que ninguém pereça. Criou-te, conhece-te e ama-te. Então como pode um Deus justo perdoar pecadores culpados sem comprometer a Sua justiça?",
-            "scripture": "Ele é a Rocha, cuja obra é perfeita, porque todos os seus caminhos juízo são; Deus é a verdade, e não há nele injustiça; justo e recto é.",
-            "scriptureRef": "Deuteronómio 32:4 (ARC)"
+            "scripture": "Ele é a Rocha, cuja obra é perfeita, porque todos os seus caminhos justos são; Deus é a verdade, e não há nele injustiça; justo e reto é.",
+            "scriptureRef": "Deuteronômio 32:4"
           },
           {
             "heading": "O tribunal",
             "body": "Imagina que estás perante um juiz, culpado de um crime grave. A multa é enorme — muito mais do que alguma vez poderias pagar. A justiça exige pagamento. Estás prestes a ser condenado.\n\nMas então alguém entra no tribunal, abre a carteira e paga a tua multa na totalidade. Cada cêntimo. O juiz pode agora legalmente arquivar o teu caso — não porque está a ignorar a justiça, mas porque a justiça foi satisfeita. A multa foi paga.\n\nFoi isto que aconteceu na cruz.",
-            "scripture": "Mas ele foi ferido pelas nossas transgressões, e moído pelas nossas iniquidades; o castigo que nos traz a paz estava sobre ele, e pelas suas pisaduras fomos sarados.",
-            "scriptureRef": "Isaías 53:5 (ARC)",
+            "scripture": "Mas ele foi ferido por causa das nossas transgressões, e moído por causa das nossas iniquidades; o castigo que nos traz a paz estava sobre ele, e pelas suas pisaduras fomos sarados.",
+            "scriptureRef": "Isaías 53:5",
             "quiz": {
               "question": "Na analogia do tribunal, porque é que o juiz pode legalmente deixar-te ir?",
-              "options": ["Porque decidiu ignorar os teus crimes", "Porque alguém pagou a tua multa na totalidade", "Porque prometeste ser melhor"],
+              "options": [
+                "Porque decidiu ignorar os teus crimes",
+                "Porque alguém pagou a tua multa na totalidade",
+                "Porque prometeste ser melhor"
+              ],
               "correct": 1,
               "reveal": "A justiça foi satisfeita — não ignorada. Alguém pagou a pena que devias. Isto é expiação substitutiva: Cristo tomou o teu castigo para que Deus pudesse legalmente perdoar-te."
             }
@@ -565,16 +601,20 @@
             "heading": "O que aconteceu na cruz",
             "body": "Na cruz, Jesus tomou sobre Si o castigo que todo o ser humano merece. Absorveu a ira completa de Deus contra o pecado — não o Seu próprio pecado (não tinha nenhum), mas o nosso.\n\nDeus 'àquele que não conheceu pecado, o fez pecado por nós.' O Sem Pecado tornou-se o portador do pecado. Experimentou o peso total do juízo divino para que nós não tivéssemos de o fazer. Isto não é uma metáfora. É substituição — Ele morreu no teu lugar.",
             "scripture": "Àquele que não conheceu pecado, o fez pecado por nós; para que nele fôssemos feitos justiça de Deus.",
-            "scriptureRef": "2 Coríntios 5:21 (ARC)"
+            "scriptureRef": "2 Coríntios 5:21"
           },
           {
             "heading": "Está consumado",
             "body": "As últimas palavras de Jesus na cruz não foram 'Estou derrotado.' Foram 'Está consumado.' Em grego, a palavra é tetelestai — um termo legal e comercial que significa 'pago na totalidade.'\n\nA dívida está saldada. Não há nada que possas acrescentar ao que Cristo fez. Não podes ganhar a salvação sendo bom, indo à igreja ou fazendo obras de caridade. Essas são coisas boas — mas não são pagamento. O pagamento já foi feito. Tudo o que resta é recebê-lo.",
             "scripture": "E, quando Jesus tomou o vinagre, disse: Está consumado. E, inclinando a cabeça, entregou o espírito.",
-            "scriptureRef": "João 19:30 (ARC)",
+            "scriptureRef": "João 19:30",
             "quiz": {
               "question": "O que significa 'Está consumado' (tetelestai)?",
-              "options": ["'Eu desisto'", "'Pago na totalidade'", "'O início'"],
+              "options": [
+                "'Eu desisto'",
+                "'Pago na totalidade'",
+                "'O início'"
+              ],
               "correct": 1,
               "reveal": "Tetelestai era um termo legal e comercial que significava 'pago na totalidade.' A dívida do pecado está liquidada. Não há nada que possas acrescentar ao que Cristo fez."
             }
@@ -604,8 +644,8 @@
           {
             "heading": "Porque é que ser bom agora não resolve",
             "body": "Quando o peso dos pecados finalmente aperta, quase toda a gente se agarra ao mesmo plano: 'A partir de agora, vou ser melhor.' Parece nobre. Mas não muda nada do que ficou para trás.\n\nImagina um ladrão que diz ao juiz: 'Já não roubo há seis meses.' O juiz responderia: 'Ainda bem — é isso que a lei sempre exigiu de ti. E o que roubaste antes?' Cumprir a lei a partir de hoje não abate um cêntimo à dívida de ontem, porque a obediência nunca foi um extra. Sempre foi devida.\n\nE há um problema ainda mais fundo. A Bíblia diz que até as nossas justiças — os nossos melhores dias, não os piores — são como trapo imundo diante de um Deus santo, porque saem de um coração já manchado. Boas obras não limpam um cadastro culpado. Se os teus pecados hão-de ser perdoados, a resposta tem de vir de fora de ti.",
-            "scripture": "Mas todos nós somos como o imundo, e todas as nossas justiças, como trapo da imundícia; e todos nós caímos como a folha, e as nossas culpas, como um vento, nos arrebatam.",
-            "scriptureRef": "Isaías 64:6 (ARC)",
+            "scripture": "Mas todos nós somos como o imundo, e todas as nossas justiças como trapo da imundícia; e todos nós murchamos como a folha, e as nossas iniquidades como um vento nos arrebatam.",
+            "scriptureRef": "Isaías 64:6",
             "quiz": {
               "question": "Um ladrão promete ao juiz que nunca mais vai roubar. O que é que isso faz ao que ele já roubou?",
               "options": [
@@ -620,8 +660,8 @@
           {
             "heading": "A multa tem de ser paga",
             "body": "Então porque é que Deus não passa simplesmente uma borracha por cima? Porque perdão que ignora a justiça não é bondade — é corrupção. Se um juiz arquivasse crimes provados com um encolher de ombros, ninguém lhe chamaria misericordioso. O pecado tem uma pena real, e a Bíblia di-la sem rodeios: o salário do pecado é a morte.\n\nAgora imagina o tribunal. És culpado. A multa é astronómica — mais do que ganharias em dez vidas. Não tens nada. E então alguém se adianta e diz: 'Eu pago. Tudo.' Com a multa paga, o juiz pode deixar-te ir — legalmente, justamente, com a lei plenamente satisfeita.\n\nÉ esta a única forma que o perdão pode ter para ti. A tua multa não encolhe com o tempo, com lágrimas ou com bom comportamento. Ou a pagas tu — e o pagamento é a morte — ou alguém a paga no teu lugar.",
-            "scripture": "Porque o salário do pecado é a morte, mas o dom gratuito de Deus é a vida eterna, por Cristo Jesus, nosso Senhor.",
-            "scriptureRef": "Romanos 6:23 (ARC)",
+            "scripture": "Porque o salário do pecado é a morte, mas o dom gratuito de Deus é a vida eterna, por Cristo Jesus nosso Senhor.",
+            "scriptureRef": "Romanos 6:23",
             "quiz": {
               "question": "Porque é que Deus não pode simplesmente fechar os olhos aos teus pecados?",
               "options": [
@@ -636,8 +676,8 @@
           {
             "heading": "O que aconteceu na cruz",
             "body": "Alguém se adiantou mesmo. Numa cruz fora de Jerusalém, Jesus Cristo padeceu uma vez pelos pecados — 'o justo pelos injustos.' Não estava a pagar a multa d'Ele; nunca pecou. Estava a pagar a tua.\n\nSe já leste porque é que a cruz tinha de acontecer, sabes que não foi uma tragédia que fugiu ao controlo. Foi um pagamento, planeado e com preço marcado. A justiça de Deus exigia a morte pelo pecado, e o Filho de Deus pôs-se no teu lugar no banco dos réus e recebeu Ele mesmo a sentença — para te levar a Deus.\n\nIsso significa que o pagamento pelos teus pecados não é uma hipótese. Existe, está completo, e nada se lhe pode acrescentar. A pergunta que fica já não é 'como poderia eu pagar?' — nunca poderias. É: 'como recebo o que Ele pagou?'",
-            "scripture": "Porque também Cristo padeceu uma vez pelos pecados, o justo pelos injustos, para levar-nos a Deus; mortificado, na verdade, na carne, mas vivificado pelo Espírito.",
-            "scriptureRef": "1 Pedro 3:18 (ARC)",
+            "scripture": "Porque também Cristo padeceu uma vez pelos pecados, o justo pelos injustos, para levar-nos a Deus; mortificado, na verdade, na carne, mas vivificado pelo Espírito;",
+            "scriptureRef": "1 Pedro 3:18",
             "quiz": {
               "question": "Em que sentido morreu Jesus 'o justo pelos injustos'?",
               "options": [
@@ -652,8 +692,8 @@
           {
             "heading": "Arrependimento e fé",
             "body": "Então como se recebe? Repara primeiro no que a Bíblia não diz. Não diz 'realiza este ritual.' Não diz 'repete estas palavras exactas.' Não diz 'vai à igreja e espera que some pontos.' Nenhuma cerimónia, fórmula ou cartão de membro lava um único pecado — se lavasse, o perdão seria uma máquina que tu operas, e Deus ficaria a dever-te o resultado. Deus não te deve nada. O perdão é um dom, e os dons recebem-se; não se accionam.\n\nO que Deus ordena é arrependimento e fé — dois lados da mesma viragem. Arrependimento: deixas de desculpar o teu pecado, concordas com Deus que está errado e afastas-te dele. Fé: confias na pessoa de Jesus Cristo — não em ideias sobre Ele — como quem salta de um avião confia no pára-quedas. Não basta acreditar que funciona; é preciso vesti-lo.\n\nNenhum dos dois ganha o que quer que seja. Um homem a afogar-se não merece o salvamento por agarrar a mão do nadador-salvador — simplesmente deixa de confiar na própria braçada. Arrepende-te e confia no Salvador, 'para que sejam apagados os vossos pecados.'",
-            "scripture": "Arrependei-vos, pois, e convertei-vos, para que sejam apagados os vossos pecados, e venham assim os tempos do refrigério pela presença do Senhor.",
-            "scriptureRef": "Actos 3:19 (ARC)",
+            "scripture": "Arrependei-vos, pois, e convertei-vos, para que sejam apagados os vossos pecados, e para que venham assim os tempos do refrigério pela presença do Senhor,",
+            "scriptureRef": "Atos 3:19",
             "quiz": {
               "question": "O que é que pode lavar os teus pecados?",
               "options": [
@@ -668,8 +708,8 @@
           {
             "heading": "E agora?",
             "body": "Começa por ser honesto com Deus — hoje, com as tuas próprias palavras. A confissão não é um número ensaiado nem precisa de linguagem bonita. É concordar com Deus acerca do teu pecado: chamá-lo pelo nome, sem desculpas, como falarias com um médico que quisesses mesmo que te curasse.\n\nRepara em como a promessa está escrita: 'Se confessarmos os nossos pecados, ele é fiel e justo para nos perdoar.' Se. A promessa é real, e é condicional — pertence a quem confessa, se afasta do pecado e confia, não a quem apenas lê sobre o assunto. Ler sobre o perdão perdoa-te tanto como ler sobre pão te alimenta.\n\nSe não tens a certeza de que isto é mesmo sobre ti, não adivinhes. Faz o teste neste site e deixa a Lei de Deus mostrar-te onde estás. Depois abre uma Bíblia — o Evangelho de João é um bom sítio para começar — e vai a Deus tal como estás. Nunca ninguém que veio assim foi mandado embora.",
-            "scripture": "Se confessarmos os nossos pecados, ele é fiel e justo para nos perdoar os pecados e nos purificar de toda a injustiça.",
-            "scriptureRef": "1 João 1:9 (ARC)"
+            "scripture": "Se confessarmos os nossos pecados, ele é fiel e justo para nos perdoar os pecados, e nos purificar de toda a injustiça.",
+            "scriptureRef": "1 João 1:9"
           }
         ],
         "faq": [
@@ -697,10 +737,14 @@
             "heading": "Não é só sentir pena",
             "body": "Judas sentiu pena por ter traído Jesus. Ficou tão cheio de remorso que devolveu as trinta moedas de prata e enforcou-se. Mas a Bíblia nunca chama a isso arrependimento. Chama-lhe remorso.\n\nRemorso é sentir-se mal com as consequências do pecado. Arrependimento é sentir-se afligido com o pecado em si — porque ofende um Deus santo. Remorso diz 'quem me dera não ter sido apanhado.' Arrependimento diz 'estava errado e quero mudar.'",
             "scripture": "Porque a tristeza segundo Deus opera arrependimento para a salvação, da qual ninguém se arrepende; mas a tristeza do mundo opera a morte.",
-            "scriptureRef": "2 Coríntios 7:10 (ARC)",
+            "scriptureRef": "2 Coríntios 7:10",
             "quiz": {
               "question": "Qual é a diferença entre remorso e arrependimento?",
-              "options": ["São a mesma coisa", "O remorso lamenta as consequências; o arrependimento lamenta o pecado em si", "O arrependimento é um remorso mais forte"],
+              "options": [
+                "São a mesma coisa",
+                "O remorso lamenta as consequências; o arrependimento lamenta o pecado em si",
+                "O arrependimento é um remorso mais forte"
+              ],
               "correct": 1,
               "reveal": "Judas teve remorso — lamentou o que aconteceu. Mas o arrependimento é tristeza segundo Deus que leva à mudança. 'Eu estava errado e quero abandonar isso.'"
             }
@@ -708,11 +752,15 @@
           {
             "heading": "Virar e confiar",
             "body": "O arrependimento tem duas partes. Primeiro, viras-te DO pecado — não apenas dos pecados que te é confortável admitir, mas de toda a orientação da tua vida afastada de Deus. Segundo, viras-te PARA Deus — colocando a tua confiança em Jesus Cristo e na Sua obra consumada na cruz.\n\nNão se trata de te limpares antes de vires a Deus. Vens como estás — quebrado, culpado, de mãos vazias. E Ele recebe-te. O arrependimento não é um pré-requisito para a graça. É a resposta à graça.",
-            "scripture": "Arrependei-vos, pois, e convertei-vos, para que sejam apagados os vossos pecados, e venham assim os tempos do refrigério pela presença do Senhor.",
-            "scriptureRef": "Actos 3:19 (ARC)",
+            "scripture": "Arrependei-vos, pois, e convertei-vos, para que sejam apagados os vossos pecados, e para que venham assim os tempos do refrigério pela presença do Senhor,",
+            "scriptureRef": "Atos 3:19",
             "quiz": {
               "question": "Precisas de te endireitar antes de vir a Deus?",
-              "options": ["Sim — precisas de estar pronto primeiro", "Não — vens tal como estás", "Só para pecados graves"],
+              "options": [
+                "Sim — precisas de estar pronto primeiro",
+                "Não — vens tal como estás",
+                "Só para pecados graves"
+              ],
               "correct": 1,
               "reveal": "Vens tal como estás — quebrado, culpado, de mãos vazias. O arrependimento não é um pré-requisito para a graça. É a resposta à graça."
             }
@@ -721,13 +769,13 @@
             "heading": "Como se manifesta",
             "body": "O arrependimento não é perfeição. É uma nova direcção. Uma pessoa arrependida ainda tropeça, ainda falha, ainda peca. Mas cai para a frente. Levanta-se. Odeia o que costumava amar e ama o que costumava ignorar.\n\nPensa no filho pródigo. Não se limpou antes de voltar a casa. Veio coberto de imundície de porcos, a cheirar a fracasso. E o seu pai correu ao seu encontro, abraçou-o e restaurou-o. Esta é a imagem do arrependimento — voltar a casa, tal como estás.",
             "scripture": "E, levantando-se, foi para seu pai; e, quando ainda estava longe, viu-o seu pai, e se moveu de íntima compaixão e, correndo, lançou-se-lhe ao pescoço e o beijou.",
-            "scriptureRef": "Lucas 15:20 (ARC)"
+            "scriptureRef": "Lucas 15:20"
           },
           {
             "heading": "É um dom",
             "body": "Aqui está a coisa mais surpreendente sobre o arrependimento: até a capacidade de te arrependeres é um dom de Deus. Não podes fabricá-lo. Não podes produzi-lo por força de vontade ou esforço religioso.\n\nSe sentes um impulso em direcção a Deus neste momento — um desejo de virar, de mudar, de voltar a casa — isso não vem de ti. É Deus a atrair-te a Si mesmo. Não resistas. Pede-Lhe o dom do arrependimento, e Ele dá-to.",
             "scripture": "E, ouvindo estas coisas, apaziguaram-se, e glorificaram a Deus, dizendo: Na verdade até aos gentios deu Deus o arrependimento para a vida.",
-            "scriptureRef": "Actos 11:18 (ARC)"
+            "scriptureRef": "Atos 11:18"
           }
         ],
         "faq": [
@@ -754,17 +802,21 @@
           {
             "heading": "A marcação",
             "body": "A Bíblia é directa sobre a morte. Não é um mistério a evitar ou um tema para contornar. 'E, como aos homens está ordenado morrerem uma vez, vindo depois disso o juízo.' Não se — quando. Não talvez — certamente.\n\nTodas as culturas, todas as religiões, todas as filosofias tentaram responder à pergunta sobre o que vem depois da morte. Reencarnação, aniquilação, vagueza esperançosa. Mas a Bíblia dá uma resposta clara e inequívoca: morres uma vez, e depois enfrentas Deus.",
-            "scripture": "E, como aos homens está ordenado morrerem uma vez, vindo depois disso o juízo.",
-            "scriptureRef": "Hebreus 9:27 (ARC)"
+            "scripture": "E, como aos homens está ordenado morrerem uma vez, vindo depois disso o juízo,",
+            "scriptureRef": "Hebreus 9:27"
           },
           {
             "heading": "Dois destinos",
             "body": "Jesus falou mais sobre o inferno do que qualquer outra pessoa na Bíblia. Descreveu-o como um lugar de trevas exteriores, choro e ranger de dentes — separação eterna de Deus e de tudo o que é bom.\n\nTambém falou sobre o céu — a presença de Deus, onde não há mais morte, nem dor, nem lágrimas. Um lugar preparado para aqueles que Lhe pertencem.\n\nNão há meio-termo. Não há purgatório, nem segunda oportunidade depois da morte, nem recomeço cósmico. Dois caminhos, dois destinos. E o caminho em que estás é determinado pelo que fazes com Jesus.",
             "scripture": "E irão estes para o tormento eterno, mas os justos para a vida eterna.",
-            "scriptureRef": "Mateus 25:46 (ARC)",
+            "scriptureRef": "Mateus 25:46",
             "quiz": {
               "question": "Segundo a Bíblia, existe um meio-termo entre o céu e o inferno?",
-              "options": ["Sim — purgatório ou uma segunda oportunidade", "Não — dois destinos, sem meio-termo", "Depende de como viveste"],
+              "options": [
+                "Sim — purgatório ou uma segunda oportunidade",
+                "Não — dois destinos, sem meio-termo",
+                "Depende de como viveste"
+              ],
               "correct": 1,
               "reveal": "Sem meio-termo. Sem purgatório, sem segunda oportunidade após a morte. Dois caminhos, dois destinos — e o caminho é determinado pelo que fazes com Jesus."
             }
@@ -772,17 +824,21 @@
           {
             "heading": "O contador de mortes é real",
             "body": "1,8 pessoas morrem a cada segundo. Isso não é uma estatística feita para te assustar — é uma realidade feita para te despertar. O contador de mortes neste site não é um truque. É um espelho.\n\nCada um daqueles números era uma pessoa — com um nome, uma família, esperanças, medos. E cada uma delas já entrou na eternidade. Um desses números, algum dia, será o teu. A única pergunta é: estás preparado?",
-            "scripture": "Ensina-nos a contar os nossos dias, de tal maneira que alcancemos coração sábio.",
-            "scriptureRef": "Salmo 90:12 (ARC)"
+            "scripture": "Ensina-nos a contar os nossos dias, de tal maneira que alcancemos corações sábios.",
+            "scriptureRef": "Salmos 90:12"
           },
           {
             "heading": "Mas há esperança",
             "body": "Deus não quer que ninguém pereça. Ele 'não quer que alguns se percam, senão que todos venham a arrepender-se.' Fez um caminho — a cruz. Jesus fez a ponte entre um Deus santo e a humanidade pecadora.\n\nA pergunta não é se Deus providenciou um caminho. Providenciou. A pergunta é se tu o vais aceitar. Confia em Jesus Cristo. Abandona o pecado. Recebe o dom da vida eterna. O contador continua a contar — mas não tem de ser uma contagem decrescente para o juízo. Pode ser uma contagem decrescente para voltar a casa.",
-            "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigénito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.",
-            "scriptureRef": "João 3:16 (ARC)",
+            "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.",
+            "scriptureRef": "João 3:16",
             "quiz": {
               "question": "Deus providenciou um caminho para ser salvo do juízo?",
-              "options": ["Não — temos de nos salvar a nós mesmos", "Sim — através de Jesus Cristo e da cruz", "Apenas para certas pessoas"],
+              "options": [
+                "Não — temos de nos salvar a nós mesmos",
+                "Sim — através de Jesus Cristo e da cruz",
+                "Apenas para certas pessoas"
+              ],
               "correct": 1,
               "reveal": "Deus fez um caminho. A questão não é se Ele o providenciou — providenciou. A questão é se tu o vais aceitar. Confia em Cristo. Abandona o pecado. Recebe a vida eterna."
             }
@@ -791,10 +847,14 @@
             "heading": "O tribunal que vem depois",
             "body": "O que se segue à morte não é um acerto de contas vago nem uma sensação difusa de consequência. É uma comparência. 'Todos devemos comparecer ante o tribunal de Cristo' — todos, sem excepções, sem ausências. A Bíblia descreve-o como se descreve uma data em tribunal: um lugar, um Juiz, um registo.\n\nE pensa no que podes levar contigo para esse tribunal: nada. Nenhum advogado para torcer os factos, nenhuma multidão com quem te compares, nenhuma oportunidade de emendar o registo. Tudo o que fizeste 'por meio do corpo' já consta como prova — o que toda a gente viu e o que ninguém viu.\n\nÉ por isso que este site fala tanto de um veredicto. Não por dramatismo — porque a Bíblia fala assim. Há um tribunal real depois da morte, e vais estar nele. E o Juiz será o próprio Jesus Cristo, o que significa que Aquele que foi designado para te julgar é o mesmo que veio para te salvar.",
             "scripture": "Porque todos devemos comparecer ante o tribunal de Cristo, para que cada um receba segundo o que tiver feito por meio do corpo, ou bem, ou mal.",
-            "scriptureRef": "2 Coríntios 5:10 (ARC)",
+            "scriptureRef": "2 Coríntios 5:10",
             "quiz": {
               "question": "O que diz 2 Coríntios 5:10 sobre o tribunal de Cristo?",
-              "options": ["Só os piores infractores comparecerão", "Todos devemos comparecer", "É uma metáfora para a consciência"],
+              "options": [
+                "Só os piores infractores comparecerão",
+                "Todos devemos comparecer",
+                "É uma metáfora para a consciência"
+              ],
               "correct": 1,
               "reveal": "Todos. Sem excepções, sem ausências, sem nada fora do registo. E o Juiz é o mesmo Jesus que veio salvar — o que é ou a pior notícia que já ouviste, ou a melhor."
             }
@@ -802,11 +862,15 @@
           {
             "heading": "O que a morte não pode tocar",
             "body": "Agora ouve o que Jesus diz sobre quem ouviu a Sua palavra, se arrependeu do pecado e confiou nAquele que O enviou: essa pessoa 'não entrará em condenação, mas passou da morte para a vida.' Não passará — passou. Para essa pessoa, o tribunal já não tem terror, porque o caso ficou resolvido na cruz antes de ela lá chegar.\n\nÉ isto que a morte não pode tocar. Pode parar um coração; não pode desfazer um perdão. Para quem se arrependeu e confiou em Cristo, morrer deixou de ser um passo para o desconhecido — é um passo para a presença dAquele que já o conhece.\n\nRepara no que esta promessa não é. Não é para toda a gente automaticamente, e não se torna tua por a leres numa página. Pertence a quem ouve e crê — crê a sério, com a confiança que vira uma vida inteira. A promessa é sólida. A única pergunta é se te descreve a ti.",
-            "scripture": "Na verdade, na verdade vos digo que quem ouve a minha palavra e crê naquele que me enviou tem a vida eterna e não entrará em condenação, mas passou da morte para a vida.",
-            "scriptureRef": "João 5:24 (ARC)",
+            "scripture": "Na verdade, na verdade vos digo que quem ouve a minha palavra, e crê naquele que me enviou, tem a vida eterna, e não entrará em condenação, mas passou da morte para a vida.",
+            "scriptureRef": "João 5:24",
             "quiz": {
               "question": "Em João 5:24, quem 'passou da morte para a vida'?",
-              "options": ["Toda a gente, seja qual for a resposta a Jesus", "Quem ouve a palavra de Jesus e crê nAquele que O enviou", "Ninguém pode saber antes do juízo"],
+              "options": [
+                "Toda a gente, seja qual for a resposta a Jesus",
+                "Quem ouve a palavra de Jesus e crê nAquele que O enviou",
+                "Ninguém pode saber antes do juízo"
+              ],
               "correct": 1,
               "reveal": "A promessa é condicional — pertence a quem ouve e crê. Para essa pessoa, o juízo já está resolvido e a morte perdeu o poder. É sólida; a pergunta é se te descreve a ti."
             }
@@ -814,8 +878,8 @@
           {
             "heading": "Hoje é o dia",
             "body": "Eis um facto simples, dito sem truques: não sabes a data da tua própria morte. Quase ninguém sabe. As pessoas que morreram na última hora acordaram à espera de um dia normal.\n\nIsto não é uma táctica de medo — é apenas a razão pela qual 'mais tarde' é uma resposta perigosa à pergunta mais importante que alguma vez vais enfrentar. 'Mais tarde' não é um tempo em que possas viver. Todas as decisões que alguma vez tomaste, tomaste-as hoje. Esta não é diferente.\n\nO tempo de Deus é mais generoso do que o medo sugere e mais urgente do que o conforto gostaria: 'eis aqui, agora, o tempo aceitável, eis aqui, agora, o dia da salvação.' Não depois de te endireitares. Não quando fores velho. Agora — enquanto o teu coração ainda bate e a porta ainda está aberta. Se Deus te está a falar através do que leste, não guardes isto para um momento melhor. Não há nenhum.",
-            "scripture": "Porque diz: Ouvi-te em tempo aceitável e socorri-te no dia da salvação; eis aqui, agora, o tempo aceitável, eis aqui, agora, o dia da salvação.",
-            "scriptureRef": "2 Coríntios 6:2 (ARC)"
+            "scripture": "(Porque diz: Ouvi-te em tempo aceitável e socorri-te no dia da salvação; eis aqui agora o tempo aceitável, eis aqui agora o dia da salvação).",
+            "scriptureRef": "2 Coríntios 6:2"
           }
         ],
         "faq": [
@@ -842,8 +906,8 @@
           {
             "heading": "O edifício teve um construtor",
             "body": "Como é que sabes que um edifício teve um construtor? Nunca o viste. Não sabes o nome dele. Não há nenhuma fotografia dele na entrada. E, no entanto, tens a certeza de que existiu — porque o edifício está ali. Os edifícios não se constroem sozinhos.\n\nUm quadro é prova de que houve um pintor. Um carro é prova de que houve um fabricante. E a criação — do sol que te aquece o rosto ao ADN enrolado em cada célula do teu corpo — é evidência de um Criador. Não é um salto no escuro. É o mesmo raciocínio em que confias cem vezes por dia.\n\nÉ este o ponto de partida da Bíblia. Ela nunca discute Deus em abstrato; aponta para aquilo que Ele fez. As Suas coisas invisíveis 'claramente se veem' pelas coisas que estão criadas — tão claramente, diz Paulo, que ninguém vai estar diante de Deus com a desculpa 'eu não sabia.'",
-            "scripture": "Porque as suas coisas invisíveis, desde a criação do mundo, tanto o seu eterno poder como a sua divindade, se entendem e claramente se veem pelas coisas que estão criadas, para que eles fiquem inescusáveis.",
-            "scriptureRef": "Romanos 1:20 (ARC)",
+            "scripture": "Porque as suas coisas invisíveis, desde a criação do mundo, tanto o seu eterno poder, como a sua divindade, se entendem, e claramente se veem pelas coisas que estão criadas, para que eles fiquem inescusáveis;",
+            "scriptureRef": "Romanos 1:20",
             "quiz": {
               "question": "Como é que sabes que um edifício teve um construtor?",
               "options": [
@@ -858,8 +922,8 @@
           {
             "heading": "A tua consciência é evidência",
             "body": "Há uma segunda testemunha, e está mais perto do que as estrelas. Está dentro de ti. A palavra 'consciência' significa 'com conhecimento' — quando fazes o mal, fazes com conhecimento de que é mal.\n\nTodas as culturas da história souberam que o homicídio é mau, que a traição é vergonhosa, que a coragem e a honestidade são boas. Discutimos os pormenores, mas ninguém defende a sério que a crueldade contra uma criança é aceitável para quem gostar dela. Há coisas que não são opiniões. São conhecidas.\n\nMas uma lei moral que está acima de todas as culturas precisa de uma origem acima de todas as culturas. Se o certo e o errado fossem invenção humana, podíamos aboli-los por votação. Não podemos — e, no fundo, tu sabes. A Bíblia diz-te porquê: a obra da Lei de Deus está escrita no teu coração.",
-            "scripture": "Os quais mostram a obra da lei escrita no seu coração, testificando juntamente a sua consciência e os seus pensamentos, quer acusando-os, quer defendendo-os.",
-            "scriptureRef": "Romanos 2:15 (ARC)",
+            "scripture": "Os quais mostram a obra da lei escrita em seus corações, testificando juntamente a sua consciência, e os seus pensamentos, quer acusando-os, quer defendendo-os;",
+            "scriptureRef": "Romanos 2:15",
             "quiz": {
               "question": "O que diz Romanos 2:15 que está escrito no coração de cada pessoa?",
               "options": [
@@ -874,8 +938,8 @@
           {
             "heading": "Deus entrou na história",
             "body": "Se Deus tivesse deixado apenas impressões digitais — estrelas e consciências — podias ainda perguntar-te como é que Ele é. Bondoso? Distante? Zangado? As impressões digitais dizem-te que alguém esteve ali; não te mostram um rosto.\n\nPor isso Ele mostrou-nos o Seu rosto. 'Deus nunca foi visto por alguém,' escreve João, mas o Filho 'o revelou.' Jesus de Nazaré é Deus a dar-Se a conhecer — não um sentimento, não uma filosofia, mas uma pessoa que andou por estradas reais numa província real do Império Romano, foi executada sob um governador real e deixou para trás um túmulo vazio a que os Seus inimigos nunca conseguiram responder com um corpo.\n\nIsso muda a pergunta. 'Deus existe?' deixa de ser um debate abstrato e passa a ser algo que podes examinar: lê o que Jesus disse, pesa o que Ele fez e decide quem Ele é. Se queres saber se Deus existe — e como Ele é — começa por aí.",
-            "scripture": "Deus nunca foi visto por alguém. O Filho unigénito, que está no seio do Pai, este o fez conhecer.",
-            "scriptureRef": "João 1:18 (ARC)",
+            "scripture": "Deus nunca foi visto por alguém. O Filho unigênito, que está no seio do Pai, esse o revelou.",
+            "scriptureRef": "João 1:18",
             "quiz": {
               "question": "Segundo João 1:18, como é que o Deus invisível Se deu a conhecer?",
               "options": [
@@ -890,8 +954,8 @@
           {
             "heading": "Porque é que a evidência não é a verdadeira questão",
             "body": "Aqui está uma pergunta honesta que vale a pena enfrentar: se a existência de Deus te fosse provada esta noite, sem margem para dúvida, seguias-O amanhã? Para muitos de nós, sendo sinceros, a resposta é não — porque o debate nunca foi realmente sobre evidências.\n\nJesus pôs o dedo na ferida: a luz veio ao mundo, e nós amámos 'mais as trevas do que a luz.' Não porque a luz fosse fraca, mas porque a luz expõe. Se Deus existe, Ele tem um direito legítimo sobre a tua vida — o teu dinheiro, as tuas relações, os teus hábitos privados, o teu orgulho. É extraordinariamente conveniente que Ele não exista.\n\nIsto não é uma acusação contra os ateus. É uma confissão sobre o coração humano — o teu e o meu. As perguntas honestas merecem respostas honestas, e há boas respostas. Mas antes de pedires mais evidências, pergunta-te o que farias com as que já tens.",
-            "scripture": "E a condenação é esta: Que a luz veio ao mundo, e os homens amaram mais as trevas do que a luz, porque as suas obras eram más. Porque todo aquele que faz o mal aborrece a luz e não vem para a luz, para que as suas obras não sejam reprovadas.",
-            "scriptureRef": "João 3:19-20 (ARC)",
+            "scripture": "E a condenação é esta: Que a luz veio ao mundo, e os homens amaram mais as trevas do que a luz, porque as suas obras eram más. Porque todo aquele que faz o mal odeia a luz, e não vem para a luz, para que as suas obras não sejam reprovadas.",
+            "scriptureRef": "João 3:19-20",
             "quiz": {
               "question": "Segundo Jesus, porque é que as pessoas fogem da luz?",
               "options": [
@@ -906,8 +970,8 @@
           {
             "heading": "Testa com honestidade",
             "body": "Deus faz uma promessa a quem procura com honestidade: 'buscar-me-eis e me achareis, quando me buscardes de todo o vosso coração.' Repara na condição. Não é um olhar de passagem. Não é um debate que queres vencer. Todo o teu coração.\n\nEntão testa. Lê um dos Evangelhos — João é um bom sítio para começar — e pergunta com honestidade quem é este homem. Ora algo tão simples como isto: 'Deus, se és real, mostra-me a verdade, custe o que custar.' Se Ele não estiver lá, perdeste uns minutos de silêncio. Se estiver, encontraste a razão pela qual existes.\n\nHá mais um passo para quem é honesto. Este site tem um teste curto construído sobre a própria Lei de Deus — o padrão que a tua consciência já ecoa. Não te vai provar Deus. Vai mostrar-te onde estás diante d'Ele, se Ele existir. E é aí, mais do que em qualquer argumento, que esta pergunta se torna real.",
-            "scripture": "E buscar-me-eis e me achareis, quando me buscardes de todo o vosso coração.",
-            "scriptureRef": "Jeremias 29:13 (ARC)"
+            "scripture": "E buscar-me-eis, e me achareis, quando me buscardes com todo o vosso coração.",
+            "scriptureRef": "Jeremias 29:13"
           }
         ],
         "faq": [
@@ -934,14 +998,14 @@
           {
             "heading": "A suspeita que não desaparece",
             "body": "Todas as culturas da história enterraram os seus mortos com algum tipo de ritual — um caixão virado a nascente, uma moeda para o barqueiro, orações sussurradas para a viagem que se segue. Nenhuma sociedade alguma vez viveu como se a morte fosse simplesmente o fim, ponto final. Há algo em nós que recusa esse veredicto.\n\nA Bíblia dá-lhe um nome. Salomão escreveu que Deus pôs o mundo no coração do homem — não um argumento filosófico, mas um sentido do eterno demasiado profundo para se explicar. Sentes que há mais, porque há mais. Isto não é um desejo inventado para suavizar um facto duro. É uma pista colocada em ti de propósito, apontando para além desta vida, para o Deus que a colocou aí.\n\nA pergunta, no fundo, não é bem se existe algo depois da morte. Quase todos já suspeitam que sim. A pergunta é o quê — e se estás preparado para isso.",
-            "scripture": "Tudo fez formoso em seu tempo; também pôs o mundo no coração deles, sem que o homem possa descobrir a obra que Deus fez desde o princípio até ao fim.",
-            "scriptureRef": "Eclesiastes 3:11 (ARC)"
+            "scripture": "Tudo fez formoso em seu tempo; também pôs o mundo no coração do homem, sem que este possa descobrir a obra que Deus fez desde o princípio até ao fim.",
+            "scriptureRef": "Eclesiastes 3:11"
           },
           {
             "heading": "A porta, não o fim",
             "body": "A Bíblia não trata a morte como um mistério para encolher os ombros. Chama-lhe uma marcação — fixa, certa, inevitável. 'Como aos homens está ordenado morrerem uma vez, vindo depois disso o juízo.' Não talvez. Uma vez, depois o juízo.\n\nEsta única frase derruba duas suposições populares. Exclui a reencarnação — não há uma segunda tentativa noutro corpo. E exclui a extinção simples — não há 'depois disso' se a morte for o fim de tudo. A morte não é uma parede. É uma porta, e há algo à espera do outro lado.\n\nÉ por isso que a pergunta 'há vida depois da morte' não pode ser respondida com um encolher de ombros ou um palpite. A Escritura responde directamente: sim, e o que vem a seguir não é neutro. É um juízo em que vais estar.",
-            "scripture": "E, como aos homens está ordenado morrerem uma vez, vindo depois disso o juízo.",
-            "scriptureRef": "Hebreus 9:27 (ARC)",
+            "scripture": "E, como aos homens está ordenado morrerem uma vez, vindo depois disso o juízo,",
+            "scriptureRef": "Hebreus 9:27",
             "quiz": {
               "question": "Segundo Hebreus 9:27, o que acontece depois de uma pessoa morrer?",
               "options": [
@@ -956,26 +1020,26 @@
           {
             "heading": "O único homem que voltou",
             "body": "Qualquer afirmação sobre a vida depois da morte é, no fundo, um palpite — excepto uma. Paulo recorda aos primeiros cristãos aquilo que ele próprio recebeu e lhes entregou: que Cristo morreu pelos nossos pecados, foi sepultado e ressuscitou ao terceiro dia, visto primeiro por Pedro, depois pelos doze, depois por mais de quinhentas pessoas de uma só vez — a maior parte das quais, quando Paulo escreveu isto, ainda estava viva para ser interrogada.\n\nIsto não é uma parábola sobre esperança. É uma afirmação sobre um corpo, um túmulo e testemunhas identificadas que podiam ser questionadas. Se Jesus apenas tivesse morrido, a Sua ressurreição seria mais um túmulo entre milhares de milhões. Porque ressuscitou, Ele é a única testemunha que viu de facto o outro lado e voltou para o descrever — e apostou nisso toda a Sua mensagem.",
-            "scripture": "Porque primeiramente vos entreguei o que também recebi: que Cristo morreu por nossos pecados, segundo as Escrituras, e que foi sepultado, e que ressuscitou ao terceiro dia, segundo as Escrituras.",
-            "scriptureRef": "1 Coríntios 15:3-4 (ARC)"
+            "scripture": "Porque primeiramente vos entreguei o que também recebi: que Cristo morreu por nossos pecados, segundo as Escrituras, E que foi sepultado, e que ressuscitou ao terceiro dia, segundo as Escrituras.",
+            "scriptureRef": "1 Coríntios 15:3-4"
           },
           {
             "heading": "Dois destinos, sem terceira opção",
             "body": "Jesus foi o professor mais directo sobre o que acontece depois da morte, e nunca usou linguagem vaga. Falou do tormento eterno com a mesma clareza com que falou da vida eterna: 'e irão estes para o tormento eterno, mas os justos para a vida eterna.' A mesma palavra, 'eterno', usada para os dois — seja lá o que for o inferno, não acaba, tal como o céu também não acaba.\n\nNão há um ciclo de reencarnações para queimar o mau carma, nem um purgatório onde cumprir pena, nem uma aniquilação num nada tranquilo. Dois destinos, ambos permanentes, sem uma terceira porta. Suavizar este facto não seria bondade — seria mentir-te sobre a única coisa que mais precisas de saber com clareza. A verdade incómoda é também a útil: qual destes dois te espera ainda não está decidido ao acaso. Está a ser decidido por outra coisa.",
             "scripture": "E irão estes para o tormento eterno, mas os justos para a vida eterna.",
-            "scriptureRef": "Mateus 25:46 (ARC)"
+            "scriptureRef": "Mateus 25:46"
           },
           {
             "heading": "Qual deles é o teu?",
             "body": "Então qual destino é o teu? Não o que escolherias — o que realmente mereces. Já alguma vez mentiste? Tiraste algo que não era teu? Odiaste alguém no coração? O veredicto da Bíblia não aponta para pessoas piores do que tu noutro lugar: 'todos pecaram e destituídos estão da glória de Deus.' Isso inclui quem está a ler isto.\n\nUm coração mentiroso, ladrão e cheio de ódio não se qualifica para o céu por boas intenções ou uma média decente. A Lei de Deus não avalia pelo esforço — condena pelo facto. Se a morte é uma porta e o juízo é o que está por trás dela, então o veredicto para o qual essa porta abre é o que a tua própria consciência já meio suspeita: culpado.\n\nIsto não é o fim da frase. É a razão pela qual a próxima parte importa mais do que tudo o resto que vais ler hoje.",
-            "scripture": "Porque todos pecaram e destituídos estão da glória de Deus.",
-            "scriptureRef": "Romanos 3:23 (ARC)"
+            "scripture": "Porque todos pecaram e destituídos estão da glória de Deus;",
+            "scriptureRef": "Romanos 3:23"
           },
           {
             "heading": "Cristo pagou; podes passar da morte para a vida",
             "body": "Eis porque a porta não tem de ser aterradora. Jesus disse com clareza: 'quem ouve a minha palavra e crê naquele que me enviou tem a vida eterna e não entrará em condenação, mas passou da morte para a vida.' Não passará — já passou, para quem esta descrição se aplica.\n\nCristo não se limitou a ensinar sobre a morte; pagou a multa que o pecado exigia, para que os culpados pudessem ser libertados legalmente, com a justiça satisfeita. Isto não é uma recompensa pelo bom comportamento — é um resgate para os culpados que deixam de defender a sua própria causa e passam a confiar na defesa dEle. Quem se arrepende do pecado e confia em Cristo já não está à espera de saber o que há atrás da porta. Já sabe, e não é juízo.\n\nNinguém tem a garantia do amanhã para tomar essa decisão mais tarde. A porta é real, e para ti ainda está aberta — hoje.",
-            "scripture": "Na verdade, na verdade vos digo que quem ouve a minha palavra e crê naquele que me enviou tem a vida eterna e não entrará em condenação, mas passou da morte para a vida.",
-            "scriptureRef": "João 5:24 (ARC)",
+            "scripture": "Na verdade, na verdade vos digo que quem ouve a minha palavra, e crê naquele que me enviou, tem a vida eterna, e não entrará em condenação, mas passou da morte para a vida.",
+            "scriptureRef": "João 5:24",
             "quiz": {
               "question": "Segundo João 5:24, quem já 'passou da morte para a vida'?",
               "options": [
@@ -1012,20 +1076,20 @@
           {
             "heading": "A pergunta por trás de todas as outras",
             "body": "Mais cedo ou mais tarde, todos fazem esta pergunta — não como um exame de filosofia, mas no silêncio depois da meia-noite: para que serve, no fundo, tudo isto? Carreira, relações, conquistas, prazer — todos prometem que a próxima coisa vai finalmente responder.\n\nSalomão levou essa experiência até ao fim. Tinha os recursos para não recusar nada que os seus olhos desejassem, e perseguiu o prazer e as grandes obras deliberadamente, como teste. O seu veredicto, depois de ter tudo: era vaidade, um correr atrás do vento. Nenhum proveito debaixo do sol.\n\nSe o homem com dinheiro, poder e prazer ilimitados voltou de mãos vazias, a resposta nunca esteve à espera na próxima conquista. Passa-se ali outra coisa — e a Bíblia dá-lhe nome directamente.",
-            "scripture": "E tudo quanto desejaram os meus olhos não lhos neguei, nem privei o meu coração de alegria alguma; mas o meu coração se alegrou por todo o meu trabalho, e esta foi a minha porção de todo o meu trabalho. E olhei eu para todas as obras que fizeram as minhas mãos, como também para o trabalho que eu, trabalhando, tinha feito; e eis que tudo era vaidade e aflição de espírito e que proveito nenhum havia debaixo do sol.",
-            "scriptureRef": "Eclesiastes 2:10-11 (ARC)"
+            "scripture": "E tudo quanto desejaram os meus olhos não lhes neguei, nem privei o meu coração de alegria alguma; mas o meu coração se alegrou por todo o meu trabalho, e esta foi a minha porção de todo o meu trabalho. E olhei eu para todas as obras que fizeram as minhas mãos, como também para o trabalho que eu, trabalhando, tinha feito, e eis que tudo era vaidade e aflição de espírito, e que proveito nenhum havia debaixo do sol.",
+            "scriptureRef": "Eclesiastes 2:10-11"
           },
           {
             "heading": "Feito por Ele, para Ele",
             "body": "Eis a resposta da Bíblia, e não é um sentimento para perseguir — é um facto para receber. 'Tudo foi criado por ele e para ele.' Não só galáxias e montanhas. Tu.\n\nIsso significa que o sentido não é algo que inventas ao esforçares-te mais, nem que descobres ao acumular experiências. Estava fixado antes de nasceres: existes porque uma Pessoa te fez, e existes para essa mesma Pessoa — para O conheceres, não apenas para saberes coisas sobre Ele.\n\nIsto não é uma ideia de autoajuda; não promete que te vais sentir realizado. É um facto simples e objectivo sobre a razão de estares aqui — da mesma forma que uma chave existe para uma fechadura, quer ela saiba disso quer não.",
-            "scripture": "porque nele foram criadas todas as coisas que há nos céus e na terra, visíveis e invisíveis, sejam tronos, sejam dominações, sejam principados, sejam potestades; tudo foi criado por ele e para ele.",
-            "scriptureRef": "Colossenses 1:16 (ARC)"
+            "scripture": "Porque nele foram criadas todas as coisas que há nos céus e na terra, visíveis e invisíveis, sejam tronos, sejam dominações, sejam principados, sejam potestades. Tudo foi criado por ele e para ele.",
+            "scriptureRef": "Colossenses 1:16"
           },
           {
             "heading": "Porque é que a vida parece partida, mesmo assim",
             "body": "Então porque é que a vida parece vazia mesmo quando sabes, intelectualmente, que foste feito para algo? Porque o problema nunca foi falta de informação. É um problema legal.\n\nIsaías é directo quanto à causa: 'as vossas iniquidades fazem divisão entre vós e o vosso Deus, e os vossos pecados encobrem o seu rosto de vós.' Não uma distância que fechas ao esforçares-te por te sentires mais próximo. Separação — uma barreira real, legal, causada por pecado real, pecados que tu próprio cometeste.\n\nÉ por isso que perseguir sentido através de melhores hábitos ou objectivos maiores nunca fecha esse fosso. Foste construído para conhecer o teu Criador, e a tua própria culpa é o que está entre ti e Ele. Esse é o verdadeiro problema por trás do vazio que sentes.",
-            "scripture": "Mas as vossas iniquidades fazem divisão entre vós e o vosso Deus, e os vossos pecados encobrem o seu rosto de vós, para que vos não ouça.",
-            "scriptureRef": "Isaías 59:2 (ARC)",
+            "scripture": "Mas as vossas iniquidades fazem separação entre vós e o vosso Deus; e os vossos pecados encobrem o seu rosto de vós, para que não vos ouça.",
+            "scriptureRef": "Isaías 59:2",
             "quiz": {
               "question": "Segundo Isaías 59:2, o que separou as pessoas de Deus?",
               "options": [
@@ -1040,20 +1104,20 @@
           {
             "heading": "Os becos sem saída que todos tentam",
             "body": "A maioria das pessoas não ignora o vazio — apenas o aponta ao alvo mais próximo. Mais dinheiro. A próxima promoção. Uma relação tratada como a coisa que finalmente te vai completar. Nada disso é insensato de desejar; é o que quase todos tentam, incluindo pessoas que deviam saber que não é assim.\n\nJesus fez a pergunta que vai direta ao assunto: 'que aproveitaria ao homem ganhar todo o mundo e perder a sua alma?' Não \"e se ele falhar\" — e se ele conseguir tudo, e mesmo assim não for suficiente?\n\nSê honesto com a tua própria consciência por um momento. Alguma coisa que já conquistaste resolveu mesmo a questão, ou só a adiou? Um beco sem saída não se anuncia — só percebes quando já lá estás dentro.",
-            "scripture": "Pois que aproveitaria ao homem ganhar todo o mundo e perder a sua alma?",
-            "scriptureRef": "Marcos 8:36 (ARC)"
+            "scripture": "Pois, que aproveitaria ao homem ganhar todo o mundo e perder a sua alma?",
+            "scriptureRef": "Marcos 8:36"
           },
           {
             "heading": "O sentido restaurado",
             "body": "Eis o único resgate que responde de facto ao problema, porque responde ao problema certo. Não mais busca de propósito. Não uma atitude melhor. Um pagamento.\n\n'Cristo padeceu uma vez pelos pecados, o justo pelos injustos, para levar-nos a Deus.' Aquele que nada devia pagou o que os culpados deviam, para que os culpados pudessem ser trazidos de volta — legal, verdadeiramente — ao Deus de quem estavam separados.\n\nIsto não é Deus a ignorar o pecado para te fazer sentir completo. É Deus a resolver a dívida que Isaías 59:2 descreveu, de modo que a própria separação é removida para todo aquele que está unido a Cristo. O sentido para o qual foste feito nunca esteve fora de alcance por não o teres encontrado. Estava fora de alcance porque o pecado o bloqueava — e Cristo pagou para reabrir o caminho de volta.",
-            "scripture": "Porque também Cristo padeceu uma vez pelos pecados, o justo pelos injustos, para levar-nos a Deus; mortificado, na verdade, na carne, mas vivificado pelo Espírito,",
-            "scriptureRef": "1 Pedro 3:18 (ARC)"
+            "scripture": "Porque também Cristo padeceu uma vez pelos pecados, o justo pelos injustos, para levar-nos a Deus; mortificado, na verdade, na carne, mas vivificado pelo Espírito;",
+            "scriptureRef": "1 Pedro 3:18"
           },
           {
             "heading": "Para que serve uma vida reconciliada",
             "body": "Então para que serve, de facto, uma vida reconciliada? Não um novo conjunto de objectivos para perseguir, nem um sentimento permanente de realização que te está a ser prometido. Algo mais sólido do que um sentimento.\n\nJesus definiu-o com precisão: 'a vida eterna é esta: que conheçam a ti só por único Deus verdadeiro e a Jesus Cristo, a quem enviaste.' Não admiração à distância — conhecê-Lo, da forma como conheces alguém com quem realmente caminhas.\n\nIsso não é automático para todos os que apenas ouviram falar dEle. Pertence a quem se arrependeu do pecado e confiou em Cristo, e começa agora, não mais tarde — porque ninguém que está a ler isto tem a garantia do amanhã para decidir. O sentido para o qual foste feito está disponível hoje, se o quiseres agarrar.",
-            "scripture": "E a vida eterna é esta: que conheçam a ti só por único Deus verdadeiro e a Jesus Cristo, a quem enviaste.",
-            "scriptureRef": "João 17:3 (ARC)",
+            "scripture": "E a vida eterna é esta: que te conheçam, a ti só, por único Deus verdadeiro, e a Jesus Cristo, a quem enviaste.",
+            "scriptureRef": "João 17:3",
             "quiz": {
               "question": "Segundo João 17:3, o que diz Jesus que é, de facto, a vida eterna?",
               "options": [
@@ -1090,8 +1154,8 @@
           {
             "heading": "O medo que ninguém admite",
             "body": "Quase ninguém o diz em voz alta, mas o medo está lá — na sala de espera do médico, na notícia da morte de um estranho, no pensamento que afastas às duas da manhã. As pessoas gerem-no: ocupação, humor, distracção, uma recusa deliberada em pensar nisso. O que não fazem é curá-lo, porque gerir não resolve.\n\nA Bíblia dá nome exacto a este medo, e chama-lhe servidão, não um estado de espírito passageiro. Descreve pessoas presas a vida inteira pelo medo da morte — não uma fase que se ultrapassa, mas uma sentença cumprida em silêncio, por trás de um sorriso. Se isto soa incomodamente familiar, é porque é. Dar-lhe o nome certo é o primeiro passo para sair dele.",
-            "scripture": "e livrasse todos os que, com medo da morte, estavam por toda a vida sujeitos à servidão.",
-            "scriptureRef": "Hebreus 2:15 (ARC)",
+            "scripture": "E livrasse todos os que, com medo da morte, estavam por toda a vida sujeitos à servidão.",
+            "scriptureRef": "Hebreus 2:15",
             "quiz": {
               "question": "O que diz Hebreus 2:15 sobre o medo da morte?",
               "options": [
@@ -1106,20 +1170,20 @@
           {
             "heading": "O medo está a dizer a verdade",
             "body": "Eis o que torna este medo tão difícil de afastar: ele não te está a mentir. Qualquer outra preocupação normalmente acalma-se com factos ou palavras de conforto. Esta não, porque por trás dela a tua consciência já sabe algo que o intelecto não consegue afastar com argumentos — que a morte não é o fim da história, é o momento em que a história é lida em voz alta.\n\nA Escritura afirma a sequência sem rodeios: os homens morrem uma vez, e depois disso vem o juízo. Não é uma possibilidade a ponderar — é uma marcação já no calendário. O medo que continuas a gerir é a tua consciência a fazer exactamente aquilo para que foi feita: não te deixar esquecer que um veredicto está a chegar, estejas ou não preparado.",
-            "scripture": "E, como aos homens está ordenado morrerem uma vez, vindo depois disso o juízo.",
-            "scriptureRef": "Hebreus 9:27 (ARC)"
+            "scripture": "E, como aos homens está ordenado morrerem uma vez, vindo depois disso o juízo,",
+            "scriptureRef": "Hebreus 9:27"
           },
           {
             "heading": "Porque é que a distracção e o optimismo não resultam",
             "body": "O conselho habitual é pensar pela positiva, manter-te ocupado, focar-te no que a vida tem de bom. Nada disso toca no problema real, porque o medo nunca foi, no fundo, sobre o teu estado de espírito — era sobre um veredicto, e nenhuma quantidade de optimismo muda um veredicto.\n\nJesus falou de um homem que tinha resolvido todos os problemas que o dinheiro resolve, e já planeava anos de vida descansada, quando Deus o interrompeu a meio do pensamento: nessa mesma noite, a sua alma lhe seria exigida. Todo o seu planeamento não lhe comprou mais um dia, nem respondeu à única pergunta que importava. Pensar pela positiva não é defesa nenhuma num tribunal. Outra coisa tem de resolver de facto o veredicto — não distrair-te dele.",
-            "scripture": "Mas Deus lhe disse: Louco, esta noite te pedirão a tua alma, e o que tens preparado para quem será?",
-            "scriptureRef": "Lucas 12:20 (ARC)"
+            "scripture": "Mas Deus lhe disse: Louco! Esta noite te pedirão a tua alma; e o que tens preparado, para quem será?",
+            "scriptureRef": "Lucas 12:20"
           },
           {
             "heading": "O único que alguma vez desarmou a morte",
             "body": "Se a morte é um veredicto real, precisa de uma resposta real — não um método para lidar com ela, mas alguém que passou por ela de facto e voltou do outro lado. Só uma pessoa na história o fez: Jesus Cristo, que morreu, foi sepultado e ressuscitou, corporalmente, testemunhado por centenas de pessoas.\n\nPaulo escreve com algo próximo do escárnio na voz, a provocar a própria morte: onde está o teu aguilhão, onde está a tua vitória? A arma da morte era o pecado, e a autoridade do pecado era a lei — e Cristo respondeu às duas, pagando o que a lei exigia, para que o aguilhão da morte fosse arrancado pela raiz. Isto não é uma metáfora para te sentires mais corajoso. É o único acontecimento histórico que muda de facto o que acontece depois de morreres.",
-            "scripture": "Onde está, ó morte, o teu aguilhão? Onde está, ó inferno, a tua vitória? Ora, o aguilhão da morte é o pecado, e a força do pecado é a lei. Mas graças a Deus, que nos dá a vitória por nosso Senhor Jesus Cristo.",
-            "scriptureRef": "1 Coríntios 15:55-57 (ARC)",
+            "scripture": "Onde está, ó morte, o teu aguilhão? Onde está, ó inferno, a tua vitória? Ora, o aguilhão da morte é o pecado, e a força do pecado é a lei. Mas graças a Deus que nos dá a vitória por nosso Senhor Jesus Cristo.",
+            "scriptureRef": "1 Coríntios 15:55-57",
             "quiz": {
               "question": "Segundo 1 Coríntios 15:56-57, o que dá força ao pecado, e quem dá a vitória?",
               "options": [
@@ -1134,14 +1198,14 @@
           {
             "heading": "O veredicto tem de ser resolvido primeiro",
             "body": "Antes de haver qualquer alívio real do medo da morte, tem de haver um olhar honesto sobre o que realmente se deve. A lei de Deus não avalia por curva nem faz a média entre os teus bons e maus dias — declara simplesmente o salário que o pecado ganha, e o salário é a morte. Não um declínio, não uma desilusão — morte, primeiro física, depois o juízo que se segue.\n\nIsto seria o fim da frase, se a Escritura não acrescentasse mais uma oração: o dom gratuito de Deus é a vida eterna em Cristo Jesus. Um salário ganha-se; um dom recebe-se. Cristo pagou, na íntegra, o que a lei exigia dos culpados — não para o medo ser dissipado com argumentos, mas para a dívida por trás dele ser realmente resolvida.",
-            "scripture": "Porque o salário do pecado é a morte, mas o dom gratuito de Deus é a vida eterna, por Cristo Jesus, nosso Senhor.",
-            "scriptureRef": "Romanos 6:23 (ARC)"
+            "scripture": "Porque o salário do pecado é a morte, mas o dom gratuito de Deus é a vida eterna, por Cristo Jesus nosso Senhor.",
+            "scriptureRef": "Romanos 6:23"
           },
           {
             "heading": "Medo substituído, não suprimido",
             "body": "Repara no que isto oferece, e no que não oferece. Não é uma técnica para te sentires mais calmo sobre a morte, nem uma licença para deixares de pensar nela. Jesus fez a uma mulher enlutada uma pergunta que ainda exige resposta, pelo nome: 'Eu sou a ressurreição e a vida; quem crê em mim, ainda que esteja morto, viverá... Crês tu isso?'\n\nPara quem se arrepende e confia n'Ele — não apenas O admira à distância — o medo que outrora te mantinha refém é quebrado pela raiz, a mesma servidão desmantelada pela própria morte de Cristo. Não suprimido. Substituído por um veredicto resolvido que não depende do teu estado de espírito da próxima vez que a morte te vier à mente.\n\nNinguém que lê isto tem a garantia do amanhã para decidir. Essa mesma pergunta, Jesus coloca-a agora a ti: crês tu isso?",
-            "scripture": "Disse-lhe Jesus: Eu sou a ressurreição e a vida; quem crê em mim, ainda que esteja morto, viverá; e todo aquele que vive e crê em mim nunca morrerá. Crês tu isso?",
-            "scriptureRef": "João 11:25-26 (ARC)"
+            "scripture": "Disse-lhe Jesus: Eu sou a ressurreição e a vida; quem crê em mim, ainda que esteja morto, viverá; E todo aquele que vive, e crê em mim, nunca irá morrer. Crês tu isto?",
+            "scriptureRef": "João 11:25-26"
           }
         ],
         "faq": [
@@ -1168,20 +1232,20 @@
           {
             "heading": "A pergunta que não podia esperar",
             "body": "Um carcereiro romano em Filipos acabara de ver um terramoto arrancar as portas da prisão dos gonzos. Convencido de que os presos tinham fugido e de que seria executado por isso, desembainhou a espada para se matar antes que alguém o fizesse por ele. Paulo deteve-o — ninguém tinha fugido. Então, a tremer, o carcereiro fez a única pergunta que realmente importava: que devia ele fazer para se salvar?\n\nNão perguntou como sentir-se mais calmo, nem como encontrar um propósito, nem como gerir o medo. Perguntou como salvar-se — como pergunta quem sabe exactamente do que está em perigo. Esse instinto estava certo, e continua certo. Esta página responde à sua pergunta da mesma forma que a Escritura respondeu: directamente, sem terapia.",
-            "scripture": "E, tirando-os para fora, disse: 'Senhores, que é necessário que eu faça para me salvar?' E eles disseram: 'Crê no Senhor Jesus Cristo e serás salvo, tu e a tua casa.'",
-            "scriptureRef": "Atos 16:30-31 (ARC)"
+            "scripture": "E, tirando-os para fora, disse: Senhores, que é necessário que eu faça para ser salvo? E eles disseram: Crê no Senhor Jesus Cristo e serás salvo, tu e a tua casa.",
+            "scriptureRef": "Atos 16:30-31"
           },
           {
             "heading": "Salvo de quê, exactamente?",
             "body": "'Salvo' só faz sentido se houver um perigo real. A Bíblia dá-lhe um nome claro: não um mal-estar vago, mas um veredicto legal. A Lei de Deus não diagnostica um estado de espírito — instrui um processo, e a prova é a tua própria vida. Cada mentira, cada olhar de cobiça, cada rasgo de ódio é um facto apresentado contra ti, não um sentimento para gerir.\n\nPaulo escreve que a Lei existe para fechar toda a boca e tornar todo o mundo condenável diante de Deus. Não algumas pessoas — todo o mundo, o que te inclui. Ninguém é declarado justo por se esforçar mais em cumpri-la; a função da Lei nunca foi salvar-te. Era mostrar-te que precisas de ser salvo, e acabar com toda a desculpa antes de começar.",
-            "scripture": "Ora, nós sabemos que tudo o que a lei diz aos que estão debaixo da lei o diz, para que toda boca esteja fechada e todo o mundo seja condenável diante de Deus. Por isso, nenhuma carne será justificada diante dele pelas obras da lei, porque pela lei vem o conhecimento do pecado.",
-            "scriptureRef": "Romanos 3:19-20 (ARC)"
+            "scripture": "Ora, nós sabemos que tudo o que a lei diz, aos que estão debaixo da lei o diz, para que toda a boca esteja fechada e todo o mundo seja condenável diante de Deus. Por isso nenhuma carne será justificada diante dele pelas obras da lei, porque pela lei vem o conhecimento do pecado.",
+            "scriptureRef": "Romanos 3:19-20"
           },
           {
             "heading": "O que não te pode salvar",
             "body": "Se a acusação é real, a pergunta seguinte é óbvia: o que a paga? Ser membro de uma igreja não paga. Nem ser sincero, nem esforçar-te mais, nem ser simplesmente uma pessoa decente em comparação com quem consideras pior. Nada disso toca num veredicto legal, tal como boas intenções não apagam uma dívida num tribunal a sério.\n\nPaulo é directo: foste salvo pela graça, por meio da fé — e isso não vem de ti, não vem das obras, para que ninguém se glorie por o ter merecido. Se o esforço te pudesse salvar, já o teria feito. Não fez, porque não pode. O que resolve o teu processo tem de vir totalmente de fora do teu próprio desempenho.",
-            "scripture": "Porque pela graça sois salvos, por meio da fé; e isso não vem de vós; é dom de Deus. Não vem das obras, para que ninguém se glorie.",
-            "scriptureRef": "Efésios 2:8-9 (ARC)",
+            "scripture": "Porque pela graça sois salvos, por meio da fé; e isto não vem de vós, é dom de Deus. Não vem das obras, para que ninguém se glorie;",
+            "scriptureRef": "Efésios 2:8-9",
             "quiz": {
               "question": "Segundo Efésios 2:8-9, em que NÃO se baseia a salvação?",
               "options": [
@@ -1196,20 +1260,20 @@
           {
             "heading": "Ele pagou a multa",
             "body": "Aqui a resposta deixa de ser sobre ti. Paulo não diz que Cristo morreu por pessoas que já se tinham corrigido. Diz que Deus prova o Seu amor para connosco em que Cristo morreu por nós, sendo nós ainda pecadores. Ainda culpados. Ainda sob a acusação. Foi nesse momento que Ele pagou.\n\nPensa nisto como um tribunal, não como um sentimento: a multa que a Lei exigia era real, e alguém tinha de a pagar antes de os culpados poderem sair livres, legalmente. Cristo pagou-a — não foi uma brecha na lei, nem um tecnicismo, mas uma substituição. A dívida não desapareceu. Foi paga na íntegra, por Ele, no teu lugar, antes de teres feito o que quer que fosse para a merecer.",
-            "scripture": "Mas Deus prova o seu amor para connosco em que Cristo morreu por nós, sendo nós ainda pecadores.",
-            "scriptureRef": "Romanos 5:8 (ARC)"
+            "scripture": "Mas Deus prova o seu amor para conosco, em que Cristo morreu por nós, sendo nós ainda pecadores.",
+            "scriptureRef": "Romanos 5:8"
           },
           {
             "heading": "Voltar-se, não só lamentar",
             "body": "Contaram a Jesus sobre pessoas que morreram de forma violenta, como se a tragédia provasse que eram piores pecadores do que todos os outros. Ele corrigiu isso de imediato, e depois disse algo que se aplica a todos os que lêem isto: se não te arrependeres, também tu perecerás.\n\nArrependimento não é o mesmo que sentir-se mal. Judas sentiu um remorso terrível por trair Jesus e isso não o salvou — nunca se voltou de facto. Também não é o mesmo que prometer esforçar-te mais; as resoluções quebram-se até sexta-feira. O arrependimento bíblico é uma mudança de direcção real: deixar de confiar no teu próprio historial, deixar aquilo que sabes ser errado, e voltar-te para Deus — admitindo que o veredicto é justo e deixando de defender a tua própria causa. Sem essa mudança, nada do resto aqui se aplica ainda a ti.",
-            "scripture": "Não, vos digo; antes, se vos não arrependerdes, todos de igual modo perecereis.",
-            "scriptureRef": "Lucas 13:3 (ARC)"
+            "scripture": "Não, vos digo; antes, se não vos arrependerdes, todos de igual modo perecereis.",
+            "scriptureRef": "Lucas 13:3"
           },
           {
             "heading": "Confia na Pessoa, não numa oração",
             "body": "Então como é que isto se recebe, na prática? Não é recitando as palavras certas. Nenhuma fórmula salva — o ladrão que morria ao lado de Jesus não tinha fórmula nenhuma disponível, nenhuma oração para repetir; tinha apenas arrependimento e confiança, e Jesus disse-lhe claramente: 'hoje estarás comigo no Paraíso.' A fé que salva não é um guião. É confiar numa Pessoa o suficiente para deixares de confiar em ti mesmo.\n\nIsso significa que a segurança que isto oferece não é 'disse uma oração uma vez.' Pertence a quem se arrepende e continua a confiar nEle — uma relação resolvida, não uma transacção decorada. E tem de ser agora: 'eis aqui, agora, o tempo aceitável, eis aqui, agora, o dia da salvação.' Não depois de pensares mais um pouco. Ninguém tem a garantia do amanhã para decidir.",
-            "scripture": "Porque diz: Ouvi-te em tempo aceitável e socorri-te no dia da salvação; eis aqui, agora, o tempo aceitável, eis aqui, agora, o dia da salvação.",
-            "scriptureRef": "2 Coríntios 6:2 (ARC)",
+            "scripture": "(Porque diz: Ouvi-te em tempo aceitável e socorri-te no dia da salvação; eis aqui agora o tempo aceitável, eis aqui agora o dia da salvação).",
+            "scriptureRef": "2 Coríntios 6:2",
             "quiz": {
               "question": "O que realmente salva uma pessoa, segundo esta página?",
               "options": [
@@ -1246,20 +1310,20 @@
           {
             "heading": "A pergunta que não devias ter de engolir",
             "body": "Algo em ti já o disse, talvez em voz alta, talvez só no silêncio depois do telefonema: porque é que Deus permitiria isto? Não a versão arrumada da pergunta — a versão crua, a que vem com o luto ainda fresco no rosto. Um diagnóstico que ninguém via chegar. Um filho enterrado antes de um pai. Uma traição de alguém que devia proteger-te. Quem te disser para não fazeres essa pergunta está a pedir-te que mintas.\n\nA Bíblia não pede isso. Habacuque perguntou a Deus, cara a cara, porque é que a violência ficava sem resposta, porque é que os seus gritos pareciam desaparecer no silêncio. Nunca Deus lhe disse que a pergunta estava errada. Um luto que se recusa a fingir não é falta de fé — pode ser a oração mais honesta que alguma vez fizeres.",
-            "scripture": "Até quando, Senhor, clamarei eu, e tu não me escutarás? Gritarei: Violência! E não salvarás?",
-            "scriptureRef": "Habacuque 1:2 (ARC)"
+            "scripture": "Até quando, Senhor, clamarei eu, e tu não me escutarás? Gritar-te-ei: Violência! E não salvarás?",
+            "scriptureRef": "Habacuque 1:2"
           },
           {
             "heading": "Um mundo que geme",
             "body": "O sofrimento não fazia parte do plano original. Génesis descreve um mundo chamado 'muito bom' — sem morte, sem decadência, sem doença. Depois a humanidade escolheu desconfiar de Deus e agarrar a autonomia, e a fractura não ficou contida numa só escolha. Espalhou-se pela terra, pelos corpos, por cada relação desde então. Espinhos. Suor. Dor no parto. A própria morte, a entrar num mundo que nunca foi feito para a suportar.\n\nEste é o ponto de partida honesto: o sofrimento não é ruído aleatório num universo por outro lado perfeito. É a ferida visível de um mundo sob uma maldição real, a gemer sob um peso que não foi feito para carregar. Paulo não foge da imagem — diz que toda a criação geme junta, como dores de parto que ainda não pararam. A tua dor não é uma anomalia. É prova de que o mundo está partido exactamente como a Escritura disse que estaria.",
             "scripture": "Porque sabemos que toda a criação geme e está juntamente com dores de parto até agora.",
-            "scriptureRef": "Romanos 8:22 (ARC)"
+            "scriptureRef": "Romanos 8:22"
           },
           {
             "heading": "A pergunta que Jesus realmente ouviu",
             "body": "Quando a tragédia aconteceu no tempo de Jesus, trouxeram-lhe a notícia: uma torre em Siloé tinha caído e matado dezoito pessoas. Era juízo? Eram piores pecadores do que todos os outros? É a mesma pergunta vestida de outra maneira — se o sofrimento tem uma razão, com certeza a razão é a culpa de outra pessoa, alguém pior do que nós.\n\nJesus não respondeu com uma explicação. Respondeu com uma mudança de direcção: 'Não, vos digo; antes, se vos não arrependerdes, todos de igual modo perecereis.' Não foi crueldade — foi precisão. Usou a pergunta deles sobre o sofrimento alheio para perguntar pelo estado deles próprios diante de Deus. A torre caiu sobre eles, não sobre ti — mas a morte continua a chegar para todos, e os dezoito também não receberam aviso prévio. A pergunta deles sobre os outros tornou-se a pergunta d'Ele para ti: estás pronto?",
-            "scripture": "E aqueles dezoito sobre os quais caiu a torre de Siloé e os matou, cuidais que foram mais culpados do que todos quantos homens habitam em Jerusalém? Não, vos digo; antes, se vos não arrependerdes, todos de igual modo perecereis.",
-            "scriptureRef": "Lucas 13:4-5 (ARC)",
+            "scripture": "Ou aqueles dezoito, sobre os quais caiu a torre de Siloé e os matou, cuidais que foram mais culpados do que todos quantos homens habitam em Jerusalém? Não, vos digo; antes, se não vos arrependerdes, todos de igual modo perecereis.",
+            "scriptureRef": "Lucas 13:4-5",
             "quiz": {
               "question": "Segundo Lucas 13:4-5, porque é que os dezoito morreram quando a torre de Siloé caiu?",
               "options": [
@@ -1274,20 +1338,20 @@
           {
             "heading": "A resposta de Deus não é um argumento — é uma cruz",
             "body": "A dado momento, toda a explicação se esgota. Não queres realmente uma lição de filosofia quando estás junto de uma campa — queres saber se Deus está algures perto dela. É aqui que o cristianismo deixa de soar como a resposta de qualquer outra religião ao sofrimento.\n\nDeus não ficou de fora. Isaías descreveu-O séculos antes de acontecer: 'desprezado e o mais indigno entre os homens, homem de dores, experimentado nos trabalhos.' Jesus não foi poupado à dor, ao luto, à traição ou à morte — entrou directamente em tudo isso, de propósito, por ti. Chorou junto do túmulo de um amigo antes de o ressuscitar. Foi espancado, escarnecido e executado. Seja qual for o sofrimento que carregas, não é algo que Deus apenas permita à distância. Ele já esteve lá dentro, em pessoa.",
-            "scripture": "Era desprezado e o mais indigno entre os homens, homem de dores, experimentado nos trabalhos e, como um de quem os homens escondiam o rosto, era desprezado, e não fizemos dele caso algum.",
-            "scriptureRef": "Isaías 53:3 (ARC)"
+            "scripture": "Era desprezado, e o mais rejeitado entre os homens, homem de dores, e experimentado nos sofrimentos; e, como um de quem os homens escondiam o rosto, era desprezado, e não fizemos dele caso algum.",
+            "scriptureRef": "Isaías 53:3"
           },
           {
             "heading": "O sofrimento tem prazo de validade",
             "body": "O sofrimento é real, e o sofrimento não é permanente — mas essa promessa não pertence a todos por defeito, e seria desonesto dizer o contrário. A Escritura descreve um fim real, não uma metáfora: 'Deus limpará de seus olhos toda lágrima, e não haverá mais morte, nem pranto, nem clamor, nem dor, porque já as primeiras coisas são passadas.' Sem ressalva sobre como te vais sentir lá — a própria dor vai acabar.\n\nMas esse versículo descreve um lado da eternidade, não os dois. Pertence a quem está do lado certo do veredicto quando isso contar — a quem se voltou para Cristo, não a toda a gente por inércia. A esperança do fim do sofrimento é real. Não é automática, e ainda não é a história toda.",
-            "scripture": "E Deus limpará de seus olhos toda lágrima, e não haverá mais morte, nem pranto, nem clamor, nem dor, porque já as primeiras coisas são passadas.",
-            "scriptureRef": "Apocalipse 21:4 (ARC)"
+            "scripture": "E Deus limpará de seus olhos toda a lágrima; e não haverá mais morte, nem pranto, nem clamor, nem dor; porque já as primeiras coisas são passadas.",
+            "scriptureRef": "Apocalipse 21:4"
           },
           {
             "heading": "O que o sofrimento está a fazer agora mesmo",
             "body": "Então porque é que Deus ainda não acabou com isto, se o fim é certo? Não porque Lhe seja indiferente, nem porque seja lento como tu ou eu somos lentos. Pedro dá o verdadeiro motivo: 'O Senhor não retarda a sua promessa, ainda que alguns a têm por tardia; mas é longânimo para convosco, não querendo que alguns se percam, senão que todos venham a arrepender-se.'\n\nCada dia em que o sofrimento continua é um dia em que Deus ainda não fechou as contas — misericórdia, não negligência. Isso não torna a dor mais pequena. É uma janela ainda aberta: a mesma paciência que deixa o sofrimento continuar é a paciência que te dá tempo para te voltares para Ele antes de as contas fecharem de vez. Urgência, não porque Ele seja cruel, mas porque a porta não vai ficar aberta para sempre.",
-            "scripture": "O Senhor não retarda a sua promessa, ainda que alguns a têm por tardia; mas é longânimo para convosco, não querendo que alguns se percam, senão que todos venham a arrepender-se.",
-            "scriptureRef": "2 Pedro 3:9 (ARC)",
+            "scripture": "O Senhor não retarda a sua promessa, ainda que alguns a têm por tardia; mas é longânimo para conosco, não querendo que alguns se percam, senão que todos venham a arrepender-se.",
+            "scriptureRef": "2 Pedro 3:9",
             "quiz": {
               "question": "Segundo 2 Pedro 3:9, porque é que Deus adia o fim do sofrimento e do juízo?",
               "options": [
@@ -1324,8 +1388,8 @@
           {
             "heading": "Notícia, não conselho",
             "body": "A palavra evangelho significa boa nova — não bom conselho. Uma notícia relata algo que já aconteceu; um conselho diz-te o que fazer a seguir. Confunde os dois e toda a mensagem desaba para mais um programa de autoajuda entre milhares.\n\nPaulo é preciso quanto a isto. Não inventou esta mensagem nem a elaborou por si mesmo — recebeu-a e transmitiu-a intacta, como um relato de primeira importância: que Cristo morreu por nossos pecados, foi sepultado, e ressuscitou ao terceiro dia, cada facto 'segundo as Escrituras.' Três verbos, três factos, nenhuma instrução anexada.\n\nÉ esta a definição que a própria Bíblia dá à palavra. Antes de esta página dizer mais alguma coisa sobre isso, era já isto que 'evangelho' significava.",
-            "scripture": "Também vos notifico, irmãos, o evangelho que já vos tenho anunciado, o qual também recebestes e no qual também permaneceis; pelo qual também sois salvos, se o retiverdes tal como vo-lo tenho anunciado, se não é que crestes em vão. Porque primeiramente vos entreguei o que também recebi: que Cristo morreu por nossos pecados, segundo as Escrituras, e que foi sepultado, e que ressuscitou ao terceiro dia, segundo as Escrituras,",
-            "scriptureRef": "1 Coríntios 15:1-4 (ARC)",
+            "scripture": "Também vos notifico, irmãos, o evangelho que já vos tenho anunciado; o qual também recebestes, e no qual também permaneceis. Pelo qual também sois salvos se o retiverdes tal como vo-lo tenho anunciado; se não é que crestes em vão. Porque primeiramente vos entreguei o que também recebi: que Cristo morreu por nossos pecados, segundo as Escrituras, E que foi sepultado, e que ressuscitou ao terceiro dia, segundo as Escrituras.",
+            "scriptureRef": "1 Coríntios 15:1-4",
             "quiz": {
               "question": "Segundo 1 Coríntios 15:1-4, o que Paulo diz que 'entregou... primeiramente'?",
               "options": [
@@ -1340,32 +1404,32 @@
           {
             "heading": "Sem a má notícia primeiro, não há boa notícia",
             "body": "Uma boa notícia só significa alguma coisa em confronto com um problema real. Diz a um homem saudável que foi curado e ele encolhe os ombros; diz o mesmo a um moribundo e é a única frase que importa. O evangelho é do segundo tipo, o que significa que não pode saltar o diagnóstico para chegar ao alívio.\n\nO diagnóstico da Escritura não é suave: 'Porque todos pecaram e destituídos estão da glória de Deus.' Não a maioria das pessoas — todos, um veredicto e não uma generalização, e isso inclui quem quer que esteja a ler esta frase agora mesmo.\n\nSalta esse veredicto e a 'boa notícia' fica reduzida a um elogio sem nada por trás. Enfrenta-o com honestidade, e a notícia que se segue passa a significar de facto o que afirma significar.",
-            "scripture": "Porque todos pecaram e destituídos estão da glória de Deus.",
-            "scriptureRef": "Romanos 3:23 (ARC)"
+            "scripture": "Porque todos pecaram e destituídos estão da glória de Deus;",
+            "scriptureRef": "Romanos 3:23"
           },
           {
             "heading": "A troca no centro",
             "body": "Eis a notícia em si, apresentada como uma troca e não como uma lição moral. Cristo, que não tinha quebrado lei nenhuma, foi legalmente amaldiçoado no lugar de quem tinha quebrado cada parte dela — não foi simpatia oferecida à distância, foi uma troca, executada numa cruz romana.\n\nPaulo afirma-o quase com violência: Cristo 'nos resgatou da maldição da lei, fazendo-se maldição por nós.' A maldição da lei era real, e tinha de recair sobre alguém. Recaiu sobre Ele, de propósito, para não ter de recair sobre ti.\n\nÉ este o centro à volta do qual gira todo o evangelho — não uma técnica de autoaperfeiçoamento, mas uma transacção já realizada no teu lugar.",
-            "scripture": "Cristo nos resgatou da maldição da lei, fazendo-se maldição por nós, porque está escrito: Maldito todo aquele que for pendurado no madeiro;",
-            "scriptureRef": "Gálatas 3:13 (ARC)"
+            "scripture": "Cristo nos resgatou da maldição da lei, fazendo-se maldição por nós; porque está escrito: Maldito todo aquele que for pendurado no madeiro;",
+            "scriptureRef": "Gálatas 3:13"
           },
           {
             "heading": "Não é merecido — para que ninguém se glorie",
             "body": "Se a troca em Gálatas já aconteceu, o que resta para tu contribuíres? Menos do que pensas. Tito é directo quanto a isto: Deus salvou-nos 'não pelas obras de justiça que houvéssemos feito, mas, segundo a sua misericórdia.'\n\nNão sobretudo pelas obras, com um pouco de misericórdia adicionada no fim. Nada pelas obras. Ir à igreja, o autoaperfeiçoamento, esforçar-te mais, seres decente em comparação com alguém pior — nada disso é o mecanismo, porque o mecanismo nunca foste tu.\n\nIsto devia ofender a parte de ti que quer o crédito, e aliviar a parte de ti que sabe que não o mereces. A graça, por definição, exclui a jactância — não resta nada para reclamares.",
-            "scripture": "não pelas obras de justiça que houvéssemos feito, mas, segundo a sua misericórdia, nos salvou pela lavagem da regeneração e da renovação do Espírito Santo,",
-            "scriptureRef": "Tito 3:5 (ARC)"
+            "scripture": "Não pelas obras de justiça que houvéssemos feito, mas segundo a sua misericórdia, nos salvou pela lavagem da regeneração e da renovação do Espírito Santo,",
+            "scriptureRef": "Tito 3:5"
           },
           {
             "heading": "Ressuscitado — o recibo de que o pagamento foi aceite",
             "body": "Um pagamento que ninguém pode confirmar não é grande consolo. É por isso que a ressurreição não é um epílogo simpático colado ao evangelho — é a prova de que a transacção foi mesmo concluída.\n\nPaulo apresenta as duas metades como uma só frase: Cristo 'foi entregue por nossos pecados e ressuscitou para nossa justificação.' Morreu por causa de uma dívida real. Ressuscitou porque essa dívida foi de facto paga — uma ressurreição é o aspecto que tem um recibo quando a moeda é uma vida.\n\nSe Ele ainda estivesse no túmulo, não haveria forma de saber se o pagamento tinha sido aceite. Não está. Foi aceite.",
-            "scripture": "o qual por nossos pecados foi entregue e ressuscitou para nossa justificação.",
-            "scriptureRef": "Romanos 4:25 (ARC)"
+            "scripture": "O qual por nossos pecados foi entregue, e ressuscitou para nossa justificação.",
+            "scriptureRef": "Romanos 4:25"
           },
           {
             "heading": "A resposta que a própria notícia exige",
             "body": "Uma notícia não pede para ser melhorada — pede para ser crida e para se agir com base nela. Jesus resumiu a Sua própria mensagem numa única frase: 'O tempo está cumprido, e o Reino de Deus está próximo. Arrependei-vos e crede no evangelho.'\n\nNão é uma fórmula para recitar, nem um sentimento para fabricar — é uma mudança real, que deixa de confiar em ti mesmo e passa a confiar no que Cristo já fez. Essa mudança acontece ou não acontece; não existe uma terceira categoria de admirar a notícia à distância segura.\n\nNinguém que está a ler isto tem a garantia do amanhã para decidir. O Reino está próximo agora, a notícia é verdadeira agora, e a única resposta que o próprio evangelho exige — arrepender-te e crer — está disponível para ti agora mesmo.",
-            "scripture": "O tempo está cumprido, e o Reino de Deus está próximo. Arrependei-vos e crede no evangelho.",
-            "scriptureRef": "Marcos 1:15 (ARC)",
+            "scripture": "E dizendo: O tempo está cumprido, e o reino de Deus está próximo. Arrependei-vos, e crede no evangelho.",
+            "scriptureRef": "Marcos 1:15",
             "quiz": {
               "question": "Em Marcos 1:15, quais são as duas coisas que Jesus diz para fazer em resposta à boa nova?",
               "options": [
@@ -1404,7 +1468,9 @@
     "mortalityStat": "10 / 10 pessoas vão morrer",
     "ctaButton": "Faz o teste",
     "secondaryLink": "Tens perguntas primeiro? Sabe mais",
-    "blogCard": { "eyebrow": "Do blog" },
+    "blogCard": {
+      "eyebrow": "Do blog"
+    },
     "facts": [
       "No ano passado, 56 milhões de pessoas morreram em todo o mundo.",
       "As doenças cardíacas matam 17,9 milhões de pessoas por ano.",
@@ -1627,7 +1693,8 @@
     "cta": {
       "heading": "Agora sabes onde estamos. A pergunta mais importante é onde estás tu.",
       "button": "Faz o teste"
-    }
+    },
+    "scriptureNote": "As citações bíblicas são da versão Almeida Corrigida Fiel (ACF), © Sociedade Bíblica Trinitariana do Brasil."
   },
   "blog": {
     "label": "Blog",
@@ -1680,7 +1747,7 @@
     "termsLink": "Termos",
     "needHelpLink": "Precisas de ajuda?",
     "needHelpUrl": "https://findahelpline.com/",
-    "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigénito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.",
-    "scriptureRef": "João 3:16 (ARC)"
+    "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.",
+    "scriptureRef": "João 3:16"
   }
 }

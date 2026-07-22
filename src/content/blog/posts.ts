@@ -26,20 +26,20 @@ const POSTS: BlogPost[] = [
             body: "Most of us live as if death were someone else’s appointment. We keep it off our calendars and out of our conversations, and we call that being well-adjusted.\n\nThe “Don’t Die” movement refuses to do that. It says out loud what everyone quietly knows: death is not natural background noise. It is an enemy. Something in us protests against it — and that protest is data. The Scriptures say God has “put eternity in their hearts.” We were not made to be at peace with dying, and no amount of adjustment ever quite makes us so.",
             scripture:
               "He has made everything beautiful in its time. Also He has put eternity in their hearts, except that no one can find out the work that God does from beginning to end.",
-            scriptureRef: "Ecclesiastes 3:11 (NKJV)",
+            scriptureRef: "Ecclesiastes 3:11",
           },
           {
             heading: "The question the protocol can’t answer",
             body: "Suppose the project recovers from this and succeeds beyond every expectation. Suppose the measurements, the discipline, and the science buy decades — even a century. Every one of those years arrives at the same door.\n\nThis is what the diagnosis makes plain. A body can be measured every morning and still make a decision without asking. Longevity can change when you die. It cannot change that you die, and it has nothing at all to say about what comes after. That is the question hiding underneath the movement, the one no protocol can touch: not “how long?” but “then what?”",
             scripture: "And as it is appointed for men to die once, but after this the judgment.",
-            scriptureRef: "Hebrews 9:27 (NKJV)",
+            scriptureRef: "Hebrews 9:27",
           },
           {
             heading: "A better hope than not dying",
             body: "Christianity has never asked anyone to make peace with death. It calls death an enemy too — “the last enemy to be destroyed.” The difference is the strategy. The gospel does not promise an escape from dying; it announces that someone has gone through death and come out the other side, and that he offers to bring us with him.\n\nJesus did not say “you will not die.” He said something far stranger and far stronger: “whoever lives and believes in Me shall never die.” Not death postponed — death defeated.\n\nSo the “Don’t Die” movement is half right. Death is worth fighting. The question is whether you fight it with a protocol that can only delay it, or trust the one who has already beaten it.",
             scripture:
               "I am the resurrection and the life. He who believes in Me, though he may die, he shall live. And whoever lives and believes in Me shall never die.",
-            scriptureRef: "John 11:25–26 (NKJV)",
+            scriptureRef: "John 11:25–26",
           },
         ],
         personalTurn: {
@@ -85,20 +85,20 @@ const POSTS: BlogPost[] = [
             body: "A maioria de nós vive como se a morte fosse um compromisso de outra pessoa. Mantemo-la fora da agenda e fora das conversas, e chamamos a isso estar bem connosco.\n\nO movimento “Don’t Die” recusa-se a fazer isso. Diz em voz alta o que toda a gente sabe em silêncio: a morte não é ruído de fundo natural. É um inimigo. Há algo em nós que protesta contra ela — e esse protesto diz-nos alguma coisa. A Escritura diz que Deus pôs “o mundo no coração do homem” — um anseio maior do que o tempo que temos. Não fomos feitos para estar em paz com o morrer, e nenhum esforço de adaptação nos deixa verdadeiramente em paz.",
             scripture:
               "Tudo fez formoso em seu tempo; também pôs o mundo no coração do homem, sem que este possa descobrir a obra que Deus fez desde o princípio até ao fim.",
-            scriptureRef: "Eclesiastes 3:11 (ARC)",
+            scriptureRef: "Eclesiastes 3:11",
           },
           {
             heading: "A pergunta a que o protocolo não sabe responder",
             body: "Suponhamos que o projecto recupera disto e tem um sucesso além de todas as expectativas. Suponhamos que as medições, a disciplina e a ciência compram décadas — até um século. Cada um desses anos chega à mesma porta.\n\nÉ isto que o diagnóstico torna evidente. Um corpo pode ser medido todas as manhãs e, ainda assim, tomar uma decisão sem pedir licença. A longevidade pode mudar quando morres. Não pode mudar que morres — e não tem absolutamente nada a dizer sobre o que vem depois. Essa é a pergunta escondida debaixo do movimento, aquela em que nenhum protocolo toca: não é “quanto tempo?”, é “e depois?”",
             scripture: "E, como aos homens está ordenado morrerem uma vez, vindo depois disso o juízo.",
-            scriptureRef: "Hebreus 9:27 (ARC)",
+            scriptureRef: "Hebreus 9:27",
           },
           {
             heading: "Uma esperança melhor do que não morrer",
-            body: "O cristianismo nunca pediu a ninguém que fizesse as pazes com a morte. Também lhe chama inimiga — “o último inimigo a ser destruído”. A diferença está na estratégia. O evangelho não promete uma fuga ao morrer; anuncia que alguém atravessou a morte e saiu do outro lado, e que se oferece para nos levar com Ele.\n\nJesus não disse “não vais morrer”. Disse algo muito mais estranho e muito mais forte: “todo aquele que vive e crê em mim nunca morrerá”. Não é a morte adiada — é a morte vencida.\n\nPortanto, o movimento “Don’t Die” está meio certo. Vale a pena lutar contra a morte. A questão é se lutas contra ela com um protocolo que só a pode adiar, ou se confias naquele que já a venceu.",
+            body: "O cristianismo nunca pediu a ninguém que fizesse as pazes com a morte. Também lhe chama inimiga — “o último inimigo a ser destruído”. A diferença está na estratégia. O evangelho não promete uma fuga ao morrer; anuncia que alguém atravessou a morte e saiu do outro lado, e que se oferece para nos levar com Ele.\n\nJesus não disse “não vais morrer”. Disse algo muito mais estranho e muito mais forte: “todo aquele que vive, e crê em mim, nunca irá morrer”. Não é a morte adiada — é a morte vencida.\n\nPortanto, o movimento “Don’t Die” está meio certo. Vale a pena lutar contra a morte. A questão é se lutas contra ela com um protocolo que só a pode adiar, ou se confias naquele que já a venceu.",
             scripture:
-              "Eu sou a ressurreição e a vida; quem crê em mim, ainda que esteja morto, viverá; e todo aquele que vive e crê em mim nunca morrerá.",
-            scriptureRef: "João 11:25–26 (ARC)",
+              "Eu sou a ressurreição e a vida; quem crê em mim, ainda que esteja morto, viverá; e todo aquele que vive, e crê em mim, nunca irá morrer.",
+            scriptureRef: "João 11:25–26",
           },
         ],
         personalTurn: {

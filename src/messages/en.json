@@ -69,7 +69,7 @@
       "commandment": "You shall not commit adultery",
       "honestLabel": "Yes, I have",
       "justifyLabel": "I don't think so",
-      "followUp": "Jesus said, 'Whoever looks at a woman to lust for her has already committed adultery with her in his heart.' — Matthew 5:28 (NKJV)",
+      "followUp": "Jesus said, 'Whoever looks at a woman to lust for her has already committed adultery with her in his heart.' — Matthew 5:28",
       "honestFollowUp": "Jesus said that looking with lust is adultery of the heart. Not by culture's standard — by God's."
     },
     {
@@ -78,7 +78,7 @@
       "commandment": "You shall not murder",
       "honestLabel": "Yes, I have",
       "justifyLabel": "Never that far",
-      "followUp": "Even a flash of hatred — Jesus said, 'Whoever is angry with his brother without a cause shall be in danger of the judgment.' — Matthew 5:22 (NKJV)",
+      "followUp": "Even a flash of hatred — Jesus said, 'Whoever is angry with his brother without a cause shall be in danger of the judgment.' — Matthew 5:22",
       "honestFollowUp": "Jesus equated unjust anger with murder. The hatred in your heart is enough."
     },
     {
@@ -106,15 +106,15 @@
   },
   "grace": {
     "scripture": "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.",
-    "scriptureRef": "John 3:16 (NKJV)",
+    "scriptureRef": "John 3:16",
     "rereadVerdict": "Re-read the verdict",
     "continueLabel": "Continue",
     "label": "Grace",
-    "beatsHeading": "But God\u2026",
+    "beatsHeading": "But God…",
     "beats": [
       {
         "headline": "You're guilty. The fine is eternal.",
-        "subtitle": "You've broken God's Law \u2014 not once, but repeatedly. And the penalty for sin is not a fine you can pay. It's death."
+        "subtitle": "You've broken God's Law — not once, but repeatedly. And the penalty for sin is not a fine you can pay. It's death."
       },
       {
         "headline": "Imagine standing before a just Judge. You can't pay. Justice demands death.",
@@ -122,14 +122,14 @@
       },
       {
         "headline": "But someone steps into the courtroom and pays your fine in full.",
-        "subtitle": "Every penny. The judge can now legally dismiss your case \u2014 not because he's overlooking justice, but because justice has been satisfied."
+        "subtitle": "Every penny. The judge can now legally dismiss your case — not because he's overlooking justice, but because justice has been satisfied."
       },
       {
-        "headline": "Jesus Christ \u2014 God in flesh \u2014 lived the life you couldn't, died the death you deserved, and rose.",
+        "headline": "Jesus Christ — God in flesh — lived the life you couldn't, died the death you deserved, and rose.",
         "subtitle": "Two thousand years ago, the Creator entered His creation. He lived perfectly, took your punishment on the cross, and three days later conquered death itself."
       },
       {
-        "headline": "Repent \u2014 turn from your sin. Trust in Christ alone. God will forgive you and grant you eternal life.",
+        "headline": "Repent — turn from your sin. Trust in Christ alone. God will forgive you and grant you eternal life.",
         "subtitle": "This isn't about a prayer or being religious. It's about turning from sin and placing your trust in the One who paid it all."
       }
     ],
@@ -162,7 +162,7 @@
     "trackA": {
       "welcome": "Something just changed.",
       "welcomeReturn": "The decision is made. This is how it takes root.",
-      "whatHappened": "You acknowledged that you've broken God's Law. And you've made the decision to repent — to turn from your sin — and to place your trust in Jesus Christ alone.\n\nIf you've genuinely repented and trusted in the Saviour, God has forgiven every sin you've ever committed and granted you eternal life. Not because you earned it — but because of what Christ did on the cross.\n\n\"Therefore, if anyone is in Christ, he is a new creation; old things have passed away; behold, all things have become new.\" — 2 Corinthians 5:17 (NKJV)",
+      "whatHappened": "You acknowledged that you've broken God's Law. And you've made the decision to repent — to turn from your sin — and to place your trust in Jesus Christ alone.\n\nIf you've genuinely repented and trusted in the Saviour, God has forgiven every sin you've ever committed and granted you eternal life. Not because you earned it — but because of what Christ did on the cross.\n\n\"Therefore, if anyone is in Christ, he is a new creation; old things have passed away; behold, all things have become new.\" — 2 Corinthians 5:17",
       "readHeading": "Read",
       "readBody": "Start with the Gospel of John — it's the best place to meet Jesus for the first time. Or follow our 7-day reading plan.",
       "readLink": "https://www.bible.com/bible/114/JHN.1.NKJV",
@@ -245,7 +245,7 @@
         "passage": "John 1:1-18",
         "passageUrl": "https://www.bible.com/bible/114/JHN.1.NKJV",
         "keyVerse": "And the Word became flesh and dwelt among us, and we beheld His glory, the glory as of the only begotten of the Father, full of grace and truth.",
-        "keyVerseRef": "John 1:14 (NKJV)",
+        "keyVerseRef": "John 1:14",
         "reflection": "Before Jesus was born in Bethlehem, He existed eternally as God. He wasn't created — He was the Creator who stepped into His creation. The same God whose Law convicted you is the God who became a man to save you.",
         "prayer": "God, help me to understand who Jesus really is — not just a good teacher, but the Word made flesh. Open my eyes as I read. Amen."
       },
@@ -254,7 +254,7 @@
         "passage": "John 3:1-21",
         "passageUrl": "https://www.bible.com/bible/114/JHN.3.NKJV",
         "keyVerse": "Jesus answered and said to him, 'Most assuredly, I say to you, unless one is born again, he cannot see the kingdom of God.'",
-        "keyVerseRef": "John 3:3 (NKJV)",
+        "keyVerseRef": "John 3:3",
         "reflection": "Nicodemus was a religious leader — a 'good person' by anyone's standard. But Jesus told him that being good wasn't enough. You need a completely new start. That's what happened when you trusted Christ — you were born again.",
         "prayer": "Lord, thank You for giving me a new beginning. Help me to live as someone who has been born again — not trying to earn Your love, but resting in it. Amen."
       },
@@ -263,7 +263,7 @@
         "passage": "John 4:1-26",
         "passageUrl": "https://www.bible.com/bible/114/JHN.4.NKJV",
         "keyVerse": "Jesus answered and said to her, 'Whoever drinks of this water will thirst again, but whoever drinks of the water that I shall give him will never thirst.'",
-        "keyVerseRef": "John 4:13-14 (NKJV)",
+        "keyVerseRef": "John 4:13-14",
         "reflection": "Jesus met this woman at her lowest — ashamed, alone, avoiding others. He didn't condemn her. He offered her something that would satisfy forever. He meets you the same way — wherever you are, however you feel.",
         "prayer": "Jesus, I've tried to fill my life with things that don't last. Be my living water. Satisfy the thirst that nothing else can. Amen."
       },
@@ -272,7 +272,7 @@
         "passage": "John 10:1-18",
         "passageUrl": "https://www.bible.com/bible/114/JHN.10.NKJV",
         "keyVerse": "I am the good shepherd. The good shepherd gives His life for the sheep.",
-        "keyVerseRef": "John 10:11 (NKJV)",
+        "keyVerseRef": "John 10:11",
         "reflection": "A hired hand runs when danger comes. But Jesus — the Good Shepherd — willingly laid down His life. Nobody took it from Him. He chose the cross because He chose you.",
         "prayer": "Good Shepherd, thank You for not running when it cost You everything. Help me to hear Your voice and follow where You lead. Amen."
       },
@@ -281,7 +281,7 @@
         "passage": "John 14:1-14",
         "passageUrl": "https://www.bible.com/bible/114/JHN.14.NKJV",
         "keyVerse": "Jesus said to him, 'I am the way, the truth, and the life. No one comes to the Father except through Me.'",
-        "keyVerseRef": "John 14:6 (NKJV)",
+        "keyVerseRef": "John 14:6",
         "reflection": "This is the most exclusive and the most inclusive claim ever made. Exclusive — there's only one way. Inclusive — anyone can take it. Jesus didn't say 'I'll show you the way.' He said 'I AM the way.'",
         "prayer": "Lord, in a world of many voices and many paths, give me confidence that You are the way. Help me to trust You even when I don't understand. Amen."
       },
@@ -290,7 +290,7 @@
         "passage": "John 15:1-17",
         "passageUrl": "https://www.bible.com/bible/114/JHN.15.NKJV",
         "keyVerse": "I am the vine, you are the branches. He who abides in Me, and I in him, bears much fruit; for without Me you can do nothing.",
-        "keyVerseRef": "John 15:5 (NKJV)",
+        "keyVerseRef": "John 15:5",
         "reflection": "The Christian life isn't about trying harder. It's about staying connected. A branch doesn't strain to produce fruit — it just stays attached to the vine. Your job is to abide. Stay close. Read. Pray. Trust.",
         "prayer": "Jesus, teach me what it means to abide in You — not to perform for You, but to remain in Your love and let You work through me. Amen."
       },
@@ -299,7 +299,7 @@
         "passage": "John 20:1-31",
         "passageUrl": "https://www.bible.com/bible/114/JHN.20.NKJV",
         "keyVerse": "Jesus said to him, 'Thomas, because you have seen Me, you have believed. Blessed are those who have not seen and yet have believed.'",
-        "keyVerseRef": "John 20:29 (NKJV)",
+        "keyVerseRef": "John 20:29",
         "reflection": "Thomas doubted. Jesus didn't reject him — He showed up. If you have doubts, bring them to God. He's not afraid of your questions. The resurrection is the foundation of everything — if Jesus rose, then everything He said is true.",
         "prayer": "Risen Lord, strengthen my faith. When doubts come, remind me that You are alive and that Your promises are sure. Help me to live boldly for You. Amen."
       }
@@ -355,10 +355,14 @@
             "heading": "Everyone thinks they're good",
             "body": "Ask almost anyone, 'Are you a good person?' and you'll hear the same answer: 'I think so. I mean, I'm not perfect, but...' And there it is — the comparison. Not perfect compared to what?\n\nMost of us measure ourselves against other people. We pick someone worse — a criminal on the news, a neighbour who cheats, a dictator from a history book — and next to them we look decent. It's grading on a curve, and on that curve nearly everyone passes.\n\nBut goodness isn't a curve. When a rich young ruler called Jesus 'Good Teacher,' Jesus stopped him cold: 'Why do you call Me good? No one is good but One, that is, God.' The standard isn't other people. It never was.",
             "scripture": "So Jesus said to him, 'Why do you call Me good? No one is good but One, that is, God.'",
-            "scriptureRef": "Luke 18:19 (NKJV)",
+            "scriptureRef": "Luke 18:19",
             "quiz": {
               "question": "What standard do most people measure their goodness by?",
-              "options": ["Other people", "God's Law", "Their conscience alone"],
+              "options": [
+                "Other people",
+                "God's Law",
+                "Their conscience alone"
+              ],
               "correct": 0,
               "reveal": "We instinctively compare ourselves with people worse than us — and pass. But God doesn't grade on a curve. His standard is His own perfect character."
             }
@@ -367,10 +371,14 @@
             "heading": "The mirror of God's Law",
             "body": "So how do you measure yourself against God's standard? He wrote it down. The Ten Commandments are not a ladder you climb to reach heaven — they're a mirror. You look into them and see yourself as you actually are.\n\nA mirror does one thing well: it shows you the dirt on your face. But you would never try to wash your face with the mirror. It can reveal the problem; it cannot fix it.\n\nThat is exactly what the Bible says the Law is for: 'by the law is the knowledge of sin.' Its job is diagnosis, not cure. And an honest diagnosis is the one thing most of us have never sat still for.",
             "scripture": "Therefore by the deeds of the law no flesh will be justified in His sight, for by the law is the knowledge of sin.",
-            "scriptureRef": "Romans 3:20 (NKJV)",
+            "scriptureRef": "Romans 3:20",
             "quiz": {
               "question": "According to Romans 3:20, what is the Law's purpose?",
-              "options": ["To make us good", "To show us our sin", "To earn our way to heaven"],
+              "options": [
+                "To make us good",
+                "To show us our sin",
+                "To earn our way to heaven"
+              ],
               "correct": 1,
               "reveal": "The Law is a mirror, not a ladder. 'By the law is the knowledge of sin.' It reveals the problem — it was never designed to fix it."
             }
@@ -379,10 +387,14 @@
             "heading": "Take the test honestly",
             "body": "So look in the mirror. Have you ever told a lie? Even one, even a small one — what does that make you? Have you ever taken something that didn't belong to you, whatever its value? Have you ever hated someone? The Bible says 'whoever hates his brother is a murderer.'\n\nIf you're honest, you've just admitted — like the rest of us — to being a lying thief with murder in the heart. And that's only three of the Ten Commandments.\n\nMaybe you're thinking, 'But I've kept most of the others.' James closes that door. God's Law is like a pane of glass: crack it in one corner and the whole pane is broken. Stumble in one point, and you are guilty of all.",
             "scripture": "For whoever shall keep the whole law, and yet stumble in one point, he is guilty of all.",
-            "scriptureRef": "James 2:10 (NKJV)",
+            "scriptureRef": "James 2:10",
             "quiz": {
               "question": "You've broken one commandment but kept the other nine. What does James 2:10 say about you?",
-              "options": ["You're ninety percent good", "You're guilty of breaking the whole Law", "It depends how serious the one was"],
+              "options": [
+                "You're ninety percent good",
+                "You're guilty of breaking the whole Law",
+                "It depends how serious the one was"
+              ],
               "correct": 1,
               "reveal": "Stumble in one point and you are 'guilty of all.' God's Law isn't a score out of ten — it's a pane of glass, and one crack breaks the whole thing."
             }
@@ -391,10 +403,14 @@
             "heading": "Good by whose standard?",
             "body": "Here is where many people reach for one last hope: 'But God is good. Surely a good God will overlook my failures.' Think that through in a courtroom.\n\nImagine a judge with a guilty murderer standing before him. The evidence is overwhelming. And the judge says, 'I'm a good man, so I'm letting you go.' Is he good? He's corrupt. A good judge cannot wave crime through — precisely because he is good, he must see justice done.\n\nGod's goodness is not your escape route. It is the very reason your case must come to court. The Bible says that acquitting the guilty is an abomination to Him. If God is good — and He is — then He must judge lying, theft, and hatred. Including yours and mine.",
             "scripture": "He who justifies the wicked, and he who condemns the just, both of them alike are an abomination to the LORD.",
-            "scriptureRef": "Proverbs 17:15 (NKJV)",
+            "scriptureRef": "Proverbs 17:15",
             "quiz": {
               "question": "Does the fact that God is good help the guilty on judgment day?",
-              "options": ["Yes — a good God will overlook sin", "No — a good judge must judge", "It depends on your good deeds"],
+              "options": [
+                "Yes — a good God will overlook sin",
+                "No — a good judge must judge",
+                "It depends on your good deeds"
+              ],
               "correct": 1,
               "reveal": "A judge who lets the guilty walk free isn't good — he's corrupt. God's goodness is the very reason sin cannot be waved through. That is what makes the cross necessary."
             }
@@ -403,7 +419,7 @@
             "heading": "Find out where you stand",
             "body": "So — are you a good person? By man's standard, maybe. By God's standard, you already know the answer. So do the rest of us, because we're standing in the same dock.\n\nThe Bible doesn't tell you to assume you're fine. It says, 'Examine yourselves.' Not your neighbour. Not the person the news calls a monster. Yourself, against the standard that actually counts.\n\nThis site has a short test that walks you through God's Law one commandment at a time, the way Jesus used it. It won't save you — no test can. But it will tell you the truth about where you stand. And no one looks for a cure before facing the diagnosis.",
             "scripture": "Examine yourselves as to whether you are in the faith. Test yourselves. Do you not know yourselves, that Jesus Christ is in you?—unless indeed you are disqualified.",
-            "scriptureRef": "2 Corinthians 13:5 (NKJV)"
+            "scriptureRef": "2 Corinthians 13:5"
           }
         ],
         "faq": [
@@ -431,10 +447,14 @@
             "heading": "More than a good teacher",
             "body": "Most people are happy to call Jesus a good teacher. But Jesus didn't leave that option open. He claimed to be God — not a god, not godlike, but God Himself. 'I and My Father are one' (John 10:30).\n\nC.S. Lewis put it simply: a man who said the sort of things Jesus said would not be a great moral teacher. He would either be a lunatic, a liar, or He would be exactly who He claimed to be — the Lord.\n\nThe people who heard Him understood exactly what He was claiming. They picked up stones to kill Him for blasphemy. You don't stone someone for saying 'be kind to your neighbour.'",
             "scripture": "I and My Father are one.",
-            "scriptureRef": "John 10:30 (NKJV)",
+            "scriptureRef": "John 10:30",
             "quiz": {
               "question": "If Jesus claimed to be God, what are the only logical options?",
-              "options": ["He was a great moral teacher", "He was a lunatic, a liar, or He is Lord", "He was speaking metaphorically"],
+              "options": [
+                "He was a great moral teacher",
+                "He was a lunatic, a liar, or He is Lord",
+                "He was speaking metaphorically"
+              ],
               "correct": 1,
               "reveal": "A mere teacher doesn't claim to be God. Either He was delusional, deliberately deceiving, or telling the truth. C.S. Lewis called this the 'Lord, Liar, or Lunatic' trilemma — there is no fourth option."
             }
@@ -443,22 +463,26 @@
             "heading": "The Word made flesh",
             "body": "The Gospel of John opens with a staggering claim: 'In the beginning was the Word, and the Word was with God, and the Word was God.' And then: 'The Word became flesh and dwelt among us.'\n\nBefore Bethlehem, before the manger, before Mary — Jesus existed eternally as God. He wasn't created. He was the Creator who stepped into His own creation. The hands that shaped the universe let themselves be nailed to a cross.",
             "scripture": "And the Word became flesh and dwelt among us, and we beheld His glory, the glory as of the only begotten of the Father, full of grace and truth.",
-            "scriptureRef": "John 1:14 (NKJV)"
+            "scriptureRef": "John 1:14"
           },
           {
             "heading": "What He did",
             "body": "Jesus lived the only sinless life in human history. He healed the sick, gave sight to the blind, and raised the dead. He had authority over nature, disease, demons, and death itself.\n\nBut He didn't come primarily to heal or teach. He came to die. He told His disciples repeatedly that He would be handed over, crucified, and rise on the third day. His death was not an accident or a tragedy — it was the plan from the beginning.",
             "scripture": "Who, being in the form of God, did not consider it robbery to be equal with God, but made Himself of no reputation, taking the form of a bondservant, and coming in the likeness of men.",
-            "scriptureRef": "Philippians 2:6-7 (NKJV)"
+            "scriptureRef": "Philippians 2:6-7"
           },
           {
             "heading": "Why it matters to you",
             "body": "If Jesus is who He said He is — God in the flesh — then everything He said carries the weight of divine authority. When He said 'I am the way, the truth, and the life. No one comes to the Father except through Me,' He wasn't offering one option among many. He was stating a fact.\n\nIf He rose from the dead (and the evidence is compelling), then His claims are validated. Death could not hold Him. And if death could not hold Him, then His promise of eternal life to all who trust in Him is not wishful thinking — it's the most reliable promise ever made.",
             "scripture": "Jesus said to him, 'I am the way, the truth, and the life. No one comes to the Father except through Me.'",
-            "scriptureRef": "John 14:6 (NKJV)",
+            "scriptureRef": "John 14:6",
             "quiz": {
               "question": "If Jesus truly rose from the dead, what does that mean about His claims?",
-              "options": ["They're inspiring but unverifiable", "They are validated — He is who He said He is", "It doesn't change anything"],
+              "options": [
+                "They're inspiring but unverifiable",
+                "They are validated — He is who He said He is",
+                "It doesn't change anything"
+              ],
               "correct": 1,
               "reveal": "The resurrection is the ultimate proof. If death could not hold Him, then His promise of eternal life is the most reliable promise ever made."
             }
@@ -489,10 +513,14 @@
             "heading": "God's standard",
             "body": "The Ten Commandments are not suggestions. They are God's moral law — a perfect reflection of His character. They tell us what is right and what is wrong, not based on culture or opinion, but based on the nature of God Himself.\n\nYou shall not lie. You shall not steal. You shall not commit adultery. You shall not covet. You shall have no other gods before Me. These aren't arbitrary rules — they reveal what a holy God requires of the beings He created in His image.",
             "scripture": "For whoever shall keep the whole law, and yet stumble in one point, he is guilty of all.",
-            "scriptureRef": "James 2:10 (NKJV)",
+            "scriptureRef": "James 2:10",
             "quiz": {
               "question": "According to James 2:10, how many commandments do you need to break to be guilty?",
-              "options": ["All ten", "A majority of them", "Just one"],
+              "options": [
+                "All ten",
+                "A majority of them",
+                "Just one"
+              ],
               "correct": 2,
               "reveal": "Just one. 'Whoever shall keep the whole law, and yet stumble in one point, he is guilty of all.' God's standard is perfection, not improvement."
             }
@@ -501,16 +529,20 @@
             "heading": "It's not just murder and theft",
             "body": "Jesus raised the bar impossibly high. He said that anger without cause is the same as murder in God's eyes. That looking at someone with lust is the same as adultery. That hating your brother makes you a murderer at heart.\n\nSin is not just what you do — it's what you think, what you desire, what you harbour in secret. God doesn't just see your actions. He sees your heart. And by that standard, every single one of us is guilty.",
             "scripture": "But I say to you that whoever looks at a woman to lust for her has already committed adultery with her in his heart.",
-            "scriptureRef": "Matthew 5:28 (NKJV)"
+            "scriptureRef": "Matthew 5:28"
           },
           {
             "heading": "Everyone has sinned",
             "body": "Romans 3:23 does not say 'some have sinned' or 'really bad people have sinned.' It says all. Every human being who has ever lived — except Jesus — has broken God's Law.\n\nThis is not about being 'good enough.' It's about being perfect — because that is God's standard. And none of us are. Not the religious leader, not the moral philosopher, not the person who volunteers every weekend. All have sinned.",
             "scripture": "For all have sinned and fall short of the glory of God.",
-            "scriptureRef": "Romans 3:23 (NKJV)",
+            "scriptureRef": "Romans 3:23",
             "quiz": {
               "question": "According to God's standard, how good do you need to be to enter heaven?",
-              "options": ["Better than most people", "Good enough to outweigh your bad", "Perfect"],
+              "options": [
+                "Better than most people",
+                "Good enough to outweigh your bad",
+                "Perfect"
+              ],
               "correct": 2,
               "reveal": "Perfect. God's standard isn't 'good enough' — it's moral perfection. And 'all have sinned and fall short.' That's why we need a Saviour."
             }
@@ -519,7 +551,7 @@
             "heading": "The consequence",
             "body": "Sin is not a minor infraction. It is cosmic treason against the Creator of the universe. And the penalty is not a slap on the wrist — it is death. Not just physical death, but eternal separation from God.\n\nThis is the reality that makes the gospel urgent. If sin had no consequence, there would be no need for a Saviour. But sin does have a consequence. And it is permanent. That is why what comes next — what God did about it — is the best news you will ever hear.",
             "scripture": "For the wages of sin is death, but the gift of God is eternal life in Christ Jesus our Lord.",
-            "scriptureRef": "Romans 6:23 (NKJV)"
+            "scriptureRef": "Romans 6:23"
           }
         ],
         "faq": [
@@ -547,16 +579,20 @@
             "heading": "The problem",
             "body": "God faces what seems like an impossible dilemma. He is perfectly just — He cannot ignore sin, sweep it under the rug, or pretend it didn't happen. A good judge doesn't let guilty criminals walk free.\n\nBut God is also perfectly loving. He does not want anyone to perish. He created you, knows you, and loves you. So how can a just God forgive guilty sinners without compromising His justice?",
             "scripture": "He is the Rock, His work is perfect; for all His ways are justice, a God of truth and without injustice; righteous and upright is He.",
-            "scriptureRef": "Deuteronomy 32:4 (NKJV)"
+            "scriptureRef": "Deuteronomy 32:4"
           },
           {
             "heading": "The courtroom",
             "body": "Imagine you're standing before a judge, guilty of a serious crime. The fine is enormous — far more than you could ever pay. Justice demands payment. You're about to be sentenced.\n\nBut then someone walks into the courtroom, opens their wallet, and pays your fine in full. Every penny. The judge can now legally dismiss your case — not because he's overlooking justice, but because justice has been satisfied. The fine has been paid.\n\nThat is what happened on the cross.",
             "scripture": "But He was wounded for our transgressions, He was bruised for our iniquities; the chastisement for our peace was upon Him, and by His stripes we are healed.",
-            "scriptureRef": "Isaiah 53:5 (NKJV)",
+            "scriptureRef": "Isaiah 53:5",
             "quiz": {
               "question": "In the courtroom analogy, why can the judge legally let you go?",
-              "options": ["Because He decided to overlook your crimes", "Because someone paid your fine in full", "Because you promised to be better"],
+              "options": [
+                "Because He decided to overlook your crimes",
+                "Because someone paid your fine in full",
+                "Because you promised to be better"
+              ],
               "correct": 1,
               "reveal": "Justice was satisfied — not ignored. Someone paid the penalty you owed. That's substitutionary atonement: Christ took your punishment so God could legally forgive you."
             }
@@ -565,16 +601,20 @@
             "heading": "What happened on the cross",
             "body": "On the cross, Jesus took upon Himself the punishment that every human being deserves. He absorbed the full wrath of God against sin — not His own sin (He had none), but ours.\n\nGod 'made Him who knew no sin to be sin for us.' The sinless One became the sin-bearer. He experienced the full weight of divine judgment so that we wouldn't have to. This is not a metaphor. This is substitution — He died in your place.",
             "scripture": "For He made Him who knew no sin to be sin for us, that we might become the righteousness of God in Him.",
-            "scriptureRef": "2 Corinthians 5:21 (NKJV)"
+            "scriptureRef": "2 Corinthians 5:21"
           },
           {
             "heading": "It is finished",
             "body": "Jesus' last words on the cross were not 'I am defeated.' They were 'It is finished.' In Greek, the word is tetelestai — a legal and commercial term meaning 'paid in full.'\n\nThe debt is settled. There is nothing you can add to what Christ has done. You cannot earn salvation by being good, going to church, or doing charitable works. Those are good things — but they are not payment. The payment has already been made. All that remains is for you to receive it.",
             "scripture": "So when Jesus had received the sour wine, He said, 'It is finished!' And bowing His head, He gave up His spirit.",
-            "scriptureRef": "John 19:30 (NKJV)",
+            "scriptureRef": "John 19:30",
             "quiz": {
               "question": "What does 'It is finished' (tetelestai) mean?",
-              "options": ["'I give up'", "'Paid in full'", "'The beginning'"],
+              "options": [
+                "'I give up'",
+                "'Paid in full'",
+                "'The beginning'"
+              ],
               "correct": 1,
               "reveal": "Tetelestai was a legal and commercial term meaning 'paid in full.' The debt of sin is settled. There is nothing you can add to what Christ has done."
             }
@@ -605,7 +645,7 @@
             "heading": "Why being good now can't fix it",
             "body": "When the weight of your sins finally lands, the first plan almost everyone reaches for is the same: 'From now on, I'll do better.' It sounds noble. It changes nothing about the past.\n\nImagine a man caught stealing who tells the judge, 'I haven't stolen anything for six months.' The judge would answer, 'Good — that's what the law always required of you. Now what about everything you stole before?' Living right from today onward earns no credit against yesterday's debt, because obedience was never extra. It was owed all along.\n\nAnd there's a deeper problem still. The Bible says that even our righteous deeds — our best days, not our worst — are like filthy rags before a holy God, because they come from hearts already stained. Good works cannot clean a guilty record. If your sins are ever going to be forgiven, the answer has to come from outside you.",
             "scripture": "But we are all like an unclean thing, and all our righteousnesses are like filthy rags; we all fade as a leaf, and our iniquities, like the wind, have taken us away.",
-            "scriptureRef": "Isaiah 64:6 (NKJV)",
+            "scriptureRef": "Isaiah 64:6",
             "quiz": {
               "question": "A thief promises the judge he'll never steal again. What does that do about what he already stole?",
               "options": [
@@ -621,7 +661,7 @@
             "heading": "The fine must be paid",
             "body": "Then why doesn't God simply let it go? Because forgiveness that ignores justice isn't goodness — it's corruption. If a judge dismissed proven crimes with a shrug, no one would praise his mercy. Sin carries a real penalty, and the Bible names it without flinching: the wages of sin is death.\n\nNow picture the courtroom. You're guilty. The fine is astronomical — more than you could earn in ten lifetimes. You have nothing. And then someone steps forward and says, 'I'll pay it. All of it.' Once the fine is paid, the judge can let you go — legally, justly, with the law fully satisfied.\n\nThat is the only shape forgiveness can take for you. Your fine doesn't shrink with time, tears, or good behaviour. Either you pay it — and the payment is death — or someone pays it in your place.",
             "scripture": "For the wages of sin is death, but the gift of God is eternal life in Christ Jesus our Lord.",
-            "scriptureRef": "Romans 6:23 (NKJV)",
+            "scriptureRef": "Romans 6:23",
             "quiz": {
               "question": "Why can't God simply overlook your sins?",
               "options": [
@@ -637,7 +677,7 @@
             "heading": "What happened at the cross",
             "body": "Someone did step forward. On a cross outside Jerusalem, Jesus Christ suffered once for sins — 'the just for the unjust.' He wasn't paying His own fine; He had never sinned. He was paying yours.\n\nIf you've read about why the cross had to happen, you know this was no tragedy that spun out of control. It was a payment, planned and priced. God's justice demanded death for sin, and the Son of God stood in your place in the dock and took the sentence Himself — so that He might bring you to God.\n\nWhich means the payment for your sins is not hypothetical. It exists, it is complete, and nothing can be added to it. The question left standing is not 'How could I ever pay?' — you never could. It is 'How do I receive what He paid?'",
             "scripture": "For Christ also suffered once for sins, the just for the unjust, that He might bring us to God, being put to death in the flesh but made alive by the Spirit.",
-            "scriptureRef": "1 Peter 3:18 (NKJV)",
+            "scriptureRef": "1 Peter 3:18",
             "quiz": {
               "question": "In what sense did Jesus die 'the just for the unjust'?",
               "options": [
@@ -653,7 +693,7 @@
             "heading": "Repentance and faith",
             "body": "So how do you receive it? Notice first what the Bible does not say. It doesn't say 'perform this ritual.' It doesn't say 'repeat these exact words.' It doesn't say 'attend church and hope it adds up.' No ceremony, formula, or membership washes away a single sin — if it did, forgiveness would be a machine you operate, and God would owe you the result. He owes you nothing. Forgiveness is a gift, and gifts are received, never triggered.\n\nWhat God commands is repentance and faith — two sides of one turning. Repentance: you stop excusing your sin, agree with God that it is wrong, and turn from it. Faith: you trust the person of Jesus Christ — not ideas about Him — the way a man jumping from a plane trusts a parachute. It's not enough to believe it works; you have to put it on.\n\nNeither of these earns anything. A drowning man doesn't earn his rescue by grabbing the lifeguard's hand — he simply stops trusting his own swimming. Repent and trust the Saviour, 'that your sins may be blotted out.'",
             "scripture": "Repent therefore and be converted, that your sins may be blotted out, so that times of refreshing may come from the presence of the Lord.",
-            "scriptureRef": "Acts 3:19 (NKJV)",
+            "scriptureRef": "Acts 3:19",
             "quiz": {
               "question": "Which of these can wash away your sins?",
               "options": [
@@ -669,7 +709,7 @@
             "heading": "What now",
             "body": "Start by being honest with God — today, in your own words. Confession is not a performance and needs no polished language. It means agreeing with God about your sin: naming it plainly, without excuses, the way you'd level with a doctor you actually wanted to cure you.\n\nNotice how the promise is worded: 'If we confess our sins, He is faithful and just to forgive us.' If. The promise is real, and it is conditional — it belongs to those who confess and turn and trust, not to those who merely read about it. Reading about forgiveness no more forgives you than reading about bread feeds you.\n\nIf you're not sure whether any of this really applies to you, don't guess. Take the test on this site and let God's Law show you where you stand. Then pick up a Bible — the Gospel of John is a good place to start — and go to God as you are. No one who has ever come to Him like that has been turned away.",
             "scripture": "If we confess our sins, He is faithful and just to forgive us our sins and to cleanse us from all unrighteousness.",
-            "scriptureRef": "1 John 1:9 (NKJV)"
+            "scriptureRef": "1 John 1:9"
           }
         ],
         "faq": [
@@ -697,10 +737,14 @@
             "heading": "Not just feeling sorry",
             "body": "Judas felt sorry for betraying Jesus. He was so filled with regret that he returned the thirty pieces of silver and hanged himself. But the Bible never calls that repentance. It calls it remorse.\n\nRemorse is feeling bad about the consequences of sin. Repentance is feeling grieved about the sin itself — because it offends a holy God. Remorse says 'I wish I hadn't been caught.' Repentance says 'I was wrong, and I want to change.'",
             "scripture": "For godly sorrow produces repentance leading to salvation, not to be regretted; but the sorrow of the world produces death.",
-            "scriptureRef": "2 Corinthians 7:10 (NKJV)",
+            "scriptureRef": "2 Corinthians 7:10",
             "quiz": {
               "question": "What is the difference between remorse and repentance?",
-              "options": ["They are the same thing", "Remorse regrets consequences; repentance grieves the sin itself", "Repentance is stronger regret"],
+              "options": [
+                "They are the same thing",
+                "Remorse regrets consequences; repentance grieves the sin itself",
+                "Repentance is stronger regret"
+              ],
               "correct": 1,
               "reveal": "Judas had remorse — he regretted what happened. But repentance is godly sorrow that leads to change. 'I was wrong, and I want to turn from it.'"
             }
@@ -709,10 +753,14 @@
             "heading": "Turn and trust",
             "body": "Repentance has two parts. First, you turn FROM sin — not just the sins you're comfortable admitting, but the whole orientation of your life away from God. Second, you turn TO God — placing your trust in Jesus Christ and His finished work on the cross.\n\nIt's not about cleaning yourself up before coming to God. You come as you are — broken, guilty, empty-handed. And He receives you. Repentance is not a prerequisite for grace. It is the response to grace.",
             "scripture": "Repent therefore and be converted, that your sins may be blotted out, so that times of refreshing may come from the presence of the Lord.",
-            "scriptureRef": "Acts 3:19 (NKJV)",
+            "scriptureRef": "Acts 3:19",
             "quiz": {
               "question": "Do you need to clean yourself up before coming to God?",
-              "options": ["Yes — you need to be ready first", "No — you come as you are", "Only for serious sins"],
+              "options": [
+                "Yes — you need to be ready first",
+                "No — you come as you are",
+                "Only for serious sins"
+              ],
               "correct": 1,
               "reveal": "You come as you are — broken, guilty, empty-handed. Repentance is not a prerequisite for grace. It is the response to grace."
             }
@@ -721,13 +769,13 @@
             "heading": "What it looks like",
             "body": "Repentance is not perfection. It is a new direction. A repentant person still stumbles, still fails, still sins. But they fall forward. They get back up. They hate what they used to love and love what they used to ignore.\n\nThink of the prodigal son. He didn't clean himself up before going home. He came covered in pig filth, reeking of failure. And his father ran to him, embraced him, and restored him. That is the picture of repentance — coming home, just as you are.",
             "scripture": "And he arose and came to his father. But when he was still a great way off, his father saw him and had compassion, and ran and fell on his neck and kissed him.",
-            "scriptureRef": "Luke 15:20 (NKJV)"
+            "scriptureRef": "Luke 15:20"
           },
           {
             "heading": "It's a gift",
             "body": "Here is the most surprising thing about repentance: even the ability to repent is a gift from God. You cannot manufacture it. You cannot work it up through willpower or religious effort.\n\nIf you feel a pull toward God right now — a desire to turn, to change, to come home — that is not coming from you. That is God drawing you to Himself. Don't resist it. Ask Him for the gift of repentance, and He will give it.",
             "scripture": "When they heard these things they became silent; and they glorified God, saying, 'Then God has also granted to the Gentiles repentance to life.'",
-            "scriptureRef": "Acts 11:18 (NKJV)"
+            "scriptureRef": "Acts 11:18"
           }
         ],
         "faq": [
@@ -755,16 +803,20 @@
             "heading": "The appointment",
             "body": "The Bible is blunt about death. It is not a mystery to be avoided or a topic to dance around. 'It is appointed for men to die once, but after this the judgment.' Not if — when. Not maybe — certainly.\n\nEvery culture, every religion, every philosophy has tried to answer the question of what comes after death. Reincarnation, annihilation, wishful vagueness. But the Bible gives a clear, unambiguous answer: you die once, and then you face God.",
             "scripture": "And as it is appointed for men to die once, but after this the judgment.",
-            "scriptureRef": "Hebrews 9:27 (NKJV)"
+            "scriptureRef": "Hebrews 9:27"
           },
           {
             "heading": "Two destinations",
             "body": "Jesus spoke more about hell than anyone else in the Bible. He described it as a place of outer darkness, weeping, and gnashing of teeth — eternal separation from God and everything good.\n\nHe also spoke about heaven — the presence of God, where there is no more death, no more pain, no more tears. A place prepared for those who belong to Him.\n\nThere is no middle ground. No purgatory, no second chance after death, no cosmic do-over. Two roads, two destinations. And the road you're on is determined by what you do with Jesus.",
             "scripture": "And these will go away into everlasting punishment, but the righteous into eternal life.",
-            "scriptureRef": "Matthew 25:46 (NKJV)",
+            "scriptureRef": "Matthew 25:46",
             "quiz": {
               "question": "According to the Bible, is there a middle ground between heaven and hell?",
-              "options": ["Yes — purgatory or a second chance", "No — two destinations, no middle ground", "It depends on how you lived"],
+              "options": [
+                "Yes — purgatory or a second chance",
+                "No — two destinations, no middle ground",
+                "It depends on how you lived"
+              ],
               "correct": 1,
               "reveal": "No middle ground. No purgatory, no second chance after death. Two roads, two destinations — and the road is determined by what you do with Jesus."
             }
@@ -773,16 +825,20 @@
             "heading": "The death counter is real",
             "body": "1.8 people die every second. That's not a statistic designed to frighten you — it's a reality designed to wake you up. The death counter on this site isn't a gimmick. It's a mirror.\n\nEvery one of those numbers was a person — with a name, a family, hopes, fears. And every one of them has now stepped into eternity. One of those numbers, someday, will be yours. The only question is: are you ready?",
             "scripture": "So teach us to number our days, that we may gain a heart of wisdom.",
-            "scriptureRef": "Psalm 90:12 (NKJV)"
+            "scriptureRef": "Psalm 90:12"
           },
           {
             "heading": "But there is hope",
             "body": "God does not want anyone to perish. He is 'not willing that any should perish but that all should come to repentance.' He made a way — the cross. Jesus bridged the gap between a holy God and sinful humanity.\n\nThe question is not whether God has provided a way. He has. The question is whether you will take it. Trust in Jesus Christ. Turn from sin. Receive the gift of eternal life. The counter is still ticking — but it doesn't have to be a countdown to judgment. It can be a countdown to coming home.",
             "scripture": "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.",
-            "scriptureRef": "John 3:16 (NKJV)",
+            "scriptureRef": "John 3:16",
             "quiz": {
               "question": "Has God provided a way to be saved from judgment?",
-              "options": ["No — we must save ourselves", "Yes — through Jesus Christ and the cross", "Only for certain people"],
+              "options": [
+                "No — we must save ourselves",
+                "Yes — through Jesus Christ and the cross",
+                "Only for certain people"
+              ],
               "correct": 1,
               "reveal": "God made a way. The question is not whether He provided it — He has. The question is whether you will take it. Trust in Christ. Turn from sin. Receive eternal life."
             }
@@ -791,10 +847,14 @@
             "heading": "The courtroom after",
             "body": "What follows death is not a vague reckoning or a lingering sense of consequence. It is an appearance. 'We must all appear before the judgment seat of Christ' — all of us, no exemptions, no absentees. The Bible describes it the way you would describe a court date: a place, a Judge, a record.\n\nAnd consider what you can bring into that courtroom: nothing. No lawyer to spin the facts, no crowd to compare yourself against, no chance to edit the record. Everything 'done in the body' is already in evidence — the deeds everyone saw and the ones no one did.\n\nThis is why this site keeps talking about a verdict. Not to be dramatic — because the Bible is. There is a real courtroom after death, and you will stand in it. And the Judge will be Jesus Christ Himself, which means the One appointed to judge you is the same One who came to save you.",
             "scripture": "For we must all appear before the judgment seat of Christ, that each one may receive the things done in the body, according to what he has done, whether good or bad.",
-            "scriptureRef": "2 Corinthians 5:10 (NKJV)",
+            "scriptureRef": "2 Corinthians 5:10",
             "quiz": {
               "question": "What does 2 Corinthians 5:10 say about the judgment seat of Christ?",
-              "options": ["Only the worst offenders will appear before it", "We must all appear before it", "It is a metaphor for our conscience"],
+              "options": [
+                "Only the worst offenders will appear before it",
+                "We must all appear before it",
+                "It is a metaphor for our conscience"
+              ],
               "correct": 1,
               "reveal": "All of us. No exemptions, no absentees, nothing left off the record. And the Judge is the same Jesus who came to save — which is either the worst news you have ever heard, or the best."
             }
@@ -803,10 +863,14 @@
             "heading": "What death cannot touch",
             "body": "Now hear what Jesus says about the person who has heard His word, turned from sin, and trusted the Father who sent Him: that person 'shall not come into judgment, but has passed from death into life.' Not will pass — has passed. For that person, the courtroom holds no terror, because the case was settled at the cross before they ever arrived.\n\nThis is what death cannot touch. It can stop a heart; it cannot undo a pardon. For the one who has repented and trusted in Christ, dying is no longer a step into the unknown — it is a step into the presence of the One who already knows them.\n\nNotice what this promise is not. It is not for everyone automatically, and it does not become yours by reading it on a page. It belongs to the one who hears and believes — really believes, with the kind of trust that turns a whole life around. The promise is solid. The only question is whether it describes you.",
             "scripture": "Most assuredly, I say to you, he who hears My word and believes in Him who sent Me has everlasting life, and shall not come into judgment, but has passed from death into life.",
-            "scriptureRef": "John 5:24 (NKJV)",
+            "scriptureRef": "John 5:24",
             "quiz": {
               "question": "In John 5:24, who has 'passed from death into life'?",
-              "options": ["Everyone, no matter how they respond to Jesus", "The one who hears Jesus' word and believes the Father who sent Him", "No one can know until the judgment"],
+              "options": [
+                "Everyone, no matter how they respond to Jesus",
+                "The one who hears Jesus' word and believes the Father who sent Him",
+                "No one can know until the judgment"
+              ],
               "correct": 1,
               "reveal": "The promise is conditional — it belongs to the one who hears and believes. For that person, judgment is already settled and death has lost its grip. It is solid; the question is whether it describes you."
             }
@@ -815,7 +879,7 @@
             "heading": "Today is the day",
             "body": "Here is a plain fact, stated without any tricks: you do not know the date of your own death. Almost no one does. The people who died in the last hour woke up expecting an ordinary day.\n\nThat is not a scare tactic — it is simply why 'later' is a dangerous answer to the most important question you will ever face. Later is not a time you can live in. Every decision you have ever made, you made today. This one is no different.\n\nGod's timing is more generous than fear suggests and more urgent than comfort would like: 'now is the accepted time; behold, now is the day of salvation.' Not after you have cleaned yourself up. Not once you are old. Now — while your heart is still beating and the door is still open. If God is speaking to you through what you have read, don't file it away for a better moment. There isn't one.",
             "scripture": "For He says: 'In an acceptable time I have heard you, And in the day of salvation I have helped you.' Behold, now is the accepted time; behold, now is the day of salvation.",
-            "scriptureRef": "2 Corinthians 6:2 (NKJV)"
+            "scriptureRef": "2 Corinthians 6:2"
           }
         ],
         "faq": [
@@ -843,7 +907,7 @@
             "heading": "The building has a builder",
             "body": "How do you know a building had a builder? You've never seen him. You don't know his name. There's no photo of him in the lobby. Yet you're certain he existed, because the building is standing there. Buildings don't assemble themselves.\n\nA painting is proof of a painter. A car is proof of a maker. And creation — from the sun that warms your face to the DNA coiled inside every one of your cells — is evidence of a Creator. That's not a leap in the dark. It's the same everyday reasoning you trust a hundred times a day.\n\nThis is the Bible's starting point. It never argues for God in the abstract; it points at what He made. His invisible attributes 'are clearly seen' through the things He created — so clearly, Paul says, that no one will stand before God with the excuse 'I didn't know.'",
             "scripture": "For since the creation of the world His invisible attributes are clearly seen, being understood by the things that are made, even His eternal power and Godhead, so that they are without excuse.",
-            "scriptureRef": "Romans 1:20 (NKJV)",
+            "scriptureRef": "Romans 1:20",
             "quiz": {
               "question": "How do you know a building had a builder?",
               "options": [
@@ -859,7 +923,7 @@
             "heading": "Your conscience is evidence",
             "body": "There's a second witness, and it's closer than the stars. It's inside you. The word 'conscience' means 'with knowledge' — when you do wrong, you do it with knowledge that it's wrong.\n\nEvery culture in history has known that murder is evil, that betrayal is shameful, that courage and honesty are good. We argue about the edges, but no one seriously claims cruelty to a child is fine for those who happen to enjoy it. Some things aren't opinions. They're known.\n\nBut a moral law that stands above every culture needs a source above every culture. If right and wrong were human inventions, we could vote them out of existence. We can't — and deep down you know it. The Bible tells you why: the work of God's Law is written on your heart.",
             "scripture": "Who show the work of the law written in their hearts, their conscience also bearing witness, and between themselves their thoughts accusing or else excusing them.",
-            "scriptureRef": "Romans 2:15 (NKJV)",
+            "scriptureRef": "Romans 2:15",
             "quiz": {
               "question": "What does Romans 2:15 say is written on every human heart?",
               "options": [
@@ -875,7 +939,7 @@
             "heading": "God stepped into history",
             "body": "If God had left only fingerprints — stars and consciences — you might still wonder what He's like. Kind? Distant? Angry? Fingerprints tell you someone was there; they don't show you a face.\n\nSo He showed us His face. 'No one has seen God at any time,' John writes, but the Son 'has declared Him.' Jesus of Nazareth is God making Himself known — not a feeling, not a philosophy, but a person who walked real roads in a real province of the Roman Empire, was executed under a real governor, and left behind an empty tomb His enemies could never answer with a body.\n\nThat changes the question. 'Does God exist?' stops being an abstract debate and becomes something you can examine: read what Jesus said, weigh what He did, and decide who He is. If you want to know whether God exists — and what He's like — start there.",
             "scripture": "No one has seen God at any time. The only begotten Son, who is in the bosom of the Father, He has declared Him.",
-            "scriptureRef": "John 1:18 (NKJV)",
+            "scriptureRef": "John 1:18",
             "quiz": {
               "question": "According to John 1:18, how has the invisible God been made known?",
               "options": [
@@ -891,7 +955,7 @@
             "heading": "Why evidence isn't the real issue",
             "body": "Here's an honest question worth sitting with: if God's existence were proven to you beyond doubt tonight, would you follow Him tomorrow? For many of us, if we're truthful, the answer is no — because the debate was never really about evidence.\n\nJesus put His finger on it: the light has come into the world, and we 'loved darkness rather than light.' Not because the light was dim, but because light exposes. If God exists, He has a rightful claim on your life — your money, your relationships, your private habits, your pride. It is remarkably convenient for Him not to exist.\n\nThis isn't an accusation aimed at atheists. It's a confession about the human heart — yours and mine alike. Honest questions deserve honest answers, and there are good ones. But before you ask for more evidence, ask what you would do with the evidence you already have.",
             "scripture": "And this is the condemnation, that the light has come into the world, and men loved darkness rather than light, because their deeds were evil. For everyone practicing evil hates the light and does not come to the light, lest his deeds should be exposed.",
-            "scriptureRef": "John 3:19-20 (NKJV)",
+            "scriptureRef": "John 3:19-20",
             "quiz": {
               "question": "According to Jesus, why do people stay away from the light?",
               "options": [
@@ -907,7 +971,7 @@
             "heading": "Test it honestly",
             "body": "God makes a promise to the honest seeker: 'You will seek Me and find Me, when you search for Me with all your heart.' Notice the condition. Not a casual glance. Not a debate you're trying to win. All your heart.\n\nSo test it. Read one of the Gospels — John is a good place to start — and ask honestly who this man is. Pray something as simple as this: 'God, if You're real, show me the truth, whatever it costs me.' If He isn't there, you've lost a few quiet minutes. If He is, you've found the reason you exist.\n\nThere's one more step for the honest. This site has a short test built on God's own Law — the standard your conscience already echoes. It won't prove God to you. It will show you where you stand before Him if He is there. And that, more than any argument, is where this question gets real.",
             "scripture": "And you will seek Me and find Me, when you search for Me with all your heart.",
-            "scriptureRef": "Jeremiah 29:13 (NKJV)"
+            "scriptureRef": "Jeremiah 29:13"
           }
         ],
         "faq": [
@@ -935,13 +999,13 @@
             "heading": "The suspicion won't go away",
             "body": "Every culture in history has buried its dead with some kind of ritual — a coffin facing east, a coin for the ferryman, whispered prayers for the journey ahead. No society has ever behaved as if death were simply the end, full stop. Something in us refuses that verdict.\n\nThe Bible names the reason. Solomon wrote that God has put eternity in their hearts — not proof texts and arguments, but an ache too deep to argue away. You sense there is more, because there is more. This is not wishful thinking invented to soften a hard fact. It is a clue built into you on purpose, pointing past this life toward the God who put it there.\n\nThe question, then, isn't really whether something comes after death. Almost everyone already suspects it does. The question is what — and whether you are ready for it.",
             "scripture": "He has made everything beautiful in its time. Also He has put eternity in their hearts, except that no one can find out the work that God does from beginning to end.",
-            "scriptureRef": "Ecclesiastes 3:11 (NKJV)"
+            "scriptureRef": "Ecclesiastes 3:11"
           },
           {
             "heading": "The door, not the end",
             "body": "The Bible does not treat death as a mystery to shrug at. It calls it an appointment — fixed, certain, unavoidable. 'It is appointed for men to die once, but after this the judgment.' Not maybe. Once, then judgment.\n\nThat single sentence overturns two popular guesses. It rules out reincarnation — you do not get another attempt in another body. And it rules out simple extinction — there is no 'after this' if death is the end of everything. Death is not a wall. It is a door, and something is waiting on the other side.\n\nThis is why the question 'is there life after death' cannot be answered with a shrug or a guess. Scripture answers it directly: yes, and what comes next is not neutral. It is a judgment you will stand in.",
             "scripture": "And as it is appointed for men to die once, but after this the judgment.",
-            "scriptureRef": "Hebrews 9:27 (NKJV)",
+            "scriptureRef": "Hebrews 9:27",
             "quiz": {
               "question": "According to Hebrews 9:27, what happens after a person dies?",
               "options": [
@@ -957,25 +1021,25 @@
             "heading": "The one man who came back",
             "body": "Every claim about life after death is, in the end, someone's guess — except one. Paul reminds the earliest Christians of what he received and delivered to them: that Christ died for our sins, was buried, and rose again the third day, seen first by Peter, then by the Twelve, then by more than five hundred people at once — most of whom, when Paul wrote this, were still alive to be asked.\n\nThat is not a parable about hope. It is a claim about a body, a tomb, and named eyewitnesses who could be cross-examined. If Jesus only died, His resurrection would be one more grave among billions. Because He rose, He is the one witness who has actually seen the other side and returned to describe it — and He staked His whole message on that fact being checkable.",
             "scripture": "For I delivered to you first of all that which I also received: that Christ died for our sins according to the Scriptures, and that He was buried, and that He rose again the third day according to the Scriptures.",
-            "scriptureRef": "1 Corinthians 15:3-4 (NKJV)"
+            "scriptureRef": "1 Corinthians 15:3-4"
           },
           {
             "heading": "Two destinations, no third option",
             "body": "Jesus was the most direct teacher on what happens after death, and He never used vague language. He spoke of everlasting punishment as plainly as He spoke of eternal life: 'these will go away into everlasting punishment, but the righteous into eternal life.' Same word, 'everlasting,' used for both — whatever hell is, it does not end, any more than heaven does.\n\nThere is no reincarnation cycle to burn off bad karma, no purgatory to serve a sentence in, no annihilation into peaceful nothing. Two destinations, both permanent, no third door. Softening that fact would not be kindness — it would be lying to you about the one thing you most need to know clearly. The uncomfortable truth is also the useful one: which of those two you are heading for is not yet decided by chance. It is being decided by something else entirely.",
             "scripture": "And these will go away into everlasting punishment, but the righteous into eternal life.",
-            "scriptureRef": "Matthew 25:46 (NKJV)"
+            "scriptureRef": "Matthew 25:46"
           },
           {
             "heading": "Which one is yours?",
             "body": "So which destination is yours? Not the one you'd pick — the one you're actually owed. Have you ever told a lie? Taken something that wasn't yours? Hated someone in your heart? The Bible's verdict is not aimed at people worse than you somewhere else: 'all have sinned and fall short of the glory of God.' That includes the one reading this.\n\nA lying, stealing, hating heart does not qualify for heaven by decent intentions or a good average. God's Law does not grade on effort — it convicts on fact. If death is a door and judgment is what's behind it, then the verdict that door opens onto is the one your own conscience already half-suspects: guilty.\n\nThat is not the end of the sentence. It is the reason the next part matters more than anything else you will read today.",
             "scripture": "For all have sinned and fall short of the glory of God.",
-            "scriptureRef": "Romans 3:23 (NKJV)"
+            "scriptureRef": "Romans 3:23"
           },
           {
             "heading": "Christ paid; you can pass from death to life",
             "body": "Here is why the door does not have to be terrifying. Jesus said plainly: 'he who hears My word and believes in Him who sent Me has everlasting life, and shall not come into judgment, but has passed from death into life.' Not will pass — has passed, already, for the person this describes.\n\nChrist did not merely teach about death; He paid the fine sin required, so that guilty people could be legally, justly released. That is not a reward for good behaviour — it is a rescue for the guilty who stop pleading their own case and plead His instead. The one who repents of sin and trusts Christ is no longer waiting to find out what's behind the door. They already know, and it is not judgment.\n\nNo one is promised tomorrow to make that decision later. The door is real, and for you it is still open — today.",
             "scripture": "Most assuredly, I say to you, he who hears My word and believes in Him who sent Me has everlasting life, and shall not come into judgment, but has passed from death into life.",
-            "scriptureRef": "John 5:24 (NKJV)",
+            "scriptureRef": "John 5:24",
             "quiz": {
               "question": "According to John 5:24, who has already passed from death into life?",
               "options": [
@@ -1013,19 +1077,19 @@
             "heading": "The question behind every question",
             "body": "Sooner or later, everyone asks it — not as a philosophy exam, but in the quiet after midnight: what is any of this actually for? Career, relationships, achievement, pleasure — they all promise that the next one will finally answer it.\n\nSolomon ran that experiment to its end. He had the resources to deny himself nothing his eyes desired, and he pursued pleasure and great works deliberately, as a test. His verdict, after he had everything: it was vanity, chasing after wind. No profit under the sun.\n\nIf the man with unlimited money, power, and pleasure came back empty, the answer was never waiting at the next achievement. Something else is going on — and the Bible names it directly.",
             "scripture": "Whatever my eyes desired I did not keep from them. I did not withhold my heart from any pleasure, For my heart rejoiced in all my labor; And this was my reward from all my labor. Then I looked on all the works that my hands had done And on the labor in which I had toiled; And indeed all was vanity and grasping for the wind. There was no profit under the sun.",
-            "scriptureRef": "Ecclesiastes 2:10-11 (NKJV)"
+            "scriptureRef": "Ecclesiastes 2:10-11"
           },
           {
             "heading": "Made by Him, for Him",
             "body": "Here is the Bible's answer, and it is not a feeling to chase — it is a fact to receive. 'All things were created through Him and for Him.' Not just galaxies and mountains. You.\n\nThat means meaning is not something you invent by trying harder or discover by accumulating experiences. It was fixed before you were born: you exist because a Person made you, and you exist for that same Person — to know Him, not merely to know about Him.\n\nThis is not a self-help idea; it does not promise you will feel fulfilled. It is a simple, objective fact about why you are here at all — the same way a key exists for a lock, whether or not it knows it.",
             "scripture": "For by Him all things were created that are in heaven and that are on earth, visible and invisible, whether thrones or dominions or principalities or powers. All things were created through Him and for Him.",
-            "scriptureRef": "Colossians 1:16 (NKJV)"
+            "scriptureRef": "Colossians 1:16"
           },
           {
             "heading": "Why life feels broken anyway",
             "body": "So why does life feel hollow even when you know, intellectually, that you were made for something? Because the problem was never a lack of information. It is a legal one.\n\nIsaiah is blunt about the cause: 'your iniquities have separated you from your God; and your sins have hidden His face from you.' Not distance you can close by trying harder to feel close to Him. Separation — a real, legal barrier, caused by real sin, sins you have actually committed.\n\nThis is why chasing meaning through better habits or bigger goals never closes the gap. You were built to know your Maker, and your own guilt is what stands between you and Him. That is the actual problem underneath the empty feeling.",
             "scripture": "But your iniquities have separated you from your God; And your sins have hidden His face from you, So that He will not hear.",
-            "scriptureRef": "Isaiah 59:2 (NKJV)",
+            "scriptureRef": "Isaiah 59:2",
             "quiz": {
               "question": "According to Isaiah 59:2, what has separated people from God?",
               "options": [
@@ -1041,19 +1105,19 @@
             "heading": "The dead ends everyone tries",
             "body": "Most people don't ignore the ache — they just aim it at the nearest target. More money. The next promotion. A relationship treated as the thing that will finally complete you. None of that is foolish to want; it's what almost everyone tries, including people who have every reason to know better.\n\nJesus asked the question that cuts through it: 'what will it profit a man if he gains the whole world, and loses his own soul?' Not \"what if he fails\" — what if he succeeds completely, and it still isn't enough?\n\nBe honest with your own conscience for a moment. Has anything you've already gained actually settled the question, or only postponed it? A dead end doesn't announce itself until you're standing in it.",
             "scripture": "For what will it profit a man if he gains the whole world, and loses his own soul?",
-            "scriptureRef": "Mark 8:36 (NKJV)"
+            "scriptureRef": "Mark 8:36"
           },
           {
             "heading": "The meaning restored",
             "body": "Here is the only rescue that actually answers the problem, because it answers the right problem. Not more purpose-seeking. Not a better attitude. A payment.\n\n'Christ also suffered once for sins, the just for the unjust, that He might bring us to God.' The one who owed nothing paid what the guilty owed, so the guilty could be brought back — legally, actually — to the God they were separated from.\n\nThis is not God overlooking sin to make you feel whole. It is God settling the debt Isaiah 59:2 described, so the separation itself is removed for everyone who is joined to Christ. The meaning you were made for was never out of reach because you hadn't found it. It was out of reach because sin blocked it — and Christ paid to open the way back.",
             "scripture": "For Christ also suffered once for sins, the just for the unjust, that He might bring us to God, being put to death in the flesh but made alive by the Spirit,",
-            "scriptureRef": "1 Peter 3:18 (NKJV)"
+            "scriptureRef": "1 Peter 3:18"
           },
           {
             "heading": "What a reconciled life is for",
             "body": "So what is a reconciled life actually for? Not a fresh set of goals to chase, and not a permanent feeling of fulfillment being promised to you. Something more solid than a feeling.\n\nJesus defined it precisely: 'this is eternal life, that they may know You, the only true God, and Jesus Christ whom You have sent.' Not admiration from a distance — knowing Him, the way you know a person you actually walk with.\n\nThat is not automatic for everyone who has merely heard about Him. It belongs to those who have turned from sin and trusted Christ, and it starts now, not later — because no one reading this is promised tomorrow to decide. The meaning you were made for is available today, if you will take hold of it.",
             "scripture": "And this is eternal life, that they may know You, the only true God, and Jesus Christ whom You have sent.",
-            "scriptureRef": "John 17:3 (NKJV)",
+            "scriptureRef": "John 17:3",
             "quiz": {
               "question": "According to John 17:3, what does Jesus say eternal life actually is?",
               "options": [
@@ -1091,7 +1155,7 @@
             "heading": "The fear nobody admits",
             "body": "Almost no one says it out loud, but the fear is there — in the doctor's waiting room, in a stranger's obituary, in the thought you push back down at two in the morning. People manage it: busyness, humor, distraction, a determined refusal to think about it. What they don't do is cure it, because it can't be managed away.\n\nThe Bible names this fear precisely, and names it as bondage, not a passing mood. It describes people held their whole lives by the fear of death — not a phase to outgrow, a life sentence served quietly under a smile. If that sounds uncomfortably familiar, it's because it is. Naming it correctly is the first step out of it.",
             "scripture": "and release those who through fear of death were all their lifetime subject to bondage.",
-            "scriptureRef": "Hebrews 2:15 (NKJV)",
+            "scriptureRef": "Hebrews 2:15",
             "quiz": {
               "question": "What does Hebrews 2:15 say about the fear of death?",
               "options": [
@@ -1107,19 +1171,19 @@
             "heading": "The fear is telling the truth",
             "body": "Here is what makes this fear so hard to shake: it is not lying to you. Every other worry can usually be talked down with facts or reassurance. This one can't, because underneath it your conscience already knows something the intellect can't argue away — that death is not the end of the story, it is the moment the story gets read aloud.\n\nScripture states the sequence plainly, with no decoration: people die once, and after that comes judgment. Not a possibility to weigh — an appointment already on the calendar. The fear you keep managing is your conscience doing exactly what it's built to do: refusing to let you forget that a verdict is coming, ready or not.",
             "scripture": "And as it is appointed for men to die once, but after this the judgment.",
-            "scriptureRef": "Hebrews 9:27 (NKJV)"
+            "scriptureRef": "Hebrews 9:27"
           },
           {
             "heading": "Why distraction and optimism don't work",
             "body": "The usual advice is to think positive, stay busy, focus on the good in life. None of it touches the actual problem, because the fear was never really about your mood — it was about a verdict, and no amount of optimism changes a verdict.\n\nJesus told of a man who had solved every problem money could solve, and was already planning years of comfortable ease, when God interrupted him mid-thought: this very night his life would be required of him. All his planning could not buy him one more day, and it could not answer the one question that mattered. Positive thinking is not a defense in a courtroom. Something else has to actually deal with the verdict — not distract you from it.",
             "scripture": "But God said to him, 'Fool! This night your soul will be required of you; then whose will those things be which you have provided?'",
-            "scriptureRef": "Luke 12:20 (NKJV)"
+            "scriptureRef": "Luke 12:20"
           },
           {
             "heading": "The only person who ever defused death",
             "body": "If death is a real verdict, it needs a real answer — not a coping method but someone who has actually gone through it and come out the other side. Only one person in history has: Jesus Christ, who died, was buried, and rose again, bodily, witnessed by hundreds of people.\n\nPaul writes with something close to mockery in his voice, taunting death itself: where is your sting now, where is your victory? Death's weapon was sin, and sin's authority was the law — and Christ answered both, paying what the law demanded so that death's sting was pulled out at the root. This is not a metaphor for feeling braver. It is the one historical event that actually changes what happens after you die.",
             "scripture": "O Death, where is your sting? O Hades, where is your victory? The sting of death is sin, and the strength of sin is the law. But thanks be to God, who gives us the victory through our Lord Jesus Christ.",
-            "scriptureRef": "1 Corinthians 15:55-57 (NKJV)",
+            "scriptureRef": "1 Corinthians 15:55-57",
             "quiz": {
               "question": "According to 1 Corinthians 15:56-57, what gives sin its power, and who gives the victory?",
               "options": [
@@ -1135,13 +1199,13 @@
             "heading": "The verdict must be dealt with first",
             "body": "Before there can be any real relief from the fear of death, there has to be an honest look at what is actually owed. God's law does not grade on a curve or average your good days against your bad ones — it simply states the wage sin earns, and the wage is death. Not decline, not disappointment — death, first physical and then the judgment that follows it.\n\nThat would be the end of the sentence, except Scripture adds one more clause: the gift of God is eternal life in Christ Jesus. A wage is earned; a gift is given. Christ paid, in full, what the law required of guilty people — not so the fear could be argued away, but so the debt behind it could actually be settled.",
             "scripture": "For the wages of sin is death, but the gift of God is eternal life in Christ Jesus our Lord.",
-            "scriptureRef": "Romans 6:23 (NKJV)"
+            "scriptureRef": "Romans 6:23"
           },
           {
             "heading": "Fear replaced, not suppressed",
             "body": "Notice what this offers, and what it doesn't. It isn't a technique for feeling calmer about death, or permission to stop thinking about it. Jesus asked a grieving woman a question that still has to be answered by name: 'I am the resurrection and the life. He who believes in Me, though he may die, he shall live... Do you believe this?'\n\nFor the one who repents and trusts Him — not admires Him from a distance — the fear that once held a lifetime hostage is broken at the root, the same slavery Hebrews describes being dismantled through Christ's own death. Not suppressed. Replaced with a settled verdict that doesn't depend on your mood the next time death crosses your mind.\n\nNo one reading this is promised tomorrow to decide. The question Jesus asked her, He is asking you now: do you believe this?",
             "scripture": "Jesus said to her, 'I am the resurrection and the life. He who believes in Me, though he may die, he shall live. And whoever lives and believes in Me shall never die. Do you believe this?'",
-            "scriptureRef": "John 11:25-26 (NKJV)"
+            "scriptureRef": "John 11:25-26"
           }
         ],
         "faq": [
@@ -1169,19 +1233,19 @@
             "heading": "The question that could not wait",
             "body": "A Roman jailer in Philippi had just watched an earthquake tear his prison doors off their hinges. Certain his prisoners had escaped and that he would be executed for it, he drew his sword to kill himself before anyone else could. Paul stopped him — no one was gone. Then, trembling, the jailer asked the only question that actually mattered: what must he do to be saved?\n\nHe didn't ask how to feel calmer, or find purpose, or manage his fear better. He asked to be saved — the way a man asks when he knows exactly what he's in danger of. That instinct was right, and it still is. This page answers his question the way Scripture answered it: directly, not with therapy.",
             "scripture": "And he brought them out and said, 'Sirs, what must I do to be saved?' So they said, 'Believe on the Lord Jesus Christ, and you will be saved, you and your household.'",
-            "scriptureRef": "Acts 16:30-31 (NKJV)"
+            "scriptureRef": "Acts 16:30-31"
           },
           {
             "heading": "Saved from what, exactly?",
             "body": "'Saved' only makes sense if there's a real danger. The Bible names it plainly: not vague unease, but a legal verdict. God's Law doesn't diagnose a mood — it prosecutes a case, and the evidence is your own life. Every lie, every lustful glance, every flash of hatred is a fact entered against you, not a feeling to manage.\n\nPaul writes that the Law exists to stop every mouth and hold the whole world guilty before God. Not some people — the whole world, which includes you. No one is declared right by trying harder at keeping it; the Law's job was never to save you. It was to show you that you need saving, and to end every excuse before it starts.",
             "scripture": "Now we know that whatever the law says, it says to those who are under the law, that every mouth may be stopped, and all the world may become guilty before God. Therefore by the deeds of the law no flesh will be justified in His sight, for by the law is the knowledge of sin.",
-            "scriptureRef": "Romans 3:19-20 (NKJV)"
+            "scriptureRef": "Romans 3:19-20"
           },
           {
             "heading": "What cannot save you",
             "body": "If the charge is real, the next question is obvious: what pays it off? Church membership doesn't. Neither does being sincere, or trying harder, or simply being a decent person by comparison to people you consider worse. None of that touches a legal verdict, any more than good intentions erase a debt in a real court.\n\nPaul is blunt about it: you have been saved by grace, through faith — and that not of yourselves, not of works, so no one can boast about having earned it. If effort could save you, it already would have. It hasn't, because it can't. Whatever solves your case has to come from outside your own performance entirely.",
             "scripture": "For by grace you have been saved through faith, and that not of yourselves; it is the gift of God, not of works, lest anyone should boast.",
-            "scriptureRef": "Ephesians 2:8-9 (NKJV)",
+            "scriptureRef": "Ephesians 2:8-9",
             "quiz": {
               "question": "According to Ephesians 2:8-9, what is salvation NOT based on?",
               "options": [
@@ -1197,19 +1261,19 @@
             "heading": "He paid the fine",
             "body": "Here is where the answer stops being about you at all. Paul doesn't say Christ died for people who had cleaned themselves up first. He says God demonstrated His own love toward us in that while we were still sinners, Christ died for us. Still guilty. Still under the charge. That's when He paid.\n\nThink of it as a courtroom, not a feeling: the fine the Law demanded was real, and someone had to pay it before the guilty could legally go free. Christ paid it — not a loophole, not a technicality, but a substitution. The debt didn't disappear. It was paid in full, by Him, in your place, before you did anything to deserve it.",
             "scripture": "But God demonstrates His own love toward us, in that while we were still sinners, Christ died for us.",
-            "scriptureRef": "Romans 5:8 (NKJV)"
+            "scriptureRef": "Romans 5:8"
           },
           {
             "heading": "Turning, not just feeling sorry",
             "body": "Jesus was told about people who died violently, as if tragedy proved they were worse sinners than everyone else. He corrected that instantly, then said something that applies to every reader: unless you repent, you will all likewise perish.\n\nRepentance is not the same as feeling bad. Judas felt terrible about betraying Jesus and it didn't save him — he never actually turned. It's not the same as promising to try harder either; resolutions break by Friday. Biblical repentance is an actual turn: away from trusting your own record, away from continuing in what you know is wrong, and toward God — admitting the verdict is fair and dropping your defense. Without that turn, nothing else here applies to you yet.",
             "scripture": "I tell you, no; but unless you repent you will all likewise perish.",
-            "scriptureRef": "Luke 13:3 (NKJV)"
+            "scriptureRef": "Luke 13:3"
           },
           {
             "heading": "Trust the Person, not a prayer",
             "body": "So how is this actually received? Not by reciting the right words. No incantation saves — the thief dying next to Jesus had no formula available to him, no prayer to repeat; he had only repentance and trust, and Jesus told him plainly, 'today you will be with Me in Paradise.' Saving faith is not a script. It's trusting a Person enough to stop trusting yourself.\n\nThat means the assurance this offers isn't 'I said a prayer once.' It belongs to those who repent and keep trusting Him — a settled relationship, not a memorized transaction. And it has to be now: 'now is the accepted time; behold, now is the day of salvation.' Not after you've thought it over longer. No one is promised tomorrow to decide.",
             "scripture": "For He says: 'In an acceptable time I have heard you, And in the day of salvation I have helped you.' Behold, now is the accepted time; behold, now is the day of salvation.",
-            "scriptureRef": "2 Corinthians 6:2 (NKJV)",
+            "scriptureRef": "2 Corinthians 6:2",
             "quiz": {
               "question": "What actually saves a person, according to this page?",
               "options": [
@@ -1247,19 +1311,19 @@
             "heading": "The question no one should have to swallow",
             "body": "Something in you has already said it, maybe out loud, maybe only in the silence after the phone call: why would God allow this? Not the tidy version of the question — the raw one, the one that comes with grief still wet on your face. A diagnosis nobody saw coming. A child buried before a parent. A betrayal from someone who was supposed to protect you. Anyone who tells you not to ask that is asking you to lie.\n\nThe Bible doesn't. Habakkuk asked God to His face why violence went unanswered, why his cries seemed to disappear into silence. Not once did God tell him the question was wrong to ask. Grief that refuses to pretend is not a lack of faith — it may be the most honest prayer you'll ever pray.",
             "scripture": "O Lord, how long shall I cry, And You will not hear? Even cry out to You, 'Violence!' And You will not save.",
-            "scriptureRef": "Habakkuk 1:2 (NKJV)"
+            "scriptureRef": "Habakkuk 1:2"
           },
           {
             "heading": "A world that groans",
             "body": "Suffering wasn't part of the original blueprint. Genesis describes a world called 'very good' — no death, no decay, no disease. Then humanity chose to distrust God and grab autonomy instead, and the fracture didn't stay contained to one choice. It spread into the ground, into bodies, into every relationship since. Thorns. Sweat. Childbirth pain. Death itself, entering a world that was never built to carry it.\n\nThat's the honest starting point: suffering isn't random static in an otherwise fine universe. It's the visible wound of a world under a real curse, groaning under weight it wasn't made to hold. Paul doesn't shy from the picture — he says all creation is groaning together, like labor pains that haven't stopped. Your pain isn't an anomaly. It's evidence the world is broken exactly the way Scripture said it would be.",
             "scripture": "For we know that the whole creation groans and labors with birth pangs together until now.",
-            "scriptureRef": "Romans 8:22 (NKJV)"
+            "scriptureRef": "Romans 8:22"
           },
           {
             "heading": "The question Jesus was actually asked",
             "body": "When tragedy struck in Jesus' own day, people brought Him the headline: a tower in Siloam had collapsed and killed eighteen people. Was it judgment? Were they worse sinners than everyone else? It's the same question dressed differently — if suffering has a reason, surely the reason is someone else's fault, someone worse than us.\n\nJesus didn't answer with an explanation. He answered with a turn: 'I tell you, no; but unless you repent you will all likewise perish.' Not cruelty — precision. He used their question about someone else's suffering to ask about their own standing before God. The tower fell on them, not you — but death is still coming for everyone, and the eighteen weren't given advance warning either. Their question about others has become His question to you: are you ready?",
             "scripture": "Or those eighteen on whom the tower in Siloam fell and killed them, do you think that they were worse sinners than all other men who dwelt in Jerusalem? I tell you, no; but unless you repent you will all likewise perish.",
-            "scriptureRef": "Luke 13:4-5 (NKJV)",
+            "scriptureRef": "Luke 13:4-5",
             "quiz": {
               "question": "According to Luke 13:4-5, why did Jesus say the eighteen killed by the tower of Siloam died?",
               "options": [
@@ -1275,19 +1339,19 @@
             "heading": "God's answer is not an argument — it's a cross",
             "body": "At some point every explanation runs out. You don't actually want a philosophy lecture when you're standing at a graveside — you want to know if God is anywhere near it. Here's where Christianity stops sounding like every other religion's answer to suffering.\n\nGod did not stay outside it. Isaiah described Him centuries before it happened: 'despised and rejected by men, a Man of sorrows and acquainted with grief.' Jesus wasn't shielded from pain, grief, betrayal, or death — He walked directly into all of it, on purpose, for you. He wept at a friend's grave before He raised him. He was beaten, mocked, and executed. Whatever suffering you're carrying, it is not something God merely permits from a safe distance. He has already stood inside it Himself.",
             "scripture": "He is despised and rejected by men, A Man of sorrows and acquainted with grief. And we hid, as it were, our faces from Him; He was despised, and we did not esteem Him.",
-            "scriptureRef": "Isaiah 53:3 (NKJV)"
+            "scriptureRef": "Isaiah 53:3"
           },
           {
             "heading": "Suffering has an expiry date",
             "body": "Suffering is real, and suffering is not permanent — but that promise doesn't belong to everyone by default, and it would be dishonest to say otherwise. Scripture describes an actual end to it, not a metaphor: 'God will wipe away every tear from their eyes; there shall be no more death, nor sorrow, nor crying. There shall be no more pain, for the former things have passed away.' No caveat about how you'll feel there — pain itself will be over.\n\nBut that verse describes one side of eternity, not both. It belongs to those who are on the right side of the verdict when it counts — to those who have turned to Christ, not to everyone regardless. Hope in the end of suffering is real. It is not automatic, and it is not the whole story yet.",
             "scripture": "And God will wipe away every tear from their eyes; there shall be no more death, nor sorrow, nor crying. There shall be no more pain, for the former things have passed away.",
-            "scriptureRef": "Revelation 21:4 (NKJV)"
+            "scriptureRef": "Revelation 21:4"
           },
           {
             "heading": "What suffering is doing right now",
             "body": "So why hasn't God ended it already, if the end is certain? Not because He's indifferent, and not because He's slow the way you or I are slow. Peter names the real reason: 'The Lord is not slack concerning His promise, as some count slackness, but is longsuffering toward us, not willing that any should perish but that all should come to repentance.'\n\nEvery day suffering continues is a day God has not yet closed the account — mercy, not neglect. That's not an answer that makes the pain smaller. It's a window still open: the same patience that lets suffering continue is the patience giving you time to turn to Him before the account closes for good. Urgency, not because He's cruel, but because the door won't stay open forever.",
             "scripture": "The Lord is not slack concerning His promise, as some count slackness, but is longsuffering toward us, not willing that any should perish but that all should come to repentance.",
-            "scriptureRef": "2 Peter 3:9 (NKJV)",
+            "scriptureRef": "2 Peter 3:9",
             "quiz": {
               "question": "According to 2 Peter 3:9, why does God delay ending suffering and judgment?",
               "options": [
@@ -1325,7 +1389,7 @@
             "heading": "News, not advice",
             "body": "The word gospel means good news — not good advice. News reports something that already happened; advice tells you what to do next. Confuse the two and the whole message collapses into one more self-improvement program among thousands of others.\n\nPaul is precise about it. He didn't invent this message or work it out for himself — he received it and passed it on intact, as a report of first importance: that Christ died for our sins, was buried, and rose again the third day, each fact 'according to the Scriptures.' Three verbs, three facts, no instructions attached.\n\nThat is the Bible's own definition of the word. Before this page says one more thing about it, this is what 'gospel' already meant.",
             "scripture": "Moreover, brethren, I declare to you the gospel which I preached to you, which also you received and in which you stand, by which also you are saved, if you hold fast that word which I preached to you—unless you believed in vain. For I delivered to you first of all that which I also received: that Christ died for our sins according to the Scriptures, and that He was buried, and that He rose again the third day according to the Scriptures,",
-            "scriptureRef": "1 Corinthians 15:1-4 (NKJV)",
+            "scriptureRef": "1 Corinthians 15:1-4",
             "quiz": {
               "question": "According to 1 Corinthians 15:1-4, what does Paul say he 'delivered... first of all'?",
               "options": [
@@ -1341,31 +1405,31 @@
             "heading": "No good news without the bad news first",
             "body": "Good news only means something set against a real problem. Tell a healthy man he's been cured and he shrugs; tell a dying one and it's the only sentence that matters. The gospel is the second kind, which means it cannot skip the diagnosis to get to the relief.\n\nScripture's diagnosis is not gentle: 'For all have sinned and fall short of the glory of God.' Not most people — all, a verdict rather than a generalization, and it includes whoever is reading this sentence right now.\n\nSkip that verdict and 'good news' is just a compliment with nothing behind it. Face it honestly, and the news that follows actually means what it claims to mean.",
             "scripture": "For all have sinned and fall short of the glory of God.",
-            "scriptureRef": "Romans 3:23 (NKJV)"
+            "scriptureRef": "Romans 3:23"
           },
           {
             "heading": "The exchange at the centre",
             "body": "Here is the news itself, stated as an exchange rather than a lecture. Christ, who had broken no law, was legally cursed in the place of those who had broken every part of it — not sympathy offered from a distance, but a swap, executed on a Roman cross.\n\nPaul states it almost violently: Christ 'redeemed us from the curse of the law, having become a curse for us.' The law's curse was real, and it had to land somewhere. It landed on Him, on purpose, so it would not have to land on you.\n\nThat is the centre the whole gospel turns on — not a technique for self-improvement, but a transaction already completed in your place.",
             "scripture": "Christ has redeemed us from the curse of the law, having become a curse for us (for it is written, 'Cursed is everyone who hangs on a tree'),",
-            "scriptureRef": "Galatians 3:13 (NKJV)"
+            "scriptureRef": "Galatians 3:13"
           },
           {
             "heading": "Not earned — so no one can boast",
             "body": "If the exchange in Galatians already happened, what's left for you to contribute? Less than you'd think. Titus is direct about it: God saved us 'not by works of righteousness which we have done, but according to His mercy.'\n\nNot mostly by works, with a little mercy added at the end. Not by works at all. Church attendance, self-improvement, trying harder, being decent by comparison to someone worse — none of it is the mechanism, because the mechanism was never you.\n\nThat should offend the part of you that wants credit, and relieve the part of you that knows you don't deserve it. Grace, by definition, excludes boasting — there is nothing left for you to claim.",
             "scripture": "not by works of righteousness which we have done, but according to His mercy He saved us, through the washing of regeneration and renewing of the Holy Spirit,",
-            "scriptureRef": "Titus 3:5 (NKJV)"
+            "scriptureRef": "Titus 3:5"
           },
           {
             "heading": "Risen — the receipt that payment cleared",
             "body": "A payment nobody can verify is not much comfort. This is why the resurrection is not a nice epilogue tacked onto the gospel — it is the proof the transaction actually cleared.\n\nPaul states both halves as one sentence: Christ 'was delivered up because of our offenses, and was raised because of our justification.' He died because of a real debt. He rose because that debt was actually paid — a resurrection is what a receipt looks like when the currency is a life.\n\nIf He were still in the tomb, there would be no way to know whether the payment had been accepted. He isn't. It was.",
             "scripture": "who was delivered up because of our offenses, and was raised because of our justification.",
-            "scriptureRef": "Romans 4:25 (NKJV)"
+            "scriptureRef": "Romans 4:25"
           },
           {
             "heading": "The response the news itself commands",
             "body": "News doesn't ask to be improved on — it asks to be believed and acted on. Jesus summarised His own message in a single sentence: 'The time is fulfilled, and the kingdom of God is at hand. Repent, and believe in the gospel.'\n\nNot a formula to recite, not a feeling to manufacture — an actual turn away from trusting yourself and toward trusting what Christ has already done. That turn either happens or it doesn't; there is no third category of admiring the news from a safe distance.\n\nNo one reading this is promised tomorrow to decide. The kingdom is at hand now, the news is true now, and the only response the gospel itself commands — repent and believe — is available to you right now.",
             "scripture": "The time is fulfilled, and the kingdom of God is at hand. Repent, and believe in the gospel.",
-            "scriptureRef": "Mark 1:15 (NKJV)",
+            "scriptureRef": "Mark 1:15",
             "quiz": {
               "question": "In Mark 1:15, what two things does Jesus say to do in response to the good news?",
               "options": [
@@ -1404,7 +1468,9 @@
     "mortalityStat": "10 / 10 people will die",
     "ctaButton": "Take the test",
     "secondaryLink": "Have questions first? Learn more",
-    "blogCard": { "eyebrow": "From the blog" },
+    "blogCard": {
+      "eyebrow": "From the blog"
+    },
     "facts": [
       "Last year, 56 million people died worldwide.",
       "Heart disease kills 17.9 million people every year.",
@@ -1627,7 +1693,8 @@
     "cta": {
       "heading": "Now you know where we stand. The more important question is where you do.",
       "button": "Take the test"
-    }
+    },
+    "scriptureNote": "Scripture quotations are taken from the New King James Version®. Copyright © 1982 by Thomas Nelson. Used by permission. All rights reserved."
   },
   "blog": {
     "label": "Blog",
@@ -1681,6 +1748,6 @@
     "needHelpLink": "Need help?",
     "needHelpUrl": "https://findahelpline.com/",
     "scripture": "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.",
-    "scriptureRef": "John 3:16 (NKJV)"
+    "scriptureRef": "John 3:16"
   }
 }

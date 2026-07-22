@@ -126,6 +126,14 @@ export default async function AboutPage({ params }: Props) {
             </Button>
           </Link>
         </div>
+
+        {/* Translation attribution — required by the publishers now that
+            per-verse version tags are gone from the quotes themselves */}
+        {data.scriptureNote && (
+          <p className="mt-10 text-center text-[11px] leading-relaxed text-white/35">
+            {data.scriptureNote}
+          </p>
+        )}
       </PageShell>
     </>
   );
