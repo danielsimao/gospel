@@ -1,0 +1,2 @@
+echo "→ pre-push gate: lint · test · typecheck"
+pnpm lint && pnpm test && npx tsc --noEmit
