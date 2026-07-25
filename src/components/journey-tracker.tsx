@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Check } from "lucide-react";
 import { ShareButtons } from "@/components/share-buttons";
 import { TOTAL_READING_DAYS, type JourneySnapshot } from "@/lib/use-journey";
 import { trackHomeJourneyStepClicked } from "@/lib/eternity-analytics";
@@ -230,19 +231,7 @@ function CardBody({
         <div className="flex shrink-0 items-center gap-2">
           {state === "complete" && (
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#D4A843]/15 text-[#D4A843]">
-              <svg
-                width="10"
-                height="10"
-                viewBox="0 0 10 10"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M2 5.5L4 7.5L8 3" />
-              </svg>
+              <Check className="h-2.5 w-2.5" strokeWidth={1.5} aria-hidden />
             </span>
           )}
           {showArrow && (

@@ -2,6 +2,7 @@
 
 import { useState, useSyncExternalStore } from "react";
 import { m } from "framer-motion";
+import { Check, Link, Share2 } from "lucide-react";
 import { trackShared } from "@/lib/analytics";
 import type { Locale } from "@/lib/i18n";
 
@@ -113,14 +114,9 @@ export function ShareButtons({ messages, locale, sharePath, utmCampaign, copyTex
           aria-label="Copy link"
         >
           {copied ? (
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
+            <Check className="h-5 w-5" strokeWidth={2} aria-hidden />
           ) : (
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
-              <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
-            </svg>
+            <Link className="h-5 w-5" strokeWidth={2} aria-hidden />
           )}
         </button>
 
@@ -131,13 +127,7 @@ export function ShareButtons({ messages, locale, sharePath, utmCampaign, copyTex
             className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-white/55 transition-colors hover:border-white/25 hover:text-white/80 min-h-[44px] min-w-[44px]"
             aria-label="Share"
           >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <circle cx="18" cy="5" r="3" />
-              <circle cx="6" cy="12" r="3" />
-              <circle cx="18" cy="19" r="3" />
-              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-            </svg>
+            <Share2 className="h-5 w-5" strokeWidth={2} aria-hidden />
           </button>
         )}
       </div>
