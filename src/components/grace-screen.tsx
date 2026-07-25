@@ -110,7 +110,7 @@ export function GraceScreen({ messages, returning, onBack }: GraceScreenProps) {
             className="mb-4 flex items-center justify-center gap-2"
           >
             <span className="h-px w-6 bg-[#D4A843]/40" />
-            <span className="font-mono text-[9px] uppercase tracking-[3px] text-[#D4A843]/60">
+            <span className="font-mono text-[9px] uppercase tracking-[3px] text-[#D4A843]/70">
               {messages.label}
             </span>
             <span className="h-px w-6 bg-[#D4A843]/40" />
@@ -249,7 +249,7 @@ export function GraceScreen({ messages, returning, onBack }: GraceScreenProps) {
             <button
               type="button"
               onClick={onBack}
-              className="text-[11px] text-white/30 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/50"
+              className="text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
             >
               {messages.rereadVerdict}
             </button>

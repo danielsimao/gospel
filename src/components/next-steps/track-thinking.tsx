@@ -148,7 +148,7 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
         <Link
           href={`/${locale}/reading-plan`}
           onClick={() => trackNextStepsActionClicked("reading_plan", "thinking")}
-          className="mt-4 inline-flex items-center text-sm text-white/60 transition-colors hover:text-white/60"
+          className="mt-4 inline-flex items-center text-sm text-white/60 transition-colors hover:text-white/80"
         >
           {messages.readingPlanLabel} &rarr;
         </Link>

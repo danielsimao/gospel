@@ -101,7 +101,7 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
             animate={{ rotate: isExpanded ? 180 : 0 }}
             transition={{ duration: 0.3, ease: EASE_OUT_STRONG }}
           >
-            <ChevronDown className="size-4 text-white/50" />
+            <ChevronDown className="size-4 text-white/60" />
           </m.div>
         </div>
       </button>

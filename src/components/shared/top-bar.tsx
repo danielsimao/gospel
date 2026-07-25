@@ -50,7 +50,7 @@ export function TopBar({ locale, learnLabel, blogLabel, messages }: TopBarProps)
           <Link
             href={`/${locale}/test`}
             onClick={() => trackTopBarTestClicked()}
-            className="text-white/50 transition-colors hover:text-white/70"
+            className="text-white/60 transition-colors hover:text-white/70"
           >
             {messages.testLabel}
           </Link>
@@ -59,7 +59,7 @@ export function TopBar({ locale, learnLabel, blogLabel, messages }: TopBarProps)
           <Link
             href={`/${locale}/reading-plan`}
             onClick={() => trackTopBarReadingClicked()}
-            className="text-white/50 transition-colors hover:text-white/70"
+            className="text-white/60 transition-colors hover:text-white/70"
           >
             {messages.readingLabel}
           </Link>
@@ -68,7 +68,7 @@ export function TopBar({ locale, learnLabel, blogLabel, messages }: TopBarProps)
           <Link
             href={`/${locale}/blog`}
             onClick={() => trackTopBarBlogClicked()}
-            className="text-white/50 transition-colors hover:text-white/70"
+            className="text-white/60 transition-colors hover:text-white/70"
           >
             {blogLabel}
           </Link>
@@ -76,7 +76,7 @@ export function TopBar({ locale, learnLabel, blogLabel, messages }: TopBarProps)
         <Link
           href={`/${locale}/learn`}
           onClick={() => trackTopBarLearnClicked()}
-          className="text-white/50 transition-colors hover:text-white/70"
+          className="text-white/60 transition-colors hover:text-white/70"
         >
           {learnLabel}
         </Link>

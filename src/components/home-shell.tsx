@@ -131,7 +131,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
     journey.stage === "visitor" && !scrolled && consentAnswered && isScrollable;
 
   return (
-    <div className="min-h-dvh overflow-x-hidden bg-[#060404]">
+    <main className="min-h-dvh overflow-x-hidden bg-[#060404]">
       {/* Scroll hint — shown to new visitors at the top, once consent is answered and the page overflows the viewport */}
       <m.div
         aria-hidden="true"
@@ -150,13 +150,13 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
         </m.div>
       </m.div>
 
-      <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-center px-4 pt-8 pb-12 sm:px-6 sm:pt-10 sm:pb-16">
+      <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-start px-4 pt-8 pb-12 sm:px-6 sm:pt-10 sm:pb-16">
         {/* Radial vignette */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
 
         <div className="relative z-[1] flex w-full flex-col items-center">
           {/* Label */}
-          <p className="font-mono text-[9px] uppercase tracking-[4px] text-white/50 sm:text-[10px] sm:tracking-[5px]">
+          <p className="font-mono text-[9px] uppercase tracking-[4px] text-white/60 sm:text-[10px] sm:tracking-[5px]">
             {hero.label}
           </p>
 
@@ -193,7 +193,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
                 <p className="font-mono text-xl font-bold tabular-nums text-red-400/80 sm:text-2xl">
                   {card.value}
                 </p>
-                <p className="mt-1 font-mono text-[8px] uppercase tracking-[1.5px] text-white/50 sm:text-[9px] sm:tracking-[2px]">
+                <p className="mt-1 font-mono text-[8px] uppercase tracking-[1.5px] text-white/60 sm:text-[9px] sm:tracking-[2px]">
                   {hero[card.key]}
                 </p>
               </div>
@@ -207,11 +207,18 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
             </div>
           )}
 
-          {/* Death globe — one red ping per ~0.5s, drag to spin. The wrapper
-              mirrors the globe's own max-w + square aspect so the reserved
-              box is exact (globe mounts post-hydration; no reflow). */}
-          <div className="mx-auto mt-6 aspect-square w-full max-w-[380px] sm:mt-10 sm:max-w-[440px]">
-            <DeathGlobe />
+          {/* Death globe — one red ping per ~0.5s, drag to spin. Reserve the
+              square with padding-top (percentage padding is resolved from the
+              width and survives flex sizing), not aspect-square: an empty
+              aspect-square flex child collapses to 0 height until the canvas
+              mounts (~200ms in), which grew the centered hero and shifted it
+              (CLS 0.34). The padding box holds the full square from first paint. */}
+          <div className="mx-auto mt-6 w-full max-w-[380px] sm:mt-10 sm:max-w-[440px]">
+            <div className="relative w-full pt-[100%]">
+              <div className="absolute inset-0">
+                <DeathGlobe />
+              </div>
+            </div>
           </div>
 
           {/* === Bottom CTA section — adapts to journey stage === */}
@@ -281,7 +288,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
                   resetJourney();
                   clearSession();
                 }}
-                className="mt-5 text-[11px] text-white/30 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/50"
+                className="mt-5 text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
               >
                 {home.journey.retakeLabel}
               </Link>
@@ -325,7 +332,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
               {/* Dim gold eyebrow — leaning toward grace, not there yet */}
               <div className="flex items-center gap-2">
                 <span className="h-px w-6 bg-[#D4A843]/30" />
-                <span className="font-mono text-[9px] uppercase tracking-[3px] text-[#D4A843]/60">
+                <span className="font-mono text-[9px] uppercase tracking-[3px] text-[#D4A843]/70">
                   {home.journeyStages.thinking.eyebrow}
                 </span>
                 <span className="h-px w-6 bg-[#D4A843]/30" />
@@ -381,7 +388,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
                   </div>
                   <span
                     aria-hidden="true"
-                    className="mt-0.5 text-white/40 transition-transform group-hover:translate-x-1"
+                    className="mt-0.5 text-white/60 transition-transform group-hover:translate-x-1"
                   >
                     →
                   </span>
@@ -406,7 +413,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
                   resetJourney();
                   clearSession();
                 }}
-                className="mt-2 text-[11px] text-white/30 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/50"
+                className="mt-2 text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
               >
                 {home.journeyStages.thinking.retakeLabel}
               </Link>
@@ -468,6 +475,6 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
           )}
         </div>
       </section>
-    </div>
+    </main>
   );
 }

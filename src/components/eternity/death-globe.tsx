@@ -149,11 +149,28 @@ export function DeathGlobe() {
       pings = [];
     };
 
+    // Defer the (main-thread-heavy) cobe init until the browser is idle, so it
+    // yields to the hero's LCP paint instead of competing with it. On the home
+    // page the globe is in the initial viewport, so a synchronous start() here
+    // added ~cobe-init to TBT during load. requestIdleCallback (timeout-capped)
+    // lets first paint win the thread; the globe fades in a beat later.
+    let cancelled = false;
+    const ric: (cb: IdleRequestCallback) => void =
+      typeof window.requestIdleCallback === "function"
+        ? (cb) => window.requestIdleCallback(cb, { timeout: 1500 })
+        : (cb) => window.setTimeout(() => cb({ didTimeout: true, timeRemaining: () => 0 }), 200);
+    const scheduleStart = () => {
+      if (globe || cancelled) return;
+      ric(() => {
+        if (!cancelled && visible) start();
+      });
+    };
+
     // Only run the WebGL loop while the globe is actually on screen.
     const io = new IntersectionObserver(
       ([entry]) => {
         visible = entry.isIntersecting;
-        if (visible) start();
+        if (visible) scheduleStart();
         else stop();
       },
       // Wide margin: WebGL init + texture sampling take a beat — starting
@@ -184,6 +201,7 @@ export function DeathGlobe() {
     window.addEventListener("pointercancel", endPointer);
 
     return () => {
+      cancelled = true;
       io.disconnect();
       stop();
       window.removeEventListener("resize", onResize);

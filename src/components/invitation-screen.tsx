@@ -92,7 +92,7 @@ export function InvitationScreen({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="mx-auto mt-4 max-w-sm text-[13px] italic leading-relaxed text-white/50"
+            className="mx-auto mt-4 max-w-sm text-[13px] italic leading-relaxed text-white/60"
           >
             {invitation.urgencyLine}
           </m.p>
@@ -118,7 +118,7 @@ export function InvitationScreen({
             <button
               type="button"
               onClick={onBack}
-              className="mt-3 text-[11px] text-white/30 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/50"
+              className="mt-3 text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
             >
               {invitation.rereadGrace}
             </button>
@@ -165,7 +165,7 @@ export function InvitationScreen({
 
             {invitationResponse === "dismissed" && messages.nextSteps?.dismissedReturn && (
               <p className="text-center text-sm text-white/60">
-                <Link href={`/${locale}/reading-plan`} className="underline transition-colors hover:text-white/50">
+                <Link href={`/${locale}/reading-plan`} className="underline transition-colors hover:text-white/75">
                   {messages.nextSteps.dismissedReturn}
                 </Link>
               </p>
@@ -176,7 +176,7 @@ export function InvitationScreen({
                 <Link
                   href={`/${locale}/learn`}
                   onClick={() => trackInvitationLearnMoreClicked(invitationResponse, locale)}
-                  className="underline transition-colors hover:text-white/50"
+                  className="underline transition-colors hover:text-white/75"
                 >
                   {invitation.learnMoreLabel}
                 </Link>

@@ -123,7 +123,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             variant === "gold" && "group-hover/btn:border-[#D4A843]/55 group-hover/btn:from-[#1f1809] group-hover/btn:to-[#151006]",
             variant === "red" && "group-hover/btn:border-red-500/55 group-hover/btn:from-[#1f0a0a] group-hover/btn:to-[#160606]",
             variant === "ghost" && "group-hover/btn:border-white/22 group-hover/btn:from-[#111010] group-hover/btn:to-[#0c0a0a] group-hover/btn:text-white/75",
-            isText && "group-hover/btn:text-white/50",
+            isText && "group-hover/btn:text-white/60",
             // Filter
             !isText && "group-hover/btn:brightness-110",
           )}

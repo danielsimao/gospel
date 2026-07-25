@@ -284,7 +284,7 @@ export function GameShell({ messages, locale }: GameShellProps) {
       <Link
           href={`/${locale}`}
           aria-label={messages.test.backLabel}
-          className="fixed left-3 top-12 z-40 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/60 sm:left-4 sm:top-14 sm:text-[10px]"
+          className="fixed left-3 top-12 z-40 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/80 sm:left-4 sm:top-14 sm:text-[10px]"
         >
           <span aria-hidden="true">&larr;</span>
           <span>{messages.test.backLabel}</span>

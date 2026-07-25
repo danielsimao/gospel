@@ -38,7 +38,12 @@ export function NextStepsClient({ nextStepsMessages, shareMessages, locale }: Ne
     trackNextStepsViewed(track, locale);
   }, [ready, track, locale, router]);
 
-  if (!ready || !track) return null;
+  // Reserve the full-viewport shell while the journey loads from localStorage.
+  // Returning null here let the footer paint directly under an empty page,
+  // then jump a full viewport down when content mounted — CLS 0.956. The
+  // placeholder is a min-h-dvh <main> so the footer sits at its final position
+  // from first paint, and the page has its one main landmark pre-hydration.
+  if (!ready || !track) return <main className="min-h-dvh bg-[#060404]" aria-hidden="true" />;
 
   return (
     <PageShell>

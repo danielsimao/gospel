@@ -31,7 +31,7 @@ function QuizOption({
     idle: "border-white/[0.08] bg-white/[0.02] text-white/55 hover:border-white/15 hover:bg-white/[0.04] hover:text-white/75",
     correct: "border-[#D4A843]/40 bg-[#D4A843]/[0.06] text-[#D4A843]",
     "wrong-selected": "border-white/[0.08] bg-white/[0.02] text-white/60",
-    wrong: "border-white/[0.04] bg-transparent text-white/50",
+    wrong: "border-white/[0.04] bg-transparent text-white/60",
   };
 
   return (

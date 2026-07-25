@@ -218,7 +218,7 @@ function CardBody({
           <div>
             <p
               className={`text-sm font-semibold tracking-tight ${
-                state === "upcoming" ? "text-white/50" : "text-white/85"
+                state === "upcoming" ? "text-white/60" : "text-white/85"
               }`}
             >
               {label}
@@ -237,7 +237,7 @@ function CardBody({
           {showArrow && (
             <span
               aria-hidden="true"
-              className={`text-white/50 transition-[transform,color] group-hover:translate-x-1 ${
+              className={`text-white/60 transition-[transform,color] group-hover:translate-x-1 ${
                 state === "active" ? "group-hover:text-[#D4A843]" : "group-hover:text-[#D4A843]/70"
               }`}
             >

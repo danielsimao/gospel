@@ -13,8 +13,8 @@ export function FooterLocaleSwitch({ locale }: { locale: Locale }) {
     return (
       <>
         <span className="font-bold text-white/70">EN</span>
-        <span className="text-white/50">·</span>
-        <Link href={otherLocalePath} prefetch={false} className="text-white/60 transition-colors hover:text-white/60">
+        <span className="text-white/60">·</span>
+        <Link href={otherLocalePath} prefetch={false} className="text-white/60 transition-colors hover:text-white/80">
           PT
         </Link>
       </>
@@ -23,10 +23,10 @@ export function FooterLocaleSwitch({ locale }: { locale: Locale }) {
 
   return (
     <>
-      <Link href={otherLocalePath} prefetch={false} className="text-white/60 transition-colors hover:text-white/60">
+      <Link href={otherLocalePath} prefetch={false} className="text-white/60 transition-colors hover:text-white/80">
         EN
       </Link>
-      <span className="text-white/50">·</span>
+      <span className="text-white/60">·</span>
       <span className="font-bold text-white/70">PT</span>
     </>
   );

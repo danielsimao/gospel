@@ -60,7 +60,7 @@ export function BlogPostPage({ slug, content, datePublished, locale, messages, s
           {messages.label}
         </Link>
 
-        <p className="mt-3 font-mono text-[10px] uppercase tracking-[2.5px] text-white/40">
+        <p className="mt-3 font-mono text-[10px] uppercase tracking-[2.5px] text-white/60">
           {formattedDate}
         </p>
         <h1
@@ -134,7 +134,7 @@ export function BlogPostPage({ slug, content, datePublished, locale, messages, s
                     href={source.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-white/50 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white/70"
+                    className="text-sm text-white/60 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white/70"
                   >
                     {source.label}
                   </a>

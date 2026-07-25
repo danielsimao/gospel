@@ -47,9 +47,9 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-10">
           {/* Explore */}
           <div>
-            <h4 className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
+            <h2 className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
               {messages.exploreLabel}
-            </h4>
+            </h2>
             <nav className="flex flex-col gap-2.5">
               <Link
                 href={`/${locale}`}
@@ -84,9 +84,9 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
 
           {/* Learn */}
           <div>
-            <h4 className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
+            <h2 className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
               {messages.learnLabel}
-            </h4>
+            </h2>
             <nav className="flex flex-col gap-2.5">
               {/* First few only — 14 stacked links dwarfed the other columns
                   (and made the mobile footer a scroll wall). Hub links them all. */}
@@ -112,9 +112,9 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
 
           {/* Grow */}
           <div>
-            <h4 className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
+            <h2 className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
               {messages.growLabel}
-            </h4>
+            </h2>
             <nav className="flex flex-col gap-2.5">
               <Link
                 href={`/${locale}/reading-plan`}
@@ -160,24 +160,24 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
           <Link
             href={`/${locale}/privacy`}
             prefetch={false}
-            className="font-mono text-[11px] text-white/40 transition-colors hover:text-white/60"
+            className="font-mono text-[11px] text-white/60 transition-colors hover:text-white/80"
           >
             {messages.privacyLink}
           </Link>
-          <span className="text-white/20">&middot;</span>
+          <span className="text-white/60">&middot;</span>
           <Link
             href={`/${locale}/terms`}
             prefetch={false}
-            className="font-mono text-[11px] text-white/40 transition-colors hover:text-white/60"
+            className="font-mono text-[11px] text-white/60 transition-colors hover:text-white/80"
           >
             {messages.termsLink}
           </Link>
-          <span className="text-white/20">&middot;</span>
+          <span className="text-white/60">&middot;</span>
           <a
             href={messages.needHelpUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-mono text-[11px] text-white/40 transition-colors hover:text-white/60"
+            className="font-mono text-[11px] text-white/60 transition-colors hover:text-white/80"
           >
             {messages.needHelpLink}
           </a>
@@ -193,7 +193,7 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
 
         {/* Bottom row */}
         <div className="mt-6 flex items-center justify-between">
-          <span className="font-mono text-[11px] text-white/50">ifyoudiedtoday.com</span>
+          <span className="font-mono text-[11px] text-white/60">ifyoudiedtoday.com</span>
           <div className="flex items-center gap-2.5 font-mono text-[11px]">
             <FooterLocaleSwitch locale={locale} />
           </div>

@@ -67,7 +67,7 @@ export default async function CardsPage({ params }: Props) {
   });
 
   return (
-    <div className="relative z-[1] mx-auto max-w-lg px-4 py-16 sm:px-8 print:max-w-none print:p-0">
+    <main className="relative z-[1] mx-auto max-w-lg px-4 py-16 sm:px-8 print:max-w-none print:p-0">
       <div className="print:hidden">
         <h1
           className="text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl"
@@ -76,7 +76,7 @@ export default async function CardsPage({ params }: Props) {
           {cards.title}
         </h1>
         <p className="mt-3 text-sm text-white/60">{cards.subtitle}</p>
-        <p className="mt-6 text-[13px] leading-relaxed text-white/50">{cards.instructions}</p>
+        <p className="mt-6 text-[13px] leading-relaxed text-white/60">{cards.instructions}</p>
         <div className="mt-8">
           <PrintCardsButton label={cards.printButton} />
         </div>
@@ -102,7 +102,7 @@ export default async function CardsPage({ params }: Props) {
                   {question}
                 </p>
               </div>
-              <p className="font-mono text-[6.5pt] uppercase tracking-[0.14em] text-white/50">
+              <p className="font-mono text-[6.5pt] uppercase tracking-[0.14em] text-white/60">
                 {locale === "pt" ? "A Lei de Deus. Seis perguntas. Um veredicto." : "God's Law. Six questions. One verdict."}
               </p>
             </div>
@@ -114,6 +114,6 @@ export default async function CardsPage({ params }: Props) {
           </div>
         ))}
       </div>
-    </div>
+    </main>
   );
 }

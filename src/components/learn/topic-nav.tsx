@@ -71,7 +71,7 @@ export function TopicNav({ slug, locale, nextLabel, nextTopic, ctaHeading, ctaBu
               </span>
               <TopicEmblem
                 slug={nextTopic.slug}
-                className="size-5 shrink-0 text-[#D4A843]/60 transition-colors group-hover:text-[#D4A843]/80"
+                className="size-5 shrink-0 text-[#D4A843]/70 transition-colors group-hover:text-[#D4A843]/80"
                 strokeWidth={1.7}
               />
               <div>
@@ -79,7 +79,7 @@ export function TopicNav({ slug, locale, nextLabel, nextTopic, ctaHeading, ctaBu
                 <p className="mt-0.5 text-xs text-white/60">{nextTopic.subtitle}</p>
               </div>
             </div>
-            <span className="text-white/50 transition-[transform,color] group-hover:translate-x-1 group-hover:text-[#D4A843]/70">
+            <span className="text-white/60 transition-[transform,color] group-hover:translate-x-1 group-hover:text-[#D4A843]/70">
               &rarr;
             </span>
           </Link>
@@ -91,7 +91,7 @@ export function TopicNav({ slug, locale, nextLabel, nextTopic, ctaHeading, ctaBu
         <div className="mt-6 text-center">
           <Link
             href={`/${locale}/learn`}
-            className="inline-flex items-center gap-1.5 text-xs text-white/50 transition-colors hover:text-white/70"
+            className="inline-flex items-center gap-1.5 text-xs text-white/60 transition-colors hover:text-white/70"
           >
             &larr; {allTopicsLabel}
           </Link>

@@ -242,7 +242,7 @@ export function QuestionCard({
                           if (answered) trackAnswerChanged(question.id, answered);
                           dispatch({ type: "UNDO_ANSWER" });
                         }}
-                        className="mt-3 w-full text-center font-mono text-[10px] uppercase tracking-[2px] text-white/35 transition-colors hover:text-white/55"
+                        className="mt-3 w-full text-center font-mono text-[10px] uppercase tracking-[2px] text-white/60 transition-colors hover:text-white/75"
                       >
                         {testMessages.changeAnswerLabel}
                       </m.button>

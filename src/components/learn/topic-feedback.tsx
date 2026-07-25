@@ -58,7 +58,7 @@ export function TopicFeedback({ slug, locale, messages }: TopicFeedbackProps) {
     <div className="mt-14 flex min-h-[64px] flex-col items-center justify-center border-t border-white/[0.06] pt-8 text-center">
       {state === "ask" ? (
         <>
-          <p className="font-mono text-[10px] uppercase tracking-[2.5px] text-white/50">
+          <p className="font-mono text-[10px] uppercase tracking-[2.5px] text-white/60">
             {messages.question}
           </p>
           <div className="mt-3 flex gap-2">

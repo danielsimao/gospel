@@ -165,7 +165,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
             <button
               type="button"
               onClick={() => setResetDialogOpen(true)}
-              className="font-mono text-[10px] uppercase tracking-[2px] text-white/40 transition-colors hover:text-white/60"
+              className="font-mono text-[10px] uppercase tracking-[2px] text-white/60 transition-colors hover:text-white/80"
             >
               {resetLabel}
             </button>
@@ -234,7 +234,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
               ? "text-red-400/75"
               : band.key === "rescue"
                 ? "text-[#D4A843]/75"
-                : "text-white/50";
+                : "text-white/60";
           return (
             <div
               key={band.key}
@@ -270,7 +270,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
                 </span>
                 <TopicEmblem
                   slug={topic.slug}
-                  className="size-5 shrink-0 text-[#D4A843]/60 transition-colors group-hover:text-[#D4A843]/80"
+                  className="size-5 shrink-0 text-[#D4A843]/70 transition-colors group-hover:text-[#D4A843]/80"
                   strokeWidth={1.7}
                 />
                 <div>
@@ -284,7 +284,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
                     <Check className="h-2.5 w-2.5" strokeWidth={1.5} aria-hidden />
                   </span>
                 )}
-                <span className="text-white/50 transition-[transform,color] group-hover:translate-x-1 group-hover:text-[#D4A843]/70">
+                <span className="text-white/60 transition-[transform,color] group-hover:translate-x-1 group-hover:text-[#D4A843]/70">
                   &rarr;
                 </span>
               </div>
