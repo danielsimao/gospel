@@ -280,7 +280,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
               <div className="flex items-center gap-2">
                 {isDone && (
                   <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#D4A843]/15 text-[#D4A843]">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <path d="M2 5.5L4 7.5L8 3" />
                     </svg>
                   </span>

@@ -37,6 +37,7 @@ function CrossOnHill({ className, strokeWidth = 2, size = 24, color = "currentCo
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
+      aria-hidden="true"
       {...rest}
     >
       <path d="M10 20h4v-9h5V7h-5V2h-4v5H5v4h5z" />
@@ -58,6 +59,7 @@ function ShepherdStaff({ className, strokeWidth = 2, size = 24, color = "current
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
+      aria-hidden="true"
       {...rest}
     >
       <path d="M15.5 22 V7 a5 5 0 1 0 -10 0 v2" />

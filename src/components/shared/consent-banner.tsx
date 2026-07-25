@@ -64,12 +64,14 @@ export function ConsentBanner() {
         </p>
         <div className="flex shrink-0 gap-2">
           <button
+            type="button"
             onClick={handleDecline}
             className="font-mono text-[11px] text-white/40 transition-colors hover:text-white/60"
           >
             {copy.decline}
           </button>
           <button
+            type="button"
             onClick={handleAccept}
             className="rounded bg-white/10 px-3 py-1 font-mono text-[11px] text-white/70 transition-colors hover:bg-white/15 hover:text-white/90"
           >

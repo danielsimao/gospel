@@ -239,6 +239,7 @@ function CardBody({
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                aria-hidden="true"
               >
                 <path d="M2 5.5L4 7.5L8 3" />
               </svg>

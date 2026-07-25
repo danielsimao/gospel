@@ -35,7 +35,7 @@ function QuizOption({
   };
 
   return (
-    <button onClick={onClick} disabled={state !== "idle"} className={`${base} ${styles[state]}`}>
+    <button type="button" onClick={onClick} disabled={state !== "idle"} className={`${base} ${styles[state]}`}>
       <span className="flex items-start gap-2">
         {state === "wrong-selected" && (
           <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-white/30" />

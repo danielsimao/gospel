@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "biome lint .",
     "test": "vitest run",
     "test:watch": "vitest",
     "prepare": "husky"
@@ -34,14 +34,13 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.5.5",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/react-simple-maps": "^3.0.6",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.1",
     "husky": "^9.1.7",
     "tailwindcss": "^4",
     "typescript": "^5.9.3",
