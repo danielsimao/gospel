@@ -25,7 +25,7 @@ function QuizOption({
   onClick: () => void;
 }) {
   const base =
-    "w-full rounded-lg border px-4 py-3 text-left text-sm leading-snug transition-all duration-300 cursor-pointer";
+    "w-full rounded-lg border px-4 py-3 text-left text-sm leading-snug transition-colors duration-300 cursor-pointer";
 
   const styles = {
     idle: "border-white/[0.08] bg-white/[0.02] text-white/55 hover:border-white/15 hover:bg-white/[0.04] hover:text-white/75",

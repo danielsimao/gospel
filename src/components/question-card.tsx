@@ -297,7 +297,7 @@ export function QuestionCard({
               >
                 <span
                   aria-hidden="true"
-                  className="h-px w-5 bg-red-500/45 transition-all duration-300 group-hover:w-9 group-hover:bg-red-500"
+                  className="h-px w-5 bg-red-500/45 transition-[width,background-color] duration-300 group-hover:w-9 group-hover:bg-red-500"
                 />
                 <span>{testMessages.seeVerdictLabel}</span>
                 <span

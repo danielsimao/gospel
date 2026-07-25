@@ -63,7 +63,7 @@ export function TopicNav({ slug, locale, nextLabel, nextTopic, ctaHeading, ctaBu
           <Link
             href={`/${locale}/learn/${nextTopic.slug}`}
             onClick={() => trackTopicNavClicked(slug, "next", locale)}
-            className="group mt-3 flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.015] px-5 py-3.5 transition-all hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03] sm:px-6"
+            className="group mt-3 flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.015] px-5 py-3.5 transition-colors hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03] sm:px-6"
           >
             <div className="flex items-center gap-4">
               <span className="font-mono text-[10px] tabular-nums text-[#D4A843]/70">
@@ -79,7 +79,7 @@ export function TopicNav({ slug, locale, nextLabel, nextTopic, ctaHeading, ctaBu
                 <p className="mt-0.5 text-xs text-white/60">{nextTopic.subtitle}</p>
               </div>
             </div>
-            <span className="text-white/50 transition-all group-hover:translate-x-1 group-hover:text-[#D4A843]/70">
+            <span className="text-white/50 transition-[transform,color] group-hover:translate-x-1 group-hover:text-[#D4A843]/70">
               &rarr;
             </span>
           </Link>

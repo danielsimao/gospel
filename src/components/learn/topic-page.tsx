@@ -62,7 +62,7 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
         >
           <Link
             href={`/${locale}/learn`}
-            className="group mb-6 inline-flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[2px] text-white/60 transition-all hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03] hover:text-[#D4A843]/70"
+            className="group mb-6 inline-flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[2px] text-white/60 transition-colors hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03] hover:text-[#D4A843]/70"
           >
             <ArrowLeft className="size-3 transition-transform group-hover:-translate-x-0.5" />
             {label}

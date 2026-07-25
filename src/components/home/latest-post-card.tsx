@@ -48,7 +48,7 @@ export function LatestPostCard({ locale, eyebrow, post }: LatestPostCardProps) {
       <Link
         href={href}
         onClick={() => trackHomeBlogCardClicked(post.slug)}
-        className="group mt-4 block rounded-xl border border-white/[0.06] bg-white/[0.015] p-5 transition-all hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03]"
+        className="group mt-4 block rounded-xl border border-white/[0.06] bg-white/[0.015] p-5 transition-colors hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03]"
       >
         <div className="flex items-start justify-between gap-3">
           <div>

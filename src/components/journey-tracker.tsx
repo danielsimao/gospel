@@ -237,7 +237,7 @@ function CardBody({
           {showArrow && (
             <span
               aria-hidden="true"
-              className={`text-white/50 transition-all group-hover:translate-x-1 ${
+              className={`text-white/50 transition-[transform,color] group-hover:translate-x-1 ${
                 state === "active" ? "group-hover:text-[#D4A843]" : "group-hover:text-[#D4A843]/70"
               }`}
             >
@@ -264,7 +264,7 @@ function JourneyCard({
   // against stale props: upcoming/all-done never become interactive.
   const effectiveHref =
     (state === "active" || state === "complete") && href ? href : undefined;
-  const base = "block rounded-xl border p-5 sm:p-6 transition-all";
+  const base = "block rounded-xl border p-5 sm:p-6 transition-colors";
 
   if (effectiveHref) {
     const className = `group ${base} ${STATE_BASE[state]} ${LINK_HOVER[state]}`;

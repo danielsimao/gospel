@@ -174,7 +174,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
             {topics.map((topic) => (
               <div key={topic.slug} className="h-[2px] flex-1 overflow-hidden rounded-full bg-white/[0.04]">
                 <div
-                  className="h-full bg-[#D4A843] transition-all duration-600 ease-out"
+                  className="h-full bg-[#D4A843] transition-[width] duration-600 ease-out"
                   style={{ width: snapshot.completed.has(topic.slug) ? "100%" : "0%" }}
                 />
               </div>
@@ -284,7 +284,7 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
                     <Check className="h-2.5 w-2.5" strokeWidth={1.5} aria-hidden />
                   </span>
                 )}
-                <span className="text-white/50 transition-all group-hover:translate-x-1 group-hover:text-[#D4A843]/70">
+                <span className="text-white/50 transition-[transform,color] group-hover:translate-x-1 group-hover:text-[#D4A843]/70">
                   &rarr;
                 </span>
               </div>
