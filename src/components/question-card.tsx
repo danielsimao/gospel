@@ -104,7 +104,6 @@ export function QuestionCard({
   const ordinal = config?.commandment ?? "";
   const roman = COMMANDMENT_ROMAN[ordinal] ?? ordinal;
   const isLastQuestion = questionIndex >= TOTAL_QUESTIONS - 1;
-  const canShowVerdictShortcut = state.answers.length >= 3 && !isLastQuestion;
 
   return (
     <div className="grid flex-1 grid-rows-[auto_1fr] px-4 py-6 sm:px-6">
@@ -294,30 +293,6 @@ export function QuestionCard({
               })}
             </m.div>
           )}
-          <div className="mt-4 flex h-9 items-center justify-center">
-            {canShowVerdictShortcut && (
-              <m.button
-                type="button"
-                onClick={() => dispatch({ type: "SHOW_VERDICT" })}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="group inline-flex items-center gap-2.5 rounded-md px-3 py-1.5 font-mono text-[11px] uppercase tracking-[2.5px] text-red-400/65 transition-colors hover:text-red-400 focus-visible:text-red-400 focus-visible:outline-none"
-              >
-                <span
-                  aria-hidden="true"
-                  className="h-px w-5 bg-red-500/45 transition-[width,background-color] duration-300 group-hover:w-9 group-hover:bg-red-500"
-                />
-                <span>{testMessages.seeVerdictLabel}</span>
-                <span
-                  aria-hidden="true"
-                  className="text-[13px] transition-transform duration-300 group-hover:translate-x-1"
-                >
-                  →
-                </span>
-              </m.button>
-            )}
-          </div>
       </div>
     </div>
   );
