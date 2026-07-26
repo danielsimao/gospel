@@ -51,7 +51,7 @@ const frontColorVariants = cva("", {
 const frontSizeVariants = cva("", {
   variants: {
     size: {
-      sm: "px-4 py-2.5 text-[13px] min-h-[40px] rounded-lg",
+      sm: "px-4 py-2.5 text-[13px] min-h-[44px] rounded-lg",
       default: "px-7 py-3 text-sm min-h-[48px] rounded-xl",
       lg: "px-9 py-4 text-[15px] min-h-[56px] rounded-2xl tracking-wider",
     },

@@ -233,19 +233,28 @@ export function QuestionCard({
                         </Button>
                       </m.div>
 
-                      <m.button
-                        type="button"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.4, delay: answered === "justify" ? 0.8 : 0.7 }}
-                        onClick={() => {
-                          if (answered) trackAnswerChanged(question.id, answered);
-                          dispatch({ type: "UNDO_ANSWER" });
-                        }}
-                        className="mt-3 w-full text-center font-mono text-[10px] uppercase tracking-[2px] text-white/60 transition-colors hover:text-white/75"
-                      >
-                        {testMessages.changeAnswerLabel}
-                      </m.button>
+                      {/* The correction is the reply to the follow-up press, so it
+                          only exists on the denial path: they deny, the follow-up
+                          presses, and this is how they answer it. After an honest
+                          admission it would be a retraction offered at the exact
+                          moment conviction lands — so it isn't rendered there. */}
+                      {answered === "justify" && (
+                        <m.button
+                          type="button"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.4, delay: 0.8 }}
+                          onClick={() => {
+                            trackAnswerChanged(question.id, answered);
+                            dispatch({ type: "UNDO_ANSWER" });
+                          }}
+                          className="mt-3 inline-flex min-h-[32px] items-center font-mono text-[10px] uppercase tracking-[1.6px] text-white/60 transition-colors hover:text-white/80"
+                        >
+                          <span className="border-b border-white/15 pb-0.5">
+                            {testMessages.changeAnswerLabel}
+                          </span>
+                        </m.button>
+                      )}
                     </m.div>
                   )}
                 </AnimatePresence>
