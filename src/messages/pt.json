@@ -174,7 +174,7 @@
       "communityHeading": "Encontra Comunidade",
       "communityBody": "Não foste feito para fazer isto sozinho. Encontra uma igreja que crê na Bíblia onde possas crescer.",
       "communityLink": "https://maps.app.goo.gl/NMMMdeJa5H5BR5Vp9",
-      "communityLinkLabel": "Encontra irmãos para caminhar contigo",
+      "communityLinkLabel": "Encontrar uma igreja bíblica",
       "learnHeading": "Aprende",
       "learnBody": "Explora os fundamentos da fé — quem é Jesus, o que significa a graça, porque é que a cruz importa.",
       "learnLinkLabel": "Explorar os fundamentos",
@@ -1725,6 +1725,33 @@
     "instructions": "Imprime em cartolina A4 e corta pelas linhas tracejadas. A cobertura de tinta escura é pesada — uma gráfica dá o melhor resultado. Cada leitura do código abre o teste e é contada, por isso vais saber que os cartões estão a dar fruto.",
     "printButton": "Imprimir a folha",
     "metaDescription": "Imprime cartões de rua com a pergunta — tu és uma boa pessoa? — e um código QR que abre o teste."
+  },
+  "findChurch": {
+    "title": "Encontrar uma igreja",
+    "metaDescription": "Não foste feito para caminhar sozinho. Como encontrar uma igreja onde a Bíblia é pregada e o evangelho é fiel — e o que procurar.",
+    "intro": "Não foste feito para fazer isto sozinho. Um novo crente cresce numa igreja local — uma família que lê a Bíblia em conjunto, ora em conjunto e te ajuda a seguir Jesus. Mas nem todas as igrejas pregam a mesma mensagem, por isso vale a pena saber o que procurar.",
+    "marksHeading": "O que procurar",
+    "marks": [
+      {
+        "mark": "A Bíblia como autoridade final",
+        "detail": "As Escrituras são abertas, lidas e ensinadas — não substituídas pela tradição, pelas opiniões de um líder ou por revelações privadas."
+      },
+      {
+        "mark": "Salvação só pela graça, só mediante a fé, só em Cristo",
+        "detail": "O perdão é um dom gratuito recebido ao confiar em Jesus — nunca algo que se ganha por obras, rituais, sacramentos ou bom comportamento."
+      },
+      {
+        "mark": "Jesus Cristo no centro",
+        "detail": "O foco está em quem Jesus é e no que fez na cruz — não em dinheiro, autoaperfeiçoamento ou na importância da própria igreja."
+      },
+      {
+        "mark": "Um povo transformado",
+        "detail": "Verás pessoas que amam Deus e umas às outras, levam o pecado a sério e te apontam para Cristo, e não para si mesmas."
+      }
+    ],
+    "filterLine": "O teste é o evangelho que uma igreja prega — não o nome à porta. Há crentes fiéis em muitas tradições, e infiéis em igrejas com o rótulo certo. Por isso, pesa o que ouves à luz da Bíblia, e não do que te é familiar.",
+    "nudge": "Não assumas que a igreja mais próxima ou mais familiar prega isto. Visita, ouve e abre tu mesmo a Bíblia — uma boa igreja ficará contente por estares a confrontar o que dizem com as Escrituras.",
+    "closing": "Ora para que Deus te conduza a uma igreja assim, e começa a procurar esta semana. Pergunta a um cristão em quem confies onde a Bíblia é pregada com fidelidade."
   },
   "footer": {
     "exploreLabel": "Explorar",

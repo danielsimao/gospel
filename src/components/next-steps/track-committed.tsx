@@ -162,18 +162,18 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
           </blockquote>
         </div>
 
-        {/* Warm secondary — a person/community, not a loud card. */}
-        <a
-          href={messages.communityLink}
-          target="_blank"
-          rel="noopener noreferrer"
+        {/* Warm secondary — a person/community, not a loud card. Points at the
+            on-site explainer: we teach the gospel marks of a sound church
+            rather than recommending a specific church or directory. */}
+        <Link
+          href={`/${locale}/find-a-church`}
           onClick={() => trackNextStepsActionClicked("community", "committed")}
           className="mt-5 flex min-h-[44px] items-center gap-3 rounded-lg border border-white/[0.08] px-4 py-2.5 text-sm text-white/70 transition-colors hover:border-[#D4A843]/25 hover:text-[#D4A843]/80"
         >
           <Users className="size-4 shrink-0 text-white/50" aria-hidden="true" />
           <span className="flex-1">{messages.communityLinkLabel}</span>
           <span aria-hidden="true" className="text-white/40">&rarr;</span>
-        </a>
+        </Link>
       </m.div>
 
       {/* ── AS YOU GROW: quiet list + the one real graphic ── */}

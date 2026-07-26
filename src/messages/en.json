@@ -174,7 +174,7 @@
       "communityHeading": "Find Community",
       "communityBody": "You weren't meant to do this alone. Find a Bible-believing church where you can grow.",
       "communityLink": "https://www.9marks.org/church-search/",
-      "communityLinkLabel": "Find believers to walk with",
+      "communityLinkLabel": "Find a Bible-believing church",
       "learnHeading": "Learn",
       "learnBody": "Explore the foundations of the faith — who Jesus is, what grace means, why the cross matters.",
       "learnLinkLabel": "Explore the foundations",
@@ -1725,6 +1725,33 @@
     "instructions": "Print on A4 card stock and cut along the dashed lines. Dark ink coverage is heavy — a print shop gives the best result. Every scan lands on the test and is counted, so you'll know the cards are working.",
     "printButton": "Print the sheet",
     "metaDescription": "Print street cards with the question — are you a good person? — and a QR code that opens the test."
+  },
+  "findChurch": {
+    "title": "Finding a church",
+    "metaDescription": "You weren't meant to walk this alone. How to find a church where the Bible is preached and the gospel is right — and what to look for.",
+    "intro": "You weren't meant to do this alone. A new believer grows in a local church — a family that reads the Bible together, prays together, and helps you follow Jesus. But not every church preaches the same message, so it's worth knowing what to look for.",
+    "marksHeading": "What to look for",
+    "marks": [
+      {
+        "mark": "The Bible as its final authority",
+        "detail": "The Scriptures are opened, read, and taught — not replaced by tradition, a leader's opinions, or private revelation."
+      },
+      {
+        "mark": "Salvation by grace alone, through faith alone, in Christ alone",
+        "detail": "Forgiveness is a free gift received by trusting Jesus — never something you earn by works, rituals, sacraments, or good behaviour."
+      },
+      {
+        "mark": "Jesus Christ at the centre",
+        "detail": "The focus is on who Jesus is and what He did on the cross — not on money, self-improvement, or the church's own importance."
+      },
+      {
+        "mark": "A changed people",
+        "detail": "You'll see people who love God and each other, take sin seriously, and point you to Christ rather than to themselves."
+      }
+    ],
+    "filterLine": "The test is the gospel a church preaches — not the name over its door. Faithful believers are found across many traditions, and unfaithful ones in churches with the right label. So weigh what you hear against the Bible, not against what's familiar.",
+    "nudge": "Don't assume the nearest or most familiar church preaches this. Visit, listen, and open the Bible for yourself — a good church will be glad you're testing what they say against Scripture.",
+    "closing": "Pray that God would lead you to such a church, and start looking this week. Ask a Christian you trust where the Bible is faithfully preached."
   },
   "footer": {
     "exploreLabel": "Explore",

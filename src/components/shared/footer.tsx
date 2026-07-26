@@ -124,14 +124,13 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
                 {messages.readingPlanLink}
               </Link>
               <FooterNextStepsLink locale={locale} label={messages.nextStepsLink} />
-              <a
-                href={messages.churchUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href={`/${locale}/find-a-church`}
+                prefetch={false}
                 className="text-sm text-white/70 transition-colors hover:text-white/80"
               >
                 {messages.churchLink}
-              </a>
+              </Link>
               <a
                 href={messages.livingWatersUrl}
                 target="_blank"
