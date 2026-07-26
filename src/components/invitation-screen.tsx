@@ -2,12 +2,12 @@
 
 import { m } from "framer-motion";
 import Link from "next/link";
-import { ShareButtons } from "@/components/share-buttons";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import {
   trackInvitationResponse,
   trackInvitationLearnMoreClicked,
 } from "@/lib/analytics";
+import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { InvitationResponse, Messages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 
@@ -18,12 +18,6 @@ interface InvitationScreenProps {
   invitationResponse: InvitationResponse | null;
   onResponse: (response: InvitationResponse) => void;
   onBack: () => void;
-  shareMessages?: {
-    prompt: string;
-    whatsappMessage: string;
-    telegramMessage: string;
-    linkCopied: string;
-  };
 }
 
 export function InvitationScreen({
@@ -33,9 +27,8 @@ export function InvitationScreen({
   invitationResponse,
   onResponse,
   onBack,
-  shareMessages,
 }: InvitationScreenProps) {
-  const { invitation, share } = messages;
+  const { invitation } = messages;
 
   function handleResponse(response: InvitationResponse) {
     const totalTime = Date.now() - startedAt;
@@ -45,14 +38,23 @@ export function InvitationScreen({
 
   return (
     <div className="relative flex flex-1 flex-col items-center justify-center px-6 py-16">
-      {/* Crossroads atmosphere — judgment above, the door below */}
+      {/* Crossroads atmosphere — judgment above, the door below. This screen is
+          the hinge of the whole flow (red law → gold grace) and the gradient
+          was already here, just pitched at 0.05/0.07 behind a 36px blur, which
+          made it undetectable. Alphas raised and the blur dropped: both stops
+          already fade to transparent, so blurring only bought a composited
+          layer. Same reasoning as the verdict wash.
+
+          Both stops stay deliberately below their neighbours: the verdict is
+          the reddest screen in the flow and grace is the goldest (its wash is
+          0.08 at opacity-70, ≈0.056 effective). This is the hinge, so it must
+          not out-red the verdict or out-gold grace. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 12%, rgba(239,68,68,0.05) 0%, transparent 55%), radial-gradient(ellipse at 50% 72%, rgba(212,168,67,0.07) 0%, transparent 60%)",
-          filter: "blur(36px)",
+            "radial-gradient(ellipse at 50% 8%, rgba(239,68,68,0.09) 0%, transparent 55%), radial-gradient(ellipse at 50% 78%, rgba(212,168,67,0.08) 0%, transparent 60%)",
         }}
       />
       <div className="relative max-w-lg w-full text-center">
@@ -70,32 +72,50 @@ export function InvitationScreen({
           <span className="h-px w-6 bg-[#D4A843]/40" />
         </m.div>
 
-        {/* Heading — the question yields once answered */}
-        <m.h2
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: invitationResponse ? 0.4 : 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className={
-            invitationResponse
-              ? "text-xl font-semibold text-white/70 sm:text-2xl"
-              : "text-3xl font-bold sm:text-4xl"
-          }
-        >
-          {invitation.heading}
-        </m.h2>
+        {/* Heading — retired once answered rather than dimmed to 0.4. A ghost
+            question sitting above the answer reads as leftover, not as
+            resolution; the eyebrow above still labels the section. */}
+        {!invitationResponse && (
+          <m.h2
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-balance text-3xl font-bold sm:text-4xl"
+          >
+            {invitation.heading}
+          </m.h2>
+        )}
 
         {/* The fact, pressed before the choice — the form itself stays fully
             released (Living Waters: never gate the answer, never confirm-shame
-            the exit). Yields with the heading once answered. */}
+            the exit).
+
+            This is the only argument on the screen and it used to be its
+            smallest, dimmest text — 13px italic white/60 under a 36px heading,
+            so the question shouted and the reason whispered. Now sized as a
+            statement, and no longer italic: italic is this app's aside/scripture
+            treatment, and this is neither. */}
         {!invitationResponse && (
           <m.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="mx-auto mt-4 max-w-sm text-[13px] italic leading-relaxed text-white/60"
+            className="mx-auto mt-5 max-w-sm text-[15px] leading-relaxed text-white/75 sm:text-base"
           >
             {invitation.urgencyLine}
           </m.p>
+        )}
+
+        {/* The hinge, drawn. Red at the top, gold at the bottom, growing
+            downward — the flow's whole arc in 40px. Composite-only (scaleY). */}
+        {!invitationResponse && (
+          <m.div
+            aria-hidden="true"
+            initial={{ opacity: 0, scaleY: 0 }}
+            animate={{ opacity: 1, scaleY: 1 }}
+            transition={{ duration: 0.7, delay: 0.5, ease: EASE_OUT_STRONG }}
+            className="mx-auto mt-8 h-10 w-px origin-top bg-gradient-to-b from-red-500/70 to-[#D4A843]/70"
+          />
         )}
 
         {/* Response buttons — no text block, straight to the decision */}
@@ -103,8 +123,8 @@ export function InvitationScreen({
           <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-10 flex flex-col items-center gap-3"
+            transition={{ duration: 0.6, delay: 0.65 }}
+            className="mt-8 flex flex-col items-center gap-3"
           >
             <Button variant="gold" mist onClick={() => handleResponse("committed")} className="w-full max-w-sm">
               {invitation.responses.committed}
@@ -164,7 +184,7 @@ export function InvitationScreen({
             )}
 
             {invitationResponse === "dismissed" && messages.nextSteps?.dismissedReturn && (
-              <p className="text-center text-sm text-white/60">
+              <p className="mt-6 text-center text-sm leading-relaxed text-white/60">
                 <Link href={`/${locale}/reading-plan`} className="underline transition-colors hover:text-white/75">
                   {messages.nextSteps.dismissedReturn}
                 </Link>
@@ -183,12 +203,13 @@ export function InvitationScreen({
               </p>
             )}
 
-            <ShareButtons
-              messages={shareMessages || share}
-              locale={locale}
-              sharePath={`/${locale}/test`}
-              utmCampaign="invitation"
-            />
+            {/* No share row here, for any of the three answers. Sharing is a
+                next step, and /next-steps owns it — track-committed carries the
+                share block and the story graphic, while track-thinking
+                deliberately carries none. Asking someone who just said "I want
+                to think about it", or "Not for me", to post this reads as
+                farming them, and it was rendering for the dismissed path too.
+                Leaves every answer with exactly one primary route. */}
           </m.div>
         )}
       </div>
