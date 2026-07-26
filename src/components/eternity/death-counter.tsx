@@ -12,6 +12,12 @@ interface DeathCounterProps {
   style?: React.CSSProperties;
   /** If true, count from midnight UTC (deaths today). Otherwise from page load. */
   fromMidnight?: boolean;
+  /**
+   * Milliseconds already elapsed before mount. The counter counts up to this
+   * value, then keeps climbing live. Used by the verdict screen to seed the
+   * count with the test's own duration. Ignored when `fromMidnight` is set.
+   */
+  baseMs?: number;
 }
 
 function getMsSinceMidnightUTC(): number {
@@ -40,11 +46,12 @@ export const DeathCounter = memo(function DeathCounter({
   className,
   style,
   fromMidnight = false,
+  baseMs = 0,
 }: DeathCounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    const targetBase = fromMidnight ? getMsSinceMidnightUTC() : 0;
+    const targetBase = fromMidnight ? getMsSinceMidnightUTC() : baseMs;
     const animStart = Date.now();
 
     let raf: number;
@@ -71,7 +78,7 @@ export const DeathCounter = memo(function DeathCounter({
     }
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [fromMidnight]);
+  }, [fromMidnight, baseMs]);
 
   const span = (
     <span
