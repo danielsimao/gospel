@@ -171,3 +171,30 @@
     display: none !important;
   }
 }
+
+/*
+ * The deaths-today bar presses through the law section, then hands the count
+ * to the verdict screen's own live counter. Two live red counters on one
+ * screen read as a bug, and a ticking death count over the grace screen
+ * argues against the screen. Slides up rather than vanishing; the bar is
+ * fixed, so nothing reflows. game-shell publishes data-game-phase on <html>.
+ */
+[data-slot="sticky-death-counter"] {
+  transition:
+    opacity 400ms var(--ease-out-strong),
+    transform 400ms var(--ease-out-strong);
+}
+
+html[data-game-phase="verdict"] [data-slot="sticky-death-counter"],
+html[data-game-phase="grace"] [data-slot="sticky-death-counter"],
+html[data-game-phase="invitation"] [data-slot="sticky-death-counter"] {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="sticky-death-counter"] {
+    transition: none;
+  }
+}

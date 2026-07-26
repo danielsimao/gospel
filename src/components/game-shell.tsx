@@ -143,6 +143,17 @@ export function GameShell({ messages, locale }: GameShellProps) {
     locale,
   ]);
 
+  // The sticky deaths-today bar lives in the (immersive) layout, outside this
+  // provider's tree, so it cannot read phase through React. Publishing the
+  // phase on <html> lets globals.css retire the bar once the verdict takes
+  // the count over. Cleaned up on unmount so no other route sees the flag.
+  useEffect(() => {
+    document.documentElement.dataset.gamePhase = state.phase;
+    return () => {
+      delete document.documentElement.dataset.gamePhase;
+    };
+  }, [state.phase]);
+
   // --- Back-navigation history integration -------------------------------
   // One path: re-read links call history.back(); popstate dispatches the
   // reducer action. Entries exist only for verdict/grace/invitation —

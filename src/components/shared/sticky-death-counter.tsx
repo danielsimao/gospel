@@ -15,7 +15,10 @@ interface StickyDeathCounterProps {
  */
 export function StickyDeathCounter({ label, liveBadge }: StickyDeathCounterProps) {
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 border-b border-red-950/40 bg-[#060404]/[0.94] backdrop-blur-xl">
+    <div
+      data-slot="sticky-death-counter"
+      className="fixed top-0 left-0 right-0 z-50 border-b border-red-950/40 bg-[#060404]/[0.94] backdrop-blur-xl"
+    >
       <div className="flex items-center justify-center gap-2 px-3 py-1.5 sm:gap-3 sm:px-4 sm:py-2">
         {/* Live indicator */}
         <div className="flex shrink-0 items-center gap-1.5">
