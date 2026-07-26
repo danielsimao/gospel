@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { m } from "framer-motion";
 import { useGameDispatch } from "@/components/game-provider";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { trackVerdictReached } from "@/lib/analytics";
-import { buildConfession } from "@/lib/confession";
+import { splitConfession } from "@/lib/confession";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import { VerdictEmblem } from "@/components/emblems";
 import type { GameState, TestMessages } from "@/lib/types";
@@ -36,7 +36,7 @@ export function VerdictScreen({
   const returning = state.graceReached;
   const [showBridge, setShowBridge] = useState(returning);
 
-  const confession = buildConfession(state.answers, testMessages);
+  const confession = splitConfession(state.answers, testMessages);
 
   // Active elapsed test time, frozen at the verdict. This is what analytics
   // reports. RESUME_SESSION rebases startedAt so time spent away from the tab
@@ -172,14 +172,42 @@ export function VerdictScreen({
           </p>
         </m.blockquote>
 
-        {/* Dynamic confession prose — the personalised centre of the screen. */}
+        {/* Dynamic confession prose — the personalised centre of the screen,
+            and the only white text mass on a screen that is otherwise all red.
+            The commandment labels are the payload, so they carry colour — but
+            NOT the same colour. Admitted runs go red because the reader owns
+            them; denied runs recede. Painting both red would state the evaded
+            commandments with the same force as the confessed ones, which is
+            exactly what "by your evasions" exists to deny.
+
+            Three levels, deliberately: red owns, white/85 narrates, white/55
+            recedes. A dashed underline on the denied run was tried and cut —
+            once the run wraps, the dashes form a band that outshouts the red
+            and reads as a spell-check error. The word "evasions" already does
+            that work. */}
         <m.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: at(700), ease: EASE_OUT_STRONG }}
           className="mt-6 max-w-sm text-base leading-relaxed text-white/85 sm:text-lg"
         >
-          {confession}
+          {confession.map((segment, i) => {
+            if (segment.tone === "plain") {
+              return <Fragment key={i}>{segment.text}</Fragment>;
+            }
+            return (
+              <span
+                key={i}
+                className={
+                  segment.tone === "admitted"
+                    ? "text-red-400"
+                    : "text-white/55"
+                }
+              >
+                {segment.text}
+              </span>
+            );
+          })}
         </m.p>
 
         {/* No evidence list here. The old chips were the test HUD's markup
