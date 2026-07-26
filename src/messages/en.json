@@ -34,7 +34,10 @@
     },
     "verdict": {
       "prelude": "The verdict",
-      "deathLineTemplate": "people died while you answered. You could be next.",
+      "scripture": "For whoever shall keep the whole law, and yet stumble in one point, he is guilty of all.",
+      "scriptureRef": "James 2:10",
+      "deathLineTemplate": "people have died since you started.",
+      "deathLineImplication": "The count does not skip anyone.",
       "bridgeButton": "Is there any hope?",
       "confessionAdmitted": "You are {list} — by your own admission.",
       "confessionDenied": "You are {list} — by your evasions.",

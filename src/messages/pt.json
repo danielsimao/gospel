@@ -34,7 +34,10 @@
     },
     "verdict": {
       "prelude": "O veredicto",
-      "deathLineTemplate": "pessoas morreram enquanto respondias. Tu podes ser o próximo.",
+      "scripture": "Porque qualquer que guardar toda a lei, e tropeçar em um só ponto, é culpado de todos.",
+      "scriptureRef": "Tiago 2:10",
+      "deathLineTemplate": "pessoas morreram desde que começaste.",
+      "deathLineImplication": "A contagem não poupa ninguém.",
       "bridgeButton": "Há alguma esperança?",
       "confessionAdmitted": "És {list} — pela tua própria confissão.",
       "confessionDenied": "És {list} — pelas tuas evasivas.",

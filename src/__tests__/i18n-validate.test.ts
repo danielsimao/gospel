@@ -29,3 +29,35 @@ describe("validateMessages — journeyStages deep validation", () => {
     },
   );
 });
+
+describe("verdict screen copy", () => {
+  const VERDICT_KEYS = [
+    "scripture",
+    "scriptureRef",
+    "deathLineTemplate",
+    "deathLineImplication",
+  ] as const;
+
+  it.each([["en", en], ["pt", pt]] as const)(
+    "%s has every test.verdict key the verdict screen renders",
+    (_locale, messages) => {
+      const verdict = (messages as unknown as { test: { verdict: Record<string, unknown> } })
+        .test.verdict;
+      for (const key of VERDICT_KEYS) {
+        expect(typeof verdict[key]).toBe("string");
+        expect(verdict[key]).not.toBe("");
+      }
+    },
+  );
+
+  it("no longer promises the reader they could be next (invitation owns that beat)", () => {
+    expect(en.test.verdict.deathLineTemplate).not.toMatch(/could be next/i);
+    expect(pt.test.verdict.deathLineTemplate).not.toMatch(/pr[óo]ximo/i);
+  });
+
+  it("validateMessages rejects a locale missing the verdict Scripture", () => {
+    const clone = cloneMessages(en);
+    delete ((clone.test as AnyRecord).verdict as AnyRecord).scripture;
+    expect(() => validateMessages(clone, "en")).toThrow(/test content/);
+  });
+});

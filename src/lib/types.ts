@@ -157,7 +157,10 @@ export interface TestMessages {
   verdictLabels: Record<string, string>;
   verdict: {
     prelude: string;
+    scripture: string;
+    scriptureRef: string;
     deathLineTemplate: string;
+    deathLineImplication: string;
     bridgeButton: string;
     confessionAdmitted: string;
     confessionDenied: string;
