@@ -6,7 +6,7 @@ import { useRouter, useSelectedLayoutSegment } from "next/navigation";
 import * as Sentry from "@sentry/nextjs";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { trackGameAbandoned } from "@/lib/analytics";
-import { QUESTION_CONFIGS } from "@/lib/questions";
+import { QUESTION_CONFIGS, TOTAL_QUESTIONS } from "@/lib/questions";
 import { readSession } from "@/lib/test-session-storage";
 import { markTestCompleted } from "@/lib/journey-storage";
 import { furthestPhase, isBeyond, routeForPhase } from "@/lib/test-routes";
@@ -109,14 +109,29 @@ export function TestChrome({ backLabel, locale, children }: TestChromeProps) {
       level: "info",
       data: { phase, score: state.score },
     });
-    // Persist completion so other pages (home, learn, nav) can check.
-    if (phase === "verdict" || phase === "grace" || phase === "invitation") {
-      markTestCompleted();
-    }
     // Scroll to top so focus lands on the new content. App Router restores
     // scroll on back, which is correct — this only covers forward moves.
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [phase, state.score]);
+
+  /*
+   * Completion is the answer count, not the URL.
+   *
+   * This used to key off `phase`, which comes from the route segment — so
+   * every cold visit to /test/verdict, /test/grace or /test/decision wrote the
+   * journey record before the deep-link guard below could bounce the visitor.
+   * A shared link, a bookmark or a URL-bar autocomplete was enough to mark
+   * someone as having taken a test they had never seen, permanently: the
+   * homepage then told them "you stood trial today", and the same flag is what
+   * `had_completed_test` reports to analytics.
+   *
+   * Gated on `ready` as well, because before the session is read the answer
+   * count is zero for everyone, including a genuine returning reader.
+   */
+  useEffect(() => {
+    if (!ready) return;
+    if (state.answers.length >= TOTAL_QUESTIONS) markTestCompleted();
+  }, [ready, state.answers.length]);
 
   useEffect(() => {
     function handleBeforeUnload() {
@@ -193,9 +208,15 @@ export function TestChrome({ backLabel, locale, children }: TestChromeProps) {
         <span>{backLabel}</span>
       </Link>
 
-      {/* Content (offset below the sticky bar) */}
+      {/* Content (offset below the sticky bar).
+          The gate applies to phase routes only. On /test (segment null) the
+          hydration effect above deliberately performs no restore, so holding
+          children there bought nothing and cost everything: /test is indexed,
+          is the primary CTA target from the homepage, /good-enough, the street
+          cards and the blog, and it was prerendering with an empty <main> —
+          no heading, no Begin button, LCP pinned to hydration plus a frame. */}
       <div className="relative z-[1] flex flex-1 flex-col pt-10">
-        {ready ? children : null}
+        {ready || segment === null ? children : null}
       </div>
     </main>
   );

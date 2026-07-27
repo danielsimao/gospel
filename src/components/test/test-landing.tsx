@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { Landing } from "@/components/landing";
 import { QuestionCard } from "@/components/question-card";
@@ -51,14 +51,30 @@ export function TestLanding({ messages, locale }: TestLandingProps) {
    * before navigating. An earlier version navigated on the answer tap and so
    * had to land on question 1 to avoid dropping that press.
    */
-  const searchParams = useSearchParams();
-  const seedAnswer = searchParams.get("q1");
-  const seeding = seedAnswer === "honest" || seedAnswer === "justify";
+  /*
+   * The param is read from `window.location`, not `useSearchParams`.
+   *
+   * `useSearchParams` in a client component with no Suspense boundary above it
+   * pushes the whole client tree into client-side rendering on a prerendered
+   * route (next/dist/docs — use-search-params), and there is no boundary above
+   * this one. That is half of why /test was shipping an empty <main>; the other
+   * half was the chrome's ready gate. Both other useSearchParams call sites in
+   * this repo wrap themselves, so this was also the odd one out.
+   *
+   * `seeding` is state rather than a render-time read so the server and the
+   * first client render agree. The handoff arrives by client-side navigation,
+   * where template.tsx is already fading the route in from zero, so the single
+   * frame before the seed lands is not visible.
+   */
+  const [seeding, setSeeding] = useState(false);
   const seededRef = useRef(false);
 
   useEffect(() => {
-    if (seededRef.current || !seeding) return;
+    if (seededRef.current) return;
+    const seedAnswer = new URLSearchParams(window.location.search).get("q1");
+    if (seedAnswer !== "honest" && seedAnswer !== "justify") return;
     seededRef.current = true;
+    setSeeding(true);
 
     const answer = seedAnswer as AnswerType;
     const config = QUESTION_CONFIGS[0];
@@ -72,7 +88,7 @@ export function TestLanding({ messages, locale }: TestLandingProps) {
     }
     // Drop the param so a refresh or a share does not replay the answer.
     router.replace(`/${locale}/test`, { scroll: false });
-  }, [seeding, seedAnswer, dispatch, locale, router]);
+  }, [dispatch, locale, router]);
 
   const [pendingResume, setPendingResume] = useState<SavedSession | null>(null);
 
