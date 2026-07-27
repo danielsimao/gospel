@@ -124,6 +124,11 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case "SHOW_VERDICT":
+      // Only from a finished test. The verdict screen dispatches this on
+      // arrival, and a cold /test/verdict with no session mounts that screen
+      // too — unguarded, it would write a phase:"verdict", zero-answer session
+      // to storage, which the resume dialog would then offer to pick up.
+      if (state.answers.length < TOTAL_QUESTIONS) return state;
       return {
         ...state,
         phase: "verdict",

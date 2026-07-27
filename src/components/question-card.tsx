@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, useRef } from "react";
+import { useEffect, useCallback, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { m, AnimatePresence } from "framer-motion";
 import { useGameDispatch, useGameState } from "@/components/game-provider";
@@ -77,12 +77,23 @@ export function QuestionCard({
   // Questions are one-way, so the route that held them is replaced rather than
   // stacked, and back from the verdict leaves the test entirely instead of
   // returning to a start screen the reader is done with.
+  //
+  // The last question deliberately does NOT touch the reducer. /test renders
+  // the front door for any phase that is not "playing", so flipping to
+  // "verdict" here repainted the finished test as its own start screen for the
+  // entire navigation — measured at 1.2s in dev: answer six questions, watch
+  // them reset, then get the verdict. The verdict screen records the phase on
+  // arrival instead, exactly as grace and the invitation already do.
+  const [leaving, setLeaving] = useState(false);
   const advance = useCallback(() => {
-    dispatch({ type: "ADVANCE_AFTER_FOLLOWUP" });
+    if (leaving) return;
     if (questionIndex >= TOTAL_QUESTIONS - 1) {
+      setLeaving(true);
       router.replace(`/${locale}/test/verdict`);
+      return;
     }
-  }, [dispatch, questionIndex, router, locale]);
+    dispatch({ type: "ADVANCE_AFTER_FOLLOWUP" });
+  }, [dispatch, questionIndex, router, locale, leaving]);
 
   useEffect(() => {
     timersRef.current.forEach(clearTimeout);
@@ -276,6 +287,11 @@ export function QuestionCard({
                           animate={{ opacity: 1 }}
                           transition={{ duration: 0.3, delay: 0.75 }}
                           onClick={() => {
+                            // Dead once the verdict is on its way. The card
+                            // stays mounted for the length of that navigation,
+                            // and an undo landing in that window would drop an
+                            // answer the verdict has already been told to show.
+                            if (leaving) return;
                             trackAnswerChanged(question.id, answered);
                             dispatch({ type: "UNDO_ANSWER" });
                           }}

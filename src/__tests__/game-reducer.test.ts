@@ -124,6 +124,45 @@ describe("gameReducer", () => {
       expect(state.phase).toBe("invitation");
     });
 
+    it("SHOW_VERDICT is refused until every question is answered", () => {
+      // The verdict screen dispatches this on arrival, so a cold /test/verdict
+      // with no session reaches it too. Letting it through would persist a
+      // phase:"verdict" session with zero answers for the resume dialog to
+      // offer back.
+      expect(gameReducer(initialGameState, { type: "SHOW_VERDICT" })).toBe(initialGameState);
+
+      const playing = startGame();
+      const oneAnswer = gameReducer(playing, { type: "ANSWER_QUESTION", answer: "honest" });
+      expect(gameReducer(oneAnswer, { type: "SHOW_VERDICT" })).toBe(oneAnswer);
+    });
+
+    it("SHOW_VERDICT records completion for a finished test", () => {
+      // The path the app actually takes: the last question navigates without
+      // touching the reducer, and the verdict screen records the phase.
+      let state = startGame();
+      for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+        state = gameReducer(state, { type: "ANSWER_QUESTION", answer: "honest" });
+        if (i < TOTAL_QUESTIONS - 1) {
+          state = gameReducer(state, { type: "ADVANCE_AFTER_FOLLOWUP" });
+        }
+      }
+      expect(state.phase).toBe("playing");
+
+      state = gameReducer(state, { type: "SHOW_VERDICT" });
+      expect(state.phase).toBe("verdict");
+      expect(state.completedAt).toBeGreaterThan(0);
+      expect(state.currentAnswer).toBeNull();
+      expect(state.answers).toHaveLength(TOTAL_QUESTIONS);
+    });
+
+    it("SHOW_VERDICT keeps the original completedAt on a re-read", () => {
+      const done = gameReducer(answerAll(startGame(), "honest"), { type: "SHOW_VERDICT" });
+      const reread = gameReducer(gameReducer(done, { type: "SHOW_GRACE" }), {
+        type: "SHOW_VERDICT",
+      });
+      expect(reread.completedAt).toBe(done.completedAt);
+    });
+
     it("SHOW_GRACE is only valid from verdict", () => {
       const playing = startGame();
       expect(gameReducer(playing, { type: "SHOW_GRACE" })).toBe(playing);

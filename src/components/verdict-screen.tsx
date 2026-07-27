@@ -3,7 +3,7 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { m } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useGameState } from "@/components/game-provider";
+import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { trackVerdictReached } from "@/lib/analytics";
@@ -32,6 +32,7 @@ export function VerdictScreen({
   locale,
 }: VerdictScreenProps) {
   const state = useGameState();
+  const dispatch = useGameDispatch();
   const router = useRouter();
   const hasTracked = useRef(false);
   // Grace is only reachable through the full verdict, so graceReached
@@ -45,7 +46,13 @@ export function VerdictScreen({
   // reports. RESUME_SESSION rebases startedAt so time spent away from the tab
   // is excluded (game-reducer.ts:172-201), so a session resumed days later
   // still reports minutes, not days.
-  const durationMs = Math.max(0, (state.completedAt ?? state.startedAt) - state.startedAt);
+  //
+  // Frozen at mount rather than read live, because SHOW_VERDICT below is what
+  // sets completedAt: on a first arrival it is still null throughout this
+  // render, and reading it directly would report a duration of 0. On a re-read
+  // it is already set and this is exact.
+  const [completedAtMs] = useState(() => state.completedAt ?? Date.now());
+  const durationMs = Math.max(0, completedAtMs - state.startedAt);
 
   // What the live counter counts, which is NOT durationMs. durationMs stops at
   // completedAt, so seeding the counter with it meant the number climbed while
@@ -56,6 +63,14 @@ export function VerdictScreen({
   const [counterBaseMs] = useState(() =>
     state.startedAt > 0 ? Math.max(0, Date.now() - state.startedAt) : durationMs,
   );
+
+  // Arriving marks the phase reached. The question screen used to do this
+  // before navigating, which repainted /test as the front door for the whole
+  // route change; grace and the invitation are already recorded by the screen
+  // that owns them, and the verdict was the outlier.
+  useEffect(() => {
+    dispatch({ type: "SHOW_VERDICT" });
+  }, [dispatch]);
 
   useEffect(() => {
     if (!hasTracked.current && !returning) {
