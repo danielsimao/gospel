@@ -2,7 +2,6 @@
 
 import { Fragment, useEffect, useRef, useState } from "react";
 import { m } from "framer-motion";
-import { useRouter } from "next/navigation";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { DeathCounter } from "@/components/eternity/death-counter";
@@ -11,12 +10,10 @@ import { splitConfession } from "@/lib/confession";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import { VerdictEmblem } from "@/components/emblems";
 import type { TestMessages } from "@/lib/types";
-import type { Locale } from "@/lib/i18n";
 
 interface VerdictScreenProps {
   messages: { title: string; subtitle: string };
   testMessages: TestMessages;
-  locale: Locale;
 }
 
 /**
@@ -29,11 +26,9 @@ const BRIDGE_DELAY_MS = 1200;
 export function VerdictScreen({
   messages,
   testMessages,
-  locale,
 }: VerdictScreenProps) {
   const state = useGameState();
   const dispatch = useGameDispatch();
-  const router = useRouter();
   const hasTracked = useRef(false);
   // Grace is only reachable through the full verdict, so graceReached
   // exactly means "verdict fully seen" — re-entry replays nothing.
@@ -64,10 +59,9 @@ export function VerdictScreen({
     state.startedAt > 0 ? Math.max(0, Date.now() - state.startedAt) : durationMs,
   );
 
-  // Arriving marks the phase reached. The question screen used to do this
-  // before navigating, which repainted /test as the front door for the whole
-  // route change; grace and the invitation are already recorded by the screen
-  // that owns them, and the verdict was the outlier.
+  // Idempotent, and a guard rather than the mechanism: ADVANCE_AFTER_FOLLOWUP
+  // is what moves the last question to the verdict. The reducer refuses this
+  // unless every question is answered, so it can never manufacture a verdict.
   useEffect(() => {
     dispatch({ type: "SHOW_VERDICT" });
   }, [dispatch]);
@@ -91,8 +85,10 @@ export function VerdictScreen({
     return () => clearTimeout(t);
   }, [state.answers, durationMs, returning]);
 
+  // Forward moves are a dispatch. The shell watches the phase and stamps the
+  // history entry, so back still works without the screen knowing about URLs.
   function handleBridgeClick() {
-    router.push(`/${locale}/test/grace`);
+    dispatch({ type: "SHOW_GRACE" });
   }
 
   // Stage delays in ms → seconds, collapsed to 0 on re-read. The whole

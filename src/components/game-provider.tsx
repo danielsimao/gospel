@@ -25,11 +25,11 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       // resume modal can still pick it up. Initialization handles its own clear.
       return;
     }
-    // The session is NOT cleared once a response is recorded. /test/decision
-    // stays reachable and read-only afterwards, and back through grace and the
-    // verdict keeps working — none of which survives if the state it renders
-    // from is thrown away. A completed session simply stops being offered as a
-    // resume (see TestLanding), rather than being deleted.
+    // The session is NOT cleared once a response is recorded. The decision
+    // stays readable afterwards, and back through grace and the verdict keeps
+    // working — none of which survives if the state it renders from is thrown
+    // away. A completed session simply stops being offered as a
+    // resume (see the shell's resume dialog), rather than being deleted.
     writeSession(state);
   }, [state]);
 

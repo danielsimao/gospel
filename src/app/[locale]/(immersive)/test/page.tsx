@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { isValidLocale, getMessages, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
-import { TestLanding } from "@/components/test/test-landing";
+import { GameShell } from "@/components/game-shell";
 import { StructuredData } from "@/components/structured-data";
 import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
 import type { Metadata } from "next";
@@ -42,7 +42,7 @@ export default async function GamePage({ params }: Props) {
   return (
     <>
       <StructuredData data={webPageSchema} />
-      <TestLanding messages={messages} locale={locale as Locale} />
+      <GameShell messages={messages} locale={locale as Locale} />
     </>
   );
 }

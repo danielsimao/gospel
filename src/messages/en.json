@@ -1477,9 +1477,7 @@
     "alsoHere": {
       "label": "Also here",
       "readingDescription": "Seven days in the Gospel of John.",
-      "learnDescription": "Short answers to the hard questions.",
-      "goodEnoughLabel": "Good enough?",
-      "goodEnoughDescription": "Fill the bar and you're in. Takes twenty seconds."
+      "learnDescription": "Short answers to the hard questions."
     },
     "firstQuestionLabel": "Question 1 of 6",
     "firstQuestionContinue": "Continue the test",
@@ -1774,30 +1772,6 @@
     "filterLine": "The test is the gospel a church preaches — not the name over its door. Faithful believers are found across many traditions, and unfaithful ones in churches with the right label. So weigh what you hear against the Bible, not against what's familiar.",
     "nudge": "Don't assume the nearest or most familiar church preaches this. Visit, listen, and open the Bible for yourself — a good church will be glad you're testing what they say against Scripture.",
     "closing": "Pray that God would lead you to such a church, and start looking this week. Ask a Christian you trust where the Bible is faithfully preached."
-  },
-  "goodEnough": {
-    "title": "Good enough?",
-    "metaDescription": "Tap to fill the bar. Fill it and you're in. A one-minute answer to the oldest assumption about heaven.",
-    "eyebrow": "Fill it",
-    "prompt": "Tap to fill the bar to the line. Fill it and you're in.",
-    "buttonLabel": "Tap",
-    "goalLabel": "Required",
-    "shortLabel": "still short",
-    "ceilingLines": [
-      "It has stopped rising.",
-      "Nothing is moving.",
-      "Still nothing.",
-      "Every tap is doing exactly what the last one did.",
-      "This is as far as it goes."
-    ],
-    "tryAgainLabel": "Try again",
-    "reveal": {
-      "lead": "It stopped. Not because you were slow, and not because you gave up — it stops somewhere for everyone. Play again and you will get a different number. You will not get a different answer.",
-      "scripture": "For all have sinned and fall short of the glory of God.",
-      "scriptureRef": "Romans 3:23",
-      "turn": "That is why it can't be earned. It doesn't tell you what you've done, though, or how far short you are. That part is personal, and it takes six questions.",
-      "cta": "Take the test"
-    }
   },
   "footer": {
     "exploreLabel": "Explore",

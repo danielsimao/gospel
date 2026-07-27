@@ -35,8 +35,8 @@ export interface GameState {
   completedAt: number | null;
   graceReached: boolean;
   /**
-   * How many grace beats the reader has opened. Persisted because a refresh on
-   * /test/grace used to restore the phase but reset all eight beats to one —
+   * How many grace beats the reader has opened. Persisted because a refresh in
+   * grace used to restore the phase but reset every beat to one —
    * real progress silently lost. Cannot be derived from graceReached, which is
    * true the instant grace is entered and would reveal every beat at once to a
    * first-time reader.
@@ -45,6 +45,34 @@ export interface GameState {
   invitationReached: boolean;
   invitationResponse: InvitationResponse | null;
   questionStartedAt: number | null;
+}
+
+/**
+ * A session as it is handed to the reducer: everything persisted, minus the
+ * storage version, which is the storage layer's business alone.
+ *
+ * Declared once and re-used as the base of `SavedSession`. It was previously a
+ * structural clone written out by hand in the action type and transcribed
+ * field-by-field at each call site — which is how `graceBeatsRevealed` came to
+ * be silently defaulted at both, resetting the reader's grace beats on every
+ * refresh. One shape means an added field reaches every consumer or fails the
+ * build.
+ */
+export interface ResumeSessionPayload {
+  phase: GamePhase;
+  currentQuestion: number;
+  score: number;
+  answers: Answer[];
+  currentAnswer: AnswerType | null;
+  showFollowUp: boolean;
+  startedAt: number;
+  completedAt: number | null;
+  questionStartedAt: number | null;
+  savedAt: number;
+  graceReached: boolean;
+  graceBeatsRevealed: number;
+  invitationReached: boolean;
+  invitationResponse: InvitationResponse | null;
 }
 
 export type GameAction =
@@ -62,26 +90,14 @@ export type GameAction =
   | { type: "BACK_TO_GRACE" }
   | {
       type: "RESUME_SESSION";
-      session: {
-        phase: GamePhase;
-        currentQuestion: number;
-        score: number;
-        answers: Answer[];
-        currentAnswer: AnswerType | null;
-        showFollowUp: boolean;
-        startedAt: number;
-        completedAt: number | null;
-        questionStartedAt: number | null;
-        savedAt: number;
-        graceReached: boolean;
-        // Required, not optional. Every RESUME_SESSION payload is hand-copied
-        // field by field at two call sites; as an optional it silently
-        // defaulted to 0 at both, which reset the reader's grace beats on
-        // every refresh. Required makes an omission a compile error.
-        graceBeatsRevealed: number;
-        invitationReached: boolean;
-        invitationResponse: InvitationResponse | null;
-      };
+      /**
+       * The saved record itself, minus the storage version. It used to be a
+       * structural clone transcribed by hand at each call site, which is how
+       * graceBeatsRevealed came to be silently defaulted at both of them —
+       * every field added to SavedSession recreated the same class of bug.
+       * Declared in test-session-storage to keep the two from ever drifting.
+       */
+      session: ResumeSessionPayload;
     };
 
 export interface JourneyMessages {
@@ -180,49 +196,10 @@ export interface HomeMessages {
     label: string;
     readingDescription: string;
     learnDescription: string;
-    goodEnoughLabel: string;
-    goodEnoughDescription: string;
   };
   facts: string[];
   journey: JourneyMessages;
   journeyStages: JourneyStagesMessages;
-}
-
-export interface GoodEnoughMessages {
-  title: string;
-  metaDescription: string;
-  eyebrow: string;
-  /** The setup. Names the destination and its distance without promising the reader will reach it. */
-  prompt: string;
-  /** One label, never conditional — the button is never taken away. */
-  buttonLabel: string;
-  /** Marks the line on the track, e.g. "Required". */
-  goalLabel: string;
-  /** Suffix on the readout, e.g. "still short". */
-  shortLabel: string;
-  /**
-   * What is said once the bar has stopped, one line per press after it. The
-   * first entry lands on arrival at the ceiling; the rest answer the reader
-   * continuing to press a bar with nowhere to go. Clamped, so the copy runs
-   * out before their patience does rather than the reverse.
-   */
-  ceilingLines: string[];
-  /**
-   * Resets the bar for another life. Load-bearing rather than a convenience:
-   * the ceiling is rolled per play, so replaying is how the reader discovers
-   * for themselves that a different number is not a different answer — and on
-   * a page built to be handed to someone else, the second person needs a bar
-   * that has not already been spent.
-   */
-  tryAgainLabel: string;
-  reveal: {
-    lead: string;
-    scripture: string;
-    scriptureRef: string;
-    /** The turn from the general case to the reader's own. */
-    turn: string;
-    cta: string;
-  };
 }
 
 export interface TestMessages {
@@ -295,7 +272,5 @@ export interface Messages {
   };
   share: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
   nextSteps?: { cta: string; dismissedReturn: string };
-  /** Optional like `nextSteps`, so a locale file mid-edit cannot break the app. */
-  goodEnough?: GoodEnoughMessages;
   meta: { title: string; description: string };
 }

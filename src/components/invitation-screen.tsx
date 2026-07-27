@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { m } from "framer-motion";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { saveInvitationResponse } from "@/lib/journey-storage";
 import { Button, ButtonArrow } from "@/components/ui/button";
@@ -18,18 +17,19 @@ import type { Locale } from "@/lib/i18n";
 interface InvitationScreenProps {
   messages: Messages;
   locale: Locale;
+  /** Walks back one history entry, so the browser stack and the reducer agree. */
+  onBack: () => void;
 }
 
-export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
+export function InvitationScreen({ messages, locale, onBack }: InvitationScreenProps) {
   const { invitation } = messages;
   const state = useGameState();
   const dispatch = useGameDispatch();
-  const router = useRouter();
   const invitationResponse = state.invitationResponse;
 
   // Arriving marks the phase reached — this is what tells the grace screen not
-  // to replay its beats on a re-read. The reducer used to do it via
-  // SHOW_INVITATION; the route owns the transition now, so the screen records it.
+  // to replay its beats on a re-read. Idempotent: grace's continue button is
+  // what dispatches it, and the reducer refuses it from any other phase.
   useEffect(() => {
     dispatch({ type: "SHOW_INVITATION" });
   }, [dispatch]);
@@ -140,12 +140,12 @@ export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
             <Button variant="text" onClick={() => handleResponse("dismissed")}>
               {invitation.responses.dismissed}
             </Button>
-            {/* Pushes the named route rather than router.back(): the resume
-                dialog can push straight to this screen, and there back landed
-                on the front door instead of grace. */}
+            {/* Walks one history entry back, so the browser stack and the
+                reducer stay in agreement — the shell's popstate handler is the
+                single place a backward move becomes an action. */}
             <button
               type="button"
-              onClick={() => router.push(`/${locale}/test/grace`)}
+              onClick={onBack}
               className="mt-3 inline-flex min-h-[32px] items-center text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
             >
               {invitation.rereadGrace}

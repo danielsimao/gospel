@@ -1,5 +1,5 @@
 import { emitStorageChange } from "./client-storage";
-import type { Answer, GamePhase, GameState, InvitationResponse } from "./types";
+import type { GameState, ResumeSessionPayload } from "./types";
 
 const STORAGE_KEY = "gospel-test-session";
 
@@ -9,22 +9,9 @@ const STORAGE_KEY = "gospel-test-session";
 // currentQuestion indices past the new end.
 const CURRENT_VERSION = 3;
 
-export interface SavedSession {
+/** What the reducer needs, plus the version only this file cares about. */
+export interface SavedSession extends ResumeSessionPayload {
   version: number;
-  phase: GamePhase;
-  currentQuestion: number;
-  score: number;
-  answers: Answer[];
-  currentAnswer: GameState["currentAnswer"];
-  showFollowUp: boolean;
-  startedAt: number;
-  completedAt: number | null;
-  questionStartedAt: number | null;
-  savedAt: number;
-  graceReached: boolean;
-  graceBeatsRevealed: number;
-  invitationReached: boolean;
-  invitationResponse: InvitationResponse | null;
 }
 
 export function readSession(): SavedSession | null {

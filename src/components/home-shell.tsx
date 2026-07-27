@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { m } from "framer-motion";
-import { BookOpen, ChevronDown, Compass, Footprints } from "lucide-react";
+import { BookOpen, ChevronDown, Compass } from "lucide-react";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { RotatingFacts } from "@/components/eternity/rotating-facts";
 import { LatestPostCard } from "@/components/home/latest-post-card";
@@ -87,14 +87,6 @@ export function HomeShell({ hero, home, locale, topicSlugs, firstQuestion, lates
    * prompt. Both destinations stay linked either way; nothing here gates.
    */
   const alsoHereRows: AlsoHereRow[] = [
-    // First, not last. Reading Plan and Learn are post-decision content; this is
-    // the pre-test hook, on the page first-time readers actually land on.
-    {
-      href: `/${locale}/good-enough`,
-      label: home.alsoHere.goodEnoughLabel,
-      description: home.alsoHere.goodEnoughDescription,
-      icon: <Footprints className="size-4" aria-hidden="true" />,
-    },
     {
       href: `/${locale}/reading-plan`,
       label: home.journey.reading.label,

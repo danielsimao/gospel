@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useCallback, useRef } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { useGameDispatch, useGameState } from "@/components/game-provider";
 import { FollowUp } from "@/components/follow-up";
@@ -11,7 +10,6 @@ import { trackQuestionAnswered, trackFollowupShown, trackAnswerChanged } from "@
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import { QUESTION_CONFIGS, TOTAL_QUESTIONS } from "@/lib/questions";
 import type { AnswerType, TestMessages } from "@/lib/types";
-import type { Locale } from "@/lib/i18n";
 
 interface QuestionCardProps {
   question: {
@@ -25,7 +23,6 @@ interface QuestionCardProps {
   };
   questionIndex: number;
   score: number;
-  locale: Locale;
   testMessages: TestMessages;
 }
 
@@ -59,41 +56,23 @@ export function QuestionCard({
   question,
   questionIndex,
   score,
-  locale,
   testMessages,
 }: QuestionCardProps) {
   const dispatch = useGameDispatch();
   const state = useGameState();
-  const router = useRouter();
   const timersRef = useRef<NodeJS.Timeout[]>([]);
   const answered = state.currentAnswer;
   const showFollowUp = state.showFollowUp;
 
-  // Questions live on one route by design, so advancing between them is a
-  // reducer move with no navigation. Only the last one crosses into a new
-  // route — that is the point at which the verdict becomes a real URL.
-  //
-  // replace, not push: this is what makes "the verdict is the floor" real.
-  // Questions are one-way, so the route that held them is replaced rather than
-  // stacked, and back from the verdict leaves the test entirely instead of
-  // returning to a start screen the reader is done with.
-  //
-  // The last question deliberately does NOT touch the reducer. /test renders
-  // the front door for any phase that is not "playing", so flipping to
-  // "verdict" here repainted the finished test as its own start screen for the
-  // entire navigation — measured at 1.2s in dev: answer six questions, watch
-  // them reset, then get the verdict. The verdict screen records the phase on
-  // arrival instead, exactly as grace and the invitation already do.
-  const [leaving, setLeaving] = useState(false);
+  // Advancing is a reducer move, including off the last question — the whole
+  // flow is one route again, so the verdict arrives in the same commit as the
+  // phase change. While the phases were separate routes this had to navigate,
+  // and the gap between the dispatch and the route landing is what repainted
+  // the finished test as its own start screen for the length of the
+  // navigation.
   const advance = useCallback(() => {
-    if (leaving) return;
-    if (questionIndex >= TOTAL_QUESTIONS - 1) {
-      setLeaving(true);
-      router.replace(`/${locale}/test/verdict`);
-      return;
-    }
     dispatch({ type: "ADVANCE_AFTER_FOLLOWUP" });
-  }, [dispatch, questionIndex, router, locale, leaving]);
+  }, [dispatch]);
 
   useEffect(() => {
     timersRef.current.forEach(clearTimeout);
@@ -114,7 +93,7 @@ export function QuestionCard({
       timersRef.current.forEach(clearTimeout);
       timersRef.current = [];
     };
-  }, [answered, dispatch, question.id, questionIndex, showFollowUp]);
+  }, [answered, dispatch, question.id, showFollowUp]);
 
   function handleAnswer(answer: AnswerType) {
     if (answered) return;
@@ -287,11 +266,6 @@ export function QuestionCard({
                           animate={{ opacity: 1 }}
                           transition={{ duration: 0.3, delay: 0.75 }}
                           onClick={() => {
-                            // Dead once the verdict is on its way. The card
-                            // stays mounted for the length of that navigation,
-                            // and an undo landing in that window would drop an
-                            // answer the verdict has already been told to show.
-                            if (leaving) return;
                             trackAnswerChanged(question.id, answered);
                             dispatch({ type: "UNDO_ANSWER" });
                           }}

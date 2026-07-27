@@ -1477,9 +1477,7 @@
     "alsoHere": {
       "label": "Também aqui",
       "readingDescription": "Sete dias no Evangelho de João.",
-      "learnDescription": "Respostas curtas às perguntas difíceis.",
-      "goodEnoughLabel": "Suficientemente bom?",
-      "goodEnoughDescription": "Enche a barra e entras. Leva vinte segundos."
+      "learnDescription": "Respostas curtas às perguntas difíceis."
     },
     "firstQuestionLabel": "Pergunta 1 de 6",
     "firstQuestionContinue": "Continuar o teste",
@@ -1774,30 +1772,6 @@
     "filterLine": "O teste é o evangelho que uma igreja prega — não o nome à porta. Há crentes fiéis em muitas tradições, e infiéis em igrejas com o rótulo certo. Por isso, pesa o que ouves à luz da Bíblia, e não do que te é familiar.",
     "nudge": "Não assumas que a igreja mais próxima ou mais familiar prega isto. Visita, ouve e abre tu mesmo a Bíblia — uma boa igreja ficará contente por estares a confrontar o que dizem com as Escrituras.",
     "closing": "Ora para que Deus te conduza a uma igreja assim, e começa a procurar esta semana. Pergunta a um cristão em quem confies onde a Bíblia é pregada com fidelidade."
-  },
-  "goodEnough": {
-    "title": "Suficientemente bom?",
-    "metaDescription": "Toca para encher a barra. Enche-a e entras. Uma resposta de um minuto à suposição mais antiga sobre o céu.",
-    "eyebrow": "Enche-a",
-    "prompt": "Toca para encher a barra até à linha. Enche-a e entras.",
-    "buttonLabel": "Tocar",
-    "goalLabel": "Necessário",
-    "shortLabel": "ainda em falta",
-    "ceilingLines": [
-      "Parou de subir.",
-      "Não se mexe nada.",
-      "Continua sem se mexer.",
-      "Cada toque está a fazer exatamente o que o anterior fez.",
-      "É até aqui que vai."
-    ],
-    "tryAgainLabel": "Tentar outra vez",
-    "reveal": {
-      "lead": "Parou. Não porque foste lento, nem porque desististe — pára algures para toda a gente. Joga outra vez e terás um número diferente. Não terás uma resposta diferente.",
-      "scripture": "Porque todos pecaram e destituídos estão da glória de Deus.",
-      "scriptureRef": "Romanos 3:23",
-      "turn": "É por isso que não se pode ganhar. Mas isto não te diz o que fizeste, nem quão longe estás. Essa parte é pessoal, e leva seis perguntas.",
-      "cta": "Fazer o teste"
-    }
   },
   "footer": {
     "exploreLabel": "Explorar",

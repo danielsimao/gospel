@@ -125,10 +125,9 @@ describe("gameReducer", () => {
     });
 
     it("SHOW_VERDICT is refused until every question is answered", () => {
-      // The verdict screen dispatches this on arrival, so a cold /test/verdict
-      // with no session reaches it too. Letting it through would persist a
-      // phase:"verdict" session with zero answers for the resume dialog to
-      // offer back.
+      // The verdict screen dispatches this on arrival, so any mount of that
+      // screen reaches it. Letting it through would persist a phase:"verdict"
+      // session with zero answers for the resume dialog to offer back.
       expect(gameReducer(initialGameState, { type: "SHOW_VERDICT" })).toBe(initialGameState);
 
       const playing = startGame();
@@ -137,8 +136,8 @@ describe("gameReducer", () => {
     });
 
     it("SHOW_VERDICT records completion for a finished test", () => {
-      // The path the app actually takes: the last question navigates without
-      // touching the reducer, and the verdict screen records the phase.
+      // The verdict screen's own guard path: reached without the last
+      // ADVANCE_AFTER_FOLLOWUP, which is what the app itself dispatches.
       let state = startGame();
       for (let i = 0; i < TOTAL_QUESTIONS; i++) {
         state = gameReducer(state, { type: "ANSWER_QUESTION", answer: "honest" });
@@ -171,6 +170,20 @@ describe("gameReducer", () => {
     it("SHOW_INVITATION is only valid from grace", () => {
       const playing = startGame();
       expect(gameReducer(playing, { type: "SHOW_INVITATION" })).toBe(playing);
+    });
+
+    it("REVEAL_GRACE_BEAT never shrinks the count", () => {
+      // Back into grace re-mounts the screen, which seeds from the persisted
+      // count — a lower value arriving late would take away beats the reader
+      // already opened.
+      let state = gameReducer(answerAll(startGame(), "honest"), { type: "SHOW_GRACE" });
+      state = gameReducer(state, { type: "REVEAL_GRACE_BEAT", count: 3 });
+      expect(state.graceBeatsRevealed).toBe(3);
+
+      const shrunk = gameReducer(state, { type: "REVEAL_GRACE_BEAT", count: 1 });
+      expect(shrunk).toBe(state);
+      expect(gameReducer(state, { type: "REVEAL_GRACE_BEAT", count: 3 })).toBe(state);
+      expect(gameReducer(state, { type: "REVEAL_GRACE_BEAT", count: 4 }).graceBeatsRevealed).toBe(4);
     });
   });
 

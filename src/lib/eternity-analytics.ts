@@ -57,47 +57,6 @@ export function trackHomeBlogCardClicked(slug: string) {
   safeCapture("home_blog_card_clicked", { slug });
 }
 
-/** The shareable Romans 3:23 page. */
-export function trackGoodEnoughViewed(locale: string) {
-  safeCapture("good_enough_viewed", { locale });
-}
-
-/** Every press, including the ones after the bar stopped — the dead taps are the interesting ones. */
-export function trackGoodEnoughTapped(tap: number, locale: string) {
-  safeCapture("good_enough_tapped", { tap, locale });
-}
-
-export function trackGoodEnoughRevealed(taps: number, locale: string) {
-  safeCapture("good_enough_revealed", { taps, locale });
-}
-
-/**
- * Replays. The ceiling is rolled per play, so this is the reader testing
- * whether a different number buys a different answer — the count is the
- * clearest signal of whether the turn actually landed.
- */
-export function trackGoodEnoughReplayed(play: number, locale: string) {
-  safeCapture("good_enough_replayed", { play, locale });
-}
-
-/**
- * `hadCompletedTest` says whether this page is recruiting strangers or
- * entertaining people who have already been through the flow — the number that
- * decides whether it is worth keeping.
- */
-export function trackGoodEnoughCtaClicked(
-  locale: string,
-  hadCompletedTest: boolean,
-  taps: number,
-) {
-  safeCapture("good_enough_cta_clicked", {
-    locale,
-    destination: "test",
-    had_completed_test: hadCompletedTest,
-    taps,
-  });
-}
-
 export function trackTopBarBlogClicked() {
   safeCapture("top_bar_blog_clicked");
 }

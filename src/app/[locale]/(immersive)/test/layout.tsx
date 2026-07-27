@@ -1,31 +1,12 @@
-import { notFound } from "next/navigation";
 import { GameProvider } from "@/components/game-provider";
-import { TestChrome } from "@/components/test/test-chrome";
-import { isValidLocale, getMessages, type Locale } from "@/lib/i18n";
-
-type Props = {
-  params: Promise<{ locale: string }>;
-  children: React.ReactNode;
-};
 
 /**
- * Holds the game reducer and the surrounding chrome above the phase segments.
- * Next.js preserves layouts across sibling-segment navigation, so state and
- * frame both survive /test → /test/verdict. With GameProvider in page.tsx it
- * would remount on every navigation and wipe the reducer — this layout is what
- * makes routes-per-phase possible at all.
+ * Holds the game reducer above the flow. The phases used to be sibling routes
+ * and this layout was what let state survive navigating between them; the flow
+ * is one route again, so the layout is now just the provider's home — kept
+ * rather than folded into the page so the reducer is not remounted by any
+ * future segment added under /test.
  */
-export default async function TestLayout({ params, children }: Props) {
-  const { locale } = await params;
-  if (!isValidLocale(locale)) notFound();
-
-  const messages = await getMessages(locale as Locale);
-
-  return (
-    <GameProvider>
-      <TestChrome backLabel={messages.test.backLabel} locale={locale as Locale}>
-        {children}
-      </TestChrome>
-    </GameProvider>
-  );
+export default function TestLayout({ children }: { children: React.ReactNode }) {
+  return <GameProvider>{children}</GameProvider>;
 }

@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState, useCallback, createRef } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
 import { useGameDispatch, useGameState } from "@/components/game-provider";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackGraceViewed } from "@/lib/analytics";
@@ -11,7 +10,6 @@ import {
   trackGraceBeatRevealed,
 } from "@/lib/eternity-analytics";
 import { EASE_OUT_STRONG } from "@/lib/motion";
-import type { Locale } from "@/lib/i18n";
 
 interface GraceScreenProps {
   messages: {
@@ -24,13 +22,13 @@ interface GraceScreenProps {
     tapContinue: string;
     rereadVerdict: string;
   };
-  locale: Locale;
+  /** Walks back one history entry, so the browser stack and the reducer agree. */
+  onBack: () => void;
 }
 
-export function GraceScreen({ messages, locale }: GraceScreenProps) {
+export function GraceScreen({ messages, onBack }: GraceScreenProps) {
   const dispatch = useGameDispatch();
   const state = useGameState();
-  const router = useRouter();
   // Re-read: once the invitation has been reached, coming back here replays
   // nothing — every beat is already open.
   const returning = state.invitationReached;
@@ -38,15 +36,16 @@ export function GraceScreen({ messages, locale }: GraceScreenProps) {
 
   /*
    * Whether this is the reader's first arrival, captured before SHOW_GRACE
-   * lands. Real routes make back and forward a single gesture, so this screen
-   * now unmounts and remounts routinely — every analytics event here has to be
-   * once-per-session rather than once-per-mount, or the metrics inflate with
-   * every glance backwards.
+   * lands. Back and forward are a single gesture here, so this screen unmounts
+   * and remounts routinely — every analytics event has to be once-per-session
+   * rather than once-per-mount, or the metrics inflate with every glance
+   * backwards.
    */
   const firstVisitRef = useRef(!state.graceReached);
 
-  // Arriving marks the phase reached. The reducer used to do this as part of
-  // SHOW_GRACE; with the route owning the transition, the screen records it.
+  // Idempotent: the verdict's bridge is what dispatches SHOW_GRACE, and the
+  // reducer refuses it from any phase but the verdict. Kept so the screen still
+  // records its own arrival if it is ever mounted another way.
   useEffect(() => {
     dispatch({ type: "SHOW_GRACE" });
   }, [dispatch]);
@@ -122,7 +121,7 @@ export function GraceScreen({ messages, locale }: GraceScreenProps) {
   }, [beatRefs, revealedCount, messages.beats.length, dispatch]);
 
   function handleContinue() {
-    router.push(`/${locale}/test/decision`);
+    dispatch({ type: "SHOW_INVITATION" });
   }
 
   const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
@@ -283,15 +282,15 @@ export function GraceScreen({ messages, locale }: GraceScreenProps) {
             )}
           </AnimatePresence>
 
-          {/* Quiet walk-back — re-reading the verdict, not reopening it.
-              Pushes the named route rather than calling router.back(): grace is
-              reachable without the verdict behind it (the resume dialog pushes
-              straight here), and there this button walked back to the front
-              door instead — a label that lied about where it went. */}
+          {/* Quiet walk-back — re-reading the verdict, not reopening it. Walks
+              one history entry back rather than dispatching directly, so the
+              browser stack and the reducer stay in agreement: the shell's
+              popstate handler is the single place a backward move is turned
+              into an action. */}
           <div className="mt-8 flex justify-center">
             <button
               type="button"
-              onClick={() => router.push(`/${locale}/test/verdict`)}
+              onClick={onBack}
               className="inline-flex min-h-[32px] items-center text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
             >
               {messages.rereadVerdict}
