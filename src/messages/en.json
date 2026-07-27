@@ -1701,6 +1701,7 @@
   },
   "blog": {
     "label": "Blog",
+    "allPostsLabel": "All posts",
     "indexTitle": "Blog",
     "indexSubtitle": "Timely reflections on death, culture, and the hope of the gospel.",
     "readMore": "Read",

@@ -1701,6 +1701,7 @@
   },
   "blog": {
     "label": "Blog",
+    "allPostsLabel": "Todos os artigos",
     "indexTitle": "Blog",
     "indexSubtitle": "Reflexões oportunas sobre a morte, a cultura e a esperança do evangelho.",
     "readMore": "Ler",

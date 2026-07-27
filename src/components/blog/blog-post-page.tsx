@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { PageShell } from "@/components/shared/page-shell";
 import { SaveStoryImageButton } from "./save-story-image-button";
 import { OwnerTools } from "./owner-tools";
@@ -12,6 +11,7 @@ import type { Locale } from "@/lib/i18n";
 
 interface BlogChromeMessages {
   label: string;
+  allPostsLabel: string;
   saveStoryButton: string;
   saveStoryHint: string;
   copyLinkButton: string;
@@ -52,12 +52,21 @@ export function BlogPostPage({ slug, content, datePublished, locale, messages, s
     <PageShell width="wide">
       <article>
         <BlogViewTracker slug={slug} locale={locale} />
+        {/* Reads as "All posts", not "← Blog". This is a hierarchy link to the
+            index, not a back button — but with a left arrow and a Blog label it
+            was being used as one: arrive from the homepage's latest-post card,
+            press it expecting to return, land on the blog list instead.
+            Browser and swipe back already work correctly and go where the
+            reader actually came from; nothing on the page should compete with
+            them by impersonating back. */}
         <Link
           href={`/${locale}/blog`}
           className="group mb-6 inline-flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[2px] text-white/60 transition-colors hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03] hover:text-[#D4A843]/70"
         >
-          <ArrowLeft className="size-3 transition-transform group-hover:-translate-x-0.5" />
-          {messages.label}
+          {messages.allPostsLabel}
+          <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">
+            &rarr;
+          </span>
         </Link>
 
         <p className="mt-3 font-mono text-[10px] uppercase tracking-[2.5px] text-white/60">
