@@ -165,15 +165,29 @@ export function TestChrome({ backLabel, locale, children }: TestChromeProps) {
     }
   }, [ready, phase, state, locale, router]);
 
+  // The phases where the sticky death counter has slid away — kept in step with
+  // the selector list in globals.css.
+  const barRetired = phase === "verdict" || phase === "grace" || phase === "invitation";
+
   return (
     <main className="relative min-h-dvh overflow-x-hidden bg-[#060404] flex flex-col">
       {/* Radial vignette */}
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
 
+      {/* Exit rides the sticky death counter. That bar retires from the verdict
+          onward (globals.css keys off the same data-game-phase this component
+          publishes), and this link was pinned to clear it — so once the bar slid
+          away it sat stranded with 33.5px of nothing above it. It now slides up
+          by the bar's own height, on the bar's own curve, so the two move as one
+          thing rather than one leaving and the other staying behind.
+
+          translate, not a `top` swap: transform is composited, `top` is not. */}
       <Link
         href={`/${locale}`}
         aria-label={backLabel}
-        className="fixed left-3 top-12 z-40 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/80 sm:left-4 sm:top-14 sm:text-[10px]"
+        className={`fixed left-3 top-12 z-40 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-[transform,color,border-color] duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-white/15 hover:text-white/80 motion-reduce:transition-none sm:left-4 sm:top-14 sm:text-[10px] ${
+          barRetired ? "-translate-y-[34px] sm:-translate-y-[40px]" : ""
+        }`}
       >
         <span aria-hidden="true">&larr;</span>
         <span>{backLabel}</span>
