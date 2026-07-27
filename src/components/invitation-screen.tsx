@@ -140,9 +140,12 @@ export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
             <Button variant="text" onClick={() => handleResponse("dismissed")}>
               {invitation.responses.dismissed}
             </Button>
+            {/* Pushes the named route rather than router.back(): the resume
+                dialog can push straight to this screen, and there back landed
+                on the front door instead of grace. */}
             <button
               type="button"
-              onClick={() => router.back()}
+              onClick={() => router.push(`/${locale}/test/grace`)}
               className="mt-3 text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
             >
               {invitation.rereadGrace}

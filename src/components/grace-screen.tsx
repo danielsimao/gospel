@@ -283,11 +283,15 @@ export function GraceScreen({ messages, locale }: GraceScreenProps) {
             )}
           </AnimatePresence>
 
-          {/* Quiet walk-back — re-reading the verdict, not reopening it */}
+          {/* Quiet walk-back — re-reading the verdict, not reopening it.
+              Pushes the named route rather than calling router.back(): grace is
+              reachable without the verdict behind it (the resume dialog pushes
+              straight here), and there this button walked back to the front
+              door instead — a label that lied about where it went. */}
           <div className="mt-8 flex justify-center">
             <button
               type="button"
-              onClick={() => router.back()}
+              onClick={() => router.push(`/${locale}/test/verdict`)}
               className="text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
             >
               {messages.rereadVerdict}
