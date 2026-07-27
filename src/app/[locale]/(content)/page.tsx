@@ -3,7 +3,6 @@ import { isValidLocale, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
 import { HomeShell } from "@/components/home-shell";
 import { StructuredData } from "@/components/structured-data";
 import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
-import { QUESTION_CONFIGS } from "@/lib/questions";
 import { getPublishedPosts, getPostContent, getPostLocales } from "@/content/blog/posts";
 import type { HomeMessages } from "@/lib/types";
 import type { Metadata } from "next";
@@ -117,17 +116,6 @@ export default async function HomePage({ params }: Props) {
         home={data.home}
         locale={locale as Locale}
         topicSlugs={data.topicSlugs}
-        firstQuestion={{
-          text: data.questions[0]!.text,
-          honestLabel: data.questions[0]!.honestLabel,
-          justifyLabel: data.questions[0]!.justifyLabel,
-          followUp: data.questions[0]!.followUp,
-          honestFollowUp: data.questions[0]!.honestFollowUp,
-          honestVerdictLabel:
-            data.test.verdictLabels[QUESTION_CONFIGS[0]!.commandment] ??
-            data.test.answeredBadge,
-          justifiedBadge: data.test.justifiedBadge,
-        }}
         latestPost={latestPost}
       />
     </>

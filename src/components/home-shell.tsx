@@ -9,7 +9,6 @@ import { DeathCounter } from "@/components/eternity/death-counter";
 import { RotatingFacts } from "@/components/eternity/rotating-facts";
 import { LatestPostCard } from "@/components/home/latest-post-card";
 import { AlsoHere, type AlsoHereRow } from "@/components/home/also-here";
-import { FirstQuestion, type FirstQuestionCopy } from "@/components/home/first-question";
 import { StageSpine } from "@/components/home/stage-spine";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { hasAnsweredConsent, subscribeToConsentAnswered } from "@/lib/consent";
@@ -47,8 +46,6 @@ interface HomeShellProps {
   home: HomeMessages;
   locale: Locale;
   topicSlugs: string[];
-  /** Question 1 of the test, asked on the front door. Omit to keep the plain CTA. */
-  firstQuestion?: Omit<FirstQuestionCopy, "label" | "continueLabel">;
   latestPost?: {
     slug: string;
     title: string;
@@ -76,7 +73,7 @@ const RATE_CARDS = [
   { value: "155,000", key: "perDay" },
 ] as const;
 
-export function HomeShell({ hero, home, locale, topicSlugs, firstQuestion, latestPost }: HomeShellProps) {
+export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeShellProps) {
   const journey = useJourney(topicSlugs);
 
   /*
@@ -428,43 +425,18 @@ export function HomeShell({ hero, home, locale, topicSlugs, firstQuestion, lates
               <h1 className="mt-3 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-4 sm:text-3xl md:text-4xl">
                 {home.provocativeQuestion}
               </h1>
-              {/* The front door is either the plain CTA or the test's own first
-                  question — never both. This was briefly behind a PostHog flag
-                  as a kill switch; the flag never worked (its one-shot guard
-                  ran before posthog-js finished loading and never re-subscribed,
-                  so it was pinned to the default), and reading it meant a static
-                  import of posthog-js, which put the session recorder in the
-                  homepage bundle — the one thing lib/posthog.ts forbids outside
-                  itself. Reverting this is a one-line change and a deploy, which
-                  at this traffic is cheaper than either problem. */}
-              {firstQuestion ? (
-                <FirstQuestion
-                  copy={{
-                    label: home.firstQuestionLabel,
-                    continueLabel: home.firstQuestionContinue,
-                    ...firstQuestion,
-                  }}
-                  locale={locale}
-                />
-              ) : (
-                <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
-                  <Button variant="gold" size="lg" mist>
-                    {home.ctaButton}
-                    <ButtonArrow />
-                  </Button>
-                </Link>
-              )}
-              {/* The direct route in, for anyone who would rather not answer
-                  here. Text, not a second gold button — the question is the
-                  ask, and two equal asks reintroduce the choice the inline
-                  question exists to remove. Only rendered alongside the
-                  question; without it the gold CTA above already is this. */}
-              {firstQuestion && (
-                <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-4">
-                  <Button variant="text">{home.skipToTest}</Button>
-                </Link>
-              )}
-              <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-1">
+              {/* One ask. The front door briefly asked the test's own first
+                  question inline instead — it read well, but it split the entry
+                  point in two and put a commandment on a page whose job is to
+                  get someone through the door. The Law is asked where the rest
+                  of it is asked. */}
+              <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
+                <Button variant="gold" size="lg" mist>
+                  {home.ctaButton}
+                  <ButtonArrow />
+                </Button>
+              </Link>
+              <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-4">
                 <Button variant="text">{home.secondaryLink}</Button>
               </Link>
             </>
