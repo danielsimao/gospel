@@ -13,7 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   for (const locale of SUPPORTED_LOCALES) {
     // Static pages
-    const staticPages = ["", "/test", "/reading-plan", "/learn", "/about", "/privacy", "/terms", "/find-a-church"];
+    const staticPages = ["", "/test", "/reading-plan", "/learn", "/about", "/privacy", "/terms", "/find-a-church", "/good-enough"];
     for (const page of staticPages) {
       entries.push({
         url: getLocaleUrl(locale, page),

@@ -1,98 +1,107 @@
 import { describe, it, expect } from "vitest";
 import {
-  CANYON_FEET,
-  MAX_ATTEMPTS,
-  attemptAt,
-  allAttempts,
-  displayDistance,
-  numberLocale,
+  TAPS_TO_CEILING,
+  CEILING_PCT,
+  GOAL_PCT,
+  DEAD_TAPS_TO_REVEAL,
+  CROWD_PCT,
+  barAfter,
+  ceilingLineIndex,
 } from "@/lib/good-enough";
 import type { GoodEnoughMessages } from "@/lib/types";
 import en from "../messages/en.json";
 import pt from "../messages/pt.json";
 
-describe("good-enough mechanic", () => {
-  it("spans eighteen miles", () => {
-    expect(CANYON_FEET).toBe(18 * 5280);
+describe("the bar", () => {
+  it("starts empty and already short of the line", () => {
+    const s = barAfter(0);
+    expect(s.fillPct).toBe(0);
+    expect(s.shortPct).toBe(GOAL_PCT);
+    expect(s.atCeiling).toBe(false);
+    expect(s.revealed).toBe(false);
   });
 
-  it("bounds the reader at four attempts", () => {
-    expect(MAX_ATTEMPTS).toBe(4);
-    expect(allAttempts()).toHaveLength(4);
+  it("adds exactly the same amount on every tap", () => {
+    // No decay, no diminishing returns. Equal steps are what make the rules
+    // honest — the reader can verify the machine is not lying to them.
+    const steps: number[] = [];
+    for (let t = 1; t <= TAPS_TO_CEILING; t++) {
+      steps.push(barAfter(t).fillPct - barAfter(t - 1).fillPct);
+    }
+    for (const step of steps) {
+      expect(step).toBeCloseTo(steps[0]!, 10);
+    }
+    expect(steps[0]!).toBeGreaterThan(0);
   });
 
-  it("jumps strictly further every attempt", () => {
-    const feet = allAttempts().map((a) => a.feet);
-    for (let i = 1; i < feet.length; i++) {
-      expect(feet[i]!).toBeGreaterThan(feet[i - 1]!);
+  it("stops dead at the ceiling and never moves again", () => {
+    const at = barAfter(TAPS_TO_CEILING);
+    expect(at.fillPct).toBeCloseTo(CEILING_PCT, 10);
+    for (const extra of [1, 5, 50, 500]) {
+      expect(barAfter(TAPS_TO_CEILING + extra).fillPct).toBeCloseTo(CEILING_PCT, 10);
     }
   });
 
-  it("never reaches the far side, not even on the best attempt", () => {
-    for (const a of allAttempts()) {
-      expect(a.remainingFeet).toBeGreaterThan(0);
-      expect(a.remainingFeet).toBe(CANYON_FEET - a.feet);
+  it("never produces a near miss", () => {
+    // The load-bearing constraint, and the reason this is a test rather than a
+    // comment. Near-miss outcomes raise the motivation to continue and breed an
+    // illusion of control; a bar that crept up on the line would teach "try
+    // harder", which is the belief the page exists to remove.
+    const gap = GOAL_PCT - CEILING_PCT;
+    expect(gap).toBeGreaterThanOrEqual(50);
+    for (let t = 0; t <= TAPS_TO_CEILING + 100; t++) {
+      expect(barAfter(t).shortPct).toBeGreaterThanOrEqual(gap);
+      expect(barAfter(t).fillPct).toBeLessThan(GOAL_PCT);
     }
-    // The best attempt clears well under 1% — the reader must never be able to
-    // read the display as "nearly there".
-    const best = allAttempts()[MAX_ATTEMPTS - 1]!;
-    expect(best.feet / CANYON_FEET).toBeLessThan(0.01);
   });
 
-  it("marks only the last attempt terminal", () => {
-    const attempts = allAttempts();
-    expect(attempts.filter((a) => a.terminal)).toHaveLength(1);
-    expect(attempts[MAX_ATTEMPTS - 1]!.terminal).toBe(true);
+  it("counts dead taps only after the ceiling", () => {
+    expect(barAfter(TAPS_TO_CEILING - 1).deadTaps).toBe(0);
+    expect(barAfter(TAPS_TO_CEILING).deadTaps).toBe(0);
+    expect(barAfter(TAPS_TO_CEILING + 2).deadTaps).toBe(2);
   });
 
-  it("includes a world record among the attempts, because comparison is the trap", () => {
-    expect(allAttempts().map((a) => a.feet)).toContain(50);
+  it("turns only after the reader has proved it for themselves", () => {
+    expect(barAfter(TAPS_TO_CEILING).revealed).toBe(false);
+    expect(barAfter(TAPS_TO_CEILING + DEAD_TAPS_TO_REVEAL - 1).revealed).toBe(false);
+    expect(barAfter(TAPS_TO_CEILING + DEAD_TAPS_TO_REVEAL).revealed).toBe(true);
+    // And it stays turned — nothing is ever taken back.
+    expect(barAfter(TAPS_TO_CEILING + 99).revealed).toBe(true);
   });
 
-  it("does not accumulate — each press is a fresh jump, not a running total", () => {
-    // Accumulation would make this a progress bar, which the app's own copy
-    // forbids, and would teach that works bank.
-    const attempts = allAttempts();
-    const runningTotal = attempts.reduce((sum, a) => sum + a.feet, 0);
-    expect(attempts[MAX_ATTEMPTS - 1]!.feet).not.toBe(runningTotal);
-    expect(attempts[MAX_ATTEMPTS - 1]!.feet).toBe(200);
+  it("survives nonsense tap counts instead of producing NaN", () => {
+    for (const bad of [-1, -99, 2.7]) {
+      const s = barAfter(bad);
+      expect(Number.isFinite(s.fillPct)).toBe(true);
+      expect(s.fillPct).toBeGreaterThanOrEqual(0);
+    }
+    expect(barAfter(2.7).fillPct).toBe(barAfter(2).fillPct);
+    expect(barAfter(-5).fillPct).toBe(0);
   });
 
-  it("clamps out-of-range attempt numbers instead of returning undefined", () => {
-    expect(attemptAt(0)).toEqual(attemptAt(1));
-    expect(attemptAt(-5)).toEqual(attemptAt(1));
-    expect(attemptAt(99)).toEqual(attemptAt(MAX_ATTEMPTS));
-    expect(attemptAt(2.7)).toEqual(attemptAt(2));
+  it("clamps the ceiling line rather than running off the end of the copy", () => {
+    expect(ceilingLineIndex(0, 4)).toBe(0);
+    expect(ceilingLineIndex(3, 4)).toBe(3);
+    expect(ceilingLineIndex(99, 4)).toBe(3);
+    expect(ceilingLineIndex(-1, 4)).toBe(0);
+    expect(ceilingLineIndex(0, 0)).toBe(0);
   });
 });
 
-describe("readout units", () => {
-  it("leaves feet alone for en", () => {
-    expect(displayDistance(CANYON_FEET, "en")).toBe(CANYON_FEET);
-    expect(displayDistance(200, "en")).toBe(200);
-  });
-
-  it("converts to whole metres for pt, whose copy speaks kilometres", () => {
-    // 18 miles ≈ 28.97 km. The PT copy says "vinte e nove quilómetros".
-    expect(displayDistance(CANYON_FEET, "pt")).toBe(28968);
-    expect(displayDistance(200, "pt")).toBe(61);
-    expect(displayDistance(4, "pt")).toBe(1);
-  });
-
-  it("stays short of the far side in both units", () => {
-    for (const locale of ["en", "pt"] as const) {
-      for (const a of allAttempts()) {
-        expect(displayDistance(a.remainingFeet, locale)).toBeGreaterThan(0);
-        expect(displayDistance(a.remainingFeet, locale)).toBeLessThan(
-          displayDistance(CANYON_FEET, locale) + 1,
-        );
-      }
+describe("the crowd", () => {
+  it("puts everyone far below the line, whatever their height", () => {
+    // Romans 3:23's "all", in the bar's own language. Some clear the reader,
+    // some do not, and the comparison is beside the point in every case.
+    expect(CROWD_PCT.length).toBeGreaterThanOrEqual(10);
+    for (const pct of CROWD_PCT) {
+      expect(pct).toBeGreaterThan(0);
+      expect(pct).toBeLessThan(GOAL_PCT - 40);
     }
   });
 
-  it("names a number locale per page locale, not per runtime", () => {
-    expect(numberLocale("en")).toBe("en-US");
-    expect(numberLocale("pt")).toBe("pt-PT");
+  it("includes bars both above and below where the reader ends up", () => {
+    expect(CROWD_PCT.some((p) => p > CEILING_PCT)).toBe(true);
+    expect(CROWD_PCT.some((p) => p < CEILING_PCT)).toBe(true);
   });
 });
 
@@ -103,9 +112,9 @@ describe("good-enough copy", () => {
     "eyebrow",
     "prompt",
     "buttonLabel",
-    "buttonLabelAgain",
-    "remainingLabel",
-    "feetLabel",
+    "goalLabel",
+    "shortLabel",
+    "crowdLabel",
   ] as const;
   const REVEAL = ["lead", "scripture", "scriptureRef", "turn", "cta"] as const;
 
@@ -128,14 +137,11 @@ describe("good-enough copy", () => {
   it.each([
     ["en", en],
     ["pt", pt],
-  ] as const)("%s has exactly one copy entry per attempt", (_locale, messages) => {
-    const attempts = (messages as { goodEnough: GoodEnoughMessages }).goodEnough.attempts;
-    expect(attempts).toHaveLength(MAX_ATTEMPTS);
-    for (const a of attempts) {
-      // `help` is intentionally "" on the bare first jump; `reaction` never is.
-      expect(typeof a.help).toBe("string");
-      expect(a.reaction.length).toBeGreaterThan(0);
-    }
+  ] as const)("%s has a line for every dead tap up to the turn", (_locale, messages) => {
+    const lines = (messages as { goodEnough: GoodEnoughMessages }).goodEnough.ceilingLines;
+    // One for arriving at the ceiling, then one per dead tap until the turn.
+    expect(lines.length).toBeGreaterThanOrEqual(DEAD_TAPS_TO_REVEAL + 1);
+    for (const line of lines) expect(line.length).toBeGreaterThan(0);
   });
 
   it("cites Romans 3:23 in both locales — the whole page is that verse", () => {

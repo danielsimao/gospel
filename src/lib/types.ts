@@ -192,22 +192,21 @@ export interface GoodEnoughMessages {
   eyebrow: string;
   /** The setup. Names the destination and its distance without promising the reader will reach it. */
   prompt: string;
+  /** One label, never conditional — the button is never taken away. */
   buttonLabel: string;
-  /** Label from attempt 2 onward — the reader is trying again with more help. */
-  buttonLabelAgain: string;
+  /** Marks the line on the track, e.g. "Required". */
+  goalLabel: string;
+  /** Suffix on the readout, e.g. "still short". */
+  shortLabel: string;
   /**
-   * One entry per attempt, MAX_ATTEMPTS long. `help` names the prop given for
-   * that jump ("" on the first, which is bare); `reaction` is what lands after.
+   * What is said once the bar has stopped, one line per press after it. The
+   * first entry lands on arrival at the ceiling; the rest answer the reader
+   * continuing to press a bar with nowhere to go. Clamped, so the copy runs
+   * out before their patience does rather than the reverse.
    */
-  attempts: Array<{ help: string; reaction: string }>;
-  /** Suffix on the distance readout, e.g. "still short". */
-  remainingLabel: string;
-  /**
-   * Unit word for the readout, already plural — distances here are never 1.
-   * EN says feet; PT says metros, and the readout converts to match (see
-   * `displayDistance` in lib/good-enough.ts).
-   */
-  feetLabel: string;
+  ceilingLines: string[];
+  /** Labels the other bars revealed at the ceiling, e.g. "everyone else". */
+  crowdLabel: string;
   reveal: {
     lead: string;
     scripture: string;

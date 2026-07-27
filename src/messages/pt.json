@@ -1775,24 +1775,25 @@
   },
   "goodEnough": {
     "title": "Suficientemente bom?",
-    "metaDescription": "Toda a gente salta mais do que alguém. O desfiladeiro tem vinte e nove quilómetros. Quatro tentativas, e o que elas mostram.",
-    "eyebrow": "Um salto",
-    "prompt": "O outro lado é onde queres acabar. Fica a vinte e nove quilómetros. Então força.",
-    "buttonLabel": "Saltar",
-    "buttonLabelAgain": "Saltar outra vez",
-    "attempts": [
-      { "help": "", "reaction": "Um metro. Nada mau, parado." },
-      { "help": "balanço", "reaction": "Seis metros, com balanço. Melhor do que a maioria consegue." },
-      { "help": "vara de salto", "reaction": "Quinze metros. Isso é um recorde mundial. Ninguém vivo salta mais." },
-      { "help": "botas a jato", "reaction": "Sessenta e um metros, de botas a jato. Mais longe do que qualquer humano alguma vez foi." }
+    "metaDescription": "Toca para encher a barra. Enche-a e entras. Uma resposta de um minuto à suposição mais antiga sobre o céu.",
+    "eyebrow": "Enche-a",
+    "prompt": "Toca para encher a barra até à linha. Enche-a e entras.",
+    "buttonLabel": "Tocar",
+    "goalLabel": "Necessário",
+    "shortLabel": "ainda em falta",
+    "ceilingLines": [
+      "Parou de subir.",
+      "Não se mexe nada.",
+      "Continua sem se mexer.",
+      "Cada toque está a fazer exatamente o que o anterior fez.",
+      "Já está num terço há algum tempo."
     ],
-    "remainingLabel": "ainda em falta",
-    "feetLabel": "metros",
+    "crowdLabel": "Toda a gente",
     "reveal": {
-      "lead": "Quinze metros é um recorde mundial — ninguém vivo salta mais. Tu foste quatro vezes isso, de foguetes nos pés. A distância é de vinte e nove quilómetros. Ninguém está a discutir que saltaste mais do que a pessoa ao teu lado; nunca foi essa a questão.",
+      "lead": "A barra pára num terço. Não porque foste lento, nem porque desististe — pára aí para toda a gente. Há quem chegue mais longe do que tu. Ninguém chega à linha.",
       "scripture": "Porque todos pecaram e destituídos estão da glória de Deus.",
       "scriptureRef": "Romanos 3:23",
-      "turn": "Isso é toda a gente, em geral. Há uma versão disto que é sobre ti especificamente, e leva seis perguntas.",
+      "turn": "É por isso que não se pode ganhar. Mas isto não te diz o que fizeste, nem quão longe estás. Essa parte é pessoal, e leva seis perguntas.",
       "cta": "Fazer o teste"
     }
   },

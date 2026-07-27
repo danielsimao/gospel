@@ -1775,24 +1775,25 @@
   },
   "goodEnough": {
     "title": "Good enough?",
-    "metaDescription": "Everyone jumps further than someone. The canyon is eighteen miles wide. Four attempts, and what they show.",
-    "eyebrow": "One jump",
-    "prompt": "The other side is where you want to end up. It is eighteen miles away. Go on, then.",
-    "buttonLabel": "Jump",
-    "buttonLabelAgain": "Jump again",
-    "attempts": [
-      { "help": "", "reaction": "Four feet. Not bad, standing." },
-      { "help": "a run-up", "reaction": "Twenty feet, with a run-up. Better than most people manage." },
-      { "help": "a pole vault", "reaction": "Fifty feet. That is a world record. Nobody alive jumps further." },
-      { "help": "rocket boots", "reaction": "Two hundred feet, on rocket boots. Further than any human has ever gone." }
+    "metaDescription": "Tap to fill the bar. Fill it and you're in. A one-minute answer to the oldest assumption about heaven.",
+    "eyebrow": "Fill it",
+    "prompt": "Tap to fill the bar to the line. Fill it and you're in.",
+    "buttonLabel": "Tap",
+    "goalLabel": "Required",
+    "shortLabel": "still short",
+    "ceilingLines": [
+      "It has stopped rising.",
+      "Nothing is moving.",
+      "Still nothing.",
+      "Every tap is doing exactly what the last one did.",
+      "It has been at a third for a while now."
     ],
-    "remainingLabel": "still short",
-    "feetLabel": "feet",
+    "crowdLabel": "Everyone else",
     "reveal": {
-      "lead": "Fifty feet is a world record — no living person jumps further. You went four times that, wearing rockets. The gap is eighteen miles. Nobody is arguing you didn't clear more than the person beside you; that was never the question.",
+      "lead": "The bar stops at a third. Not because you were slow, and not because you gave up — it stops there for everyone. Some people get further than you. Nobody gets to the line.",
       "scripture": "For all have sinned and fall short of the glory of God.",
       "scriptureRef": "Romans 3:23",
-      "turn": "That is everyone, in general. There is a version of this that is about you specifically, and it takes six questions.",
+      "turn": "That is why it can't be earned. It doesn't tell you what you've done, though, or how far short you are. That part is personal, and it takes six questions.",
       "cta": "Take the test"
     }
   },
