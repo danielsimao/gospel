@@ -9,6 +9,7 @@ import { DeathCounter } from "@/components/eternity/death-counter";
 import { RotatingFacts } from "@/components/eternity/rotating-facts";
 import { JourneyTracker } from "@/components/journey-tracker";
 import { LatestPostCard } from "@/components/home/latest-post-card";
+import { StageSpine } from "@/components/home/stage-spine";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { hasAnsweredConsent, subscribeToConsentAnswered } from "@/lib/consent";
 import { useJourney } from "@/lib/use-journey";
@@ -223,29 +224,57 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
 
           {/* === Bottom CTA section — adapts to journey stage === */}
           {journey.stage === "committed" && (
-            <div className="relative mt-10 flex w-full flex-col items-center sm:mt-14">
+            <div className="relative flex w-full flex-col items-center">
               {/* Warm grace glow — this state continues the grace screen's atmosphere */}
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute -inset-x-10 -top-12 bottom-1/3"
+                className="pointer-events-none absolute -inset-x-10 top-0 bottom-1/3"
                 style={{
                   background:
                     "radial-gradient(ellipse at 50% 25%, rgba(212,168,67,0.08) 0%, transparent 65%)",
                   filter: "blur(32px)",
                 }}
               />
-              {/* Conditional promise — scripture treatment, honored not celebrated */}
-              <blockquote className="relative max-w-md border-l border-[#D4A843]/30 pl-4 text-left">
-                <p className="text-[15px] italic leading-relaxed text-white/80 sm:text-base">
-                  {home.journeyStages.committed.heading}
-                </p>
-              </blockquote>
-              <div className="relative mt-7 flex items-center gap-2">
-                <span className="h-px w-6 bg-[#D4A843]/40" />
+              <StageSpine
+                tone="gold"
+                eyebrow={home.journeyStages.committed.eyebrow}
+                heading={home.journeyStages.committed.title}
+                whatHappened={home.journeyStages.committed.whatHappened}
+              >
+                {/* Conditional promise — scripture treatment, honored not
+                    celebrated. It kept its exact wording; it just stops being
+                    asked to work as this stage's headline, which is what left
+                    the page with no h1 at all. */}
+                <blockquote className="relative mt-5 max-w-md border-l border-[#D4A843]/30 pl-4 text-left">
+                  <p className="text-[14px] italic leading-[1.75] text-white/70 sm:text-[15px]">
+                    {home.journeyStages.committed.heading}
+                  </p>
+                </blockquote>
+              </StageSpine>
+
+              {/* The one primary action, matching every other stage's shape.
+                  Was a link-card, which is why this stage rendered zero buttons. */}
+              <Link
+                href={`/${locale}/next-steps`}
+                className="relative mt-8 w-full max-w-sm"
+              >
+                <Button variant="gold" size="lg" mist className="w-full">
+                  {home.journeyStages.committed.nextStepsCard.label}
+                  <ButtonArrow />
+                </Button>
+              </Link>
+
+              {/* Held, not removed: the discipleship tracker is the one change
+                  that could measurably reduce reading-plan engagement, so it
+                  stays until the shared spine has had a chance to fix the
+                  disorientation on its own. Demoted below the primary action so
+                  the top of every stage now reads identically. */}
+              <div className="relative mt-4 flex items-center gap-2">
+                <span aria-hidden="true" className="h-px w-6 bg-[#D4A843]/40" />
                 <span className="font-mono text-[10px] uppercase tracking-[3px] text-[#D4A843]/80">
                   {home.journeyStages.committed.subheading}
                 </span>
-                <span className="h-px w-6 bg-[#D4A843]/40" />
+                <span aria-hidden="true" className="h-px w-6 bg-[#D4A843]/40" />
               </div>
               <JourneyTracker
                 snapshot={journey}
@@ -254,29 +283,6 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
                 shareMessages={share}
                 topicSlugs={topicSlugs}
               />
-              {/* Persistent bridge to the relational track — pray/community/church
-                  guidance must survive beyond the one-shot invitation CTA */}
-              <Link
-                href={`/${locale}/next-steps`}
-                className="group mt-3 block w-full max-w-md rounded-xl border border-white/[0.08] bg-white/[0.015] p-5 transition-colors hover:border-[#D4A843]/35"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-semibold text-white/90">
-                      {home.journeyStages.committed.nextStepsCard.label}
-                    </p>
-                    <p className="mt-1 text-[13px] leading-relaxed text-white/60">
-                      {home.journeyStages.committed.nextStepsCard.description}
-                    </p>
-                  </div>
-                  <span
-                    aria-hidden="true"
-                    className="mt-0.5 text-[#D4A843]/70 transition-transform group-hover:translate-x-1"
-                  >
-                    →
-                  </span>
-                </div>
-              </Link>
               {/* Retake — quiet sentence-case escape hatch at the very end.
                   It resets the whole journey; it must never wear the mono-
                   uppercase header costume or sit between card groups (it
@@ -297,27 +303,18 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
 
           {journey.stage === "undecided" && (
             <>
-              {/* Red docket eyebrow — the verdict is still on the table */}
-              <div className="mt-10 flex items-center gap-2 sm:mt-14">
-                <span className="h-px w-6 bg-red-500/40" />
-                <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/80 sm:text-[10px] sm:tracking-[4px]">
-                  {home.journeyStages.undecided.eyebrow}
-                </span>
-                <span className="h-px w-6 bg-red-500/40" />
-              </div>
-              <h1 className="mt-3 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-4 sm:text-3xl">
-                {home.journeyStages.undecided.heading}
-              </h1>
-              {/* Temporal mirror — the honest urgency device: how long "later"
-                  has already lasted, stated once, no pressure mechanics. */}
-              {journey.daysSinceTest !== null && (
-                <p className="mt-3 max-w-sm text-center text-[13px] italic leading-relaxed text-white/55">
-                  {home.journeyStages.undecided.sinceLine.replace(
-                    "{when}",
-                    sincePhrase(journey.daysSinceTest, home.journeyStages.since),
-                  )}
-                </p>
-              )}
+              {/* whatHappened carries the temporal mirror that sinceLine used
+                  to hold — how long "later" has already lasted, stated once,
+                  no pressure mechanics — folded into the result sentence. */}
+              <StageSpine
+                tone="red"
+                eyebrow={home.journeyStages.undecided.eyebrow}
+                heading={home.journeyStages.undecided.heading}
+                whatHappened={home.journeyStages.undecided.whatHappened.replace(
+                  "{when}",
+                  sincePhrase(journey.daysSinceTest ?? 0, home.journeyStages.since),
+                )}
+              />
               <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
                 <Button variant="gold" size="lg" mist>
                   {home.journeyStages.undecided.cta}
@@ -328,79 +325,33 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
           )}
 
           {journey.stage === "thinking" && (
-            <div className="mt-10 flex w-full max-w-md flex-col items-center gap-3 sm:mt-14">
-              {/* Dim gold eyebrow — leaning toward grace, not there yet */}
-              <div className="flex items-center gap-2">
-                <span className="h-px w-6 bg-[#D4A843]/30" />
-                <span className="font-mono text-[9px] uppercase tracking-[3px] text-[#D4A843]/70">
-                  {home.journeyStages.thinking.eyebrow}
-                </span>
-                <span className="h-px w-6 bg-[#D4A843]/30" />
-              </div>
-              {journey.daysSinceResponse !== null && (
-                <p className="text-center text-[13px] italic leading-relaxed text-white/55">
-                  {home.journeyStages.thinking.sinceLine.replace(
-                    "{when}",
-                    sincePhrase(journey.daysSinceResponse, home.journeyStages.since),
-                  )}
-                </p>
-              )}
-              <p className="text-center text-sm leading-relaxed text-white/70">
-                {home.journeyStages.thinking.reflection}
-              </p>
-              {/* Primary card — John 3, gold-accented */}
-              <a
-                href={home.journeyStages.thinking.johnCard.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group mt-2 block w-full rounded-xl border border-[#D4A843]/25 bg-[#D4A843]/[0.03] p-5 transition-colors hover:border-[#D4A843]/45"
+            <div className="flex w-full max-w-md flex-col items-center">
+              <StageSpine
+                tone="dim"
+                eyebrow={home.journeyStages.thinking.eyebrow}
+                heading={home.journeyStages.thinking.heading}
+                whatHappened={home.journeyStages.thinking.whatHappened.replace(
+                  "{when}",
+                  sincePhrase(journey.daysSinceResponse ?? 0, home.journeyStages.since),
+                )}
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-semibold text-white/90">
-                      {home.journeyStages.thinking.johnCard.label}
-                    </p>
-                    <p className="mt-1 text-[13px] leading-relaxed text-white/60">
-                      {home.journeyStages.thinking.johnCard.description}
-                    </p>
-                  </div>
-                  <span
-                    aria-hidden="true"
-                    className="mt-0.5 text-[#D4A843]/70 transition-transform group-hover:translate-x-1"
-                  >
-                    →
-                  </span>
-                </div>
-              </a>
-              {/* Secondary card — foundations, ghost */}
-              <Link
-                href={`/${locale}/learn`}
-                className="group block w-full rounded-xl border border-white/[0.06] bg-white/[0.015] p-5 transition-colors hover:border-white/[0.14]"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-semibold text-white/85">
-                      {home.journeyStages.thinking.learnCard.label}
-                    </p>
-                    <p className="mt-1 text-[13px] leading-relaxed text-white/60">
-                      {home.journeyStages.thinking.learnCard.description}
-                    </p>
-                  </div>
-                  <span
-                    aria-hidden="true"
-                    className="mt-0.5 text-white/60 transition-transform group-hover:translate-x-1"
-                  >
-                    →
-                  </span>
-                </div>
-              </Link>
+                {/* The pastoral centre of this stage — kept as the second beat,
+                    in the house blockquote. The John 3 and foundations cards
+                    that used to sit here were competing with the decision, which
+                    is the whole point of the stage; they live on /learn. */}
+                <blockquote className="mt-5 max-w-md border-l border-white/[0.14] pl-4 text-left">
+                  <p className="text-[13px] italic leading-[1.7] text-white/60 sm:text-sm">
+                    {home.journeyStages.thinking.reflection}
+                  </p>
+                </blockquote>
+              </StageSpine>
               {/* The decision — same gold commitment button as the invitation screen */}
               <Button
                 variant="gold"
-                size="sm"
+                size="lg"
                 mist
                 onClick={() => saveInvitationResponse("committed")}
-                className="mt-4 w-full max-w-sm"
+                className="mt-8 w-full max-w-sm"
               >
                 {home.journeyStages.thinking.commitLabel}
               </Button>
@@ -422,14 +373,14 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
 
           {journey.stage === "dismissed" && (
             <>
-              {/* The door line — quiet framed gesture, no pressure */}
-              <div className="mt-10 flex w-full max-w-md items-center justify-center gap-4 sm:mt-14">
-                <span aria-hidden="true" className="h-px flex-1 max-w-12 bg-white/[0.12]" />
-                <p className="max-w-[16rem] text-center text-[15px] italic leading-relaxed text-white/65">
-                  {home.journeyStages.dismissed.line}
-                </p>
-                <span aria-hidden="true" className="h-px flex-1 max-w-12 bg-white/[0.12]" />
-              </div>
+              {/* The only stage with a ghost primary. Present, honest,
+                  unpressured — someone who said no should not be sold to. */}
+              <StageSpine
+                tone="dim"
+                eyebrow={home.journeyStages.dismissed.eyebrow}
+                heading={home.journeyStages.dismissed.title}
+                whatHappened={home.journeyStages.dismissed.whatHappened}
+              />
               <Link
                 href={`/${locale}/test`}
                 onClick={() => {
@@ -437,7 +388,7 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
                   resetJourney();
                   clearSession();
                 }}
-                className="mt-7"
+                className="mt-8"
               >
                 <Button variant="ghost" size="sm">
                   {home.journeyStages.dismissed.retakeCta}

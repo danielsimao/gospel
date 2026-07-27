@@ -1523,7 +1523,8 @@
         "eyebrow": "O veredicto mantém-se",
         "heading": "Viste o veredicto. O que vais fazer com ele?",
         "sinceLine": "Isso foi {when}. A pergunta continua à espera.",
-        "cta": "Volta onde ficaste"
+        "cta": "Volta onde ficaste",
+        "whatHappened": "Estiveste em julgamento {when}. O veredicto foi culpado, e a dívida continua por pagar."
       },
       "committed": {
         "heading": "Se te arrependeste e confiaste em Cristo, Deus perdoou-te — não porque o mereceste, mas por causa do que Cristo fez.",
@@ -1531,7 +1532,10 @@
         "nextStepsCard": {
           "label": "Os teus próximos passos",
           "description": "Oração, igreja e as pessoas que vão caminhar contigo — onde uma vida nova cria raízes."
-        }
+        },
+        "eyebrow": "O caminho a partir daqui",
+        "title": "Isto é o início, não a meta.",
+        "whatHappened": "Estiveste em julgamento, o veredicto foi culpado — e alguém pagou a tua dívida."
       },
       "thinking": {
         "eyebrow": "A pergunta continua em aberto",
@@ -1547,11 +1551,16 @@
           "description": "Respostas curtas e honestas às perguntas essenciais."
         },
         "commitLabel": "Arrependi-me e confiei em Cristo",
-        "retakeLabel": "Faz o teste outra vez"
+        "retakeLabel": "Faz o teste outra vez",
+        "heading": "Pediste tempo. Continua a ser teu.",
+        "whatHappened": "Viste que alguém pagou a tua dívida, e pediste tempo para pensar. Foi {when}."
       },
       "dismissed": {
         "line": "A porta continua aberta. O amanhã não está prometido.",
-        "retakeCta": "Faz o teste outra vez"
+        "retakeCta": "Faz o teste outra vez",
+        "eyebrow": "Onde o deixaste",
+        "title": "A porta continua aberta.",
+        "whatHappened": "Estiveste em julgamento e deixaste o veredicto em cima da mesa. O amanhã não está prometido."
       }
     }
   },

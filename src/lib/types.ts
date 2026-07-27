@@ -105,19 +105,34 @@ export interface JourneyStagesMessages {
     daysAgo: string;
     weeksAgo: string;
   };
+  /*
+   * Every stage carries the same spine: eyebrow → one h1 → whatHappened →
+   * one primary action. `whatHappened` is the progression — told in the app's
+   * courtroom language rather than charted in a widget — so it is required on
+   * every post-test stage. `visitor` has none because nothing has happened yet.
+   */
   undecided: {
     eyebrow: string;
     heading: string;
+    /** @deprecated superseded by whatHappened, which carries the elapsed time too. */
     sinceLine: string;
+    whatHappened: string;
     cta: string;
   };
   committed: {
+    eyebrow: string;
+    title: string;
+    whatHappened: string;
+    /** The conditional promise — kept verbatim, rendered as the house blockquote. */
     heading: string;
     subheading: string;
     nextStepsCard: { label: string; description: string };
   };
   thinking: {
     eyebrow: string;
+    heading: string;
+    whatHappened: string;
+    /** @deprecated superseded by whatHappened. */
     sinceLine: string;
     reflection: string;
     johnCard: { label: string; description: string; url: string };
@@ -126,6 +141,10 @@ export interface JourneyStagesMessages {
     retakeLabel: string;
   };
   dismissed: {
+    eyebrow: string;
+    title: string;
+    whatHappened: string;
+    /** @deprecated split into title + whatHappened. */
     line: string;
     retakeCta: string;
   };

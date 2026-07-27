@@ -1523,7 +1523,8 @@
         "eyebrow": "The verdict stands",
         "heading": "You've seen the verdict. What will you do with it?",
         "sinceLine": "That was {when}. The question is still waiting.",
-        "cta": "Return to where you left off"
+        "cta": "Return to where you left off",
+        "whatHappened": "You stood trial {when}. The verdict was guilty, and the fine is still unpaid."
       },
       "committed": {
         "heading": "If you've repented and trusted in Christ, God has forgiven you — not because you earned it, but because of what Christ did.",
@@ -1531,7 +1532,10 @@
         "nextStepsCard": {
           "label": "Your next steps",
           "description": "Prayer, church, and the people who will walk with you — where a new life takes root."
-        }
+        },
+        "eyebrow": "The road from here",
+        "title": "This is the beginning, not the finish line.",
+        "whatHappened": "You stood trial, the verdict was guilty — and someone paid your fine."
       },
       "thinking": {
         "eyebrow": "The question is still open",
@@ -1547,11 +1551,16 @@
           "description": "Short, honest answers to the core questions."
         },
         "commitLabel": "I have repented and trusted in Christ",
-        "retakeLabel": "Take the test again"
+        "retakeLabel": "Take the test again",
+        "heading": "You asked for time. It's still yours to take.",
+        "whatHappened": "You saw that someone paid your fine, and asked for time to think. That was {when}."
       },
       "dismissed": {
         "line": "The door stays open. Tomorrow isn't promised.",
-        "retakeCta": "Take the test again"
+        "retakeCta": "Take the test again",
+        "eyebrow": "Where you left it",
+        "title": "The door stays open.",
+        "whatHappened": "You stood trial and left the verdict on the table. Tomorrow isn't promised."
       }
     }
   },
