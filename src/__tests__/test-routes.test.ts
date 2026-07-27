@@ -25,10 +25,11 @@ function state(over: Partial<GameState> = {}): GameState {
     completedAt: null,
     questionStartedAt: null,
     graceReached: false,
+    graceBeatsRevealed: 0,
     invitationReached: false,
     invitationResponse: null,
     ...over,
-  } as GameState;
+  } satisfies GameState;
 }
 
 const allAnswers = Array.from({ length: TOTAL_QUESTIONS }, (_, i) => answer(i));
@@ -96,5 +97,18 @@ describe("routeForPhase", () => {
   it("keeps landing and questions on one route — questions are one-way", () => {
     expect(routeForPhase("landing", "en")).toBe("/en/test");
     expect(routeForPhase("playing", "en")).toBe("/en/test");
+  });
+});
+
+describe("graceBeatsRevealed persistence contract", () => {
+  it("a fresh state has revealed nothing", () => {
+    expect(state().graceBeatsRevealed).toBe(0);
+  });
+
+  it("seeding a grace screen never drops below one beat", () => {
+    // grace-screen seeds Math.max(1, persisted) — beat 1 is always in the
+    // layout to avoid a content shift, so 0 must still render as 1.
+    expect(Math.max(1, state().graceBeatsRevealed)).toBe(1);
+    expect(Math.max(1, state({ graceBeatsRevealed: 4 }).graceBeatsRevealed)).toBe(4);
   });
 });

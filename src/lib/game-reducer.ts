@@ -11,6 +11,7 @@ export const initialGameState: GameState = {
   startedAt: 0,
   completedAt: null,
   graceReached: false,
+  graceBeatsRevealed: 0,
   invitationReached: false,
   invitationResponse: null,
   questionStartedAt: null,
@@ -132,6 +133,11 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         questionStartedAt: null,
       };
 
+    case "REVEAL_GRACE_BEAT":
+      // Monotonic: navigating back into grace must never shrink the count.
+      if (action.count <= state.graceBeatsRevealed) return state;
+      return { ...state, graceBeatsRevealed: action.count };
+
     case "SHOW_GRACE":
       if (state.phase !== "verdict") return state;
       return {
@@ -196,6 +202,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             ? action.session.showFollowUp
             : false,
         graceReached: action.session.graceReached,
+        graceBeatsRevealed: action.session.graceBeatsRevealed,
         invitationReached: action.session.invitationReached,
         invitationResponse: action.session.invitationResponse,
         startedAt: now - activeElapsedMs,

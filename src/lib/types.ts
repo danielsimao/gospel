@@ -34,6 +34,14 @@ export interface GameState {
   startedAt: number;
   completedAt: number | null;
   graceReached: boolean;
+  /**
+   * How many grace beats the reader has opened. Persisted because a refresh on
+   * /test/grace used to restore the phase but reset all eight beats to one —
+   * real progress silently lost. Cannot be derived from graceReached, which is
+   * true the instant grace is entered and would reveal every beat at once to a
+   * first-time reader.
+   */
+  graceBeatsRevealed: number;
   invitationReached: boolean;
   invitationResponse: InvitationResponse | null;
   questionStartedAt: number | null;
@@ -46,6 +54,7 @@ export type GameAction =
   | { type: "ADVANCE_AFTER_FOLLOWUP" }
   | { type: "SHOW_VERDICT" }
   | { type: "SHOW_GRACE" }
+  | { type: "REVEAL_GRACE_BEAT"; count: number }
   | { type: "SHOW_INVITATION" }
   | { type: "SET_INVITATION_RESPONSE"; response: InvitationResponse }
   | { type: "UNDO_ANSWER" }
@@ -65,6 +74,11 @@ export type GameAction =
         questionStartedAt: number | null;
         savedAt: number;
         graceReached: boolean;
+        // Required, not optional. Every RESUME_SESSION payload is hand-copied
+        // field by field at two call sites; as an optional it silently
+        // defaulted to 0 at both, which reset the reader's grace beats on
+        // every refresh. Required makes an omission a compile error.
+        graceBeatsRevealed: number;
         invitationReached: boolean;
         invitationResponse: InvitationResponse | null;
       };

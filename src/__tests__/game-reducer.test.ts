@@ -269,6 +269,7 @@ describe("gameReducer", () => {
         questionStartedAt: null,
         savedAt: 3000,
         graceReached: true,
+        graceBeatsRevealed: 5,
         invitationReached: true,
         invitationResponse: null,
       };

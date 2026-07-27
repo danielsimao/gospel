@@ -84,6 +84,7 @@ export function TestChrome({ backLabel, locale, children }: TestChromeProps) {
             questionStartedAt: saved.questionStartedAt,
             savedAt: saved.savedAt,
             graceReached: saved.graceReached,
+            graceBeatsRevealed: saved.graceBeatsRevealed,
             invitationReached: saved.invitationReached,
             invitationResponse: saved.invitationResponse,
           },

@@ -22,6 +22,7 @@ export interface SavedSession {
   questionStartedAt: number | null;
   savedAt: number;
   graceReached: boolean;
+  graceBeatsRevealed: number;
   invitationReached: boolean;
   invitationResponse: InvitationResponse | null;
 }
@@ -37,6 +38,9 @@ export function readSession(): SavedSession | null {
     return {
       ...parsed,
       invitationReached: parsed.invitationReached === true,
+      // Added after v3 shipped; absent on in-flight sessions, so default it
+      // rather than bumping the version and discarding them.
+      graceBeatsRevealed: parsed.graceBeatsRevealed ?? 0,
     } as SavedSession;
   } catch (error) {
     console.warn("[test-session-storage] Failed to read session:", error);
@@ -60,6 +64,7 @@ export function writeSession(state: GameState): void {
       questionStartedAt: state.questionStartedAt,
       savedAt: Date.now(),
       graceReached: state.graceReached,
+      graceBeatsRevealed: state.graceBeatsRevealed,
       invitationReached: state.invitationReached,
       invitationResponse: state.invitationResponse,
     };

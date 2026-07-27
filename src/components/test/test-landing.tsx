@@ -68,6 +68,7 @@ export function TestLanding({ messages, locale }: TestLandingProps) {
         questionStartedAt: pendingResume.questionStartedAt,
         savedAt: pendingResume.savedAt,
         graceReached: pendingResume.graceReached,
+        graceBeatsRevealed: pendingResume.graceBeatsRevealed,
         invitationReached: pendingResume.invitationReached,
         invitationResponse: pendingResume.invitationResponse,
       },

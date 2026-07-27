@@ -36,6 +36,15 @@ export function GraceScreen({ messages, locale }: GraceScreenProps) {
   const returning = state.invitationReached;
   const startTime = useRef(0);
 
+  /*
+   * Whether this is the reader's first arrival, captured before SHOW_GRACE
+   * lands. Real routes make back and forward a single gesture, so this screen
+   * now unmounts and remounts routinely — every analytics event here has to be
+   * once-per-session rather than once-per-mount, or the metrics inflate with
+   * every glance backwards.
+   */
+  const firstVisitRef = useRef(!state.graceReached);
+
   // Arriving marks the phase reached. The reducer used to do this as part of
   // SHOW_GRACE; with the route owning the transition, the screen records it.
   useEffect(() => {
@@ -46,7 +55,14 @@ export function GraceScreen({ messages, locale }: GraceScreenProps) {
   // Beat 1 is reserved in the layout from mount to avoid a content shift
   // when it fades in. Subsequent beats are revealed by user tap, which
   // intentionally shifts the page.
-  const [revealedCount, setRevealedCount] = useState(returning ? messages.beats.length : 1);
+  //
+  // Seeded from the persisted count so a refresh mid-argument does not throw
+  // away beats the reader already opened. graceReached cannot serve here: it
+  // is true from the moment grace is entered, so seeding from it would hand a
+  // first-time reader all eight at once and destroy the reveal.
+  const [revealedCount, setRevealedCount] = useState(
+    returning ? messages.beats.length : Math.max(1, state.graceBeatsRevealed),
+  );
   // The spotlight beat. Follows the newest reveal, but tapping any earlier
   // beat moves it back — re-reading the argument is supported, not punished.
   const [activeIndex, setActiveIndex] = useState(0);
@@ -66,17 +82,26 @@ export function GraceScreen({ messages, locale }: GraceScreenProps) {
     window.addEventListener("scroll", handleScroll, { passive: true });
     const start = startTime.current;
     const maxDepth = maxScrollDepth;
+    const wasFirstVisit = firstVisitRef.current;
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      trackGraceViewed(Date.now() - start, maxDepth.current);
+      // Only the first visit is measured. This fires on unmount, and with real
+      // routes a back press to re-read the verdict unmounts the screen — so
+      // reporting every departure would bury the genuine dwell time under a
+      // pile of two-second re-reads.
+      if (wasFirstVisit) trackGraceViewed(Date.now() - start, maxDepth.current);
     };
   }, []);
 
   // Track grace phase entry. Beat 1 is already present in the layout
-  // (see useState(1) above) — its visual fade-in is delayed via motion
+  // (see useState above) — its visual fade-in is delayed via motion
   // transition so the title animates first without causing a layout shift.
+  //
+  // Guarded on graceReached, not invitationReached: re-entering grace before
+  // ever reaching the decision is now one back press away, and the old guard
+  // counted every one of those as a fresh reveal.
   useEffect(() => {
-    if (returning) return; // re-read, already counted
+    if (!firstVisitRef.current) return;
     trackGraceRevealed();
     trackGraceBeatRevealed(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- fire once per mount
@@ -87,12 +112,14 @@ export function GraceScreen({ messages, locale }: GraceScreenProps) {
     const nextBeat = revealedCount;
     trackGraceBeatRevealed(nextBeat);
     setRevealedCount(nextBeat + 1);
+    // Persisted so a refresh resumes the argument where the reader left it.
+    dispatch({ type: "REVEAL_GRACE_BEAT", count: nextBeat + 1 });
     setActiveIndex(nextBeat);
     // Scroll to the newly revealed beat after a short delay for the animation
     setTimeout(() => {
       beatRefs[nextBeat]?.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 100);
-  }, [beatRefs, revealedCount, messages.beats.length]);
+  }, [beatRefs, revealedCount, messages.beats.length, dispatch]);
 
   function handleContinue() {
     router.push(`/${locale}/test/decision`);
