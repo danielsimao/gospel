@@ -15,7 +15,9 @@
 - **Verdict is the floor (D2).** Forward-only through landing→questions→verdict. Free movement among verdict ⇄ grace ⇄ decision. Back from `/test/verdict` leaves the test. Never confirm-shame the exit — no "are you sure" dialog on leaving.
 - **Questions are one-way.** They stay on a single route (`/test`) and never get their own URLs. `game-reducer` states this rule; do not "improve" it.
 - **No behaviour change in Task 1.** It is a pure enabling move and must be verifiable as a no-op.
-- **Never two sources of truth for position.** After Task 2 the route decides the phase. `state.phase` may exist only as a layout-written mirror until Task 3 removes it.
+- **Never two sources of truth for position.** The route decides the phase, full stop. Do **not** mirror it back into the reducer — each phase page statically knows its own phase, and the only genuine consumers of "current phase" are the `data-game-phase` attribute (layout, from the segment) and abandonment tracking (layout, passes the segment). An earlier draft proposed a `SYNC_PHASE` action; it was cut in the grill because it creates a render window where route and state disagree, for no benefit.
+- **The journey stays re-readable after a decision (D2 addendum).** `/test/decision` remains reachable and read-only once answered, and back through grace and verdict keeps working. This forbids `clearSession()` on response — see Task 3.
+- **Nothing renders a wrong state, ever.** Phase pages SSR a shell while the reducer is still `initialGameState`. Children must be gated behind a resolved session read.
 - **Locale parity** on any new key, both `en.json` and `pt.json`, same commit.
 - **Reduced motion is global** (`MotionConfig reducedMotion="user"`, `providers.tsx:56`). No per-component branches.
 - **Minimum diff.** Do not reformat untouched lines or reorder imports.
@@ -129,12 +131,16 @@ navigation and wipe all state."
 **Design:**
 
 - The route decides which screen renders. Each phase page renders its existing component unchanged.
-- The layout derives the phase from `useSelectedLayoutSegment()` (`null` → landing/questions, `"verdict"`, `"grace"`, `"decision"`) and writes it into the reducer via a single `SYNC_PHASE` action, so existing guards and `data-game-phase` keep working.
+- The layout reads `useSelectedLayoutSegment()` (`null` → landing/questions, else `"verdict" | "grace" | "decision"`) and uses it for the `data-game-phase` attribute and abandonment tracking **only**. It is never written into the reducer.
 - Reducer actions keep their **data** effects and lose their **navigation** effects. `ADVANCE_AFTER_FOLLOWUP` still stamps `completedAt` when the last question is answered; the component then calls `router.push('/test/verdict')`.
 - `BACK_TO_VERDICT` / `BACK_TO_GRACE` are deleted — browser back now does that.
 - Delete from `game-shell.tsx`: `PHASE_ORDER`, `HISTORY_NONCE`, `prevPhaseRef`, `depthRef`, `unwindingRef`, `viaLinkRef`, `poppingRef`, both history effects, and the post-response unwind effect (lines ~157–287).
-- `trackTestBack` currently takes a `via: "link" | "browser"` argument that only existed to distinguish simulated back from real back. With real routes there is only one kind. Keep the event, drop the argument, and note the analytics schema change in the commit.
-- Shared chrome (`main` wrapper, vignette, Exit link, `ResumeDialog`, `data-game-phase` effect) moves from `game-shell` into the layout so it does not remount per segment.
+- `trackTestBack` drops its `via: "link" | "browser"` argument. Verified in the grill: the only consumer is `safeCapture("test_back", …)` at `analytics.ts:11-13`, nothing reads it back, and it existed solely to tell simulated back from real back.
+- **Chrome splits, it does not all move.** `main` wrapper, vignette, Exit link and the `data-game-phase` effect → layout, so they do not remount per segment. **`ResumeDialog` stays on `/test`** — offering "pick up where you left off" to someone already standing on `/test/grace` is nonsense.
+
+**The first-paint gate (do not skip — this is a visible bug otherwise).** A cold hit on `/test/verdict` SSRs a shell while the reducer is still `initialGameState`, so `VerdictScreen` would render with zero answers and `buildConfession([])` would flash **"Guilty still."** before any guard fires. The layout must therefore hold a `ready` flag, set once the session read resolves (reuse the existing rAF-deferred pattern from `game-shell`), and render nothing in place of `children` until then.
+
+**Preserve the phase crossfade.** Today `AnimatePresence mode="wait"` with `key={state.phase}` fades phases at 0.2s. Cross-route navigation hard-cuts by default. Add `src/app/[locale]/(immersive)/test/template.tsx` — templates remount per navigation — carrying the same 0.2s `EASE_OUT_STRONG` fade, so the transition survives the migration.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -187,6 +193,9 @@ Then verify against the baseline table, both locales:
 5. The deaths bar still retires at the verdict (`data-game-phase` still published).
 6. Post-answer reveal timings unchanged from the baseline table.
 7. `game-shell.tsx` contains no `pushState`, no `HISTORY_NONCE`, no depth tracking.
+8. **No "Guilty still." flash.** Cold-load `/test/verdict` with `localStorage` cleared and watch the first paint frame by frame. The confession must never render before the session read resolves.
+9. **The crossfade survives.** Moving between phases still fades over ~0.2s rather than hard-cutting.
+10. `ResumeDialog` appears on `/test` only, never on a phase route.
 
 - [ ] **Step 7: Commit**
 
@@ -222,14 +231,24 @@ from real back, and there is now only one kind."
 Guard rules:
 - No session at all → redirect any `/test/*` to `/test`.
 - Session exists but the requested phase is beyond the furthest reached → redirect to the furthest reached. **Never forward past where the reader actually got to.**
-- Render nothing until the session read resolves — reuse the existing rAF-deferred pattern so hydration stays stable and no wrong phase flashes.
+- Gated behind the layout's `ready` flag from Task 2, so no wrong phase paints first.
 
-- [ ] **Step 1: Write failing tests** for `furthestPhase` covering: no answers, partial answers, all answers, graceReached, invitationReached.
+**Two consequences of "stays reachable, read-only" that must land in this task:**
+
+1. **Stop clearing the session on response.** `game-provider.tsx:28-31` currently calls `clearSession()` the moment an invitation response is recorded. Keeping the journey re-readable makes that wrong: a refresh on `/test/decision` afterwards would find no session and be bounced to `/test`. The session persists instead; it already stores `invitationResponse`.
+2. **Gate the resume dialog on incompleteness, not existence.** Without this, a finished reader hitting `/test` gets "pick up where you left off?" forever. Rule: offer resume only when the session has no `invitationResponse`.
+
+**Phase-free persistence.** `game-provider.tsx:23-31` branches on `phase === "landing"` and `phase === "invitation" && response`. Both are derivable and must be rewritten as such:
+- "nothing started yet" → `state.answers.length === 0 && state.startedAt === 0`
+- "response recorded" → `state.invitationResponse !== null`
+
+- [ ] **Step 1: Write failing tests** for `furthestPhase` covering: no answers, partial answers, all answers, graceReached, invitationReached. Plus: a session with a recorded response still round-trips through `writeSession`/`readSession`.
 - [ ] **Step 2: Run, watch fail.**
 - [ ] **Step 3: Implement `furthestPhase` + remove `phase` from `GameState`, `SavedSession`, and the reducer.** Bump `CURRENT_VERSION` in `test-session-storage.ts` to 4 — the shape changes and stale v3 sessions must be discarded, exactly as the v3 comment documents for the 8→6 question change.
-- [ ] **Step 4: Add the guard to the layout.**
-- [ ] **Step 5: Gates, then verify** cold deep-links to all three routes with: no session, a partial session, a complete session.
-- [ ] **Step 6: Commit.**
+- [ ] **Step 4: Rewrite the persistence branches** per "phase-free persistence" above, and remove the `clearSession()` on response.
+- [ ] **Step 5: Add the guard to the layout.**
+- [ ] **Step 6: Gates, then verify** cold deep-links to all three routes with: no session, a partial session, a complete session. Then answer the invitation, refresh `/test/decision`, and confirm it still renders the answered state rather than redirecting. Then hit `/test` and confirm **no** resume dialog.
+- [ ] **Step 7: Commit.**
 
 ---
 
@@ -250,7 +269,24 @@ Guard rules:
 
 ---
 
-### Task 5: Verification sweep
+### Task 5: Harden the analytics against cheap back/forward
+
+**Files:** `src/components/grace-screen.tsx`, possibly `src/lib/eternity-analytics.ts`
+
+**Why now, even though these are pre-existing:** routes turn awkward navigation into a one-gesture affordance, so these fire from "rare" to "normal." Shipping the routes without this knowingly degrades the metrics.
+
+- `trackGraceViewed` fires in a **cleanup** (`grace-screen.tsx:59`), i.e. on unmount, unguarded. Every navigation away from grace — including a back press to the verdict and a forward press to return — logs another `grace_viewed` with a short duration.
+- `trackGraceRevealed` is guarded only by `returning = state.invitationReached`, so grace → back → grace *before deciding* re-fires it.
+
+Verdict is already safe and needs no change: its `hasTracked` ref does reset on remount, but the effective guard is `returning = state.graceReached`, which reads reducer state and survives remounting.
+
+- [ ] **Step 1:** Add a persisted `graceViewLogged` flag (or fold into the session record) so `grace_viewed` and `grace_revealed` fire at most once per session.
+- [ ] **Step 2:** Verify by walking grace → verdict → grace → decision and confirming one event of each in the PostHog debug output / network tab.
+- [ ] **Step 3:** Commit.
+
+---
+
+### Task 6: Verification sweep
 
 - [ ] Both locales, full walk, all four routes.
 - [ ] Back and forward at every phase boundary.
@@ -275,8 +311,16 @@ Guard rules:
 | Phase pages indexed by search | `robots: { index: false }` on all three |
 | `useSelectedLayoutSegment` returns `null` for the index segment | Handled explicitly; do not treat `null` as an error |
 
-## Open items for the grill
+## Grill outcomes (2026-07-27) — all resolved, none open
 
-1. Should `/test/decision` stay reachable after a response is recorded, or redirect to `/next-steps`? Currently the app unwinds history so back exits; with routes, this needs an explicit answer.
-2. Does anything consume `trackTestBack`'s `via` property in PostHog?
-3. Should the Exit link get a clearer label now that back-from-verdict is the documented way out?
+| Item | Resolution |
+| --- | --- |
+| `/test/decision` after a response | **Stays reachable, read-only.** Forces two changes in Task 3: no `clearSession()` on response, and resume gated on incompleteness. |
+| `trackTestBack`'s `via` consumer | None. Only `safeCapture` at `analytics.ts:11-13` writes it; nothing reads it. Safe to drop. |
+| Exit link label | Leave it. A documented back-floor does not make an explicit escape hatch redundant, and changing it is unrelated scope. |
+| `SYNC_PHASE` mirror | **Cut.** Created a render window where route and state disagree, for no benefit. |
+| Persistence depends on `phase` | Now specified in Task 3 as derivable predicates. |
+| ResumeDialog placement | Stays on `/test`; only the passive chrome moves to the layout. |
+| First-paint wrong-state flash | Now an explicit `ready` gate in Task 2, with verification step 8. |
+| Phase crossfade lost to hard-cut | Now a `template.tsx` requirement in Task 2, with verification step 9. |
+| Analytics amplified by cheap back/forward | New Task 5. |
