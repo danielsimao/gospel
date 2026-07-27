@@ -1773,6 +1773,29 @@
     "nudge": "Não assumas que a igreja mais próxima ou mais familiar prega isto. Visita, ouve e abre tu mesmo a Bíblia — uma boa igreja ficará contente por estares a confrontar o que dizem com as Escrituras.",
     "closing": "Ora para que Deus te conduza a uma igreja assim, e começa a procurar esta semana. Pergunta a um cristão em quem confies onde a Bíblia é pregada com fidelidade."
   },
+  "goodEnough": {
+    "title": "Suficientemente bom?",
+    "metaDescription": "Toda a gente salta mais do que alguém. O desfiladeiro tem vinte e nove quilómetros. Quatro tentativas, e o que elas mostram.",
+    "eyebrow": "Um salto",
+    "prompt": "O outro lado é onde queres acabar. Fica a vinte e nove quilómetros. Então força.",
+    "buttonLabel": "Saltar",
+    "buttonLabelAgain": "Saltar outra vez",
+    "attempts": [
+      { "help": "", "reaction": "Um metro. Nada mau, parado." },
+      { "help": "balanço", "reaction": "Seis metros, com balanço. Melhor do que a maioria consegue." },
+      { "help": "vara de salto", "reaction": "Quinze metros. Isso é um recorde mundial. Ninguém vivo salta mais." },
+      { "help": "botas a jato", "reaction": "Sessenta e um metros, de botas a jato. Mais longe do que qualquer humano alguma vez foi." }
+    ],
+    "remainingLabel": "ainda em falta",
+    "feetLabel": "metros",
+    "reveal": {
+      "lead": "Quinze metros é um recorde mundial — ninguém vivo salta mais. Tu foste quatro vezes isso, de foguetes nos pés. A distância é de vinte e nove quilómetros. Ninguém está a discutir que saltaste mais do que a pessoa ao teu lado; nunca foi essa a questão.",
+      "scripture": "Porque todos pecaram e destituídos estão da glória de Deus.",
+      "scriptureRef": "Romanos 3:23",
+      "turn": "Isso é toda a gente, em geral. Há uma versão disto que é sobre ti especificamente, e leva seis perguntas.",
+      "cta": "Fazer o teste"
+    }
+  },
   "footer": {
     "exploreLabel": "Explorar",
     "learnLabel": "Aprender",

@@ -186,6 +186,38 @@ export interface HomeMessages {
   journeyStages: JourneyStagesMessages;
 }
 
+export interface GoodEnoughMessages {
+  title: string;
+  metaDescription: string;
+  eyebrow: string;
+  /** The setup. Names the destination and its distance without promising the reader will reach it. */
+  prompt: string;
+  buttonLabel: string;
+  /** Label from attempt 2 onward — the reader is trying again with more help. */
+  buttonLabelAgain: string;
+  /**
+   * One entry per attempt, MAX_ATTEMPTS long. `help` names the prop given for
+   * that jump ("" on the first, which is bare); `reaction` is what lands after.
+   */
+  attempts: Array<{ help: string; reaction: string }>;
+  /** Suffix on the distance readout, e.g. "still short". */
+  remainingLabel: string;
+  /**
+   * Unit word for the readout, already plural — distances here are never 1.
+   * EN says feet; PT says metros, and the readout converts to match (see
+   * `displayDistance` in lib/good-enough.ts).
+   */
+  feetLabel: string;
+  reveal: {
+    lead: string;
+    scripture: string;
+    scriptureRef: string;
+    /** The turn from the general case to the reader's own. */
+    turn: string;
+    cta: string;
+  };
+}
+
 export interface TestMessages {
   caseLabel: string;
   guiltLabel: string;
@@ -256,5 +288,7 @@ export interface Messages {
   };
   share: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
   nextSteps?: { cta: string; dismissedReturn: string };
+  /** Optional like `nextSteps`, so a locale file mid-edit cannot break the app. */
+  goodEnough?: GoodEnoughMessages;
   meta: { title: string; description: string };
 }

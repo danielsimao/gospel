@@ -7,6 +7,9 @@ import {
   displayDistance,
   numberLocale,
 } from "@/lib/good-enough";
+import type { GoodEnoughMessages } from "@/lib/types";
+import en from "../messages/en.json";
+import pt from "../messages/pt.json";
 
 describe("good-enough mechanic", () => {
   it("spans eighteen miles", () => {
@@ -90,5 +93,53 @@ describe("readout units", () => {
   it("names a number locale per page locale, not per runtime", () => {
     expect(numberLocale("en")).toBe("en-US");
     expect(numberLocale("pt")).toBe("pt-PT");
+  });
+});
+
+describe("good-enough copy", () => {
+  const SCALARS = [
+    "title",
+    "metaDescription",
+    "eyebrow",
+    "prompt",
+    "buttonLabel",
+    "buttonLabelAgain",
+    "remainingLabel",
+    "feetLabel",
+  ] as const;
+  const REVEAL = ["lead", "scripture", "scriptureRef", "turn", "cta"] as const;
+
+  it.each([
+    ["en", en],
+    ["pt", pt],
+  ] as const)("%s has a complete goodEnough block", (_locale, messages) => {
+    const g = (messages as { goodEnough?: GoodEnoughMessages }).goodEnough;
+    expect(g).toBeDefined();
+    for (const key of SCALARS) {
+      expect(typeof g![key]).toBe("string");
+      expect(g![key]).not.toBe("");
+    }
+    for (const key of REVEAL) {
+      expect(typeof g!.reveal[key]).toBe("string");
+      expect(g!.reveal[key]).not.toBe("");
+    }
+  });
+
+  it.each([
+    ["en", en],
+    ["pt", pt],
+  ] as const)("%s has exactly one copy entry per attempt", (_locale, messages) => {
+    const attempts = (messages as { goodEnough: GoodEnoughMessages }).goodEnough.attempts;
+    expect(attempts).toHaveLength(MAX_ATTEMPTS);
+    for (const a of attempts) {
+      // `help` is intentionally "" on the bare first jump; `reaction` never is.
+      expect(typeof a.help).toBe("string");
+      expect(a.reaction.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("cites Romans 3:23 in both locales — the whole page is that verse", () => {
+    expect((en as { goodEnough: GoodEnoughMessages }).goodEnough.reveal.scriptureRef).toContain("3:23");
+    expect((pt as { goodEnough: GoodEnoughMessages }).goodEnough.reveal.scriptureRef).toContain("3:23");
   });
 });
