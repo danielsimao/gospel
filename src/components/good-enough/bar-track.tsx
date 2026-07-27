@@ -59,13 +59,23 @@ export function BarTrack({
               : { x: 0 }
           }
           transition={{ duration: 0.22, ease: "easeOut" }}
-          className="absolute inset-x-0 bottom-0"
+          // inset-0, not inset-x-0 bottom-0. A percentage height resolves
+          // against the containing block, and a bottom-anchored wrapper with no
+          // height of its own is zero tall — so the fill computed to 0px while
+          // the readout underneath correctly said 34%. The bar reported the
+          // right number and drew nothing.
+          className="absolute inset-0"
         >
-          <m.div
-            className="w-full rounded-b-md bg-gradient-to-t from-red-500/85 to-red-500/45"
-            animate={{ height: `${fillPct}%` }}
-            transition={{ duration: 0.17, ease: EASE_OUT_STRONG }}
-            style={{ height: 0 }}
+          {/* Height as a plain inline style with a CSS transition rather than a
+              framer `animate`. Height is not a transform, so the global
+              reducedMotion="user" would suppress a framer height animation
+              outright — leaving reduced-motion readers a bar that never moves,
+              on a page whose entire argument is the bar moving. CSS covers
+              both: the transition runs normally, motion-reduce drops it to an
+              instant and still-correct height. */}
+          <div
+            className="absolute inset-x-0 bottom-0 rounded-b-md bg-gradient-to-t from-red-500/85 to-red-500/45 transition-[height] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+            style={{ height: `${fillPct}%` }}
           />
         </m.div>
 
@@ -92,9 +102,14 @@ export function BarTrack({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="flex h-48 min-w-0 flex-1 flex-col justify-end"
+            className="relative h-48 min-w-0 flex-1"
           >
-            <div className="flex h-full items-end gap-[3px]" aria-hidden="true">
+            {/* Absolute, so these share the reader's baseline exactly. When the
+                label lived inside the same flex column it ate height and pushed
+                the crowd ~20px above the reader's bar — and a comparison drawn
+                off two different baselines is not a comparison, which is the
+                one job this row has. */}
+            <div className="absolute inset-0 flex items-end gap-[3px]" aria-hidden="true">
               {CROWD_PCT.map((pct, i) => (
                 <m.div
                   key={i}
@@ -109,7 +124,7 @@ export function BarTrack({
                 />
               ))}
             </div>
-            <p className="mt-2 font-mono text-[8.5px] uppercase tracking-[0.2em] text-white/40">
+            <p className="absolute -bottom-5 left-0 font-mono text-[8.5px] uppercase tracking-[0.2em] text-white/40">
               {crowdLabel}
             </p>
           </m.div>

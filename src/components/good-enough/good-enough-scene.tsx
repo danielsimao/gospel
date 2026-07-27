@@ -62,7 +62,10 @@ export function GoodEnoughScene({
         />
       </div>
 
-      <p className="mt-5 font-mono text-[11px] uppercase tracking-[2px] text-white/50">
+      {/* mt-9, not mt-5: the crowd's label is absolutely positioned just below
+          the track so the bars can share the reader's baseline, and at the
+          tighter margin the two lines of mono collided. */}
+      <p className="mt-9 font-mono text-[11px] uppercase tracking-[2px] text-white/50">
         <span className="tabular-nums text-red-400/85">
           {Math.round(state.shortPct)}%
         </span>{" "}
