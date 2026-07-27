@@ -26,30 +26,50 @@
 /** Taps to reach the ceiling. Enough effort to be real, short enough to stay a beat. */
 export const TAPS_TO_CEILING = 8;
 
-/** Where the bar stops, as a percentage of the track. */
-export const CEILING_PCT = 34;
+/**
+ * The band the ceiling is drawn from. People differ, so a fixed stop for
+ * everyone was a lie the page did not need to tell — and with a replay it made
+ * trying again pointless.
+ *
+ * The band is the whole safety question. A variable outcome plus a retry button
+ * is the shape of a slot machine, and it only escapes that if the variance is
+ * visibly irrelevant: no roll may come near the line, so no roll can teach
+ * "maybe next time". `GOAL_PCT` is derived below to guarantee that, rather than
+ * left as a constant someone could tune into a near-miss machine.
+ */
+export const CEILING_MIN_PCT = 24;
+export const CEILING_MAX_PCT = 42;
 
-/** Where the line is. The distance between this and the ceiling is the argument. */
-export const GOAL_PCT = 92;
+/**
+ * The distance that has to survive the luckiest possible roll. Below about this
+ * much the bar starts reading as "nearly", which is the one reading the page
+ * cannot afford.
+ */
+export const MIN_GAP_PCT = 50;
+
+/** Where the line is. Derived, so the gap cannot be closed by editing one number. */
+export const GOAL_PCT = CEILING_MAX_PCT + MIN_GAP_PCT;
 
 /** Dead taps before the turn arrives. The button is never taken away. */
 export const DEAD_TAPS_TO_REVEAL = 3;
 
 /**
- * Other people's bars, revealed at the ceiling. Deterministic rather than
- * random: this renders during hydration, and it is also the point — the spread
- * is fixed because the comparison never mattered. Some are above the reader,
- * some below, and every one of them is nowhere near the line.
+ * One life's worth of ceiling. Injectable so tests are deterministic; called
+ * from the first tap rather than during render, so the server and the first
+ * client render cannot disagree.
  */
-export const CROWD_PCT = [
-  17, 29, 8, 41, 23, 12, 36, 19, 44, 6, 31, 25, 14, 38,
-] as const;
+export function rollCeiling(random: () => number = Math.random): number {
+  const span = CEILING_MAX_PCT - CEILING_MIN_PCT;
+  return CEILING_MIN_PCT + Math.round(random() * span);
+}
 
 export interface BarState {
   /** Total presses, including the ones that did nothing. */
   taps: number;
   /** Presses made after the ceiling was reached. */
   deadTaps: number;
+  /** This life's ceiling, clamped to the band. */
+  ceilingPct: number;
   /** Height of the fill, as a percentage of the track. */
   fillPct: number;
   /** Percentage points still between the fill and the line. Never zero. */
@@ -60,16 +80,22 @@ export interface BarState {
   revealed: boolean;
 }
 
-/** Pure function of the tap count — no history, nothing hidden. */
-export function barAfter(taps: number): BarState {
+/**
+ * Pure function of the tap count and this life's ceiling — no history, nothing
+ * hidden. The ceiling is clamped to the band so a caller cannot widen the
+ * argument's margin by passing a value the roll could never produce.
+ */
+export function barAfter(taps: number, ceilingPct: number): BarState {
+  const ceiling = Math.min(CEILING_MAX_PCT, Math.max(CEILING_MIN_PCT, ceilingPct));
   const safeTaps = Math.max(0, Math.floor(taps));
   const effective = Math.min(safeTaps, TAPS_TO_CEILING);
-  const fillPct = (effective / TAPS_TO_CEILING) * CEILING_PCT;
+  const fillPct = (effective / TAPS_TO_CEILING) * ceiling;
   const deadTaps = Math.max(0, safeTaps - TAPS_TO_CEILING);
 
   return {
     taps: safeTaps,
     deadTaps,
+    ceilingPct: ceiling,
     fillPct,
     shortPct: GOAL_PCT - fillPct,
     atCeiling: safeTaps >= TAPS_TO_CEILING,

@@ -1788,11 +1788,11 @@
       "Nothing is moving.",
       "Still nothing.",
       "Every tap is doing exactly what the last one did.",
-      "It has been at a third for a while now."
+      "This is as far as it goes."
     ],
-    "crowdLabel": "Everyone else",
+    "tryAgainLabel": "Try again",
     "reveal": {
-      "lead": "The bar stops at a third. Not because you were slow, and not because you gave up — it stops there for everyone. Some people get further than you. Nobody gets to the line.",
+      "lead": "It stopped. Not because you were slow, and not because you gave up — it stops somewhere for everyone. Play again and you will get a different number. You will not get a different answer.",
       "scripture": "For all have sinned and fall short of the glory of God.",
       "scriptureRef": "Romans 3:23",
       "turn": "That is why it can't be earned. It doesn't tell you what you've done, though, or how far short you are. That part is personal, and it takes six questions.",

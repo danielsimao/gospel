@@ -72,6 +72,15 @@ export function trackGoodEnoughRevealed(taps: number, locale: string) {
 }
 
 /**
+ * Replays. The ceiling is rolled per play, so this is the reader testing
+ * whether a different number buys a different answer — the count is the
+ * clearest signal of whether the turn actually landed.
+ */
+export function trackGoodEnoughReplayed(play: number, locale: string) {
+  safeCapture("good_enough_replayed", { play, locale });
+}
+
+/**
  * `hadCompletedTest` says whether this page is recruiting strangers or
  * entertaining people who have already been through the flow — the number that
  * decides whether it is worth keeping.

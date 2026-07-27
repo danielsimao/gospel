@@ -207,8 +207,14 @@ export interface GoodEnoughMessages {
    * out before their patience does rather than the reverse.
    */
   ceilingLines: string[];
-  /** Labels the other bars revealed at the ceiling, e.g. "everyone else". */
-  crowdLabel: string;
+  /**
+   * Resets the bar for another life. Load-bearing rather than a convenience:
+   * the ceiling is rolled per play, so replaying is how the reader discovers
+   * for themselves that a different number is not a different answer — and on
+   * a page built to be handed to someone else, the second person needs a bar
+   * that has not already been spent.
+   */
+  tryAgainLabel: string;
   reveal: {
     lead: string;
     scripture: string;

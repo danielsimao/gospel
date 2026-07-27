@@ -20,11 +20,35 @@ what shipped.
 ## What it is
 
 Tap a button, fill a bar. The bar rises in equal steps for eight taps, then stops
-dead at **34%** of a line drawn at **92%**. The button is never taken away. Keep
-pressing and a hard lip renders across the top of the fill, the copy narrates
-that nothing is moving, and after three dead taps everyone else's bars fade in —
-some above the reader, some below, none anywhere near the line. Then Romans 3:23
-and a link to `/test`.
+dead at **this play's ceiling** — rolled from a 24–42% band — against a line
+drawn at **92%**. The button is never taken away. Keep pressing and a hard lip
+renders across the top of the fill and the copy narrates that nothing is moving.
+After three dead taps: Romans 3:23, a link to `/test`, and a quiet **Try again**.
+
+### Why the ceiling varies
+
+A fixed stop was a lie the page did not need to tell — people differ — and it
+made replaying pointless. But a variable outcome plus a retry button is the
+shape of a slot machine, so the band is the whole safety question. It works only
+because **no roll comes near the line**: the luckiest possible play still falls
+50 points short, so no outcome can suggest another go might do better.
+`GOAL_PCT` is *derived* as `CEILING_MAX_PCT + MIN_GAP_PCT` rather than left as a
+constant, so the gap cannot be closed by editing one number, and the near-miss
+test runs over every ceiling in the band rather than one chosen value.
+
+The variance also does the work the crowd bars were added for: replaying is how
+a reader discovers for themselves that a different number is not a different
+answer.
+
+### Why there are no longer other people's bars
+
+An earlier version drew fourteen at the ceiling, to make the failure global
+rather than personal. Cut, for two reasons that outweigh the argument it made.
+It landed on the exact beat the reader's own bar stops — the most important
+moment on the page — and a spread of bars is a *distribution*, which implies a
+tail: the eye hunts for the tallest and infers that somebody might reach the
+line. That is the one inference this page cannot allow, and the reveal copy
+makes the same claim in a way a chart cannot: **nobody**.
 
 ## Why the mechanic is shaped this way
 
@@ -78,13 +102,18 @@ rather than a machine's to declare, and it is the honest answer to *why can't I
 keep trying* — you can; it does nothing. The rendered lip answers the same
 question with a picture instead of a rule.
 
-### Everyone else's bars
+### Making the failure global rather than personal
 
-Attribution again. Without them the reader concludes *I was bad at this*, which
-is **specific** and produces a retry. With them it becomes *it stops there for
-everyone* — **stable and global**, which is the doctrine. Romans 3:23's "all", in
-the bar's own language. `CROWD_PCT` is a fixed array, not random: it renders
-during hydration, and the spread was never the point.
+Attribution again, and the reason the ceiling is rolled. Left personal, the
+reader concludes *I was bad at this* — **specific**, which produces a retry.
+The page needs *it stops somewhere for everyone* — **stable and global**, which
+is the doctrine, Romans 3:23's "all".
+
+Two designs were tried. Drawing other people's bars is the one that failed (see
+above). The roll is the one that works, because the reader generates the spread
+themselves and every life they try stops. The reveal copy carries the claim in
+words — *play again and you will get a different number; you will not get a
+different answer* — and the **Try again** link is what lets them check.
 
 ### The turn is a safety mechanism, not a payoff
 
@@ -114,7 +143,7 @@ than the separate journey flag, which can drift. An earlier draft branched to
 |---|---|
 | `src/lib/good-enough.ts` | the mechanic — pure, no React |
 | `src/__tests__/good-enough.test.ts` | invariants incl. the near-miss guard, plus copy parity |
-| `src/components/good-enough/bar-track.tsx` | track, fill, line, lip, crowd |
+| `src/components/good-enough/bar-track.tsx` | track, fill, line, lip |
 | `src/components/good-enough/reveal.tsx` | the turn and the CTA |
 | `src/components/good-enough/good-enough-scene.tsx` | tap state, analytics, aria-live |
 | `src/app/[locale]/(content)/good-enough/page.tsx` | route + metadata |
@@ -126,8 +155,9 @@ TopBar and Footer to reach anything else.
 ## Analytics
 
 `good_enough_viewed` · `good_enough_tapped` (per press, including dead ones) ·
-`good_enough_revealed` (with tap count) · `good_enough_cta_clicked` (with
-`had_completed_test`, read at click time so no render branches on localStorage).
+`good_enough_revealed` (with tap count) · `good_enough_replayed` (with play
+number) · `good_enough_cta_clicked` (with `had_completed_test`, read at click
+time so no render branches on localStorage).
 
 The number that decides whether this page earns its place is
 `had_completed_test`: whether it recruits strangers or entertains regulars.
@@ -158,6 +188,8 @@ renders first, 66px tall.
 | countdown / fail timer | wrong attribution, wrong illustration — see above |
 | diminishing returns toward the line | near-miss generator |
 | ceiling near the line | near-miss, maximally |
+| a fixed ceiling for everyone | untrue, and makes the replay pointless |
+| other people's bars at the ceiling | a spread implies a tail; it also collided with the beat the reader's own bar stops |
 | CTA straight to grace | skips the Law, which the method forbids |
 | branch returning readers to `/test/grace` | the guard bounces them; `/test` already routes correctly |
 

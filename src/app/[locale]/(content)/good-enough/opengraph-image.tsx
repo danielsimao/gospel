@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { loadOgFonts, OG_BACKGROUND, OG_GOLD, OG_VIGNETTE, type OgFont } from "@/lib/og";
+import { CEILING_MIN_PCT, CEILING_MAX_PCT, GOAL_PCT } from "@/lib/good-enough";
 
 export const alt = "Good enough? — fill the bar and you're in";
 
@@ -22,8 +23,15 @@ const COPY = {
 } as const;
 
 const TRACK_H = 300;
-const CEILING_PCT = 34;
-const GOAL_PCT = 92;
+/*
+ * Imported, never hand-copied. These were transcribed as literals and went
+ * stale the moment the ceiling became a rolled band — the card was drawing a
+ * stopping point the page could no longer produce. A share card that overstates
+ * how close the bar gets is the one dishonesty this page cannot afford, so it
+ * derives from the same constants the bar does and shows the middle of the
+ * band, which is what a typical play looks like.
+ */
+const CEILING_PCT = (CEILING_MIN_PCT + CEILING_MAX_PCT) / 2;
 
 export default async function Image({
   params,

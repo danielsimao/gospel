@@ -1788,11 +1788,11 @@
       "Não se mexe nada.",
       "Continua sem se mexer.",
       "Cada toque está a fazer exatamente o que o anterior fez.",
-      "Já está num terço há algum tempo."
+      "É até aqui que vai."
     ],
-    "crowdLabel": "Toda a gente",
+    "tryAgainLabel": "Tentar outra vez",
     "reveal": {
-      "lead": "A barra pára num terço. Não porque foste lento, nem porque desististe — pára aí para toda a gente. Há quem chegue mais longe do que tu. Ninguém chega à linha.",
+      "lead": "Parou. Não porque foste lento, nem porque desististe — pára algures para toda a gente. Joga outra vez e terás um número diferente. Não terás uma resposta diferente.",
       "scripture": "Porque todos pecaram e destituídos estão da glória de Deus.",
       "scriptureRef": "Romanos 3:23",
       "turn": "É por isso que não se pode ganhar. Mas isto não te diz o que fizeste, nem quão longe estás. Essa parte é pessoal, e leva seis perguntas.",
