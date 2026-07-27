@@ -175,6 +175,14 @@ export interface HomeMessages {
   provocativeQuestion: string;
   mortalityStat: string;
   ctaButton: string;
+  /**
+   * The direct way in, for a reader who does not want to answer on the front
+   * door. Deliberately a text link and not a second gold button: the first
+   * question replaces the CTA rather than sitting beside it, and two equal
+   * asks give a first-time reader something to decide between — which is the
+   * friction asking the question inline was meant to remove.
+   */
+  skipToTest: string;
   secondaryLink: string;
   blogCard: { eyebrow: string };
   /** "Question 1 of 6" — labels the front-door Law question so it does not read

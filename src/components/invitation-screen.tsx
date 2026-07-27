@@ -140,16 +140,21 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
             <Button variant="text" onClick={() => handleResponse("dismissed")}>
               {invitation.responses.dismissed}
             </Button>
-            {/* Walks one history entry back, so the browser stack and the
-                reducer stay in agreement — the shell's popstate handler is the
-                single place a backward move becomes an action. */}
-            <button
+            {/* Trails the three responses rather than arriving with them.
+                Walking back is the lowest-priority action on the screen that
+                asks for a decision, so it should be the last thing to appear —
+                and the shell's popstate handler is the single place a backward
+                move becomes an action. */}
+            <m.button
               type="button"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 1.15 }}
               onClick={onBack}
               className="mt-3 inline-flex min-h-[32px] items-center text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
             >
               {invitation.rereadGrace}
-            </button>
+            </m.button>
           </m.div>
         )}
 

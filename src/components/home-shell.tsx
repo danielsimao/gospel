@@ -454,7 +454,17 @@ export function HomeShell({ hero, home, locale, topicSlugs, firstQuestion, lates
                   </Button>
                 </Link>
               )}
-              <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-4">
+              {/* The direct route in, for anyone who would rather not answer
+                  here. Text, not a second gold button — the question is the
+                  ask, and two equal asks reintroduce the choice the inline
+                  question exists to remove. Only rendered alongside the
+                  question; without it the gold CTA above already is this. */}
+              {firstQuestion && (
+                <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-4">
+                  <Button variant="text">{home.skipToTest}</Button>
+                </Link>
+              )}
+              <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-1">
                 <Button variant="text">{home.secondaryLink}</Button>
               </Link>
             </>

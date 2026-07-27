@@ -287,7 +287,18 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
               browser stack and the reducer stay in agreement: the shell's
               popstate handler is the single place a backward move is turned
               into an action. */}
-          <div className="mt-8 flex justify-center">
+          {/* Last in, deliberately. It had no entrance at all, so the one
+              control on this screen that matters least was the first thing on
+              it — present at frame 0 while the label, the heading, the first
+              beat and the continue button were all still arriving. It now
+              trails the continue button, and comes in slowly. A returning
+              reader has seen the screen, so it need not make them wait. */}
+          <m.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: returning ? 0.4 : 2.6 }}
+            className="mt-8 flex justify-center"
+          >
             <button
               type="button"
               onClick={onBack}
@@ -295,7 +306,7 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
             >
               {messages.rereadVerdict}
             </button>
-          </div>
+          </m.div>
         </div>
       </div>
     </div>
