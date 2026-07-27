@@ -170,6 +170,9 @@ export interface HomeMessages {
   ctaButton: string;
   secondaryLink: string;
   blogCard: { eyebrow: string };
+  /** "Question 1 of 6" — labels the front-door Law question so it does not read
+   *  as a second question competing with the page's h1. */
+  firstQuestionLabel: string;
   alsoHere: {
     label: string;
     readingDescription: string;

@@ -4,6 +4,11 @@ export function trackHomeViewed(locale: string, stage?: string) {
   safeCapture("home_page_viewed", { locale, stage });
 }
 
+/** The front-door Law question. Answering it starts the real test at Q1. */
+export function trackHomeFirstQuestionAnswered(answer: "honest" | "justify", locale: string) {
+  safeCapture("home_first_question_answered", { answer, locale });
+}
+
 export function trackHomeCtaClicked() {
   safeCapture("home_cta_clicked", { destination: "test" });
 }

@@ -29,6 +29,8 @@ interface HomeData {
   };
   counter: { label: string; liveBadge: string };
   home: HomeMessages;
+  /** Question 1 is asked on the homepage; only its copy is needed here. */
+  questions: Array<{ text: string; honestLabel: string; justifyLabel: string }>;
   share: ShareMessages;
   meta: { title: string; description: string };
   topicSlugs: string[];
@@ -48,6 +50,7 @@ async function getHomeData(locale: Locale): Promise<HomeData> {
     hero: data.eternity.hero,
     counter: data.eternity.counter,
     home: data.home,
+    questions: data.questions,
     share: data.share,
     meta: data.meta,
     topicSlugs,
@@ -101,6 +104,11 @@ export default async function HomePage({ params }: Props) {
         home={data.home}
         locale={locale as Locale}
         topicSlugs={data.topicSlugs}
+        firstQuestion={{
+          text: data.questions[0]!.text,
+          honestLabel: data.questions[0]!.honestLabel,
+          justifyLabel: data.questions[0]!.justifyLabel,
+        }}
         latestPost={latestPost}
       />
     </>

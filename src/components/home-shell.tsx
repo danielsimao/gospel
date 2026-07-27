@@ -9,10 +9,12 @@ import { DeathCounter } from "@/components/eternity/death-counter";
 import { RotatingFacts } from "@/components/eternity/rotating-facts";
 import { LatestPostCard } from "@/components/home/latest-post-card";
 import { AlsoHere, type AlsoHereRow } from "@/components/home/also-here";
+import { FirstQuestion, type FirstQuestionCopy } from "@/components/home/first-question";
 import { StageSpine } from "@/components/home/stage-spine";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { hasAnsweredConsent, subscribeToConsentAnswered } from "@/lib/consent";
 import { useJourney, TOTAL_READING_DAYS } from "@/lib/use-journey";
+import { useFeatureFlag } from "@/lib/use-feature-flag";
 import { saveInvitationResponse, resetJourney } from "@/lib/journey-storage";
 import { clearSession } from "@/lib/test-session-storage";
 import {
@@ -46,6 +48,8 @@ interface HomeShellProps {
   home: HomeMessages;
   locale: Locale;
   topicSlugs: string[];
+  /** Question 1 of the test, asked on the front door. Omit to keep the plain CTA. */
+  firstQuestion?: Omit<FirstQuestionCopy, "label">;
   latestPost?: {
     slug: string;
     title: string;
@@ -73,8 +77,9 @@ const RATE_CARDS = [
   { value: "155,000", key: "perDay" },
 ] as const;
 
-export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeShellProps) {
+export function HomeShell({ hero, home, locale, topicSlugs, firstQuestion, latestPost }: HomeShellProps) {
   const journey = useJourney(topicSlugs);
+  const askFirstQuestion = useFeatureFlag("home-first-question", true);
 
   /*
    * The band's rows. Progress replaces the description only once the reader has
@@ -425,12 +430,22 @@ export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeSh
               <h1 className="mt-3 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-4 sm:text-3xl md:text-4xl">
                 {home.provocativeQuestion}
               </h1>
-              <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
-                <Button variant="gold" size="lg" mist>
-                  {home.ctaButton}
-                  <ButtonArrow />
-                </Button>
-              </Link>
+              {/* The front door is either the plain CTA or the test's own first
+                  question — never both. Flag-gated as a kill switch, defaulting
+                  on, so it can be reverted without a deploy. */}
+              {askFirstQuestion && firstQuestion ? (
+                <FirstQuestion
+                  copy={{ label: home.firstQuestionLabel, ...firstQuestion }}
+                  locale={locale}
+                />
+              ) : (
+                <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
+                  <Button variant="gold" size="lg" mist>
+                    {home.ctaButton}
+                    <ButtonArrow />
+                  </Button>
+                </Link>
+              )}
               <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-4">
                 <Button variant="text">{home.secondaryLink}</Button>
               </Link>

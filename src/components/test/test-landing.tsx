@@ -1,19 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { Landing } from "@/components/landing";
 import { QuestionCard } from "@/components/question-card";
 import { ResumeDialog } from "@/components/resume-dialog";
-import { trackTestResumed, trackTestRestarted } from "@/lib/analytics";
+import {
+  trackTestResumed,
+  trackTestRestarted,
+  trackGameStarted,
+  trackQuestionAnswered,
+} from "@/lib/analytics";
 import {
   readSession,
   clearSession,
   type SavedSession,
 } from "@/lib/test-session-storage";
 import { furthestPhase, routeForPhase } from "@/lib/test-routes";
-import type { Messages } from "@/lib/types";
+import { QUESTION_CONFIGS } from "@/lib/questions";
+import type { AnswerType, Messages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 
 interface TestLandingProps {
@@ -34,6 +40,37 @@ export function TestLanding({ messages, locale }: TestLandingProps) {
   const state = useGameState();
   const dispatch = useGameDispatch();
   const router = useRouter();
+
+  /*
+   * Handoff from the homepage's first question. Question 1 of the test IS the
+   * lying question, so answering it on the front door answers it for real —
+   * this replays that answer here rather than asking again.
+   *
+   * The reader lands on question 1 *answered*, with its follow-up pressing,
+   * not on question 2. Skipping to 2 would drop the first press, which is the
+   * method's core move and the one that sets the pattern for the rest.
+   */
+  const searchParams = useSearchParams();
+  const seedAnswer = searchParams.get("q1");
+  const seeding = seedAnswer === "honest" || seedAnswer === "justify";
+  const seededRef = useRef(false);
+
+  useEffect(() => {
+    if (seededRef.current || !seeding) return;
+    seededRef.current = true;
+
+    const answer = seedAnswer as AnswerType;
+    const config = QUESTION_CONFIGS[0];
+    trackGameStarted(locale);
+    dispatch({ type: "START_GAME" });
+    dispatch({ type: "ANSWER_QUESTION", answer });
+    if (config) {
+      const drain = answer === "honest" ? config.honestDrain : config.justifyDrain;
+      trackQuestionAnswered(config.id, config.commandment, answer, Math.max(0, 100 - drain), 0);
+    }
+    // Drop the param so a refresh or a share does not replay the answer.
+    router.replace(`/${locale}/test`, { scroll: false });
+  }, [seeding, seedAnswer, dispatch, locale, router]);
 
   const [pendingResume, setPendingResume] = useState<SavedSession | null>(null);
 
@@ -94,7 +131,7 @@ export function TestLanding({ messages, locale }: TestLandingProps) {
           phase === "landing" for the door, which left this route rendering
           nothing at all when the reducer said "verdict" but the URL said /test
           — a blank page reachable by browser back. */}
-      {state.phase === "playing" ? (
+      {seeding && state.phase !== "playing" ? null : state.phase === "playing" ? (
         <QuestionCard
           question={messages.questions[state.currentQuestion]!}
           questionIndex={state.currentQuestion}
@@ -111,7 +148,7 @@ export function TestLanding({ messages, locale }: TestLandingProps) {
           but the reader is looking at the front door. Without that, Begin would
           silently discard a completed test. */}
       <ResumeDialog
-        open={!!pendingResume && state.phase !== "playing"}
+        open={!seeding && !!pendingResume && state.phase !== "playing"}
         title={messages.resumeDialog.title}
         continueLabel={messages.resumeDialog.continueLabel}
         startOverLabel={messages.resumeDialog.startOverLabel}
