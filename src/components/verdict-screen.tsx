@@ -12,7 +12,7 @@ import { VerdictEmblem } from "@/components/emblems";
 import type { TestMessages } from "@/lib/types";
 
 interface VerdictScreenProps {
-  messages: { title: string; subtitle: string };
+  messages: { title: string };
   testMessages: TestMessages;
 }
 
@@ -164,8 +164,8 @@ export function VerdictScreen({
         </m.div>
 
         {/* The authority. Previously the screen asserted guilt in the app's
-            own voice (messages.subtitle) and the law screen cited no law.
-            James 2:10 is the exact argument the eight questions build — one
+            own voice (a subtitle since deleted) and the law screen cited no
+            law. James 2:10 is the exact argument the six questions build — one
             point failed, guilty of all — and it rhymes with the heading above
             it in both languages. Red border, not the house gold: this is the
             law side of the flow. */}

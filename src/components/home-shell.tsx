@@ -14,7 +14,6 @@ import { StageSpine } from "@/components/home/stage-spine";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { hasAnsweredConsent, subscribeToConsentAnswered } from "@/lib/consent";
 import { useJourney, TOTAL_READING_DAYS } from "@/lib/use-journey";
-import { useFeatureFlag } from "@/lib/use-feature-flag";
 import { saveInvitationResponse, resetJourney } from "@/lib/journey-storage";
 import { clearSession } from "@/lib/test-session-storage";
 import {
@@ -79,7 +78,6 @@ const RATE_CARDS = [
 
 export function HomeShell({ hero, home, locale, topicSlugs, firstQuestion, latestPost }: HomeShellProps) {
   const journey = useJourney(topicSlugs);
-  const askFirstQuestion = useFeatureFlag("home-first-question", true);
 
   /*
    * The band's rows. Progress replaces the description only once the reader has
@@ -431,9 +429,15 @@ export function HomeShell({ hero, home, locale, topicSlugs, firstQuestion, lates
                 {home.provocativeQuestion}
               </h1>
               {/* The front door is either the plain CTA or the test's own first
-                  question — never both. Flag-gated as a kill switch, defaulting
-                  on, so it can be reverted without a deploy. */}
-              {askFirstQuestion && firstQuestion ? (
+                  question — never both. This was briefly behind a PostHog flag
+                  as a kill switch; the flag never worked (its one-shot guard
+                  ran before posthog-js finished loading and never re-subscribed,
+                  so it was pinned to the default), and reading it meant a static
+                  import of posthog-js, which put the session recorder in the
+                  homepage bundle — the one thing lib/posthog.ts forbids outside
+                  itself. Reverting this is a one-line change and a deploy, which
+                  at this traffic is cheaper than either problem. */}
+              {firstQuestion ? (
                 <FirstQuestion
                   copy={{
                     label: home.firstQuestionLabel,

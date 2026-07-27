@@ -144,8 +144,6 @@ export interface JourneyStagesMessages {
   undecided: {
     eyebrow: string;
     heading: string;
-    /** @deprecated superseded by whatHappened, which carries the elapsed time too. */
-    sinceLine: string;
     whatHappened: string;
     cta: string;
   };
@@ -155,18 +153,13 @@ export interface JourneyStagesMessages {
     whatHappened: string;
     /** The conditional promise — kept verbatim, rendered as the house blockquote. */
     heading: string;
-    subheading: string;
     nextStepsCard: { label: string; description: string };
   };
   thinking: {
     eyebrow: string;
     heading: string;
     whatHappened: string;
-    /** @deprecated superseded by whatHappened. */
-    sinceLine: string;
     reflection: string;
-    johnCard: { label: string; description: string; url: string };
-    learnCard: { label: string; description: string };
     commitLabel: string;
     retakeLabel: string;
   };
@@ -174,8 +167,6 @@ export interface JourneyStagesMessages {
     eyebrow: string;
     title: string;
     whatHappened: string;
-    /** @deprecated split into title + whatHappened. */
-    line: string;
     retakeCta: string;
   };
 }
@@ -248,7 +239,7 @@ export interface Messages {
     followUp: string;
     honestFollowUp: string;
   }>;
-  verdict: { title: string; subtitle: string };
+  verdict: { title: string };
   grace: {
     scripture: string;
     scriptureRef: string;
@@ -270,6 +261,13 @@ export interface Messages {
     responses: Record<InvitationResponse, string>;
     learnMoreLabel: string;
   };
+  /**
+   * The homepage block. It was absent for a long time, which left HomeMessages
+   * — the largest copy interface here — unreachable from the root type: the
+   * validator had to cast through `unknown` to reach it and the page assigned
+   * it from an `any`, so none of the homepage copy was ever type-checked.
+   */
+  home: HomeMessages;
   share: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
   nextSteps?: { cta: string; dismissedReturn: string };
   meta: { title: string; description: string };

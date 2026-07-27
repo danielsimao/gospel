@@ -104,8 +104,7 @@
     }
   ],
   "verdict": {
-    "title": "Culpado.",
-    "subtitle": "Pelo padrão perfeito de Deus, nenhum de nós é suficientemente bom."
+    "title": "Culpado."
   },
   "grace": {
     "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.",
@@ -1529,13 +1528,11 @@
       "undecided": {
         "eyebrow": "O veredicto mantém-se",
         "heading": "Viste o veredicto. O que vais fazer com ele?",
-        "sinceLine": "Isso foi {when}. A pergunta continua à espera.",
         "cta": "Volta onde ficaste",
         "whatHappened": "Estiveste em julgamento {when}. O veredicto foi culpado, e a dívida continua por pagar."
       },
       "committed": {
         "heading": "Se te arrependeste e confiaste em Cristo, Deus perdoou-te — não porque o mereceste, mas por causa do que Cristo fez.",
-        "subheading": "Cresce nisso:",
         "nextStepsCard": {
           "label": "Os teus próximos passos",
           "description": "Oração, igreja e as pessoas que vão caminhar contigo — onde uma vida nova cria raízes."
@@ -1546,24 +1543,13 @@
       },
       "thinking": {
         "eyebrow": "A pergunta continua em aberto",
-        "sinceLine": "Disseste que ias pensar nisso {when}.",
         "reflection": "O desconforto que sentes pode ser a tua consciência a concordar com o padrão de Deus. Leva-o a sério.",
-        "johnCard": {
-          "label": "Lê João 3",
-          "description": "Uma conversa entre Jesus e um homem que tinha perguntas como as tuas.",
-          "url": "https://www.bible.com/bible/212/JHN.3.ARC"
-        },
-        "learnCard": {
-          "label": "Os fundamentos",
-          "description": "Respostas curtas e honestas às perguntas essenciais."
-        },
         "commitLabel": "Arrependi-me e confiei em Cristo",
         "retakeLabel": "Faz o teste outra vez",
         "heading": "Pediste tempo. Continua a ser teu.",
         "whatHappened": "Viste que alguém pagou a tua dívida, e pediste tempo para pensar. Foi {when}."
       },
       "dismissed": {
-        "line": "A porta continua aberta. O amanhã não está prometido.",
         "retakeCta": "Faz o teste outra vez",
         "eyebrow": "Onde o deixaste",
         "title": "A porta continua aberta.",
@@ -1785,7 +1771,6 @@
     "readingPlanLink": "Plano de Leitura de 7 Dias",
     "nextStepsLink": "Próximos Passos",
     "churchLink": "Encontra uma Igreja",
-    "churchUrl": "https://maps.app.goo.gl/NMMMdeJa5H5BR5Vp9",
     "livingWatersLink": "És uma Boa Pessoa? — Living Waters",
     "livingWatersUrl": "https://livingwaters.com/are-you-a-good-person/",
     "needGodLink": "needGod.net",

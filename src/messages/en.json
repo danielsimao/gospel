@@ -104,8 +104,7 @@
     }
   ],
   "verdict": {
-    "title": "Guilty.",
-    "subtitle": "By God's perfect standard, none of us are good enough."
+    "title": "Guilty."
   },
   "grace": {
     "scripture": "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.",
@@ -1529,13 +1528,11 @@
       "undecided": {
         "eyebrow": "The verdict stands",
         "heading": "You've seen the verdict. What will you do with it?",
-        "sinceLine": "That was {when}. The question is still waiting.",
         "cta": "Return to where you left off",
         "whatHappened": "You stood trial {when}. The verdict was guilty, and the fine is still unpaid."
       },
       "committed": {
         "heading": "If you've repented and trusted in Christ, God has forgiven you — not because you earned it, but because of what Christ did.",
-        "subheading": "Grow in it:",
         "nextStepsCard": {
           "label": "Your next steps",
           "description": "Prayer, church, and the people who will walk with you — where a new life takes root."
@@ -1546,24 +1543,13 @@
       },
       "thinking": {
         "eyebrow": "The question is still open",
-        "sinceLine": "You said you'd think about it {when}.",
         "reflection": "The discomfort you feel might be your conscience agreeing with God's standard. Take it seriously.",
-        "johnCard": {
-          "label": "Read John 3",
-          "description": "A conversation between Jesus and a man who had questions just like yours.",
-          "url": "https://www.bible.com/bible/114/JHN.3.NKJV"
-        },
-        "learnCard": {
-          "label": "The foundations",
-          "description": "Short, honest answers to the core questions."
-        },
         "commitLabel": "I have repented and trusted in Christ",
         "retakeLabel": "Take the test again",
         "heading": "You asked for time. It's still yours to take.",
         "whatHappened": "You saw that someone paid your fine, and asked for time to think. That was {when}."
       },
       "dismissed": {
-        "line": "The door stays open. Tomorrow isn't promised.",
         "retakeCta": "Take the test again",
         "eyebrow": "Where you left it",
         "title": "The door stays open.",
@@ -1785,7 +1771,6 @@
     "readingPlanLink": "7-Day Reading Plan",
     "nextStepsLink": "Next Steps",
     "churchLink": "Find a Church",
-    "churchUrl": "https://www.9marks.org/church-search/",
     "livingWatersLink": "Are You a Good Person? — Living Waters",
     "livingWatersUrl": "https://livingwaters.com/are-you-a-good-person/",
     "needGodLink": "needGod.net",

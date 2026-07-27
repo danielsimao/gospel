@@ -26,13 +26,6 @@ export function trackHomeRetakeClicked() {
   safeCapture("home_retake_clicked");
 }
 
-export function trackHomeJourneyStepClicked(
-  step: "test" | "reading" | "learn" | "share",
-  state: "complete" | "active" | "upcoming" | "all-done",
-) {
-  safeCapture("home_journey_step_clicked", { step, state });
-}
-
 export function trackTopBarLearnClicked() {
   safeCapture("top_bar_learn_clicked");
 }

@@ -124,7 +124,7 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
     dispatch({ type: "SHOW_INVITATION" });
   }
 
-  const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
+  const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];  // more slots than beats, harmless
 
   return (
     <div className="relative flex flex-1 flex-col min-h-dvh">

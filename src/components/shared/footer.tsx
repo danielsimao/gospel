@@ -15,7 +15,6 @@ interface FooterMessages {
   readingPlanLink: string;
   nextStepsLink: string;
   churchLink: string;
-  churchUrl: string;
   livingWatersLink: string;
   livingWatersUrl: string;
   needGodLink: string;
