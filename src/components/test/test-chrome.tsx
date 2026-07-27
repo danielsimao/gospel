@@ -62,12 +62,19 @@ export function TestChrome({ backLabel, locale, children }: TestChromeProps) {
   // re-running on a later segment change would overwrite live state with
   // whatever storage last held. A ref rather than an empty dep array so the
   // dependencies stay honest.
+  //
+  // The flag is raised inside the frame, not beside the scheduling call. Raised
+  // early it contradicted the cleanup below: React re-invokes an effect after
+  // cleanup on the same mount (StrictMode does this in dev), so pass one
+  // scheduled a frame and raised the flag, the cleanup cancelled that frame,
+  // and pass two returned early — leaving `ready` false forever and the whole
+  // test route blank on any client-side navigation into it.
   const hydratedRef = useRef(false);
   useEffect(() => {
     if (hydratedRef.current) return;
-    hydratedRef.current = true;
 
     const id = requestAnimationFrame(() => {
+      hydratedRef.current = true;
       const saved = readSession();
       if (saved && segment !== null) {
         dispatch({
