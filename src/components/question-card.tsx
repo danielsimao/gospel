@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { m, AnimatePresence } from "framer-motion";
 import { useGameDispatch, useGameState } from "@/components/game-provider";
 import { FollowUp } from "@/components/follow-up";
@@ -58,17 +59,30 @@ export function QuestionCard({
   question,
   questionIndex,
   score,
+  locale,
   testMessages,
 }: QuestionCardProps) {
   const dispatch = useGameDispatch();
   const state = useGameState();
+  const router = useRouter();
   const timersRef = useRef<NodeJS.Timeout[]>([]);
   const answered = state.currentAnswer;
   const showFollowUp = state.showFollowUp;
 
+  // Questions live on one route by design, so advancing between them is a
+  // reducer move with no navigation. Only the last one crosses into a new
+  // route — that is the point at which the verdict becomes a real URL.
+  //
+  // replace, not push: this is what makes "the verdict is the floor" real.
+  // Questions are one-way, so the route that held them is replaced rather than
+  // stacked, and back from the verdict leaves the test entirely instead of
+  // returning to a start screen the reader is done with.
   const advance = useCallback(() => {
     dispatch({ type: "ADVANCE_AFTER_FOLLOWUP" });
-  }, [dispatch]);
+    if (questionIndex >= TOTAL_QUESTIONS - 1) {
+      router.replace(`/${locale}/test/verdict`);
+    }
+  }, [dispatch, questionIndex, router, locale]);
 
   useEffect(() => {
     timersRef.current.forEach(clearTimeout);

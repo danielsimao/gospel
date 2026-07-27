@@ -2,19 +2,21 @@
 
 import { Fragment, useEffect, useRef, useState } from "react";
 import { m } from "framer-motion";
-import { useGameDispatch } from "@/components/game-provider";
+import { useRouter } from "next/navigation";
+import { useGameState } from "@/components/game-provider";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { trackVerdictReached } from "@/lib/analytics";
 import { splitConfession } from "@/lib/confession";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import { VerdictEmblem } from "@/components/emblems";
-import type { GameState, TestMessages } from "@/lib/types";
+import type { TestMessages } from "@/lib/types";
+import type { Locale } from "@/lib/i18n";
 
 interface VerdictScreenProps {
   messages: { title: string; subtitle: string };
   testMessages: TestMessages;
-  state: GameState;
+  locale: Locale;
 }
 
 /**
@@ -27,9 +29,10 @@ const BRIDGE_DELAY_MS = 1200;
 export function VerdictScreen({
   messages,
   testMessages,
-  state,
+  locale,
 }: VerdictScreenProps) {
-  const dispatch = useGameDispatch();
+  const state = useGameState();
+  const router = useRouter();
   const hasTracked = useRef(false);
   // Grace is only reachable through the full verdict, so graceReached
   // exactly means "verdict fully seen" — re-entry replays nothing.
@@ -74,7 +77,7 @@ export function VerdictScreen({
   }, [state.answers, durationMs, returning]);
 
   function handleBridgeClick() {
-    dispatch({ type: "SHOW_GRACE" });
+    router.push(`/${locale}/test/grace`);
   }
 
   // Stage delays in ms → seconds, collapsed to 0 on re-read. The whole

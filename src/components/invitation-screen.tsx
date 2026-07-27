@@ -1,7 +1,11 @@
 "use client";
 
+import { useEffect } from "react";
 import { m } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useGameState, useGameDispatch } from "@/components/game-provider";
+import { saveInvitationResponse } from "@/lib/journey-storage";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import {
   trackInvitationResponse,
@@ -14,26 +18,27 @@ import type { Locale } from "@/lib/i18n";
 interface InvitationScreenProps {
   messages: Messages;
   locale: Locale;
-  startedAt: number;
-  invitationResponse: InvitationResponse | null;
-  onResponse: (response: InvitationResponse) => void;
-  onBack: () => void;
 }
 
-export function InvitationScreen({
-  messages,
-  locale,
-  startedAt,
-  invitationResponse,
-  onResponse,
-  onBack,
-}: InvitationScreenProps) {
+export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
   const { invitation } = messages;
+  const state = useGameState();
+  const dispatch = useGameDispatch();
+  const router = useRouter();
+  const invitationResponse = state.invitationResponse;
+
+  // Arriving marks the phase reached — this is what tells the grace screen not
+  // to replay its beats on a re-read. The reducer used to do it via
+  // SHOW_INVITATION; the route owns the transition now, so the screen records it.
+  useEffect(() => {
+    dispatch({ type: "SHOW_INVITATION" });
+  }, [dispatch]);
 
   function handleResponse(response: InvitationResponse) {
-    const totalTime = Date.now() - startedAt;
+    const totalTime = Date.now() - state.startedAt;
     trackInvitationResponse(response, totalTime);
-    onResponse(response);
+    saveInvitationResponse(response);
+    dispatch({ type: "SET_INVITATION_RESPONSE", response });
   }
 
   return (
@@ -137,7 +142,7 @@ export function InvitationScreen({
             </Button>
             <button
               type="button"
-              onClick={onBack}
+              onClick={() => router.back()}
               className="mt-3 text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
             >
               {invitation.rereadGrace}

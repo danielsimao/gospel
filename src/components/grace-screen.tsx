@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState, useCallback, createRef } from "react";
 import { m, AnimatePresence } from "framer-motion";
-import { useGameDispatch } from "@/components/game-provider";
+import { useRouter } from "next/navigation";
+import { useGameDispatch, useGameState } from "@/components/game-provider";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackGraceViewed } from "@/lib/analytics";
 import {
@@ -10,6 +11,7 @@ import {
   trackGraceBeatRevealed,
 } from "@/lib/eternity-analytics";
 import { EASE_OUT_STRONG } from "@/lib/motion";
+import type { Locale } from "@/lib/i18n";
 
 interface GraceScreenProps {
   messages: {
@@ -22,13 +24,23 @@ interface GraceScreenProps {
     tapContinue: string;
     rereadVerdict: string;
   };
-  returning: boolean;
-  onBack: () => void;
+  locale: Locale;
 }
 
-export function GraceScreen({ messages, returning, onBack }: GraceScreenProps) {
+export function GraceScreen({ messages, locale }: GraceScreenProps) {
   const dispatch = useGameDispatch();
+  const state = useGameState();
+  const router = useRouter();
+  // Re-read: once the invitation has been reached, coming back here replays
+  // nothing — every beat is already open.
+  const returning = state.invitationReached;
   const startTime = useRef(0);
+
+  // Arriving marks the phase reached. The reducer used to do this as part of
+  // SHOW_GRACE; with the route owning the transition, the screen records it.
+  useEffect(() => {
+    dispatch({ type: "SHOW_GRACE" });
+  }, [dispatch]);
   const maxScrollDepth = useRef(0);
 
   // Beat 1 is reserved in the layout from mount to avoid a content shift
@@ -83,7 +95,7 @@ export function GraceScreen({ messages, returning, onBack }: GraceScreenProps) {
   }, [beatRefs, revealedCount, messages.beats.length]);
 
   function handleContinue() {
-    dispatch({ type: "SHOW_INVITATION" });
+    router.push(`/${locale}/test/decision`);
   }
 
   const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
@@ -248,7 +260,7 @@ export function GraceScreen({ messages, returning, onBack }: GraceScreenProps) {
           <div className="mt-8 flex justify-center">
             <button
               type="button"
-              onClick={onBack}
+              onClick={() => router.back()}
               className="text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
             >
               {messages.rereadVerdict}
