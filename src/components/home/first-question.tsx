@@ -1,8 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { trackHomeFirstQuestionAnswered } from "@/lib/eternity-analytics";
+import { m, AnimatePresence } from "framer-motion";
+import { Button, ButtonArrow } from "@/components/ui/button";
+import { FollowUp } from "@/components/follow-up";
+import { EASE_OUT_STRONG } from "@/lib/motion";
+import {
+  trackHomeFirstQuestionAnswered,
+  trackHomeFirstQuestionAdvanced,
+} from "@/lib/eternity-analytics";
 import type { AnswerType } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 
@@ -12,25 +19,31 @@ export interface FirstQuestionCopy {
   text: string;
   honestLabel: string;
   justifyLabel: string;
+  /** The press, shown right here rather than after the page changes. */
+  followUp: string;
+  honestFollowUp: string;
+  honestVerdictLabel: string;
+  justifiedBadge: string;
+  nextLabel: string;
 }
 
 /**
- * The test's first question, asked on the front door.
+ * The test's first question, asked on the front door, and finished there.
  *
- * This replaces the "Take the test" button for new visitors rather than
- * sitting beside it — two asks would give a first-time reader something to
- * decide between, which is the friction this removes. It is not a teaser
- * either: question 1 of the real test IS the lying question, so answering
- * here answers it for real.
+ * Question 1 of the real test IS the lying question, so answering here answers
+ * it for real — this is not a teaser. It replaces the "Take the test" button
+ * rather than sitting beside it; two asks would give a first-time reader
+ * something to decide between, which is the friction this removes.
  *
- * Both answers navigate to /test?q1=… and land on question 1 already
- * answered, with its follow-up pressing. Jumping to question 2 instead would
- * skip that press — the method's core move, and the first one, which sets the
- * pattern for the whole test.
+ * The whole beat completes before navigating: the chosen answer stays visible
+ * and selected, the badge lands, the follow-up presses, and only then does a
+ * Next button appear. Navigating on the answer tap instead made the page change
+ * under the reader at the exact moment they were looking for confirmation that
+ * their tap registered — so the confirmation now happens where the tap did, and
+ * the route change waits for an explicit forward action.
  *
- * The "1 of 6" label also stops this competing with the page's h1 above it;
- * without it the reader meets two questions stacked and cannot tell which one
- * the buttons answer.
+ * Because the press happens here, /test opens at question 2 with question 1
+ * already on the ledger.
  */
 export function FirstQuestion({
   copy,
@@ -40,10 +53,18 @@ export function FirstQuestion({
   locale: Locale;
 }) {
   const router = useRouter();
+  const [answered, setAnswered] = useState<AnswerType | null>(null);
 
-  function answer(choice: AnswerType) {
+  function choose(choice: AnswerType) {
+    if (answered) return;
+    setAnswered(choice);
     trackHomeFirstQuestionAnswered(choice, locale);
-    router.push(`/${locale}/test?q1=${choice}`);
+  }
+
+  function advance() {
+    if (!answered) return;
+    trackHomeFirstQuestionAdvanced(answered, locale);
+    router.push(`/${locale}/test?q1=${answered}`);
   }
 
   return (
@@ -60,14 +81,76 @@ export function FirstQuestion({
         {copy.text}
       </p>
 
+      {/* Both answers stay on screen. The chosen one holds a selected state
+          rather than blinking — a flashing control reads as a validation error,
+          and WCAG 2.3.1 exists to keep repeated flashes off the page entirely. */}
       <div className="mt-6 flex w-full gap-2">
-        <Button variant="red" size="sm" onClick={() => answer("honest")} className="flex-1">
+        <Button
+          variant="red"
+          size="sm"
+          onClick={() => choose("honest")}
+          disabled={answered !== null}
+          className={`flex-1 transition-opacity ${
+            answered && answered !== "honest" ? "opacity-35" : ""
+          }`}
+        >
           {copy.honestLabel}
         </Button>
-        <Button variant="ghost" size="sm" onClick={() => answer("justify")} className="flex-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => choose("justify")}
+          disabled={answered !== null}
+          className={`flex-1 transition-opacity ${
+            answered && answered !== "justify" ? "opacity-35" : ""
+          }`}
+        >
           {copy.justifyLabel}
         </Button>
       </div>
+
+      <AnimatePresence>
+        {answered && (
+          <m.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.05, ease: EASE_OUT_STRONG }}
+            className="w-full"
+          >
+            <div className="mt-5 flex items-center gap-2 border-t border-red-900/30 pt-3">
+              <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+              <p className="font-mono text-[11px] font-bold uppercase tracking-[2px] text-red-400">
+                {answered === "honest" ? copy.honestVerdictLabel : copy.justifiedBadge}
+              </p>
+            </div>
+
+            {answered === "honest" ? (
+              <m.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
+                className="mt-2.5 text-[13px] italic leading-relaxed text-white/60"
+              >
+                {copy.honestFollowUp}
+              </m.p>
+            ) : (
+              <FollowUp text={copy.followUp} />
+            )}
+
+            <m.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, delay: answered === "justify" ? 0.6 : 0.35 }}
+              className="mt-5"
+            >
+              <Button variant="gold" size="sm" mist onClick={advance} className="w-full">
+                {copy.nextLabel}
+                <ButtonArrow />
+              </Button>
+            </m.div>
+          </m.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

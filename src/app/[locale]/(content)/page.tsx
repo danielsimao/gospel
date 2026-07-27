@@ -3,6 +3,7 @@ import { isValidLocale, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
 import { HomeShell } from "@/components/home-shell";
 import { StructuredData } from "@/components/structured-data";
 import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
+import { QUESTION_CONFIGS } from "@/lib/questions";
 import { getPublishedPosts, getPostContent, getPostLocales } from "@/content/blog/posts";
 import type { HomeMessages } from "@/lib/types";
 import type { Metadata } from "next";
@@ -29,8 +30,20 @@ interface HomeData {
   };
   counter: { label: string; liveBadge: string };
   home: HomeMessages;
-  /** Question 1 is asked on the homepage; only its copy is needed here. */
-  questions: Array<{ text: string; honestLabel: string; justifyLabel: string }>;
+  /** Question 1 is asked and completed on the homepage. */
+  questions: Array<{
+    text: string;
+    honestLabel: string;
+    justifyLabel: string;
+    followUp: string;
+    honestFollowUp: string;
+  }>;
+  test: {
+    verdictLabels: Record<string, string>;
+    answeredBadge: string;
+    justifiedBadge: string;
+    nextLabel: string;
+  };
   share: ShareMessages;
   meta: { title: string; description: string };
   topicSlugs: string[];
@@ -51,6 +64,7 @@ async function getHomeData(locale: Locale): Promise<HomeData> {
     counter: data.eternity.counter,
     home: data.home,
     questions: data.questions,
+    test: data.test,
     share: data.share,
     meta: data.meta,
     topicSlugs,
@@ -108,6 +122,13 @@ export default async function HomePage({ params }: Props) {
           text: data.questions[0]!.text,
           honestLabel: data.questions[0]!.honestLabel,
           justifyLabel: data.questions[0]!.justifyLabel,
+          followUp: data.questions[0]!.followUp,
+          honestFollowUp: data.questions[0]!.honestFollowUp,
+          honestVerdictLabel:
+            data.test.verdictLabels[QUESTION_CONFIGS[0]!.commandment] ??
+            data.test.answeredBadge,
+          justifiedBadge: data.test.justifiedBadge,
+          nextLabel: data.test.nextLabel,
         }}
         latestPost={latestPost}
       />

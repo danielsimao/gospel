@@ -46,9 +46,10 @@ export function TestLanding({ messages, locale }: TestLandingProps) {
    * lying question, so answering it on the front door answers it for real —
    * this replays that answer here rather than asking again.
    *
-   * The reader lands on question 1 *answered*, with its follow-up pressing,
-   * not on question 2. Skipping to 2 would drop the first press, which is the
-   * method's core move and the one that sets the pattern for the rest.
+   * The reader lands on question 2. That is only correct because the homepage
+   * now completes the whole of question 1 — answer, badge, follow-up press —
+   * before navigating. An earlier version navigated on the answer tap and so
+   * had to land on question 1 to avoid dropping that press.
    */
   const searchParams = useSearchParams();
   const seedAnswer = searchParams.get("q1");
@@ -64,6 +65,7 @@ export function TestLanding({ messages, locale }: TestLandingProps) {
     trackGameStarted(locale);
     dispatch({ type: "START_GAME" });
     dispatch({ type: "ANSWER_QUESTION", answer });
+    dispatch({ type: "ADVANCE_AFTER_FOLLOWUP" });
     if (config) {
       const drain = answer === "honest" ? config.honestDrain : config.justifyDrain;
       trackQuestionAnswered(config.id, config.commandment, answer, Math.max(0, 100 - drain), 0);

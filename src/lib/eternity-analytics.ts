@@ -9,6 +9,11 @@ export function trackHomeFirstQuestionAnswered(answer: "honest" | "justify", loc
   safeCapture("home_first_question_answered", { answer, locale });
 }
 
+/** Tapped Next after the front-door question — the actual entry into the test. */
+export function trackHomeFirstQuestionAdvanced(answer: "honest" | "justify", locale: string) {
+  safeCapture("home_first_question_advanced", { answer, locale });
+}
+
 export function trackHomeCtaClicked() {
   safeCapture("home_cta_clicked", { destination: "test" });
 }
