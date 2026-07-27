@@ -42,7 +42,6 @@ interface HomeData {
     verdictLabels: Record<string, string>;
     answeredBadge: string;
     justifiedBadge: string;
-    nextLabel: string;
   };
   share: ShareMessages;
   meta: { title: string; description: string };
@@ -128,7 +127,6 @@ export default async function HomePage({ params }: Props) {
             data.test.verdictLabels[QUESTION_CONFIGS[0]!.commandment] ??
             data.test.answeredBadge,
           justifiedBadge: data.test.justifiedBadge,
-          nextLabel: data.test.nextLabel,
         }}
         latestPost={latestPost}
       />

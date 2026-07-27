@@ -24,7 +24,13 @@ export interface FirstQuestionCopy {
   honestFollowUp: string;
   honestVerdictLabel: string;
   justifiedBadge: string;
-  nextLabel: string;
+  /**
+   * Names where the button goes. It cannot be the test's own "Next": inside the
+   * test that word means the next question appears in place, and on the
+   * homepage it promised exactly that while actually changing the page — which
+   * was the same failure as navigating on the answer tap, one step later.
+   */
+  continueLabel: string;
 }
 
 /**
@@ -36,11 +42,15 @@ export interface FirstQuestionCopy {
  * something to decide between, which is the friction this removes.
  *
  * The whole beat completes before navigating: the chosen answer stays visible
- * and selected, the badge lands, the follow-up presses, and only then does a
- * Next button appear. Navigating on the answer tap instead made the page change
- * under the reader at the exact moment they were looking for confirmation that
- * their tap registered — so the confirmation now happens where the tap did, and
- * the route change waits for an explicit forward action.
+ * and selected, the badge lands, the follow-up presses, and only then does the
+ * continue button appear.
+ *
+ * Two versions of the same bug were fixed to get here, and both were failures
+ * to signal that the page was about to change: navigating on the answer tap
+ * moved the world at the exact moment the reader was looking for confirmation
+ * their tap registered, and labelling the button "Next" then promised the next
+ * question would appear in place. Confirmation now happens where the tap did,
+ * and the button names its destination.
  *
  * Because the press happens here, /test opens at question 2 with question 1
  * already on the ledger.
@@ -144,7 +154,7 @@ export function FirstQuestion({
               className="mt-5"
             >
               <Button variant="gold" size="sm" mist onClick={advance} className="w-full">
-                {copy.nextLabel}
+                {copy.continueLabel}
                 <ButtonArrow />
               </Button>
             </m.div>

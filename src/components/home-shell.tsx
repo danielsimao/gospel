@@ -49,7 +49,7 @@ interface HomeShellProps {
   locale: Locale;
   topicSlugs: string[];
   /** Question 1 of the test, asked on the front door. Omit to keep the plain CTA. */
-  firstQuestion?: Omit<FirstQuestionCopy, "label">;
+  firstQuestion?: Omit<FirstQuestionCopy, "label" | "continueLabel">;
   latestPost?: {
     slug: string;
     title: string;
@@ -435,7 +435,11 @@ export function HomeShell({ hero, home, locale, topicSlugs, firstQuestion, lates
                   on, so it can be reverted without a deploy. */}
               {askFirstQuestion && firstQuestion ? (
                 <FirstQuestion
-                  copy={{ label: home.firstQuestionLabel, ...firstQuestion }}
+                  copy={{
+                    label: home.firstQuestionLabel,
+                    continueLabel: home.firstQuestionContinue,
+                    ...firstQuestion,
+                  }}
                   locale={locale}
                 />
               ) : (

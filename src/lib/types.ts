@@ -173,6 +173,9 @@ export interface HomeMessages {
   /** "Question 1 of 6" — labels the front-door Law question so it does not read
    *  as a second question competing with the page's h1. */
   firstQuestionLabel: string;
+  /** Names the destination. "Next" promised the next question would appear in
+   *  place; this button leaves the homepage, and has to say so. */
+  firstQuestionContinue: string;
   alsoHere: {
     label: string;
     readingDescription: string;
