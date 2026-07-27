@@ -292,7 +292,7 @@ export function GraceScreen({ messages, locale }: GraceScreenProps) {
             <button
               type="button"
               onClick={() => router.push(`/${locale}/test/verdict`)}
-              className="text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
+              className="inline-flex min-h-[32px] items-center text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
             >
               {messages.rereadVerdict}
             </button>
