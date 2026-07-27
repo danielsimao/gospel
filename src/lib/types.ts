@@ -180,6 +180,8 @@ export interface HomeMessages {
     label: string;
     readingDescription: string;
     learnDescription: string;
+    goodEnoughLabel: string;
+    goodEnoughDescription: string;
   };
   facts: string[];
   journey: JourneyMessages;

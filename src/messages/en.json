@@ -1477,7 +1477,9 @@
     "alsoHere": {
       "label": "Also here",
       "readingDescription": "Seven days in the Gospel of John.",
-      "learnDescription": "Short answers to the hard questions."
+      "learnDescription": "Short answers to the hard questions.",
+      "goodEnoughLabel": "Good enough?",
+      "goodEnoughDescription": "Fill the bar and you're in. Takes twenty seconds."
     },
     "firstQuestionLabel": "Question 1 of 6",
     "firstQuestionContinue": "Continue the test",

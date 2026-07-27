@@ -1477,7 +1477,9 @@
     "alsoHere": {
       "label": "Também aqui",
       "readingDescription": "Sete dias no Evangelho de João.",
-      "learnDescription": "Respostas curtas às perguntas difíceis."
+      "learnDescription": "Respostas curtas às perguntas difíceis.",
+      "goodEnoughLabel": "Suficientemente bom?",
+      "goodEnoughDescription": "Enche a barra e entras. Leva vinte segundos."
     },
     "firstQuestionLabel": "Pergunta 1 de 6",
     "firstQuestionContinue": "Continuar o teste",
