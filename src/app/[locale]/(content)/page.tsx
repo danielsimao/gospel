@@ -99,7 +99,6 @@ export default async function HomePage({ params }: Props) {
       <HomeShell
         hero={data.hero}
         home={data.home}
-        share={data.share}
         locale={locale as Locale}
         topicSlugs={data.topicSlugs}
         latestPost={latestPost}

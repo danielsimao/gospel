@@ -1474,6 +1474,11 @@
     "blogCard": {
       "eyebrow": "Do blog"
     },
+    "alsoHere": {
+      "label": "Também aqui",
+      "readingDescription": "Sete dias no Evangelho de João.",
+      "learnDescription": "Respostas curtas às perguntas difíceis."
+    },
     "facts": [
       "No ano passado, 56 milhões de pessoas morreram em todo o mundo.",
       "As doenças cardíacas matam 17,9 milhões de pessoas por ano.",

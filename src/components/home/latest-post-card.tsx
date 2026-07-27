@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { BandHeader } from "@/components/next-steps/band-header";
 import { trackHomeBlogCardClicked } from "@/lib/eternity-analytics";
 
 const MAX_AGE_DAYS = 60;
@@ -35,20 +36,16 @@ export function LatestPostCard({ locale, eyebrow, post }: LatestPostCardProps) {
   const href = post.localeAvailable ? `/${locale}/blog/${post.slug}` : `/en/blog/${post.slug}`;
 
   return (
-    <div className="mt-16 w-full max-w-md sm:mt-20">
-      {/* Own quiet band — divider + centered eyebrow declare a chapter break
-          so the card reads as "meanwhile, from the blog", not an appendix
-          bolted under the invitation CTA. */}
-      <div aria-hidden="true" className="h-px bg-white/[0.08]" />
-      <div className="mt-8 flex items-center justify-center gap-2">
-        <span aria-hidden="true" className="h-px w-6 bg-[#D4A843]/40" />
-        <p className="font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">{eyebrow}</p>
-        <span aria-hidden="true" className="h-px w-6 bg-[#D4A843]/40" />
-      </div>
+    <div className="mt-10 w-full max-w-md text-left">
+      {/* Shares the AlsoHere band's header idiom rather than its old
+          divider + centred eyebrow. The two now sit directly above one
+          another, and two different chapter-break treatments stacked read as
+          a mistake. Gold tone keeps it distinct from the band's dim one. */}
+      <BandHeader label={eyebrow} tone="gold" />
       <Link
         href={href}
         onClick={() => trackHomeBlogCardClicked(post.slug)}
-        className="group mt-4 block rounded-xl border border-white/[0.06] bg-white/[0.015] p-5 transition-colors hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03]"
+        className="group block rounded-xl border border-white/[0.06] bg-white/[0.015] p-5 transition-colors hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03]"
       >
         <div className="flex items-start justify-between gap-3">
           <div>

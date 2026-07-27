@@ -170,6 +170,11 @@ export interface HomeMessages {
   ctaButton: string;
   secondaryLink: string;
   blogCard: { eyebrow: string };
+  alsoHere: {
+    label: string;
+    readingDescription: string;
+    learnDescription: string;
+  };
   facts: string[];
   journey: JourneyMessages;
   journeyStages: JourneyStagesMessages;

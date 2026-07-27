@@ -4,15 +4,15 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { m } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { BookOpen, ChevronDown, Compass } from "lucide-react";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { RotatingFacts } from "@/components/eternity/rotating-facts";
-import { JourneyTracker } from "@/components/journey-tracker";
 import { LatestPostCard } from "@/components/home/latest-post-card";
+import { AlsoHere, type AlsoHereRow } from "@/components/home/also-here";
 import { StageSpine } from "@/components/home/stage-spine";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { hasAnsweredConsent, subscribeToConsentAnswered } from "@/lib/consent";
-import { useJourney } from "@/lib/use-journey";
+import { useJourney, TOTAL_READING_DAYS } from "@/lib/use-journey";
 import { saveInvitationResponse, resetJourney } from "@/lib/journey-storage";
 import { clearSession } from "@/lib/test-session-storage";
 import {
@@ -44,7 +44,6 @@ interface HeroMessages {
 interface HomeShellProps {
   hero: HeroMessages;
   home: HomeMessages;
-  share: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
   locale: Locale;
   topicSlugs: string[];
   latestPost?: {
@@ -74,8 +73,39 @@ const RATE_CARDS = [
   { value: "155,000", key: "perDay" },
 ] as const;
 
-export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }: HomeShellProps) {
+export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeShellProps) {
   const journey = useJourney(topicSlugs);
+
+  /*
+   * The band's rows. Progress replaces the description only once the reader has
+   * actually started — a count is information about something you began, not a
+   * prompt. Both destinations stay linked either way; nothing here gates.
+   */
+  const alsoHereRows: AlsoHereRow[] = [
+    {
+      href: `/${locale}/reading-plan`,
+      label: home.journey.reading.label,
+      description:
+        journey.readingDone > 0
+          ? home.journey.reading.descActiveProgress
+              .replace("{current}", String(journey.readingDone))
+              .replace("{total}", String(TOTAL_READING_DAYS))
+          : home.alsoHere.readingDescription,
+      icon: <BookOpen className="size-4" aria-hidden="true" />,
+    },
+    {
+      href: `/${locale}/learn`,
+      label: home.journey.learn.label,
+      description:
+        journey.learnDone > 0
+          ? home.journey.learn.descActiveProgress
+              .replace("{current}", String(journey.learnDone))
+              .replace("{total}", String(topicSlugs.length))
+          : home.alsoHere.learnDescription,
+      icon: <Compass className="size-4" aria-hidden="true" />,
+    },
+  ];
+
   const [scrolled, setScrolled] = useState(false);
   const [isScrollable, setIsScrollable] = useState(false);
   const viewTracked = useRef(false);
@@ -269,20 +299,6 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
                   stays until the shared spine has had a chance to fix the
                   disorientation on its own. Demoted below the primary action so
                   the top of every stage now reads identically. */}
-              <div className="relative mt-4 flex items-center gap-2">
-                <span aria-hidden="true" className="h-px w-6 bg-[#D4A843]/40" />
-                <span className="font-mono text-[10px] uppercase tracking-[3px] text-[#D4A843]/80">
-                  {home.journeyStages.committed.subheading}
-                </span>
-                <span aria-hidden="true" className="h-px w-6 bg-[#D4A843]/40" />
-              </div>
-              <JourneyTracker
-                snapshot={journey}
-                locale={locale}
-                messages={home.journey}
-                shareMessages={share}
-                topicSlugs={topicSlugs}
-              />
               {/* Retake — quiet sentence-case escape hatch at the very end.
                   It resets the whole journey; it must never wear the mono-
                   uppercase header costume or sit between card groups (it
@@ -420,6 +436,11 @@ export function HomeShell({ hero, home, share, locale, topicSlugs, latestPost }:
               </Link>
             </>
           )}
+
+          {/* Ungated content band, identical on all five stages — the journey
+              tracker's replacement. Rendered once here rather than inside each
+              stage branch, so it cannot drift between them. */}
+          <AlsoHere label={home.alsoHere.label} rows={alsoHereRows} />
 
           {latestPost && (
             <LatestPostCard locale={locale} eyebrow={home.blogCard.eyebrow} post={latestPost} />
