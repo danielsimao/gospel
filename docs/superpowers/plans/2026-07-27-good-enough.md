@@ -1,8 +1,10 @@
-# "The Jump" — Implementation Plan
+# "Good Enough" — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** A short, shareable interactive page where the reader tries to earn their way across, cannot, and is handed the gospel.
+**Goal:** A short, shareable interactive page at `/good-enough` where the reader tries to earn their way across, cannot, and is handed the gospel.
+
+**Status:** grilled 2026-07-27, all items resolved. Ready to build.
 
 **Implements:** idea 2 from `2026-07-27-homepage-idea-backlog.md` (graded A).
 
@@ -42,14 +44,24 @@ A gap. One button. **Jump.**
                         ▁▁▁▁▁▁▁▁▁▁▁▁ 18 miles ▁▁▁▁▁▁▁▁▁┆
 ```
 
-| press | what happens |
-| --- | --- |
-| 1 | You jump. A few feet. The far side does not move. |
-| 2 | You jump **further** — visibly, measurably better than last time. Still nothing. |
-| 3 | A world record. Fifty feet. The distance remaining is unchanged to three decimal places. |
-| 4 | It stops and speaks. |
+**Decided: escalating help.** Each press does not just try harder — it gives the
+reader *more*, and none of it bridges the gap.
 
-**Trying harder is the point, not a punishment.** Each press really does go further — the reader is rewarded for effort and it makes no difference, which is a far sharper argument than a button that mocks them by refusing to be pressed.
+| press | help | distance | remaining |
+| --- | --- | --- | --- |
+| 1 | — | 4 ft | 95,036 ft |
+| 2 | a run-up | 20 ft | 95,020 ft |
+| 3 | a pole vault | 50 ft — a world record | 94,990 ft |
+| 4 | rocket boots | 200 ft | 94,840 ft |
+
+Funnier than repetition, and theologically exact: the props are works, religion,
+effort and self-improvement. Adding more never bridges it, and the problem was
+never that the reader failed to out-jump the person beside them.
+
+**Rewarding the effort is the argument.** A button that mocks the reader by
+refusing to be pressed says "you are being toyed with". A jump that genuinely
+goes further every time and still falls short says "your effort is real and it
+is not the issue" — which is the actual doctrine.
 
 Then:
 
@@ -59,6 +71,31 @@ Then:
 > **[ So how does anyone get across? → ]**
 
 Which lands on grace — the bridge someone else built, the fine someone else paid.
+
+## Grill outcomes (2026-07-27)
+
+**The far side is never drawn.** Fifty feet against eighteen miles is ~0.05%.
+To scale, no press appears to do anything; not to scale, the reader can see they
+crossed a third of it and the argument collapses. So: frame the near edge only,
+far side permanently off-screen, and let a numeric remaining-distance counter
+carry the point. The reader visibly moves and the destination never appears.
+Works at 390px, and it is honest.
+
+**It does not undercut the test, on method grounds.** The jump is *general* —
+everyone falls short. The test is *personal* — have **you** ever told a lie.
+Comfort's whole insistence is that the Law must get specific rather than stay
+abstract, so the jump cannot substitute for the test; it manufactures the need
+for it.
+
+**Therefore the CTA goes to `/test`, not to grace.** Straight to grace would skip
+the Law, which the method forbids. The reveal copy should say so out loud: that
+was the general version, here is yours.
+
+**This is a bigger build than the band.** New route, animated component, copy in
+two locales, OG image, analytics, tests. Not a quick win — size it accordingly.
+
+**The reveal copy has to carry weight.** With the humour dialled up, a light
+landing would read as glib about sin. The turn is the whole thing.
 
 ## Global Constraints
 
@@ -74,13 +111,17 @@ Which lands on grace — the bridge someone else built, the fine someone else pa
 
 ## Where it lives — decide before Task 1
 
-| option | for | against |
-| --- | --- | --- |
-| **Its own route** `/[locale]/jump` **(recommended)** | Shareable, which is the whole point of "catchy". Standalone evangelistic artifact. Adds no friction to the test. Can be linked from the band as a third row and from social. | Nobody finds it unless it is linked well. |
-| Pre-test interstitial on `/test` | Guaranteed audience; sets up "compared to whom?" right before the six questions. | Adds a gate in front of the test, which we spent this session removing friction from. |
-| Homepage section | Seen by everyone. | Competes head-on with **Take the test**; two interactive hooks and neither wins. |
+**Decided: `/[locale]/good-enough`**, indexed and shareable — unlike the test
+phase routes, this one *should* be found. `ifyoudiedtoday.com/good-enough`
+states the question the whole site asks and reads, out of context, as a claim
+someone might want to test.
 
-**Recommendation: its own route, `noindex: false`** — unlike the test phase routes, this one *should* be indexed and shared.
+One slug for both locales, matching `/find-a-church` — routes are not localised
+in this app.
+
+Rejected: a pre-test interstitial (adds a gate in front of the test, which this
+session spent effort removing) and a homepage section (competes head-on with
+**Take the test**; two interactive hooks and neither wins).
 
 ---
 
@@ -113,9 +154,19 @@ Pure functions, no React — the distances and the copy selection are the part w
 
 ---
 
-## Open items for the grill
+## Decision log
 
-1. **Tone.** This app is grave — a live death counter, a courtroom, "324 people have died since you started." A jump-the-canyon interaction is playful. That contrast could be the one moment of lightness that turns hard, or it could read as a web toy next to the counter. **This is the real risk and it is a judgment call, not a technical one.**
-2. **Does it undercut the test?** Both make the same argument — you fall short. If the jump makes the point in fifteen seconds, does anyone still take the six-question test? Or does it warm them up for it? I lean warm-up, but I am not confident.
-3. **What exactly does the CTA go to** — `/test`, or straight to the grace screen's argument? Straight to grace skips the Law, which the method would not allow. `/test` is the honest route but asks for a second commitment.
-4. **Name.** "The Jump" is a working title. It needs one that survives being shared as a link.
+| # | Decision |
+| --- | --- |
+| Route | `/[locale]/good-enough`, indexed |
+| Tone | Escalating help — the funny version |
+| Far side | Never drawn; numeric remaining distance carries it |
+| CTA | `/test` — the jump is general, the test is personal |
+| Bound | Four presses |
+| Accessibility | Real button, always pressable; no cursor-dodging |
+
+## Still owner-gated
+
+- **The reveal copy**, EN and PT, as with all doctrinal copy this session.
+- **The prop names in PT** — run-up / pole vault / rocket boots need translations
+  that stay funny rather than literal.
