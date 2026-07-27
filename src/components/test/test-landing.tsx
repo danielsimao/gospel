@@ -12,16 +12,9 @@ import {
   clearSession,
   type SavedSession,
 } from "@/lib/test-session-storage";
-import type { GamePhase, Messages } from "@/lib/types";
+import { furthestPhase, routeForPhase } from "@/lib/test-routes";
+import type { Messages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
-
-/** Where a resumed session should land. Questions have no route of their own. */
-function routeForPhase(phase: GamePhase, locale: Locale): string | null {
-  if (phase === "verdict") return `/${locale}/test/verdict`;
-  if (phase === "grace") return `/${locale}/test/grace`;
-  if (phase === "invitation") return `/${locale}/test/decision`;
-  return null;
-}
 
 interface TestLandingProps {
   messages: Messages;
@@ -47,7 +40,14 @@ export function TestLanding({ messages, locale }: TestLandingProps) {
   useEffect(() => {
     // Deferred one frame: reading localStorage after paint keeps hydration
     // stable and satisfies react-hooks/set-state-in-effect.
-    const id = requestAnimationFrame(() => setPendingResume(readSession()));
+    const id = requestAnimationFrame(() => {
+      const saved = readSession();
+      // Sessions now outlive the decision so the journey stays re-readable, so
+      // "is there a session?" is no longer the same question as "is there
+      // something to resume?". Offering "pick up where you left off" to a
+      // reader who already answered would nag them forever.
+      setPendingResume(saved && saved.invitationResponse === null ? saved : null);
+    });
     return () => cancelAnimationFrame(id);
   }, []);
 
@@ -72,9 +72,12 @@ export function TestLanding({ messages, locale }: TestLandingProps) {
         invitationResponse: pendingResume.invitationResponse,
       },
     });
-    const target = routeForPhase(pendingResume.phase, locale);
+    // Route from what the session actually contains, not from its stored
+    // phase — furthestPhase is derived from the answers and flags, so it
+    // cannot disagree with them.
+    const target = routeForPhase(furthestPhase(pendingResume), locale);
     setPendingResume(null);
-    if (target) router.push(target);
+    if (target !== `/${locale}/test`) router.push(target);
   }
 
   function handleResumeStartOver() {
@@ -102,8 +105,12 @@ export function TestLanding({ messages, locale }: TestLandingProps) {
         <Landing messages={messages.landing} locale={locale} />
       )}
 
+      {/* Offered whenever a test is not actively in progress — including after
+          browser-back from the verdict, where the reducer still says "verdict"
+          but the reader is looking at the front door. Without that, Begin would
+          silently discard a completed test. */}
       <ResumeDialog
-        open={!!pendingResume && state.phase === "landing"}
+        open={!!pendingResume && state.phase !== "playing"}
         title={messages.resumeDialog.title}
         continueLabel={messages.resumeDialog.continueLabel}
         startOverLabel={messages.resumeDialog.startOverLabel}

@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { useSelectedLayoutSegment } from "next/navigation";
+import { useRouter, useSelectedLayoutSegment } from "next/navigation";
 import * as Sentry from "@sentry/nextjs";
-import { useGameState } from "@/components/game-provider";
+import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { trackGameAbandoned } from "@/lib/analytics";
 import { QUESTION_CONFIGS } from "@/lib/questions";
 import { readSession } from "@/lib/test-session-storage";
 import { markTestCompleted } from "@/lib/journey-storage";
+import { furthestPhase, isBeyond, routeForPhase } from "@/lib/test-routes";
 import type { GamePhase } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 
@@ -41,19 +42,57 @@ export function TestChrome({ backLabel, locale, children }: TestChromeProps) {
   const segment = useSelectedLayoutSegment();
   const phase = phaseFromSegment(segment);
   const state = useGameState();
+  const dispatch = useGameDispatch();
+  const router = useRouter();
 
   /*
    * Children are held until the saved session has been read. Phase pages SSR
    * a shell while the reducer is still initialGameState, so without this gate
    * a cold load of /test/verdict paints the verdict against zero answers —
-   * buildConfession([]) returns noneLabel, so "Guilty still." flashes before
-   * the guard can redirect. rAF-deferred to keep hydration stable.
+   * buildConfession([]) returns noneLabel, so "Guilty still." flashes.
+   *
+   * The same read also silently restores a refresh taken mid-flow. Landing on
+   * a phase route with a saved session but an empty reducer is a page reload,
+   * not a return visit: the reader never left, so there is nothing to ask them
+   * about. The resume *dialog* belongs to /test, which is where someone who
+   * genuinely went away comes back to.
    */
   const [ready, setReady] = useState(false);
+  // Guards the restore to a single run. A mid-flow reload rehydrates once;
+  // re-running on a later segment change would overwrite live state with
+  // whatever storage last held. A ref rather than an empty dep array so the
+  // dependencies stay honest.
+  const hydratedRef = useRef(false);
   useEffect(() => {
-    const id = requestAnimationFrame(() => setReady(true));
+    if (hydratedRef.current) return;
+    hydratedRef.current = true;
+
+    const id = requestAnimationFrame(() => {
+      const saved = readSession();
+      if (saved && segment !== null) {
+        dispatch({
+          type: "RESUME_SESSION",
+          session: {
+            phase: saved.phase,
+            currentQuestion: saved.currentQuestion,
+            score: saved.score,
+            answers: saved.answers,
+            currentAnswer: saved.currentAnswer,
+            showFollowUp: saved.showFollowUp,
+            startedAt: saved.startedAt,
+            completedAt: saved.completedAt,
+            questionStartedAt: saved.questionStartedAt,
+            savedAt: saved.savedAt,
+            graceReached: saved.graceReached,
+            invitationReached: saved.invitationReached,
+            invitationResponse: saved.invitationResponse,
+          },
+        });
+      }
+      setReady(true);
+    });
     return () => cancelAnimationFrame(id);
-  }, []);
+  }, [dispatch, segment]);
 
   useEffect(() => {
     Sentry.addBreadcrumb({
@@ -66,13 +105,10 @@ export function TestChrome({ backLabel, locale, children }: TestChromeProps) {
     if (phase === "verdict" || phase === "grace" || phase === "invitation") {
       markTestCompleted();
     }
-  }, [phase, state.score]);
-
-  // Scroll to top on phase change so focus lands on the new content. App Router
-  // restores scroll on back, which is correct — this only covers forward moves.
-  useEffect(() => {
+    // Scroll to top so focus lands on the new content. App Router restores
+    // scroll on back, which is correct — this only covers forward moves.
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [phase]);
+  }, [phase, state.score]);
 
   useEffect(() => {
     function handleBeforeUnload() {
@@ -104,15 +140,22 @@ export function TestChrome({ backLabel, locale, children }: TestChromeProps) {
     };
   }, [phase]);
 
-  // A cold deep-link with no session at all belongs back at the start. Phase-
-  // specific guards ("far enough to see grace?") live in each phase page,
-  // which knows what it requires.
+  /*
+   * Deep-link guard. A reader may always go back to a phase they have reached,
+   * and never forward past one they have not — so a cold /test/grace with no
+   * session lands on /test, and with a half-finished test lands on the verdict
+   * only if the verdict was actually reached.
+   *
+   * replace, not push, so a rejected deep link leaves no history entry to press
+   * back into.
+   */
   useEffect(() => {
     if (!ready || phase === "landing") return;
-    if (state.answers.length === 0 && readSession() === null) {
-      window.location.replace(`/${locale}/test`);
+    const furthest = furthestPhase(state);
+    if (isBeyond(phase, furthest)) {
+      router.replace(routeForPhase(furthest, locale));
     }
-  }, [ready, phase, state.answers.length, locale]);
+  }, [ready, phase, state, locale, router]);
 
   return (
     <main className="relative min-h-dvh overflow-x-hidden bg-[#060404] flex flex-col">
