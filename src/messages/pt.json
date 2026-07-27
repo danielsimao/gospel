@@ -112,7 +112,7 @@
     "scriptureRef": "João 3:16",
     "rereadVerdict": "Reler o veredicto",
     "continueLabel": "Continuar",
-    "label": "Graça",
+    "label": "Alguém pagou a tua dívida",
     "beatsHeading": "Mas Deus…",
     "beats": [
       {
@@ -1492,14 +1492,14 @@
         "descActive": "Examina-te pela Lei de Deus."
       },
       "reading": {
-        "label": "Pão de cada dia",
+        "label": "Sete dias em João",
         "descComplete": "Leste a Palavra durante os sete dias.",
         "descActiveStart": "Começa por João 1. Sete dias na Palavra.",
         "descActiveProgress": "Dia {current} de {total}. Continua.",
         "descUpcoming": "Lê a Palavra todos os dias."
       },
       "learn": {
-        "label": "Fundamentos",
+        "label": "Respostas honestas",
         "descComplete": "Exploraste todos os fundamentos.",
         "descActiveStart": "Cinco fundamentos para explorar.",
         "descActiveProgress": "{current} de {total} temas estudados.",

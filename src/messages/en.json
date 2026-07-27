@@ -112,7 +112,7 @@
     "scriptureRef": "John 3:16",
     "rereadVerdict": "Re-read the verdict",
     "continueLabel": "Continue",
-    "label": "Grace",
+    "label": "Someone paid your fine",
     "beatsHeading": "But God…",
     "beats": [
       {
@@ -1492,14 +1492,14 @@
         "descActive": "Examine yourself against God's Law."
       },
       "reading": {
-        "label": "Daily bread",
+        "label": "Seven days in John",
         "descComplete": "You've read the Word for all seven days.",
         "descActiveStart": "Start with John 1. Seven days in the Word.",
         "descActiveProgress": "Day {current} of {total}. Keep going.",
         "descUpcoming": "Read the Word each day."
       },
       "learn": {
-        "label": "Foundations",
+        "label": "Honest answers",
         "descComplete": "You've explored every foundation.",
         "descActiveStart": "Five foundations to explore.",
         "descActiveProgress": "{current} of {total} topics studied.",
