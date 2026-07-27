@@ -28,6 +28,18 @@ interface QuestionCardProps {
   testMessages: TestMessages;
 }
 
+/*
+ * Reveal timings after an answer. The rule these follow: pace the message,
+ * never the control. A beat before the follow-up presses is rhetoric and stays;
+ * a Next button that simply isn't there yet is latency and doesn't.
+ *
+ * Before: badge 0.5s, Next 1.0s, follow-up text 1.4s — the control arrived
+ * 400ms BEFORE the sentence that justifies it had finished. Now the sequence
+ * lands in ~1.05s on the denial path and ~0.65s on the honest one, with the
+ * message always completing first.
+ */
+const FOLLOWUP_DELAY_MS = 250;
+
 // Roman numerals for commandment (9th → IX, etc.)
 const COMMANDMENT_ROMAN: Record<string, string> = {
   "1st": "I",
@@ -70,7 +82,7 @@ export function QuestionCard({
       setTimeout(() => {
         dispatch({ type: "SHOW_FOLLOWUP" });
         trackFollowupShown(question.id);
-      }, 600),
+      }, FOLLOWUP_DELAY_MS),
     );
 
     return () => {
@@ -159,7 +171,10 @@ export function QuestionCard({
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
+                      // mode="wait" means this exit blocks the response block
+                      // from mounting, so its duration is a flat tax on every
+                      // reveal below. Kept short for that reason.
+                      transition={{ duration: 0.18 }}
                       className="mt-5 flex gap-2"
                     >
                       <Button variant="red" size="sm" onClick={() => handleAnswer("honest")} className="flex-1">
@@ -174,7 +189,7 @@ export function QuestionCard({
                       key="response"
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 0.1 }}
+                      transition={{ duration: 0.3, delay: 0.05 }}
                       className="mt-4"
                     >
                       {answered === "honest" ? (
@@ -190,7 +205,7 @@ export function QuestionCard({
                           <m.p
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            transition={{ duration: 0.4, delay: 0.3 }}
+                            transition={{ duration: 0.3, delay: 0.2 }}
                             className="mt-2.5 text-[13px] italic leading-relaxed text-white/60"
                           >
                             {question.honestFollowUp}
@@ -213,8 +228,11 @@ export function QuestionCard({
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{
-                          duration: 0.4,
-                          delay: answered === "justify" ? 0.6 : 0.5,
+                          duration: 0.3,
+                          // Denial waits for the follow-up to land (it mounts at
+                          // FOLLOWUP_DELAY_MS and fades over 0.3s); the honest
+                          // path only waits for its own one-line reply.
+                          delay: answered === "justify" ? 0.6 : 0.35,
                         }}
                         className="mt-4"
                         onAnimationComplete={() => {
@@ -242,7 +260,7 @@ export function QuestionCard({
                           type="button"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          transition={{ duration: 0.4, delay: 0.8 }}
+                          transition={{ duration: 0.3, delay: 0.75 }}
                           onClick={() => {
                             trackAnswerChanged(question.id, answered);
                             dispatch({ type: "UNDO_ANSWER" });

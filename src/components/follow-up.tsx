@@ -12,7 +12,11 @@ export function FollowUp({ text }: FollowUpProps) {
     <m.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.45, delay: 0.35, ease: EASE_OUT_STRONG }}
+      // No delay here. question-card already gates this component behind a
+      // timer before it mounts; a second delay on top meant the follow-up —
+      // the conviction beat — didn't finish until 1.4s, after the Next button
+      // had already appeared at 1.0s. One gate, not two.
+      transition={{ duration: 0.3, ease: EASE_OUT_STRONG }}
       className="mt-4 border-l border-red-800/40 pl-3 max-w-sm"
     >
       <p className="text-xs leading-relaxed text-white/60 italic">{text}</p>
