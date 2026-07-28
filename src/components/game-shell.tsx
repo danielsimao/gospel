@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import Link from "next/link";
 import { m, AnimatePresence } from "framer-motion";
 import * as Sentry from "@sentry/nextjs";
@@ -27,6 +27,14 @@ interface GameShellProps {
   messages: Messages;
   locale: Locale;
 }
+
+/**
+ * useLayoutEffect on the client, useEffect on the server. React warns that
+ * useLayoutEffect does nothing during SSR; this keeps the pre-paint timing
+ * where it matters without the warning.
+ */
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 const PHASE_ORDER = ["landing", "playing", "verdict", "grace", "invitation"] as const;
 
@@ -60,51 +68,52 @@ export function GameShell({ messages, locale }: GameShellProps) {
    * arrives here is always a refresh, a locked phone or a restored tab, not
    * somebody returning days later to a half-answered test they no longer feel.
    * Nothing to decide, so nothing is asked.
-   *
-   * Deferred one frame: reading localStorage after paint keeps hydration stable
-   * and satisfies react-hooks/set-state-in-effect.
    */
   const restoredRef = useRef(false);
-  useEffect(() => {
+  /*
+   * Before paint, not after.
+   *
+   * This ran inside a requestAnimationFrame, which is one paint too late: a
+   * reader arriving from the homepage had already answered, and the landing
+   * screen rendered its *question* for a frame before the seeded rating
+   * swapped it for the reply. Recorded as a real sequence — "Are you a good
+   * person?" then "You said you're a good person." — which is the screen
+   * asking something the reader just answered.
+   *
+   * A layout effect runs after the DOM is built and before the browser paints,
+   * so the question state never reaches the screen. Hydration is already done
+   * by the time any effect runs, so reading storage here is no less stable
+   * than it was a frame later.
+   */
+  useIsomorphicLayoutEffect(() => {
     if (restoredRef.current) return;
-    const id = requestAnimationFrame(() => {
-      /*
-       * The guard is raised HERE, not beside the requestAnimationFrame call.
-       * StrictMode double-invokes effects in dev: mount schedules the frame,
-       * cleanup cancels it, and the second mount then finds the flag already
-       * raised and returns — so the body never runs at all. Raising it inside
-       * the frame means the surviving frame is the one that runs, exactly once.
-       */
-      if (restoredRef.current) return;
-      restoredRef.current = true;
-      /*
-       * A tap on the homepage outranks a resume. Arriving with a pending rating
-       * means the reader answered "Are you a good person?" seconds ago and
-       * expects to be met on it; dropping them back into a half-finished test
-       * would ignore what they just did. A resume, by contrast, is inferred.
-       *
-       * Seeded, not started. The landing screen stays — it just stops asking a
-       * question that has been answered and replies to it instead. The reader
-       * begins the Law by choosing to, from a screen that told them what their
-       * answer was and gave them a way to change it.
-       *
-       * The read also clears the key, so a later visit from the nav asks the
-       * question again rather than quoting a stale claim in the verdict.
-       */
-      const rating = takeSelfRating();
-      if (rating) {
-        dispatch({ type: "SET_SELF_RATING", rating });
-        return;
-      }
+    restoredRef.current = true;
+    /*
+     * A tap on the homepage outranks a resume. Arriving with a pending rating
+     * means the reader answered "Are you a good person?" seconds ago and
+     * expects to be met on it; dropping them back into a half-finished test
+     * would ignore what they just did. A resume, by contrast, is inferred.
+     *
+     * Seeded, not started. The landing screen stays — it just stops asking a
+     * question that has been answered and replies to it instead. The reader
+     * begins the Law by choosing to, from a screen that told them what their
+     * answer was and gave them a way to change it.
+     *
+     * The read also clears the key, so a later visit from the nav asks the
+     * question again rather than quoting a stale claim in the verdict.
+     */
+    const rating = takeSelfRating();
+    if (rating) {
+      dispatch({ type: "SET_SELF_RATING", rating });
+      return;
+    }
 
-      const saved = readSession();
-      // The whole saved record, not a field-by-field copy. Transcribing it is
-      // how graceBeatsRevealed went missing here in the first place.
-      if (!saved) return;
-      dispatch({ type: "RESUME_SESSION", session: saved });
-      trackTestRestored(saved.phase, locale);
-    });
-    return () => cancelAnimationFrame(id);
+    const saved = readSession();
+    // The whole saved record, not a field-by-field copy. Transcribing it is
+    // how graceBeatsRevealed went missing here in the first place.
+    if (!saved) return;
+    dispatch({ type: "RESUME_SESSION", session: saved });
+    trackTestRestored(saved.phase, locale);
   }, [dispatch, locale]);
 
   useEffect(() => {

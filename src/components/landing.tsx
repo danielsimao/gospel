@@ -1,5 +1,6 @@
 "use client";
 
+import { useLayoutEffect, useRef, useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { SelfRating, type SelfRatingMessages } from "@/components/home/self-rating";
@@ -47,6 +48,37 @@ export function Landing({ messages, locale }: LandingProps) {
   const state = useGameState();
   const dispatch = useGameDispatch();
   const rating = state.selfRating;
+
+  /*
+   * One ref per state rather than one shared between them. During a swap both
+   * children are mounted — the outgoing one is still playing its exit — and a
+   * single ref would be set and cleared by whichever unmounted last, leaving
+   * the box measuring the wrong element or nothing at all.
+   */
+  const questionRef = useRef<HTMLDivElement>(null);
+  const replyRef = useRef<HTMLDivElement>(null);
+  const [boxHeight, setBoxHeight] = useState<number | null>(null);
+
+  /*
+   * Before paint, not after: measured in useEffect, the first frame of every
+   * swap still carries the previous height and the transition starts from a
+   * visible jump.
+   */
+  useLayoutEffect(() => {
+    const el = rating === null ? questionRef.current : replyRef.current;
+    if (!el) return;
+
+    const measure = () => setBoxHeight(el.getBoundingClientRect().height);
+    measure();
+
+    // Content reflows after the swap too — a line re-wrapping at a new width,
+    // a font landing — and the box has to follow rather than hold a stale
+    // height that clips the reply or leaves a gap under it.
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [rating]);
 
   function handleSelect(value: SelfRatingValue) {
     dispatch({ type: "SET_SELF_RATING", rating: value });
@@ -100,15 +132,59 @@ export function Landing({ messages, locale }: LandingProps) {
         <span className="h-px w-6 bg-red-500/40" />
       </m.div>
 
-      <AnimatePresence mode="wait" initial={false}>
+      {/*
+       * The question and its reply are different heights — 241px against 339px,
+       * measured. Two things had to be solved together.
+       *
+       * `mode="wait"` ran the exit to completion before the entrance began,
+       * which measured three frames of an empty screen. It is gone: the two
+       * states now overlap, stacked absolutely so neither pushes the other.
+       *
+       * And the box itself snapped those 98px in a single frame, which threw
+       * every line below it — the heading jumped 49px because this column is
+       * vertically centred. Framer's `layout` and `mode="popLayout"` both fix
+       * that, and both need layout projection from `domMax`; this app loads
+       * `domAnimation` on purpose and the upgrade costs ~10kb for one screen.
+       * So the height is measured and handed to a CSS transition instead —
+       * the same thing Radix does for accordion content.
+       *
+       * The two headings occupy the same spot, so a plain crossfade shows one
+       * word ghosted through another. Blur bridges that in general, and it was
+       * tried here — but animating `filter` on display text re-rasterises every
+       * glyph on every frame, which shimmers, and framer leaves the element on
+       * `blur(0px)` afterwards so it stays on its own raster layer. The
+       * heading visibly flickered.
+       *
+       * Timing does the same job for free: the outgoing state leaves quickly
+       * and the incoming one waits out most of that exit, so the overlap is
+       * short enough that neither heading is readable through the other. Only
+       * opacity and transform animate, and both are composited.
+       */}
+      <div
+        style={boxHeight === null ? undefined : { height: boxHeight }}
+        className="relative w-full transition-[height] duration-300 ease-[var(--ease-out-strong)] motion-reduce:transition-none"
+      >
+      <AnimatePresence initial={false}>
         {rating === null ? (
           <m.div
             key="question"
+            ref={questionRef}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3, ease: EASE_OUT_STRONG }}
-            className="flex flex-col items-center"
+            exit={{
+              opacity: 0,
+              y: -8,
+              transition: { duration: 0.2, ease: EASE_OUT_STRONG },
+            }}
+            transition={{
+              duration: 0.24,
+              ease: EASE_OUT_STRONG,
+              // The entrance waits out most of the exit. Enough overlap that
+              // the screen is never empty, little enough that the two headings
+              // are legible through each other.
+              opacity: { duration: 0.22, delay: 0.06, ease: EASE_OUT_STRONG },
+            }}
+            className="absolute inset-x-0 top-0 flex flex-col items-center"
           >
             <h1 className="mt-5 max-w-md text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
               {messages.title}
@@ -126,11 +202,23 @@ export function Landing({ messages, locale }: LandingProps) {
         ) : (
           <m.div
             key="reply"
+            ref={replyRef}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.35, ease: EASE_OUT_STRONG }}
-            className="flex flex-col items-center"
+            exit={{
+              opacity: 0,
+              y: -8,
+              transition: { duration: 0.2, ease: EASE_OUT_STRONG },
+            }}
+            transition={{
+              duration: 0.24,
+              ease: EASE_OUT_STRONG,
+              // The entrance waits out most of the exit. Enough overlap that
+              // the screen is never empty, little enough that the two headings
+              // are legible through each other.
+              opacity: { duration: 0.22, delay: 0.06, ease: EASE_OUT_STRONG },
+            }}
+            className="absolute inset-x-0 top-0 flex flex-col items-center"
           >
             {/* The claim, echoed. Not a heading for the page so much as the
                 reader's own sentence handed back to them. */}
@@ -163,6 +251,7 @@ export function Landing({ messages, locale }: LandingProps) {
           </m.div>
         )}
       </AnimatePresence>
+      </div>
     </m.div>
   );
 }
