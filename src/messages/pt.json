@@ -1521,17 +1521,7 @@
       },
       "reading": {
         "label": "Sete dias em João",
-        "descComplete": "Leste a Palavra durante os sete dias.",
-        "descActiveStart": "Começa por João 1. Sete dias na Palavra.",
-        "descActiveProgress": "Dia {current} de {total}. Continua.",
-        "descUpcoming": "Lê a Palavra todos os dias."
-      },
-      "learn": {
-        "label": "Respostas honestas",
-        "descComplete": "Exploraste todos os fundamentos.",
-        "descActiveStart": "Cinco fundamentos para explorar.",
-        "descActiveProgress": "{current} de {total} temas estudados.",
-        "descUpcoming": "Estuda os fundamentos do evangelho."
+        "descComplete": "Leste a Palavra durante os sete dias."
       },
       "share": {
         "label": "Partilha",

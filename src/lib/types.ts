@@ -130,23 +130,10 @@ export interface JourneyMessages {
   };
   reading: {
     label: string;
+    /** Shown by the reading band once all seven days are read. */
     descComplete: string;
-    descActiveStart: string;
-    descActiveProgress: string;
-    descUpcoming: string;
   };
-  learn: {
-    label: string;
-    descComplete: string;
-    descActiveStart: string;
-    descActiveProgress: string;
-    descUpcoming: string;
-  };
-  share: {
-    label: string;
-    descActive: string;
-    descUpcoming: string;
-  };
+  share: { label: string; description: string };
   retakeLabel: string;
 }
 

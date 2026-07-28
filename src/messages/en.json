@@ -1521,17 +1521,7 @@
       },
       "reading": {
         "label": "Seven days in John",
-        "descComplete": "You've read the Word for all seven days.",
-        "descActiveStart": "Start with John 1. Seven days in the Word.",
-        "descActiveProgress": "Day {current} of {total}. Keep going.",
-        "descUpcoming": "Read the Word each day."
-      },
-      "learn": {
-        "label": "Honest answers",
-        "descComplete": "You've explored every foundation.",
-        "descActiveStart": "Five foundations to explore.",
-        "descActiveProgress": "{current} of {total} topics studied.",
-        "descUpcoming": "Study the foundations of the gospel."
+        "descComplete": "You've read the Word for all seven days."
       },
       "share": {
         "label": "Pass it on",
