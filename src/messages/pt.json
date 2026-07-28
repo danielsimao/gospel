@@ -3,7 +3,12 @@
     "title": "Tu és uma boa pessoa?",
     "cta": "Começar o teste",
     "label": "Teste",
-    "subtitle": "A Lei de Deus. Seis perguntas. Um veredicto."
+    "subtitle": "A Lei de Deus. Seis perguntas. Um veredicto.",
+    "selfRating": {
+      "yes": "Sim",
+      "mostly": "Mais ou menos",
+      "no": "Não"
+    }
   },
   "test": {
     "caseLabel": "Teste",
@@ -39,7 +44,13 @@
       "confessionBoth": "És {admitted} — pela tua própria confissão. E {denied} — pelas tuas evasivas.",
       "separator": "e",
       "useOxfordComma": false,
-      "noneLabel": "Culpado na mesma."
+      "noneLabel": "Culpado na mesma.",
+      "selfRatingLabel": "A tua própria resposta",
+      "selfRatingMirror": {
+        "yes": "Disseste que eras uma boa pessoa. As tuas próprias respostas dizem o contrário.",
+        "mostly": "Disseste que eras mais ou menos uma boa pessoa. “Mais ou menos” estava a fazer muito trabalho.",
+        "no": "Disseste que não eras uma boa pessoa. Era com isto que estavas a concordar."
+      }
     }
   },
   "questions": [
@@ -1465,6 +1476,13 @@
     "mortalityStat": "10 / 10 pessoas vão morrer",
     "ctaButton": "Faz o teste",
     "secondaryLink": "Tens perguntas primeiro? Sabe mais",
+    "selfRatingQuestion": "És uma boa pessoa?",
+    "selfRating": {
+      "yes": "Sim",
+      "mostly": "Mais ou menos",
+      "no": "Não"
+    },
+    "testPreview": "6 perguntas · 2 minutos",
     "blogCard": {
       "eyebrow": "Do blog"
     },

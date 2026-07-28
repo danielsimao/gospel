@@ -205,6 +205,84 @@ describe("gameReducer", () => {
     });
   });
 
+  describe("SET_SELF_RATING", () => {
+    it("records the reader's own claim before the Law begins", () => {
+      const state = gameReducer(initialGameState, { type: "SET_SELF_RATING", rating: "yes" });
+      expect(state.selfRating).toBe("yes");
+    });
+
+    /*
+     * START_GAME rebuilds from initialGameState, so without an explicit carry
+     * the rating recorded a moment earlier — on the homepage or on the landing
+     * screen — is wiped on the way into question one, and the verdict has
+     * nothing to quote. Every path sets the rating first and starts second.
+     */
+    it("survives START_GAME, which rebuilds state from scratch", () => {
+      let state = gameReducer(initialGameState, { type: "SET_SELF_RATING", rating: "mostly" });
+      state = gameReducer(state, { type: "START_GAME" });
+
+      expect(state.phase).toBe("playing");
+      expect(state.selfRating).toBe("mostly");
+    });
+
+    it("refuses to change once the Law is under way", () => {
+      const playing = gameReducer(
+        gameReducer(initialGameState, { type: "SET_SELF_RATING", rating: "no" }),
+        { type: "START_GAME" },
+      );
+      const state = gameReducer(playing, { type: "SET_SELF_RATING", rating: "yes" });
+
+      expect(state).toBe(playing);
+      expect(state.selfRating).toBe("no");
+    });
+
+    /*
+     * Testimony, not a measurement. If the rating ever reaches the scoring path,
+     * the verdict stops being what the six answers prove — and a reader who
+     * admitted up front would be handed a different verdict for the same
+     * answers, which is the one thing this must never do.
+     */
+    it("does not touch the score or the question count", () => {
+      const withRating = answerAll(
+        gameReducer(
+          gameReducer(initialGameState, { type: "SET_SELF_RATING", rating: "no" }),
+          { type: "START_GAME" },
+        ),
+        "honest",
+      );
+      const without = answerAll(startGame(), "honest");
+
+      expect(withRating.score).toBe(without.score);
+      expect(withRating.answers).toHaveLength(without.answers.length);
+      expect(withRating.phase).toBe(without.phase);
+    });
+
+    it("carries a saved rating back through RESUME_SESSION", () => {
+      const state = gameReducer(initialGameState, {
+        type: "RESUME_SESSION",
+        session: {
+          phase: "playing",
+          currentQuestion: 2,
+          score: 60,
+          answers: [],
+          currentAnswer: null,
+          showFollowUp: false,
+          startedAt: 1_000_000,
+          completedAt: null,
+          questionStartedAt: null,
+          savedAt: 1_090_000,
+          graceReached: false,
+          graceBeatsRevealed: 0,
+          invitationReached: false,
+          invitationResponse: null,
+          selfRating: "mostly",
+        },
+      });
+
+      expect(state.selfRating).toBe("mostly");
+    });
+  });
+
   describe("scoring", () => {
     it("all honest answers drain more than all justify answers", () => {
       const honestState = answerAll(startGame(), "honest");
@@ -324,6 +402,7 @@ describe("gameReducer", () => {
         graceBeatsRevealed: 5,
         invitationReached: true,
         invitationResponse: null,
+        selfRating: null,
       };
       const state = gameReducer(initialGameState, {
         type: "RESUME_SESSION",
@@ -355,6 +434,7 @@ describe("RESUME_SESSION timestamp rebasing", () => {
       graceBeatsRevealed: 0,
       invitationReached: false,
       invitationResponse: null,
+      selfRating: null,
       ...over,
     };
   }

@@ -2,19 +2,40 @@
 
 import { m } from "framer-motion";
 import { useGameDispatch } from "@/components/game-provider";
-import { Button, ButtonArrow } from "@/components/ui/button";
-import { trackGameStarted } from "@/lib/analytics";
+import { SelfRating, type SelfRatingMessages } from "@/components/home/self-rating";
+import { trackGameStarted, trackSelfRating } from "@/lib/analytics";
 import type { Locale } from "@/lib/i18n";
+import type { SelfRating as SelfRatingValue } from "@/lib/types";
 
 interface LandingProps {
-  messages: { title: string; cta: string; label: string; subtitle: string };
+  messages: {
+    title: string;
+    cta: string;
+    label: string;
+    subtitle: string;
+    selfRating: SelfRatingMessages;
+  };
   locale: Locale;
 }
 
+/**
+ * The threshold screen, reached only by readers who came straight to `/test` —
+ * from the nav, a share link or a bookmark. Anyone arriving from the homepage
+ * answered the question there and is sent past this screen by the shell.
+ *
+ * Its h1 has always been "Are you a good person?"; what changed is that the
+ * question is now answerable here instead of merely stated with a Begin button
+ * beneath it. One rule holds across both entry points: the question is asked
+ * exactly once, wherever the reader first meets it.
+ */
 export function Landing({ messages, locale }: LandingProps) {
   const dispatch = useGameDispatch();
 
-  function handleStart() {
+  function handleSelect(rating: SelfRatingValue) {
+    // Order matters: the rating must be in state before START_GAME, which
+    // rebuilds from initialGameState and carries only what is already there.
+    dispatch({ type: "SET_SELF_RATING", rating });
+    trackSelfRating(rating, "test_landing");
     trackGameStarted(locale);
     dispatch({ type: "START_GAME" });
   }
@@ -60,17 +81,20 @@ export function Landing({ messages, locale }: LandingProps) {
         {messages.subtitle}
       </m.p>
 
-      {/* CTA */}
+      {/* The answer. Tapping any option records the claim and begins the Law —
+          one action, so the screen no longer states a question and then asks
+          for a separate click to get past it. */}
       <m.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.45 }}
         className="mt-10"
       >
-        <Button variant="red" mist onClick={handleStart}>
-          {messages.cta}
-          <ButtonArrow />
-        </Button>
+        <SelfRating
+          messages={messages.selfRating}
+          onSelect={handleSelect}
+          ariaLabel={messages.title}
+        />
       </m.div>
     </m.div>
   );

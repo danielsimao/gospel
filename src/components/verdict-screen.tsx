@@ -229,6 +229,36 @@ export function VerdictScreen({
           })}
         </m.p>
 
+        {/*
+         * The reader's own claim, quoted back.
+         *
+         * Only when they made one — someone who reached the test without
+         * passing the question (an older saved session, a private window where
+         * the write failed) simply does not meet this beat. It is testimony, so
+         * there is nothing to infer when it is absent.
+         *
+         * The "no" variant agrees and then points at the detail; it must not
+         * congratulate. An earlier draft read "you were right — and you are the
+         * first person here with nothing left to defend", which flatters the
+         * reader for the answer, quietly makes "no" the clever tap, and is
+         * affirmation where this screen's whole job is the diagnosis.
+         */}
+        {state.selfRating && (
+          <m.blockquote
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: at(790), ease: EASE_OUT_STRONG }}
+            className="mt-6 w-full max-w-sm border-l border-red-500/25 pl-4 text-left"
+          >
+            <p className="font-mono text-[9px] uppercase tracking-[2.5px] text-red-400/70">
+              {testMessages.verdict.selfRatingLabel}
+            </p>
+            <p className="mt-2 text-[14px] leading-relaxed text-white/70 sm:text-[15px]">
+              {testMessages.verdict.selfRatingMirror[state.selfRating]}
+            </p>
+          </m.blockquote>
+        )}
+
         {/* No evidence list here. The old chips were the test HUD's markup
             verbatim, and promoting them to a full record would have restated
             the confession sentence above — which already names every

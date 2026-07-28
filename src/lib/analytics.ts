@@ -40,6 +40,18 @@ export function trackQuestionAnswered(
   });
 }
 
+/**
+ * The reader's own claim, and which door they answered it at. Recorded because
+ * the gap between what people claim here and what the six answers show is the
+ * one number that says whether the Law is landing.
+ */
+export function trackSelfRating(
+  rating: "yes" | "mostly" | "no",
+  source: "homepage" | "test_landing",
+) {
+  safeCapture("self_rating_given", { rating, source });
+}
+
 export function trackFollowupShown(questionId: number) {
   safeCapture("question_followup_shown", { questionId });
 }

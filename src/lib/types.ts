@@ -9,6 +9,23 @@ export type AnswerType = "honest" | "justify";
 
 export type InvitationResponse = "committed" | "thinking" | "dismissed";
 
+/**
+ * The reader's own answer to "Are you a good person?", asked before the Law
+ * rather than derived from it.
+ *
+ * Testimony, never a measurement: nothing in the reducer's scoring path may
+ * read this. It does not change the drains, the question count, or the
+ * verdict — the verdict is what the six answers prove. All it does is let the
+ * verdict quote the reader back to themselves.
+ *
+ * All three answers take the same six questions. A reader who taps "no" has
+ * not earned a shorter Law: "grace to the humble" means humbled *by* the Law
+ * (Rom 3:20, Gal 3:24), and "I'm not perfect" is usually social modesty, not
+ * conviction. Shortening the Law on a self-report is the shortcut this method
+ * exists to prevent.
+ */
+export type SelfRating = "yes" | "mostly" | "no";
+
 export interface QuestionConfig {
   id: number;
   commandment: string;
@@ -45,6 +62,8 @@ export interface GameState {
   invitationReached: boolean;
   invitationResponse: InvitationResponse | null;
   questionStartedAt: number | null;
+  /** See SelfRating. Null when the reader reached the test without answering. */
+  selfRating: SelfRating | null;
 }
 
 /**
@@ -73,6 +92,7 @@ export interface ResumeSessionPayload {
   graceBeatsRevealed: number;
   invitationReached: boolean;
   invitationResponse: InvitationResponse | null;
+  selfRating: SelfRating | null;
 }
 
 export type GameAction =
@@ -85,6 +105,7 @@ export type GameAction =
   | { type: "REVEAL_GRACE_BEAT"; count: number }
   | { type: "SHOW_INVITATION" }
   | { type: "SET_INVITATION_RESPONSE"; response: InvitationResponse }
+  | { type: "SET_SELF_RATING"; rating: SelfRating }
   | { type: "UNDO_ANSWER" }
   | { type: "BACK_TO_VERDICT" }
   | { type: "BACK_TO_GRACE" }
@@ -172,10 +193,16 @@ export interface JourneyStagesMessages {
 }
 
 export interface HomeMessages {
+  /** The stake, under the counter. No longer the heading — see home-shell. */
   provocativeQuestion: string;
   mortalityStat: string;
   ctaButton: string;
   secondaryLink: string;
+  /** The visitor h1, and the question the chips answer. */
+  selfRatingQuestion: string;
+  selfRating: { yes: string; mostly: string; no: string };
+  /** What a tap costs: question count and rough duration. */
+  testPreview: string;
   blogCard: { eyebrow: string };
   alsoHere: {
     label: string;
@@ -213,11 +240,24 @@ export interface TestMessages {
     separator: string;
     useOxfordComma?: boolean;
     noneLabel: string;
+    selfRatingLabel: string;
+    /** One line per answer. A Record, so adding a SelfRating fails the build
+        rather than silently rendering nothing at the verdict. */
+    selfRatingMirror: Record<SelfRating, string>;
   };
 }
 
 export interface Messages {
-  landing: { title: string; cta: string; label: string; subtitle: string };
+  landing: {
+    title: string;
+    /** Retained: i18n.ts validates its presence when loading a locale. The
+        landing screen's Begin button became the self-rating chips, so nothing
+        renders it — removing the key would trip that guard. */
+    cta: string;
+    label: string;
+    subtitle: string;
+    selfRating: { yes: string; mostly: string; no: string };
+  };
   test: TestMessages;
   questions: Array<{
     id: number;

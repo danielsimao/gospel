@@ -48,7 +48,22 @@ const VISIBLE_CENTERS = POPULATION_CENTERS.filter(
  * spin, one red ping per ~556ms at a random population center. Falls back to
  * the flat WorldMap when WebGL is unavailable.
  */
-export function DeathGlobe() {
+interface DeathGlobeProps {
+  /**
+   * Overrides the container's sizing classes. The default caps the sphere at
+   * 380/440px, which is right for a globe centred in a column but not for the
+   * homepage's cropped corner, where the container is deliberately wider than
+   * the space it is allowed to occupy.
+   *
+   * Sizing only — cobe renders at twice the container width, so a large value
+   * costs real GPU work.
+   */
+  className?: string;
+}
+
+export function DeathGlobe({
+  className = "relative mx-auto w-full max-w-[380px] sm:max-w-[440px]",
+}: DeathGlobeProps = {}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [webglFailed, setWebglFailed] = useState(false);
@@ -217,11 +232,7 @@ export function DeathGlobe() {
   }
 
   return (
-    <div
-      ref={containerRef}
-      className="relative mx-auto w-full max-w-[380px] sm:max-w-[440px]"
-      aria-hidden="true"
-    >
+    <div ref={containerRef} className={className} aria-hidden="true">
       <canvas
         ref={canvasRef}
         // touch-action pan-y: horizontal drags spin the globe, vertical still scrolls.

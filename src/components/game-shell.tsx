@@ -14,9 +14,11 @@ import {
   trackGameAbandoned,
   trackTestRestored,
   trackTestBack,
+  trackGameStarted,
 } from "@/lib/analytics";
 import { QUESTION_CONFIGS, TOTAL_QUESTIONS } from "@/lib/questions";
 import { readSession } from "@/lib/test-session-storage";
+import { takeSelfRating } from "@/lib/self-rating-storage";
 import { markTestCompleted } from "@/lib/journey-storage";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { Messages } from "@/lib/types";
@@ -66,8 +68,34 @@ export function GameShell({ messages, locale }: GameShellProps) {
   const restoredRef = useRef(false);
   useEffect(() => {
     if (restoredRef.current) return;
-    restoredRef.current = true;
     const id = requestAnimationFrame(() => {
+      /*
+       * The guard is raised HERE, not beside the requestAnimationFrame call.
+       * StrictMode double-invokes effects in dev: mount schedules the frame,
+       * cleanup cancels it, and the second mount then finds the flag already
+       * raised and returns — so the body never runs at all. Raising it inside
+       * the frame means the surviving frame is the one that runs, exactly once.
+       */
+      if (restoredRef.current) return;
+      restoredRef.current = true;
+      /*
+       * A tap on the homepage outranks a resume. Arriving with a pending rating
+       * means the reader answered "Are you a good person?" seconds ago and
+       * expects the questions; dropping them back into a half-finished test
+       * would ignore what they just did. A resume, by contrast, is inferred.
+       *
+       * The read also clears the key, so the landing screen is skipped exactly
+       * once — a later visit from the nav asks the question again rather than
+       * quoting a stale claim in the verdict.
+       */
+      const rating = takeSelfRating();
+      if (rating) {
+        dispatch({ type: "SET_SELF_RATING", rating });
+        trackGameStarted(locale);
+        dispatch({ type: "START_GAME" });
+        return;
+      }
+
       const saved = readSession();
       // The whole saved record, not a field-by-field copy. Transcribing it is
       // how graceBeatsRevealed went missing here in the first place.

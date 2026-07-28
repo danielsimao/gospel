@@ -3,7 +3,12 @@
     "title": "Are you a good person?",
     "cta": "Begin the test",
     "label": "Test",
-    "subtitle": "God's Law. Six questions. One verdict."
+    "subtitle": "God's Law. Six questions. One verdict.",
+    "selfRating": {
+      "yes": "Yes",
+      "mostly": "Pretty much",
+      "no": "No"
+    }
   },
   "test": {
     "caseLabel": "Test",
@@ -39,7 +44,13 @@
       "confessionBoth": "You are {admitted} — by your own admission. And {denied} — by your evasions.",
       "separator": "and",
       "useOxfordComma": true,
-      "noneLabel": "Guilty still."
+      "noneLabel": "Guilty still.",
+      "selfRatingLabel": "Your own answer",
+      "selfRatingMirror": {
+        "yes": "You said you were a good person. Your own answers say otherwise.",
+        "mostly": "You said you were pretty much a good person. “Pretty much” was doing a great deal of work.",
+        "no": "You said you were not a good person. This is what you were agreeing to."
+      }
     }
   },
   "questions": [
@@ -1465,6 +1476,13 @@
     "mortalityStat": "10 / 10 people will die",
     "ctaButton": "Take the test",
     "secondaryLink": "Have questions first? Learn more",
+    "selfRatingQuestion": "Are you a good person?",
+    "selfRating": {
+      "yes": "Yes",
+      "mostly": "Pretty much",
+      "no": "No"
+    },
+    "testPreview": "6 questions · 2 minutes",
     "blogCard": {
       "eyebrow": "From the blog"
     },
