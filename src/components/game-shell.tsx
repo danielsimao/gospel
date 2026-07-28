@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { m, AnimatePresence } from "framer-motion";
 import * as Sentry from "@sentry/nextjs";
@@ -10,20 +10,13 @@ import { QuestionCard } from "@/components/question-card";
 import { VerdictScreen } from "@/components/verdict-screen";
 import { GraceScreen } from "@/components/grace-screen";
 import { InvitationScreen } from "@/components/invitation-screen";
-import { ResumeDialog } from "@/components/resume-dialog";
 import {
   trackGameAbandoned,
-  trackTestResumed,
-  trackTestRestarted,
   trackTestBack,
 } from "@/lib/analytics";
 import { QUESTION_CONFIGS, TOTAL_QUESTIONS } from "@/lib/questions";
-import {
-  readSession,
-  clearSession,
-  type SavedSession,
-} from "@/lib/test-session-storage";
-import { markTestCompleted, resetJourney } from "@/lib/journey-storage";
+import { readSession } from "@/lib/test-session-storage";
+import { markTestCompleted } from "@/lib/journey-storage";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { Messages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
@@ -52,38 +45,35 @@ export function GameShell({ messages, locale }: GameShellProps) {
     stateRef.current = state;
   });
 
-  // Read any saved session post-mount (server renders no dialog; a lazy
-  // initializer here caused hydration mismatches for resuming users). Only
-  // show the resume dialog while the state is still on landing — once the
-  // user begins (or resumes) a session, this stays null.
-  const [pendingResume, setPendingResume] = useState<SavedSession | null>(null);
-
+  /*
+   * Restore a same-sitting session silently, with nothing asked.
+   *
+   * There used to be a dialog here — "pick up where you left off?", Continue or
+   * Start over. It was removed because the test is six questions and about
+   * ninety seconds: choosing between resuming and restarting costs a reader more
+   * than simply answering again would, and it put a modal at the front door of a
+   * flow that works hard to have no friction anywhere else.
+   *
+   * readSession now discards anything older than its resume window, so what
+   * arrives here is always a refresh, a locked phone or a restored tab, not
+   * somebody returning days later to a half-answered test they no longer feel.
+   * Nothing to decide, so nothing is asked.
+   *
+   * Deferred one frame: reading localStorage after paint keeps hydration stable
+   * and satisfies react-hooks/set-state-in-effect.
+   */
+  const restoredRef = useRef(false);
   useEffect(() => {
-    // Deferred one frame: reading localStorage after paint keeps hydration
-    // stable and satisfies react-hooks/set-state-in-effect.
-    const id = requestAnimationFrame(() => setPendingResume(readSession()));
+    if (restoredRef.current) return;
+    restoredRef.current = true;
+    const id = requestAnimationFrame(() => {
+      const saved = readSession();
+      // The whole saved record, not a field-by-field copy. Transcribing it is
+      // how graceBeatsRevealed went missing here in the first place.
+      if (saved) dispatch({ type: "RESUME_SESSION", session: saved });
+    });
     return () => cancelAnimationFrame(id);
-  }, []);
-
-  function handleResumeContinue() {
-    if (!pendingResume) return;
-    trackTestResumed(pendingResume.phase, locale);
-    // The whole saved record, not a field-by-field copy. Transcribing it is how
-    // graceBeatsRevealed went missing here in the first place — and how tsc
-    // caught this file the moment it came back.
-    dispatch({ type: "RESUME_SESSION", session: pendingResume });
-    setPendingResume(null);
-  }
-
-  function handleResumeStartOver() {
-    trackTestRestarted(locale);
-    // Both keys. Clearing only the session left the journey record claiming a
-    // decision for a test that no longer exists — the three retake links on the
-    // homepage already reset both.
-    resetJourney();
-    clearSession();
-    setPendingResume(null);
-  }
+  }, [dispatch]);
 
   useEffect(() => {
     Sentry.addBreadcrumb({
@@ -365,14 +355,6 @@ export function GameShell({ messages, locale }: GameShellProps) {
         </AnimatePresence>
       </div>
 
-      <ResumeDialog
-        open={!!pendingResume && state.phase === "landing"}
-        title={messages.resumeDialog.title}
-        continueLabel={messages.resumeDialog.continueLabel}
-        startOverLabel={messages.resumeDialog.startOverLabel}
-        onContinue={handleResumeContinue}
-        onStartOver={handleResumeStartOver}
-      />
     </main>
   );
 }

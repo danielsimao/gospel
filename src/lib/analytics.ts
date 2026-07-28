@@ -1,13 +1,5 @@
 import { capture as safeCapture, getDistinctId } from "@/lib/posthog";
 
-export function trackTestResumed(phase: string, locale: string) {
-  safeCapture("test_resumed", { phase, locale });
-}
-
-export function trackTestRestarted(locale: string) {
-  safeCapture("test_restarted", { locale });
-}
-
 export function trackTestBack(from: string, to: string, via: "link" | "browser") {
   safeCapture("test_back", { from, to, via });
 }

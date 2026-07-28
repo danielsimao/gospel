@@ -9,6 +9,21 @@ const STORAGE_KEY = "gospel-test-session";
 // currentQuestion indices past the new end.
 const CURRENT_VERSION = 3;
 
+/**
+ * How long a saved session stays resumable.
+ *
+ * The point of persisting at all is the same sitting: an accidental refresh, a
+ * phone locking, a tab restored after a crash. Within the window the flow is
+ * restored silently, because a modal asking "pick up where you left off?" costs
+ * a reader more than simply redoing a six-question test would.
+ *
+ * Past the window it is discarded rather than offered. The Law's force is
+ * cumulative and in the moment — landing someone back on question four days
+ * later, cold, is not resuming a conversation, and a stale half-answered test
+ * restored without explanation is more disorienting than starting again.
+ */
+const RESUME_WINDOW_MS = 30 * 60 * 1000;
+
 /** What the reducer needs, plus the version only this file cares about. */
 export interface SavedSession extends ResumeSessionPayload {
   version: number;
@@ -22,6 +37,15 @@ export function readSession(): SavedSession | null {
     const parsed = JSON.parse(raw) as Partial<SavedSession>;
     if (parsed.version !== CURRENT_VERSION) return null;
     if (!parsed.phase || parsed.phase === "landing") return null;
+    // Too old to be the same sitting. Cleared rather than merely ignored, so it
+    // cannot resurface and does not linger in storage.
+    if (
+      typeof parsed.savedAt !== "number" ||
+      Date.now() - parsed.savedAt > RESUME_WINDOW_MS
+    ) {
+      clearSession();
+      return null;
+    }
     return {
       ...parsed,
       invitationReached: parsed.invitationReached === true,

@@ -5,11 +5,6 @@
     "label": "Test",
     "subtitle": "God's Law. Six questions. One verdict."
   },
-  "resumeDialog": {
-    "title": "Pick up where you left off?",
-    "continueLabel": "Continue",
-    "startOverLabel": "Start over"
-  },
   "test": {
     "caseLabel": "Test",
     "guiltLabel": "Guilt",

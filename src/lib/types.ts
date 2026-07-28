@@ -218,11 +218,6 @@ export interface TestMessages {
 
 export interface Messages {
   landing: { title: string; cta: string; label: string; subtitle: string };
-  resumeDialog: {
-    title: string;
-    continueLabel: string;
-    startOverLabel: string;
-  };
   test: TestMessages;
   questions: Array<{
     id: number;
