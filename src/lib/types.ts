@@ -105,7 +105,8 @@ export type GameAction =
   | { type: "REVEAL_GRACE_BEAT"; count: number }
   | { type: "SHOW_INVITATION" }
   | { type: "SET_INVITATION_RESPONSE"; response: InvitationResponse }
-  | { type: "SET_SELF_RATING"; rating: SelfRating }
+  /** Null clears it, which is how "change my answer" returns to the question. */
+  | { type: "SET_SELF_RATING"; rating: SelfRating | null }
   | { type: "UNDO_ANSWER" }
   | { type: "BACK_TO_VERDICT" }
   | { type: "BACK_TO_GRACE" }
@@ -250,13 +251,22 @@ export interface TestMessages {
 export interface Messages {
   landing: {
     title: string;
-    /** Retained: i18n.ts validates its presence when loading a locale. The
-        landing screen's Begin button became the self-rating chips, so nothing
-        renders it — removing the key would trip that guard. */
+    /** The reply screen's one button, shared by all three answers. The moment
+        this differs per answer, three answers become three products. */
     cta: string;
     label: string;
     subtitle: string;
     selfRating: { yes: string; mostly: string; no: string };
+    /**
+     * What each answer is told before the Law begins.
+     *
+     * A Record, so adding a SelfRating fails the build rather than dropping a
+     * reader into the questions with no reply. Three different presses because
+     * the three answers get three different things wrong: a claim, a
+     * comparison, and a word nobody has defined yet.
+     */
+    reply: Record<SelfRating, { heading: string; body: string }>;
+    changeAnswer: string;
   };
   test: TestMessages;
   questions: Array<{

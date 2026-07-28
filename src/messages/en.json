@@ -8,7 +8,22 @@
       "yes": "Yes",
       "mostly": "Pretty much",
       "no": "No"
-    }
+    },
+    "reply": {
+      "yes": {
+        "heading": "You said you're a good person.",
+        "body": "Almost everyone does. The question is which standard you are measuring against — because you do not get to pick it."
+      },
+      "mostly": {
+        "heading": "Pretty much.",
+        "body": "Compared to whom? Most of us find someone worse and come out looking fine. This test does not grade on a curve."
+      },
+      "no": {
+        "heading": "You said you're not a good person.",
+        "body": "Most people who say that mean “nobody's perfect.” Six questions will tell you what you actually meant."
+      }
+    },
+    "changeAnswer": "That's not what I meant"
   },
   "test": {
     "caseLabel": "Test",

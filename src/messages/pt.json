@@ -8,7 +8,22 @@
       "yes": "Sim",
       "mostly": "Mais ou menos",
       "no": "Não"
-    }
+    },
+    "reply": {
+      "yes": {
+        "heading": "Disseste que és uma boa pessoa.",
+        "body": "Quase toda a gente diz o mesmo. A questão é qual o padrão com que te estás a medir — porque não és tu que o escolhes."
+      },
+      "mostly": {
+        "heading": "Mais ou menos.",
+        "body": "Em comparação com quem? Quase todos encontramos alguém pior e saímos bem na fotografia. Este teste não avalia por comparação."
+      },
+      "no": {
+        "heading": "Disseste que não és uma boa pessoa.",
+        "body": "A maioria de quem diz isso quer dizer “ninguém é perfeito”. Seis perguntas vão mostrar-te o que quiseste dizer de facto."
+      }
+    },
+    "changeAnswer": "Não era isso que eu queria dizer"
   },
   "test": {
     "caseLabel": "Teste",

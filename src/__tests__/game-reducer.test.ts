@@ -225,6 +225,28 @@ describe("gameReducer", () => {
       expect(state.selfRating).toBe("mostly");
     });
 
+    /*
+     * The reply screen's escape hatch. Three chips sit side by side with nothing
+     * confirming the tap, so a mis-tap must stay correctable right up until the
+     * questions begin — otherwise it is quoted back at the verdict as though the
+     * reader meant it.
+     */
+    it("clears back to null while still on the landing screen", () => {
+      let state = gameReducer(initialGameState, { type: "SET_SELF_RATING", rating: "yes" });
+      state = gameReducer(state, { type: "SET_SELF_RATING", rating: null });
+
+      expect(state.selfRating).toBeNull();
+      expect(state.phase).toBe("landing");
+    });
+
+    it("can be answered again after clearing", () => {
+      let state = gameReducer(initialGameState, { type: "SET_SELF_RATING", rating: "yes" });
+      state = gameReducer(state, { type: "SET_SELF_RATING", rating: null });
+      state = gameReducer(state, { type: "SET_SELF_RATING", rating: "no" });
+
+      expect(state.selfRating).toBe("no");
+    });
+
     it("refuses to change once the Law is under way", () => {
       const playing = gameReducer(
         gameReducer(initialGameState, { type: "SET_SELF_RATING", rating: "no" }),

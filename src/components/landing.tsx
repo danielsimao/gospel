@@ -1,9 +1,11 @@
 "use client";
 
-import { m } from "framer-motion";
-import { useGameDispatch } from "@/components/game-provider";
+import { m, AnimatePresence } from "framer-motion";
+import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { SelfRating, type SelfRatingMessages } from "@/components/home/self-rating";
-import { trackGameStarted, trackSelfRating } from "@/lib/analytics";
+import { Button, ButtonArrow } from "@/components/ui/button";
+import { trackGameStarted, trackSelfRating, trackSelfRatingChanged } from "@/lib/analytics";
+import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { Locale } from "@/lib/i18n";
 import type { SelfRating as SelfRatingValue } from "@/lib/types";
 
@@ -14,28 +16,56 @@ interface LandingProps {
     label: string;
     subtitle: string;
     selfRating: SelfRatingMessages;
+    reply: Record<SelfRatingValue, { heading: string; body: string }>;
+    changeAnswer: string;
   };
   locale: Locale;
 }
 
 /**
- * The threshold screen, reached only by readers who came straight to `/test` —
- * from the nav, a share link or a bookmark. Anyone arriving from the homepage
- * answered the question there and is sent past this screen by the shell.
+ * The threshold, in two beats: the question, then the reply to it.
  *
- * Its h1 has always been "Are you a good person?"; what changed is that the
- * question is now answerable here instead of merely stated with a Begin button
- * beneath it. One rule holds across both entry points: the question is asked
- * exactly once, wherever the reader first meets it.
+ * This screen used to state "Are you a good person?" and offer a Begin button
+ * that collected nothing — a dead step, which is why the first version of this
+ * work skipped it entirely and sent a homepage tap straight into commandment
+ * one. That was the wrong correction. A tap that both records a claim and
+ * changes the page gives one input two outcomes, leaves a mis-tap permanent,
+ * and skips the moment where taking a position actually registers — which is
+ * the whole reason for asking.
+ *
+ * So the screen stays and stops being dead. It answers back. In a live
+ * encounter "do you consider yourself a good person?" is never followed by
+ * silence and a commandment; it is followed by the claim being put against the
+ * standard. That beat belongs here.
+ *
+ * Both entry points converge on the same rhythm — question, reply, begin.
+ * A reader arriving from the homepage has already answered, so the shell seeds
+ * the rating and this renders the reply directly; a reader arriving from the
+ * nav answers here and the reply replaces the question in place.
  */
 export function Landing({ messages, locale }: LandingProps) {
+  const state = useGameState();
   const dispatch = useGameDispatch();
+  const rating = state.selfRating;
 
-  function handleSelect(rating: SelfRatingValue) {
-    // Order matters: the rating must be in state before START_GAME, which
-    // rebuilds from initialGameState and carries only what is already there.
-    dispatch({ type: "SET_SELF_RATING", rating });
-    trackSelfRating(rating, "test_landing");
+  function handleSelect(value: SelfRatingValue) {
+    dispatch({ type: "SET_SELF_RATING", rating: value });
+    trackSelfRating(value, "test_landing");
+  }
+
+  /*
+   * Recoverable right up until the Law begins. Three chips sit side by side and
+   * nothing confirmed the tap before this screen existed, so a mis-tap was
+   * recorded as testimony and quoted back at the verdict as though it were
+   * meant. The reducer already refuses this once the phase is "playing", so the
+   * window closes exactly where it should.
+   */
+  function handleChange() {
+    if (rating) trackSelfRatingChanged(rating);
+    dispatch({ type: "SET_SELF_RATING", rating: null });
+  }
+
+  function handleBegin() {
     trackGameStarted(locale);
     dispatch({ type: "START_GAME" });
   }
@@ -44,6 +74,9 @@ export function Landing({ messages, locale }: LandingProps) {
     <m.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      // Leaves upward as the first question arrives from the right, so the two
+      // read as one movement rather than two screens swapping.
+      exit={{ opacity: 0, y: -12 }}
       transition={{ duration: 0.4 }}
       className="flex flex-1 flex-col items-center justify-center px-6 text-center"
     >
@@ -61,41 +94,69 @@ export function Landing({ messages, locale }: LandingProps) {
         <span className="h-px w-6 bg-red-500/40" />
       </m.div>
 
-      {/* Title */}
-      <m.h1
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="mt-5 max-w-md text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
-      >
-        {messages.title}
-      </m.h1>
+      <AnimatePresence mode="wait" initial={false}>
+        {rating === null ? (
+          <m.div
+            key="question"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.3, ease: EASE_OUT_STRONG }}
+            className="flex flex-col items-center"
+          >
+            <h1 className="mt-5 max-w-md text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+              {messages.title}
+            </h1>
+            <p className="mt-4 max-w-sm text-xs italic text-white/60 sm:text-sm">
+              {messages.subtitle}
+            </p>
+            <SelfRating
+              messages={messages.selfRating}
+              onSelect={handleSelect}
+              ariaLabel={messages.title}
+              className="mt-10"
+            />
+          </m.div>
+        ) : (
+          <m.div
+            key="reply"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.35, ease: EASE_OUT_STRONG }}
+            className="flex flex-col items-center"
+          >
+            {/* The claim, echoed. Not a heading for the page so much as the
+                reader's own sentence handed back to them. */}
+            <h1 className="mt-5 max-w-md text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+              {messages.reply[rating].heading}
+            </h1>
 
-      {/* Subtitle */}
-      <m.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="mt-4 max-w-sm text-xs italic text-white/60 sm:text-sm"
-      >
-        {messages.subtitle}
-      </m.p>
+            {/* Where that particular answer is weakest. Three answers, three
+                different presses — see the reply Record in types. */}
+            <p className="mt-5 max-w-sm text-[15px] leading-relaxed text-white/65 sm:text-base">
+              {messages.reply[rating].body}
+            </p>
 
-      {/* The answer. Tapping any option records the claim and begins the Law —
-          one action, so the screen no longer states a question and then asks
-          for a separate click to get past it. */}
-      <m.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.45 }}
-        className="mt-10"
-      >
-        <SelfRating
-          messages={messages.selfRating}
-          onSelect={handleSelect}
-          ariaLabel={messages.title}
-        />
-      </m.div>
+            {/* One label for all three answers. Different CTAs per answer would
+                make three answers into three products. */}
+            <div className="mt-10">
+              <Button variant="red" mist onClick={handleBegin}>
+                {messages.cta}
+                <ButtonArrow />
+              </Button>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleChange}
+              className="mt-5 text-[11px] text-white/55 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
+            >
+              {messages.changeAnswer}
+            </button>
+          </m.div>
+        )}
+      </AnimatePresence>
     </m.div>
   );
 }

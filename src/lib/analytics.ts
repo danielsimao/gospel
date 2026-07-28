@@ -52,6 +52,15 @@ export function trackSelfRating(
   safeCapture("self_rating_given", { rating, source });
 }
 
+/**
+ * A reader correcting their claim on the reply screen. Worth its own event:
+ * a high rate here means the chips are being mis-tapped, which is a layout
+ * problem, not a change of heart.
+ */
+export function trackSelfRatingChanged(from: "yes" | "mostly" | "no") {
+  safeCapture("self_rating_changed", { from });
+}
+
 export function trackFollowupShown(questionId: number) {
   safeCapture("question_followup_shown", { questionId });
 }

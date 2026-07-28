@@ -14,7 +14,6 @@ import {
   trackGameAbandoned,
   trackTestRestored,
   trackTestBack,
-  trackGameStarted,
 } from "@/lib/analytics";
 import { QUESTION_CONFIGS, TOTAL_QUESTIONS } from "@/lib/questions";
 import { readSession } from "@/lib/test-session-storage";
@@ -81,18 +80,20 @@ export function GameShell({ messages, locale }: GameShellProps) {
       /*
        * A tap on the homepage outranks a resume. Arriving with a pending rating
        * means the reader answered "Are you a good person?" seconds ago and
-       * expects the questions; dropping them back into a half-finished test
+       * expects to be met on it; dropping them back into a half-finished test
        * would ignore what they just did. A resume, by contrast, is inferred.
        *
-       * The read also clears the key, so the landing screen is skipped exactly
-       * once — a later visit from the nav asks the question again rather than
-       * quoting a stale claim in the verdict.
+       * Seeded, not started. The landing screen stays — it just stops asking a
+       * question that has been answered and replies to it instead. The reader
+       * begins the Law by choosing to, from a screen that told them what their
+       * answer was and gave them a way to change it.
+       *
+       * The read also clears the key, so a later visit from the nav asks the
+       * question again rather than quoting a stale claim in the verdict.
        */
       const rating = takeSelfRating();
       if (rating) {
         dispatch({ type: "SET_SELF_RATING", rating });
-        trackGameStarted(locale);
-        dispatch({ type: "START_GAME" });
         return;
       }
 
