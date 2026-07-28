@@ -125,10 +125,13 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Button mist glow */
+/* Button mist glow. The peak is a plateau, not a point: at a single 50% keyframe
+   the glow only grazed full opacity and spent most of the cycle near zero, which
+   made an already-faint effect read as static. Holding 45-55% gives the breath a
+   top to sit at. */
 @keyframes mist-breathe {
   0%, 100% { opacity: 0; transform: scale(0.9); }
-  50% { opacity: 1; transform: scale(1.05); }
+  45%, 55% { opacity: 1; transform: scale(1.05); }
 }
 @keyframes mist-breathe-hover {
   0%, 100% { opacity: 0.4; transform: scale(0.95); }
@@ -196,5 +199,11 @@ html[data-game-phase="invitation"] [data-slot="sticky-death-counter"] {
 @media (prefers-reduced-motion: reduce) {
   [data-slot="sticky-death-counter"] {
     transition: none;
+  }
+  /* framer's MotionConfig reducedMotion="user" governs its own animations only;
+     a CSS keyframe needs saying so here. The glow stays, it just stops breathing. */
+  [data-slot="button"]::before {
+    animation: none !important;
+    opacity: 1;
   }
 }

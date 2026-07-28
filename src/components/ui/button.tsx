@@ -63,10 +63,17 @@ const frontSizeVariants = cva("", {
 const LIFT = { sm: 2, default: 4, lg: 4 } as const
 const HOVER_LIFT = { sm: 3, default: 6, lg: 6 } as const
 
-/* ─── Mist glow backgrounds ─── */
+/* ─── Mist glow backgrounds ───
+ * Alpha is the lever here, not blur. Measured on the homepage CTA: the previous
+ * 0.2 centre stop lifted the surrounding luminance by 1.72 of 255 at its
+ * brightest — about 0.7%, under the threshold most people can see, so both the
+ * glow and its 3.5s breath read as nothing at all. Reducing the blur does not
+ * help (a tighter spread covers fewer pixels and scores worse); raising alpha
+ * does. 0.5 measures 4.48.
+ */
 const mistBg: Record<string, string> = {
-  gold: "before:bg-[radial-gradient(ellipse_at_center,rgba(212,168,67,0.2)_0%,rgba(212,168,67,0.08)_40%,transparent_70%)]",
-  red: "before:bg-[radial-gradient(ellipse_at_center,rgba(239,68,68,0.18)_0%,rgba(239,68,68,0.06)_40%,transparent_70%)]",
+  gold: "before:bg-[radial-gradient(ellipse_at_center,rgba(212,168,67,0.5)_0%,rgba(212,168,67,0.2)_40%,transparent_70%)]",
+  red: "before:bg-[radial-gradient(ellipse_at_center,rgba(239,68,68,0.45)_0%,rgba(239,68,68,0.18)_40%,transparent_70%)]",
 }
 
 export interface ButtonProps
