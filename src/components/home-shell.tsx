@@ -63,33 +63,13 @@ interface HomeShellProps {
 /*
  * Whether the globe is the cropped corner one.
  *
- * Its parked/tilt settings are cobe arguments, not CSS, so they cannot be
- * switched with a responsive class the way its size is — the breakpoint has to
- * be read at runtime. Matches Tailwind's `lg`. The server always reports false;
- * the globe is `ssr: false` and mounts client-side only, so there is no markup
- * to mismatch.
+ * Its speed and tilt are cobe arguments, not CSS, so they cannot be switched
+ * with a responsive class the way its size is — the breakpoint has to be read
+ * at runtime. Matches Tailwind's `lg`. The server always reports false; the
+ * globe is `ssr: false` and mounts client-side only, so there is no markup to
+ * mismatch.
  */
 const DESKTOP_QUERY = "(min-width: 1024px)";
-
-/*
- * Where a ping can land and still be seen on the cropped desktop globe.
- *
- * The sphere is parked facing ~32°E with most of its right side and its top
- * off-canvas, so the near hemisphere is not the same thing as the visible area:
- * anything much east of ~55°E projects past the right edge of the viewport, and
- * anything far enough north clears the top. Derived from the layout at the
- * narrowest desktop width, so it holds at wider ones too.
- *
- * The western edge is -35 rather than the -48 the viewport alone would allow:
- * projecting all 44 centres through the tilt puts São Paulo and Rio at a depth
- * of ~0.02 — technically front-facing, but flattened into the limb, where a
- * ping is a smear rather than a dot. At -35 every one of the 17 surviving
- * centres sits clear of the edge, still ample at 1.8 pings a second.
- *
- * Module-level: passed inline it would be a new object every render, and the
- * globe rebuilds when it changes.
- */
-const DESKTOP_PING_WINDOW = { lngMin: -35, lngMax: 55, latMax: 55 };
 
 function subscribeToDesktop(onChange: () => void) {
   if (typeof window === "undefined") return () => {};
@@ -283,11 +263,13 @@ export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeSh
         >
           <DeathGlobe
             className="relative w-[32rem] sm:w-[26rem] lg:w-[40rem] xl:w-[46rem]"
-            parked={desktopGlobe}
+            // A quarter speed on desktop. Stopped, it stops being the thing it
+            // is for; at full speed beside the question it pulls the eye off
+            // the words. Slow enough to read as alive, not as movement.
+            rotationScale={desktopGlobe ? 0.25 : 1}
             // Tipped further on desktop so the northern population band walks
             // down into the cropped arc; Europe sits above the crop otherwise.
             theta={desktopGlobe ? 0.45 : 0.18}
-            pingWindow={desktopGlobe ? DESKTOP_PING_WINDOW : undefined}
           />
         </div>
 

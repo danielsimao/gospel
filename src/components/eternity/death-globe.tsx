@@ -32,16 +32,84 @@ const STATIC_VIEW_LNG = 32;
 // cobe's longitude→phi mapping, from its "rotate to location" example.
 const STATIC_PHI = Math.PI - ((STATIC_VIEW_LNG * Math.PI) / 180 - Math.PI / 2);
 
-function lngDistance(a: number, b: number): number {
-  const d = Math.abs(a - b) % 360;
-  return d > 180 ? 360 - d : d;
+/** Inverse of the phi mapping above: which longitude is currently facing us. */
+function phiToCenterLng(phi: number): number {
+  return ((1.5 * Math.PI - phi) * 180) / Math.PI;
 }
 
-// When parked, only spawn pings on the visible hemisphere (with margin for
-// the sphere's edge foreshortening).
-const VISIBLE_CENTERS = POPULATION_CENTERS.filter(
-  (c) => lngDistance(c[0], STATIC_VIEW_LNG) < 80,
-);
+/**
+ * How far off the sphere's edge a marker has to be before it is worth pinging.
+ * Below this it is technically front-facing but foreshortened into the limb,
+ * where a ping renders as a smear rather than a dot.
+ */
+const MIN_DEPTH = 0.25;
+
+/** The part of the sphere currently inside the viewport, in radii from centre. */
+interface Crop {
+  xMin: number;
+  xMax: number;
+  yMin: number;
+  yMax: number;
+}
+
+/**
+ * Where a marker lands on screen, in radii from the sphere's centre.
+ *
+ * Orthographic, matching cobe: rotate into the current view by longitude, then
+ * tilt about the horizontal axis by theta. Screen y runs downward, so the sign
+ * of the tilted vertical is flipped.
+ */
+function project(lng: number, lat: number, centerLng: number, theta: number) {
+  const dl = ((lng - centerLng) * Math.PI) / 180;
+  const la = (lat * Math.PI) / 180;
+  const x = Math.cos(la) * Math.sin(dl);
+  const y = Math.sin(la);
+  const z = Math.cos(la) * Math.cos(dl);
+  return {
+    x,
+    y: -(y * Math.cos(theta) - z * Math.sin(theta)),
+    depth: y * Math.sin(theta) + z * Math.cos(theta),
+  };
+}
+
+/**
+ * The centres a reader could actually see right now.
+ *
+ * The near hemisphere is not the same as the visible area. Where the sphere is
+ * cropped by the viewport — the homepage bleeds it off a corner — half of that
+ * hemisphere is off-canvas, and pings spawned there are deaths nobody is shown.
+ * Recomputed per ping rather than fixed, so it stays correct while the globe
+ * turns and at any viewport size.
+ */
+function centersInView(
+  phi: number,
+  theta: number,
+  crop: Crop,
+): typeof POPULATION_CENTERS {
+  const centerLng = phiToCenterLng(phi);
+  return POPULATION_CENTERS.filter(([lng, lat]) => {
+    const p = project(lng, lat, centerLng, theta);
+    return (
+      p.depth > MIN_DEPTH &&
+      p.x >= crop.xMin &&
+      p.x <= crop.xMax &&
+      p.y >= crop.yMin &&
+      p.y <= crop.yMax
+    );
+  });
+}
+
+/** The handful of centres most squarely facing the viewer right now. */
+function mostFaceOn(phi: number, theta: number): typeof POPULATION_CENTERS {
+  const centerLng = phiToCenterLng(phi);
+  return [...POPULATION_CENTERS]
+    .sort(
+      (a, b) =>
+        project(b[0], b[1], centerLng, theta).depth -
+        project(a[0], a[1], centerLng, theta).depth,
+    )
+    .slice(0, 6);
+}
 
 /**
  * The homepage deaths visual as a 3D globe: slowly rotating, drag/touch to
@@ -60,18 +128,17 @@ interface DeathGlobeProps {
    */
   className?: string;
   /**
-   * Stop the auto-rotation and hold the populated hemisphere in view.
+   * Multiplies the auto-rotation speed. 1 is the default drift; 0 stops it.
    *
-   * For the cropped desktop globe, where only an arc of the sphere is on
-   * screen. Rotating, the populated band drifts out of that arc and pings land
-   * where nobody can see them — and a moving object beside a headline competes
-   * with reading it, which a decorative globe has not earned.
+   * The cropped desktop globe runs slow rather than stopped. Full speed beside
+   * a headline pulls the eye off the words next to it — peripheral motion is
+   * the strongest attention capture there is — but stopping it altogether costs
+   * the thing most of the reason it is on the page. Slow keeps it alive and
+   * stops it competing.
    *
-   * Parked, this takes the same path reduced motion already used: a fixed view
-   * of the densest hemisphere, with pings drawn only from centres on it.
-   * Dragging still spins it.
+   * Reduced motion overrides this and parks regardless.
    */
-  parked?: boolean;
+  rotationScale?: number;
   /**
    * Vertical tilt, in cobe's units. Higher values tip the north pole toward the
    * viewer, which walks the northern population band down the sphere — the
@@ -79,25 +146,12 @@ interface DeathGlobeProps {
    * it.
    */
   theta?: number;
-  /**
-   * Restricts pings to a lng/lat window of the parked view.
-   *
-   * `parked` alone only guarantees the near hemisphere, which is the right
-   * answer when the whole sphere is on screen. When the sphere is cropped, half
-   * that hemisphere is off-canvas and pings spawn where nobody can see them.
-   * The window belongs to the caller because only the caller knows how its
-   * layout crops the globe.
-   *
-   * Ignored unless parked, and ignored if it would leave nothing to ping.
-   */
-  pingWindow?: { lngMin: number; lngMax: number; latMax: number };
 }
 
 export function DeathGlobe({
   className = "relative mx-auto w-full max-w-[380px] sm:max-w-[440px]",
-  parked = false,
+  rotationScale = 1,
   theta = 0.18,
-  pingWindow,
 }: DeathGlobeProps = {}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -109,12 +163,11 @@ export function DeathGlobe({
     if (!canvas || !container) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // Reduced motion and the cropped desktop globe want the same behaviour:
-    // hold still, facing the populated hemisphere, and ping only where the
-    // reader can see it. One flag, so the two can never drift apart.
-    const held = reducedMotion || parked;
+    // Reduced motion parks the globe outright. Everything else drifts, at
+    // whatever fraction of the base speed the caller asked for.
+    const perFrame = reducedMotion ? 0 : 0.0035 * rotationScale;
 
-    let phi = held ? STATIC_PHI : 0.3;
+    let phi = reducedMotion ? STATIC_PHI : 0.3;
     let width = 0;
     let pings: Ping[] = [];
     let globe: ReturnType<typeof createGlobe> | null = null;
@@ -134,24 +187,45 @@ export function DeathGlobe({
     window.addEventListener("resize", onResize);
 
     /*
-     * Resolved once per mount, not per ping. Order matters: the caller's window
-     * is the tightest claim about what is actually on screen, the parked
-     * hemisphere is the next best, and the full set is for a globe that spins.
-     * An empty window falls back rather than silently stopping the pings.
+     * How much of the sphere the viewport is actually showing, in radii from
+     * its centre. Read from the live rect rather than hardcoded, so it is
+     * correct at every breakpoint and survives the layout being retuned —
+     * the homepage crops this globe off a corner on desktop and centres it
+     * behind the counter below that.
      */
-    const windowed =
-      held && pingWindow
-        ? POPULATION_CENTERS.filter(
-            (c) =>
-              c[0] >= pingWindow.lngMin &&
-              c[0] <= pingWindow.lngMax &&
-              c[1] <= pingWindow.latMax,
-          )
-        : [];
-    const pool = windowed.length > 0 ? windowed : held ? VISIBLE_CENTERS : POPULATION_CENTERS;
+    const currentCrop = () => {
+      const rect = canvas.getBoundingClientRect();
+      const r = rect.width / 2;
+      if (r === 0) return null;
+      const cx = rect.left + r;
+      const cy = rect.top + r;
+      return {
+        xMin: (0 - cx) / r,
+        xMax: (window.innerWidth - cx) / r,
+        yMin: (0 - cy) / r,
+        yMax: (window.innerHeight - cy) / r,
+      };
+    };
 
     const addPing = () => {
       if (!visible || document.hidden) return;
+      const crop = currentCrop();
+      /*
+       * Recomputed per ping against the live rotation, so a turning globe still
+       * only pings where the reader is looking. Falls back to the whole set
+       * rather than going silent if the crop leaves nothing — a globe that
+       * stops pinging reads as broken, an occasional off-screen death does not.
+       */
+      const livePhi = phi + releasedDelta + pointerDelta;
+      const inView = crop ? centersInView(livePhi, theta, crop) : [];
+      /*
+       * The fallback is the most face-on centres, not a random one. When the
+       * drift brings an ocean round there may be nothing inside the crop, and
+       * picking at random from all 44 would put the death on the far side of
+       * the earth — invisible, which is worse than slightly off-centre. A globe
+       * that stops pinging reads as broken, so it never simply skips.
+       */
+      const pool = inView.length > 0 ? inView : mostFaceOn(livePhi, theta);
       const center = pool[Math.floor(Math.random() * pool.length)];
       pings.push({
         // POPULATION_CENTERS is [lng, lat]; cobe wants [lat, lng]. Jitter like the 2D map.
@@ -165,7 +239,7 @@ export function DeathGlobe({
       if (!globe) return;
       const now = performance.now();
       pings = pings.filter((p) => now - p.bornAt < PING_LIFE_MS);
-      if (!held && pointerStart === null) phi -= 0.0035;
+      if (perFrame !== 0 && pointerStart === null) phi -= perFrame;
       globe.update({
         phi: phi + releasedDelta + pointerDelta,
         markers: pings.map((p) => ({
@@ -280,8 +354,8 @@ export function DeathGlobe({
       window.removeEventListener("pointerup", endPointer);
       window.removeEventListener("pointercancel", endPointer);
     };
-    // All three are read when cobe is created, so a change has to rebuild it.
-  }, [parked, theta, pingWindow]);
+    // Both are read when cobe is created, so a change has to rebuild it.
+  }, [rotationScale, theta]);
 
   if (webglFailed) {
     return <WorldMap />;
