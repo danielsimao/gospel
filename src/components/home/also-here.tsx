@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { BandHeader } from "@/components/next-steps/band-header";
+import { BandRow, BandRows } from "@/components/home/band-row";
 
 export interface AlsoHereRow {
   href: string;
@@ -34,36 +34,20 @@ export function AlsoHere({ label, rows }: { label: string; rows: AlsoHereRow[] }
   if (rows.length === 0) return null;
 
   return (
-    <div className="mt-14 w-full max-w-md text-left">
+    <div className="mt-12 w-full max-w-md text-left">
       <BandHeader label={label} tone="dim" />
-      <div className="border-y border-white/[0.06]">
+      <BandRows>
         {rows.map((row) => (
-          <Link
+          <BandRow
             key={row.href}
             href={row.href}
+            label={row.label}
+            description={row.description}
+            icon={row.icon}
             onClick={row.onClick}
-            className="group flex min-h-[60px] items-start gap-3 border-t border-white/[0.06] px-1 py-3 transition-colors first:border-t-0"
-          >
-            <span aria-hidden="true" className="mt-0.5 shrink-0 text-white/40">
-              {row.icon}
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm font-semibold text-white/85 transition-colors group-hover:text-white">
-                {row.label}
-              </span>
-              <span className="mt-0.5 block text-[12px] leading-relaxed text-white/55">
-                {row.description}
-              </span>
-            </span>
-            <span
-              aria-hidden="true"
-              className="mt-0.5 shrink-0 text-white/30 transition-transform group-hover:translate-x-1"
-            >
-              &rarr;
-            </span>
-          </Link>
+          />
         ))}
-      </div>
+      </BandRows>
     </div>
   );
 }

@@ -270,6 +270,10 @@ export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeSh
             // Tipped further on desktop so the northern population band walks
             // down into the cropped arc; Europe sits above the crop otherwise.
             theta={desktopGlobe ? 0.45 : 0.18}
+            // Brighter below lg, where the sphere sits behind the counter and
+            // the scrim protecting that number is the same one flattening the
+            // landmass. On desktop the globe has its own ground and needs none.
+            mapBrightness={desktopGlobe ? 1.8 : 4.2}
           />
         </div>
 

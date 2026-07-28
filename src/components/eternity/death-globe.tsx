@@ -146,12 +146,24 @@ interface DeathGlobeProps {
    * it.
    */
   theta?: number;
+  /**
+   * Landmass dot brightness.
+   *
+   * The lever for a globe sitting *behind* type rather than beside it. On a
+   * phone the sphere is wider than the screen, so none of its silhouette is on
+   * canvas and the dots are all there is to see — and the scrim that keeps the
+   * counter legible is the same scrim that flattens them. Raising brightness
+   * lifts the globe without lifting the ground under the text, which taking the
+   * scrim off would.
+   */
+  mapBrightness?: number;
 }
 
 export function DeathGlobe({
   className = "relative mx-auto w-full max-w-[380px] sm:max-w-[440px]",
   rotationScale = 1,
   theta = 0.18,
+  mapBrightness = 1.8,
 }: DeathGlobeProps = {}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -264,7 +276,7 @@ export function DeathGlobe({
           dark: 1,
           diffuse: 1.2,
           mapSamples: 16000,
-          mapBrightness: 1.8,
+          mapBrightness,
           baseColor: [1, 1, 1],
           markerColor: [220 / 255, 38 / 255, 38 / 255],
           glowColor: [0.12, 0.1, 0.06],
@@ -355,7 +367,7 @@ export function DeathGlobe({
       window.removeEventListener("pointercancel", endPointer);
     };
     // Both are read when cobe is created, so a change has to rebuild it.
-  }, [rotationScale, theta]);
+  }, [rotationScale, theta, mapBrightness]);
 
   if (webglFailed) {
     return <WorldMap />;

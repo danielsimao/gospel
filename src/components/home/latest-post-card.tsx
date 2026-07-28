@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { Newspaper } from "lucide-react";
 import { BandHeader } from "@/components/next-steps/band-header";
+import { BandRow, BandRows } from "@/components/home/band-row";
 import { trackHomeBlogCardClicked } from "@/lib/eternity-analytics";
 
 const MAX_AGE_DAYS = 60;
@@ -36,27 +37,25 @@ export function LatestPostCard({ locale, eyebrow, post }: LatestPostCardProps) {
   const href = post.localeAvailable ? `/${locale}/blog/${post.slug}` : `/en/blog/${post.slug}`;
 
   return (
-    <div className="mt-10 w-full max-w-md text-left">
+    <div className="mt-12 w-full max-w-md text-left">
       {/* Shares the AlsoHere band's header idiom rather than its old
           divider + centred eyebrow. The two now sit directly above one
           another, and two different chapter-break treatments stacked read as
-          a mistake. Gold tone keeps it distinct from the band's dim one. */}
+          a mistake. Gold tone keeps it distinct from the band's dim one.
+          The same argument carried down to the row itself: this was a rounded
+          card at p-5 above open rows at px-1, so the two bands' left edges
+          missed by 16px and neither looked like it belonged to the other. */}
       <BandHeader label={eyebrow} tone="gold" />
-      <Link
-        href={href}
-        onClick={() => trackHomeBlogCardClicked(post.slug)}
-        className="group block rounded-xl border border-white/[0.06] bg-white/[0.015] p-5 transition-colors hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03]"
-      >
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="text-sm font-semibold text-white/85 group-hover:text-white/95">{post.title}</p>
-            <p className="mt-1 text-[13px] leading-relaxed text-white/55">{post.hook}</p>
-          </div>
-          <span aria-hidden="true" className="mt-0.5 text-white/60 transition-transform group-hover:translate-x-1">
-            →
-          </span>
-        </div>
-      </Link>
+      <BandRows>
+        <BandRow
+          href={href}
+          label={post.title}
+          description={post.hook}
+          onClick={() => trackHomeBlogCardClicked(post.slug)}
+          tone="gold"
+          icon={<Newspaper className="size-4" aria-hidden="true" />}
+        />
+      </BandRows>
     </div>
   );
 }
