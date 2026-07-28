@@ -259,7 +259,7 @@ export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeSh
          */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -top-[8rem] left-1/2 -translate-x-1/2 sm:-top-[6rem] lg:left-auto lg:right-[-12rem] lg:top-[-10rem] lg:translate-x-0 xl:right-[-9rem] xl:top-[-11rem]"
+          className="pointer-events-none absolute -top-[5.5rem] left-1/2 -translate-x-1/2 sm:-top-[6rem] lg:left-auto lg:right-[-12rem] lg:top-[-10rem] lg:translate-x-0 xl:right-[-9rem] xl:top-[-11rem]"
         >
           <DeathGlobe
             className="relative w-[32rem] sm:w-[26rem] lg:w-[40rem] xl:w-[46rem]"
@@ -315,18 +315,20 @@ export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeSh
             {hero.suffix}
           </p>
 
-          {/* Rate cards */}
-          <div className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/[0.04] sm:mt-14 sm:flex sm:flex-wrap sm:justify-center">
+          {/*
+           * Rate cards. Below sm they are bare figures — no panel, no border,
+           * no fills: the globe sits directly behind them there, and a boxed
+           * grid over a dot sphere made two competing surfaces where the
+           * numbers should simply be lying on the earth. From sm up the globe
+           * moves out from behind them and the panel returns.
+           */}
+          <div className="mt-8 grid grid-cols-2 gap-x-8 gap-y-5 sm:mt-14 sm:flex sm:flex-wrap sm:justify-center sm:gap-px sm:overflow-hidden sm:rounded-lg sm:border sm:border-white/[0.04]">
             {RATE_CARDS.map((card, idx) => (
               <div
                 key={card.key}
-                className={`bg-white/[0.015] px-4 py-4 text-center sm:min-w-[110px] sm:px-6 sm:py-5 ${
+                className={`text-center sm:min-w-[110px] sm:bg-white/[0.015] sm:px-6 sm:py-5 ${
                   idx < RATE_CARDS.length - 1
                     ? "sm:border-r sm:border-white/[0.04]"
-                    : ""
-                } ${idx < 2 ? "border-b border-white/[0.04] sm:border-b-0" : ""} ${
-                  idx % 2 === 0
-                    ? "border-r border-white/[0.04] sm:border-r-0"
                     : ""
                 }`}
               >
