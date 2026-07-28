@@ -160,6 +160,18 @@ export function Landing({ messages, locale }: LandingProps) {
        * short enough that neither heading is readable through the other. Only
        * opacity and transform animate, and both are composited.
        */}
+      {/*
+       * Absolute children have no height of their own, so before the first
+       * measurement this box collapsed to zero and then jumped to its real
+       * height — 0.036 CLS on this route, in a column that is vertically
+       * centred, so everything above it moved 120px as well.
+       *
+       * A min-height per breakpoint would have been magic numbers that rot the
+       * moment the copy changes. Instead the first render leaves the active
+       * state in normal flow, so the box is the right height in the server's
+       * own HTML; it only goes absolute once a measurement exists to hold that
+       * height. Nothing moves, and there is no constant to keep in sync.
+       */}
       <div
         style={boxHeight === null ? undefined : { height: boxHeight }}
         className="relative w-full transition-[height] duration-300 ease-[var(--ease-out-strong)] motion-reduce:transition-none"
@@ -184,7 +196,9 @@ export function Landing({ messages, locale }: LandingProps) {
               // are legible through each other.
               opacity: { duration: 0.22, delay: 0.06, ease: EASE_OUT_STRONG },
             }}
-            className="absolute inset-x-0 top-0 flex flex-col items-center"
+            className={`flex flex-col items-center ${
+              boxHeight === null ? "" : "absolute inset-x-0 top-0"
+            }`}
           >
             <h1 className="mt-5 max-w-md text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
               {messages.title}
@@ -218,7 +232,9 @@ export function Landing({ messages, locale }: LandingProps) {
               // are legible through each other.
               opacity: { duration: 0.22, delay: 0.06, ease: EASE_OUT_STRONG },
             }}
-            className="absolute inset-x-0 top-0 flex flex-col items-center"
+            className={`flex flex-col items-center ${
+              boxHeight === null ? "" : "absolute inset-x-0 top-0"
+            }`}
           >
             {/* The claim, echoed. Not a heading for the page so much as the
                 reader's own sentence handed back to them. */}
