@@ -142,6 +142,15 @@ export function HomeShell({
     router.push(`/${locale}/test`);
   }
 
+  /*
+   * Warm the route before it is asked for. The gap a reader actually feels
+   * between tapping an answer and seeing the reply is the RSC fetch, not the
+   * animation — prefetching makes the push resolve immediately.
+   */
+  useEffect(() => {
+    router.prefetch(`/${locale}/test`);
+  }, [router, locale]);
+
   // Reveal the scroll hint only once the consent banner is gone. Server render
   // reports "unanswered" for stable hydration; hasAnsweredConsent also counts
   // an explicit accept/decline this session, so private-mode browsers (where

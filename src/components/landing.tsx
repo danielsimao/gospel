@@ -72,12 +72,18 @@ export function Landing({ messages, locale }: LandingProps) {
 
   return (
     <m.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      // Leaves upward as the first question arrives from the right, so the two
-      // read as one movement rather than two screens swapping.
+      /*
+       * No entrance fade of its own. The shell already crossfades every phase
+       * change, so fading this root as well compounded the two — the screen
+       * arrived through a second, slower fade on top of the first, and the
+       * staggered children below started from an already-fading parent.
+       * One fade, from the shell; the stagger does the rest.
+       */
+      initial={false}
+      // Still leaves upward as the first question arrives from the right, so
+      // the two read as one movement rather than two screens swapping.
       exit={{ opacity: 0, y: -12 }}
-      transition={{ duration: 0.4 }}
+      transition={{ duration: 0.3, ease: EASE_OUT_STRONG }}
       className="flex flex-1 flex-col items-center justify-center px-6 text-center"
     >
       {/* Docket label */}
