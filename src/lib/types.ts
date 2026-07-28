@@ -205,11 +205,8 @@ export interface HomeMessages {
   /** What a tap costs: question count and rough duration. */
   testPreview: string;
   blogCard: { eyebrow: string };
-  alsoHere: {
-    label: string;
-    readingDescription: string;
-    learnDescription: string;
-  };
+  /** Header for the band of learn topics shown as their own questions. */
+  questionsLabel: string;
   facts: string[];
   journey: JourneyMessages;
   journeyStages: JourneyStagesMessages;

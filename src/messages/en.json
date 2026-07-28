@@ -1498,13 +1498,9 @@
       "no": "No"
     },
     "testPreview": "6 questions · 2 minutes",
+    "questionsLabel": "Questions people actually ask",
     "blogCard": {
       "eyebrow": "From the blog"
-    },
-    "alsoHere": {
-      "label": "Also here",
-      "readingDescription": "Seven days in the Gospel of John.",
-      "learnDescription": "Short answers to the hard questions."
     },
     "facts": [
       "Last year, 56 million people died worldwide.",

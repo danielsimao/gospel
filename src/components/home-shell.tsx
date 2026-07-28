@@ -5,16 +5,17 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { m } from "framer-motion";
-import { BookOpen, ChevronDown, Compass } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { LatestPostCard } from "@/components/home/latest-post-card";
-import { AlsoHere, type AlsoHereRow } from "@/components/home/also-here";
+import { QuestionsBand } from "@/components/home/questions-band";
+import { ReadingBand, type ReadingDay } from "@/components/home/reading-band";
 import { StageSpine } from "@/components/home/stage-spine";
 import { FactCrawl, FactList } from "@/components/home/fact-crawl";
 import { SelfRating } from "@/components/home/self-rating";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { hasAnsweredConsent, subscribeToConsentAnswered } from "@/lib/consent";
-import { useJourney, TOTAL_READING_DAYS } from "@/lib/use-journey";
+import { useJourney } from "@/lib/use-journey";
 import { saveInvitationResponse, resetJourney } from "@/lib/journey-storage";
 import { clearSession } from "@/lib/test-session-storage";
 import { writeSelfRating } from "@/lib/self-rating-storage";
@@ -51,6 +52,12 @@ interface HomeShellProps {
   home: HomeMessages;
   locale: Locale;
   topicSlugs: string[];
+  topics: Array<{ slug: string; title: string }>;
+  readingDays: ReadingDay[];
+  readingLabels: { dayLabel: string; complete: string };
+  /** Reused from the learn hub and the blog index rather than restated here. */
+  allTopicsLabel: string;
+  allPostsLabel: string;
   latestPost?: {
     slug: string;
     title: string;
@@ -100,38 +107,19 @@ const RATE_CARDS = [
   { value: "155,000", key: "perDay" },
 ] as const;
 
-export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeShellProps) {
+export function HomeShell({
+  hero,
+  home,
+  locale,
+  topicSlugs,
+  topics,
+  readingDays,
+  readingLabels,
+  allTopicsLabel,
+  allPostsLabel,
+  latestPost,
+}: HomeShellProps) {
   const journey = useJourney(topicSlugs);
-
-  /*
-   * The band's rows. Progress replaces the description only once the reader has
-   * actually started — a count is information about something you began, not a
-   * prompt. Both destinations stay linked either way; nothing here gates.
-   */
-  const alsoHereRows: AlsoHereRow[] = [
-    {
-      href: `/${locale}/reading-plan`,
-      label: home.journey.reading.label,
-      description:
-        journey.readingDone > 0
-          ? home.journey.reading.descActiveProgress
-              .replace("{current}", String(journey.readingDone))
-              .replace("{total}", String(TOTAL_READING_DAYS))
-          : home.alsoHere.readingDescription,
-      icon: <BookOpen className="size-4" aria-hidden="true" />,
-    },
-    {
-      href: `/${locale}/learn`,
-      label: home.journey.learn.label,
-      description:
-        journey.learnDone > 0
-          ? home.journey.learn.descActiveProgress
-              .replace("{current}", String(journey.learnDone))
-              .replace("{total}", String(topicSlugs.length))
-          : home.alsoHere.learnDescription,
-      icon: <Compass className="size-4" aria-hidden="true" />,
-    },
-  ];
 
   const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
@@ -600,13 +588,36 @@ export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeSh
             </div>
           )}
 
-          {/* Ungated content band, identical on all five stages — the journey
-              tracker's replacement. Rendered once here rather than inside each
-              stage branch, so it cannot drift between them. */}
-          <AlsoHere label={home.alsoHere.label} rows={alsoHereRows} />
+          {/*
+           * Three ungated bands, identical on all five stages. Each shows what
+           * is actually inside it rather than describing it: the topics as
+           * their own questions, the plan as the day this reader is on, the
+           * blog as its newest headline. Rendered once here rather than inside
+           * each stage branch, so they cannot drift between them.
+           */}
+          <QuestionsBand
+            locale={locale}
+            label={home.questionsLabel}
+            allLabel={allTopicsLabel}
+            topics={topics}
+          />
+
+          <ReadingBand
+            locale={locale}
+            label={home.journey.reading.label}
+            dayLabel={readingLabels.dayLabel}
+            completeDescription={readingLabels.complete}
+            days={readingDays}
+            completed={journey.readingDone}
+          />
 
           {latestPost && (
-            <LatestPostCard locale={locale} eyebrow={home.blogCard.eyebrow} post={latestPost} />
+            <LatestPostCard
+              locale={locale}
+              eyebrow={home.blogCard.eyebrow}
+              allLabel={allPostsLabel}
+              post={latestPost}
+            />
           )}
         </div>
       </section>

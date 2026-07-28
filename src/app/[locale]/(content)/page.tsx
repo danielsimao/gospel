@@ -37,6 +37,16 @@ interface HomeData {
   };
   meta: { title: string; description: string };
   topicSlugs: string[];
+  /** Slug + title for every learn topic; the questions band resolves its own. */
+  topics: Array<{ slug: string; title: string }>;
+  /**
+   * All seven reading days. Passed whole rather than pre-selected: which day a
+   * reader is on comes from localStorage, so only the client can pick.
+   */
+  readingDays: Array<{ title: string; passage: string; keyVerse: string }>;
+  readingLabels: { dayLabel: string; complete: string };
+  allTopicsLabel: string;
+  allPostsLabel: string;
 }
 
 export function generateStaticParams() {
@@ -46,8 +56,16 @@ export function generateStaticParams() {
 async function getHomeData(locale: Locale): Promise<HomeData> {
   const messages = await import(`@/messages/${locale}.json`);
   const data = messages.default;
-  const topicSlugs = (data.learn?.topics ?? []).map(
-    (t: { slug: string }) => t.slug,
+  const topics = (data.learn?.topics ?? []).map(
+    (t: { slug: string; title: string }) => ({ slug: t.slug, title: t.title }),
+  );
+  const topicSlugs = topics.map((t: { slug: string }) => t.slug);
+  const readingDays = (data.readingPlan?.days ?? []).map(
+    (d: { title: string; passage: string; keyVerse: string }) => ({
+      title: d.title,
+      passage: d.passage,
+      keyVerse: d.keyVerse,
+    }),
   );
   return {
     hero: data.eternity.hero,
@@ -57,6 +75,14 @@ async function getHomeData(locale: Locale): Promise<HomeData> {
     test: data.test,
     meta: data.meta,
     topicSlugs,
+    topics,
+    readingDays,
+    readingLabels: {
+      dayLabel: data.readingPlan.dayLabel,
+      complete: data.home.journey.reading.descComplete,
+    },
+    allTopicsLabel: data.learn.allTopicsLabel,
+    allPostsLabel: data.blog.allPostsLabel,
   };
 }
 
@@ -107,6 +133,11 @@ export default async function HomePage({ params }: Props) {
         home={data.home}
         locale={locale as Locale}
         topicSlugs={data.topicSlugs}
+        topics={data.topics}
+        readingDays={data.readingDays}
+        readingLabels={data.readingLabels}
+        allTopicsLabel={data.allTopicsLabel}
+        allPostsLabel={data.allPostsLabel}
         latestPost={latestPost}
       />
     </>
