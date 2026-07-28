@@ -11,13 +11,6 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-interface ShareMessages {
-  prompt: string;
-  whatsappMessage: string;
-  telegramMessage: string;
-  linkCopied: string;
-}
-
 interface HomeData {
   hero: {
     label: string;
@@ -42,7 +35,6 @@ interface HomeData {
     answeredBadge: string;
     justifiedBadge: string;
   };
-  share: ShareMessages;
   meta: { title: string; description: string };
   topicSlugs: string[];
 }
@@ -63,7 +55,6 @@ async function getHomeData(locale: Locale): Promise<HomeData> {
     home: data.home,
     questions: data.questions,
     test: data.test,
-    share: data.share,
     meta: data.meta,
     topicSlugs,
   };

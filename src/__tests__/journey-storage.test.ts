@@ -193,3 +193,38 @@ describe("journey-storage", () => {
     });
   });
 });
+
+describe("a response with no date", () => {
+  it("falls back to the test's date rather than reading as today", () => {
+    // The two fields are validated independently, so a record can carry a
+    // response with no timestamp. The homepage read `daysSinceResponse ?? 0`
+    // and told the reader they decided "earlier today" — the most urgent
+    // possible answer — about a decision that may be months old.
+    const testCompletedAt = Date.now() - 40 * 24 * 60 * 60 * 1000;
+    localStorage.setItem(
+      "gospel-journey",
+      JSON.stringify({
+        version: 1,
+        testCompletedAt,
+        invitationResponse: "thinking",
+        respondedAt: "not a number",
+      }),
+    );
+    const record = readJourney();
+    expect(record.invitationResponse).toBe("thinking");
+    expect(record.respondedAt).toBe(testCompletedAt);
+  });
+
+  it("stays null when there is genuinely no response", () => {
+    localStorage.setItem(
+      "gospel-journey",
+      JSON.stringify({
+        version: 1,
+        testCompletedAt: Date.now(),
+        invitationResponse: null,
+        respondedAt: null,
+      }),
+    );
+    expect(readJourney().respondedAt).toBeNull();
+  });
+});

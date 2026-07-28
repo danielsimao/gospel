@@ -1,7 +1,7 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { gameReducer, initialGameState } from "@/lib/game-reducer";
 import { TOTAL_QUESTIONS, INITIAL_SCORE, QUESTION_CONFIGS } from "@/lib/questions";
-import type { GameState } from "@/lib/types";
+import type { GameState, ResumeSessionPayload } from "@/lib/types";
 
 function startGame(): GameState {
   return gameReducer(initialGameState, { type: "START_GAME" });
@@ -331,5 +331,152 @@ describe("gameReducer", () => {
       });
       expect(state.invitationReached).toBe(true);
     });
+  });
+});
+
+describe("RESUME_SESSION timestamp rebasing", () => {
+  afterEach(() => vi.useRealTimers());
+
+  /** A saved session, with only the fields a case cares about overridden. */
+  function saved(over: Partial<ResumeSessionPayload> = {}): ResumeSessionPayload {
+    const startedAt = 1_000_000;
+    return {
+      phase: "playing",
+      currentQuestion: 2,
+      score: 60,
+      answers: [],
+      currentAnswer: null,
+      showFollowUp: false,
+      startedAt,
+      completedAt: null,
+      questionStartedAt: null,
+      savedAt: startedAt + 90_000, // 90s of active time before saving
+      graceReached: false,
+      graceBeatsRevealed: 0,
+      invitationReached: false,
+      invitationResponse: null,
+      ...over,
+    };
+  }
+
+  it("carries active elapsed time across, not wall-clock time away", () => {
+    /*
+     * The whole point of the rebase, and the reason this is tested: the verdict
+     * screen counts deaths "since you started" from state.startedAt, and reports
+     * that same span to analytics. Carry startedAt through verbatim and someone
+     * resuming a three-day-old session is told that roughly 466,000 people have
+     * died since they began — the central claim of the screen, rendered absurd,
+     * with every other test still green.
+     */
+    vi.useFakeTimers();
+    const threeDaysLater = 1_000_000 + 3 * 24 * 60 * 60 * 1000;
+    vi.setSystemTime(threeDaysLater);
+
+    const state = gameReducer(initialGameState, {
+      type: "RESUME_SESSION",
+      session: saved(),
+    });
+
+    // 90 seconds of real activity, however long the reader was away.
+    expect(Date.now() - state.startedAt).toBe(90_000);
+  });
+
+  it("preserves the completed span exactly for a finished test", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(5_000_000);
+
+    const session = saved({
+      phase: "verdict",
+      completedAt: 1_000_000 + 120_000,
+      savedAt: 1_000_000 + 500_000, // sat on the verdict for a while
+    });
+    const state = gameReducer(initialGameState, { type: "RESUME_SESSION", session });
+
+    // The duration the verdict reports is completedAt - startedAt, and it must
+    // survive: the reader took two minutes, not the eight they left the tab open.
+    expect(state.completedAt).not.toBeNull();
+    expect(state.completedAt! - state.startedAt).toBe(120_000);
+  });
+
+  it("leaves completedAt null when the test was never finished", () => {
+    const state = gameReducer(initialGameState, {
+      type: "RESUME_SESSION",
+      session: saved({ completedAt: null }),
+    });
+    expect(state.completedAt).toBeNull();
+  });
+
+  it("never produces a negative elapsed span from a corrupt record", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(9_000_000);
+
+    // savedAt before startedAt — a clock change, or a hand-edited record.
+    const state = gameReducer(initialGameState, {
+      type: "RESUME_SESSION",
+      session: saved({ startedAt: 2_000_000, savedAt: 1_000_000 }),
+    });
+    expect(Date.now() - state.startedAt).toBe(0);
+    expect(state.startedAt).toBeLessThanOrEqual(Date.now());
+  });
+
+  it("rebases the current question only while one is genuinely open", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(4_000_000);
+    const base = { startedAt: 1_000_000, savedAt: 1_000_000 + 60_000 };
+
+    const open = gameReducer(initialGameState, {
+      type: "RESUME_SESSION",
+      session: saved({ ...base, phase: "playing", currentAnswer: null, questionStartedAt: 1_000_000 + 45_000 }),
+    });
+    // 15s had been spent on the question when the session was saved.
+    expect(Date.now() - open.questionStartedAt!).toBe(15_000);
+
+    // Already answered, so there is no live question to time.
+    const answered = gameReducer(initialGameState, {
+      type: "RESUME_SESSION",
+      session: saved({ ...base, phase: "playing", currentAnswer: "honest", questionStartedAt: 1_000_000 + 45_000 }),
+    });
+    expect(answered.questionStartedAt).toBeNull();
+
+    // Past the questions entirely.
+    const later = gameReducer(initialGameState, {
+      type: "RESUME_SESSION",
+      session: saved({ ...base, phase: "grace", questionStartedAt: 1_000_000 + 45_000 }),
+    });
+    expect(later.questionStartedAt).toBeNull();
+  });
+
+  it("drops a pending answer that belongs to a phase the reader has left", () => {
+    const state = gameReducer(initialGameState, {
+      type: "RESUME_SESSION",
+      session: saved({ phase: "verdict", currentAnswer: "justify", showFollowUp: true }),
+    });
+    expect(state.currentAnswer).toBeNull();
+    expect(state.showFollowUp).toBe(false);
+  });
+
+  it("restores every persisted flag, not just the ones a screen happens to read", () => {
+    const state = gameReducer(initialGameState, {
+      type: "RESUME_SESSION",
+      session: saved({
+        phase: "invitation",
+        answers: [{ questionId: 1, answer: "honest", commandment: "9th", scoreChange: -18, timeOnQuestion: 1000 }],
+        score: 12,
+        currentQuestion: 5,
+        graceReached: true,
+        graceBeatsRevealed: 4,
+        invitationReached: true,
+        invitationResponse: "thinking",
+      }),
+    });
+    expect(state.phase).toBe("invitation");
+    expect(state.score).toBe(12);
+    expect(state.currentQuestion).toBe(5);
+    expect(state.answers).toHaveLength(1);
+    expect(state.graceReached).toBe(true);
+    // The field that was silently defaulting to 0 and wiping the reader's beats.
+    expect(state.graceBeatsRevealed).toBe(4);
+    expect(state.invitationReached).toBe(true);
+    expect(state.invitationResponse).toBe("thinking");
   });
 });

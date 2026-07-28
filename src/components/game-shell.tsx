@@ -12,6 +12,7 @@ import { GraceScreen } from "@/components/grace-screen";
 import { InvitationScreen } from "@/components/invitation-screen";
 import {
   trackGameAbandoned,
+  trackTestRestored,
   trackTestBack,
 } from "@/lib/analytics";
 import { QUESTION_CONFIGS, TOTAL_QUESTIONS } from "@/lib/questions";
@@ -70,10 +71,12 @@ export function GameShell({ messages, locale }: GameShellProps) {
       const saved = readSession();
       // The whole saved record, not a field-by-field copy. Transcribing it is
       // how graceBeatsRevealed went missing here in the first place.
-      if (saved) dispatch({ type: "RESUME_SESSION", session: saved });
+      if (!saved) return;
+      dispatch({ type: "RESUME_SESSION", session: saved });
+      trackTestRestored(saved.phase, locale);
     });
     return () => cancelAnimationFrame(id);
-  }, [dispatch]);
+  }, [dispatch, locale]);
 
   useEffect(() => {
     Sentry.addBreadcrumb({

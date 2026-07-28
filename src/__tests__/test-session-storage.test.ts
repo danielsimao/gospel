@@ -116,3 +116,62 @@ describe("test-session-storage", () => {
     });
   });
 });
+
+describe("corrupt records are discarded, not handed on", () => {
+  /** A valid record, then broken in one specific way. */
+  function write(over: Record<string, unknown>) {
+    const base = {
+      version: 3,
+      phase: "playing",
+      currentQuestion: 1,
+      score: 80,
+      answers: [],
+      currentAnswer: null,
+      showFollowUp: false,
+      startedAt: Date.now() - 30_000,
+      completedAt: null,
+      questionStartedAt: null,
+      savedAt: Date.now(),
+      graceReached: false,
+      graceBeatsRevealed: 0,
+      invitationReached: false,
+      invitationResponse: null,
+    };
+    localStorage.setItem("gospel-test-session", JSON.stringify({ ...base, ...over }));
+  }
+
+  it("reads a sound record", () => {
+    write({});
+    expect(readSession()).not.toBeNull();
+  });
+
+  it("discards a record whose answers are not an array", () => {
+    // answers reaches furthestPhase and splitConfession, both of which throw on
+    // a non-array — and the reader would meet the error boundary with no way to
+    // clear the key from the UI.
+    write({ answers: "six" });
+    expect(readSession()).toBeNull();
+    expect(localStorage.getItem("gospel-test-session")).toBeNull();
+  });
+
+  it.each(["currentQuestion", "score", "startedAt"])(
+    "discards a record whose %s is not a finite number",
+    (field) => {
+      write({ [field]: "lots" });
+      expect(readSession()).toBeNull();
+      write({ [field]: Number.NaN });
+      expect(readSession()).toBeNull();
+    },
+  );
+
+  it("discards a session older than the resume window, and clears it", () => {
+    write({ savedAt: Date.now() - 31 * 60 * 1000 });
+    expect(readSession()).toBeNull();
+    expect(localStorage.getItem("gospel-test-session")).toBeNull();
+  });
+
+  it("keeps a session inside the resume window", () => {
+    write({ savedAt: Date.now() - 29 * 60 * 1000 });
+    expect(readSession()).not.toBeNull();
+  });
+});

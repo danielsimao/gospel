@@ -10,7 +10,6 @@ import type { BlogPostContent } from "@/content/blog/types";
 import type { Locale } from "@/lib/i18n";
 
 interface BlogChromeMessages {
-  label: string;
   allPostsLabel: string;
   saveStoryButton: string;
   saveStoryHint: string;

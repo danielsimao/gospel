@@ -6,7 +6,7 @@ import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { trackVerdictReached } from "@/lib/analytics";
-import { splitConfession } from "@/lib/confession";
+import { splitConfession, type ConfessionTone } from "@/lib/confession";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import { VerdictEmblem } from "@/components/emblems";
 import type { TestMessages } from "@/lib/types";
@@ -22,6 +22,18 @@ interface VerdictScreenProps {
  * because a button at opacity 0 is an invisible click target.
  */
 const BRIDGE_DELAY_MS = 1200;
+
+/*
+ * One class per tone, as a total map rather than a ternary. The distinction is
+ * content correctness, not styling: rendering an evaded commandment with the
+ * same force as a confessed one states something the reader did not say. A
+ * ternary made every tone that was not "admitted" render as a denial, so adding
+ * a fourth would have been silent — this way it fails the build.
+ */
+const TONE_CLASS: Record<Exclude<ConfessionTone, "plain">, string> = {
+  admitted: "text-red-400",
+  denied: "text-white/55",
+};
 
 export function VerdictScreen({
   messages,
@@ -210,14 +222,7 @@ export function VerdictScreen({
               return <Fragment key={i}>{segment.text}</Fragment>;
             }
             return (
-              <span
-                key={i}
-                className={
-                  segment.tone === "admitted"
-                    ? "text-red-400"
-                    : "text-white/55"
-                }
-              >
+              <span key={i} className={TONE_CLASS[segment.tone]}>
                 {segment.text}
               </span>
             );

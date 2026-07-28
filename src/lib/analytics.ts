@@ -4,6 +4,15 @@ export function trackTestBack(from: string, to: string, via: "link" | "browser")
   safeCapture("test_back", { from, to, via });
 }
 
+/**
+ * A same-sitting session restored without asking. Replaces the two events the
+ * resume dialog used to emit; the phase is what says whether readers are losing
+ * their place mid-question or mid-argument.
+ */
+export function trackTestRestored(phase: string, locale: string) {
+  safeCapture("test_restored_silently", { phase, locale });
+}
+
 export function trackGameStarted(locale: string) {
   safeCapture("game_started", {
     locale,

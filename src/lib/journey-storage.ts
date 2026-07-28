@@ -63,15 +63,30 @@ export function readJourney(): JourneyRecord {
     if (!raw) return { ...EMPTY_RECORD };
     const parsed = JSON.parse(raw) as Partial<JourneyRecord>;
     if (parsed.version !== CURRENT_VERSION) return { ...EMPTY_RECORD };
-    return {
-      version: CURRENT_VERSION,
-      testCompletedAt:
-        typeof parsed.testCompletedAt === "number" ? parsed.testCompletedAt : null,
-      invitationResponse: isValidResponse(parsed.invitationResponse)
-        ? parsed.invitationResponse
-        : null,
-      respondedAt: typeof parsed.respondedAt === "number" ? parsed.respondedAt : null,
-    };
+
+    const testCompletedAt =
+      typeof parsed.testCompletedAt === "number" ? parsed.testCompletedAt : null;
+    const invitationResponse = isValidResponse(parsed.invitationResponse)
+      ? parsed.invitationResponse
+      : null;
+    /*
+     * The two were validated independently, so a record could carry a response
+     * with no date — from the legacy migration, or a half-written record. The
+     * homepage then read `daysSinceResponse ?? 0` and told the reader they had
+     * decided "earlier today" about something they may have decided months ago.
+     *
+     * A response always happens at or after the test, so falling back to the
+     * test's own date is the closest honest answer available. Only null when
+     * there is genuinely no response.
+     */
+    const respondedAt =
+      typeof parsed.respondedAt === "number"
+        ? parsed.respondedAt
+        : invitationResponse
+          ? testCompletedAt
+          : null;
+
+    return { version: CURRENT_VERSION, testCompletedAt, invitationResponse, respondedAt };
   } catch (error) {
     console.warn("[journey-storage] Failed to read journey:", error);
     return { ...EMPTY_RECORD };

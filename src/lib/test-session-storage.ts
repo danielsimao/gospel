@@ -46,12 +46,33 @@ export function readSession(): SavedSession | null {
       clearSession();
       return null;
     }
+    /*
+     * The version gate protects against shape changes between releases, not
+     * against a record corrupt within its version — and the policy in this file
+     * is deliberately to ship additive changes without bumping, so the gate
+     * lets more through than it looks. `answers` in particular reaches
+     * furthestPhase and splitConfession, both of which throw on a non-array,
+     * and the reader would meet the error boundary with no way to clear the
+     * poisoned key from the UI. Discarding costs one branch.
+     */
+    if (!Array.isArray(parsed.answers)) {
+      clearSession();
+      return null;
+    }
+    for (const key of ["currentQuestion", "score", "startedAt"] as const) {
+      if (typeof parsed[key] !== "number" || !Number.isFinite(parsed[key])) {
+        clearSession();
+        return null;
+      }
+    }
+
     return {
       ...parsed,
       invitationReached: parsed.invitationReached === true,
       // Added after v3 shipped; absent on in-flight sessions, so default it
       // rather than bumping the version and discarding them.
-      graceBeatsRevealed: parsed.graceBeatsRevealed ?? 0,
+      graceBeatsRevealed:
+        typeof parsed.graceBeatsRevealed === "number" ? parsed.graceBeatsRevealed : 0,
     } as SavedSession;
   } catch (error) {
     console.warn("[test-session-storage] Failed to read session:", error);
