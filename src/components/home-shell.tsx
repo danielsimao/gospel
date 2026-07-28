@@ -60,6 +60,48 @@ interface HomeShellProps {
   } | null;
 }
 
+/*
+ * Whether the globe is the cropped corner one.
+ *
+ * Its parked/tilt settings are cobe arguments, not CSS, so they cannot be
+ * switched with a responsive class the way its size is — the breakpoint has to
+ * be read at runtime. Matches Tailwind's `lg`. The server always reports false;
+ * the globe is `ssr: false` and mounts client-side only, so there is no markup
+ * to mismatch.
+ */
+const DESKTOP_QUERY = "(min-width: 1024px)";
+
+/*
+ * Where a ping can land and still be seen on the cropped desktop globe.
+ *
+ * The sphere is parked facing ~32°E with most of its right side and its top
+ * off-canvas, so the near hemisphere is not the same thing as the visible area:
+ * anything much east of ~55°E projects past the right edge of the viewport, and
+ * anything far enough north clears the top. Derived from the layout at the
+ * narrowest desktop width, so it holds at wider ones too.
+ *
+ * The western edge is -35 rather than the -48 the viewport alone would allow:
+ * projecting all 44 centres through the tilt puts São Paulo and Rio at a depth
+ * of ~0.02 — technically front-facing, but flattened into the limb, where a
+ * ping is a smear rather than a dot. At -35 every one of the 17 surviving
+ * centres sits clear of the edge, still ample at 1.8 pings a second.
+ *
+ * Module-level: passed inline it would be a new object every render, and the
+ * globe rebuilds when it changes.
+ */
+const DESKTOP_PING_WINDOW = { lngMin: -35, lngMax: 55, latMax: 55 };
+
+function subscribeToDesktop(onChange: () => void) {
+  if (typeof window === "undefined") return () => {};
+  const mql = window.matchMedia(DESKTOP_QUERY);
+  mql.addEventListener("change", onChange);
+  return () => mql.removeEventListener("change", onChange);
+}
+
+function isDesktop() {
+  return typeof window !== "undefined" && window.matchMedia(DESKTOP_QUERY).matches;
+}
+
 /** "earlier today" / "yesterday" / "{n} days ago" / "{n} weeks ago" — pure. */
 function sincePhrase(
   days: number,
@@ -141,6 +183,8 @@ export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeSh
     hasAnsweredConsent,
     () => false,
   );
+
+  const desktopGlobe = useSyncExternalStore(subscribeToDesktop, isDesktop, () => false);
 
   useEffect(() => {
     if (viewTracked.current || !journey.ready) return;
@@ -225,11 +269,26 @@ export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeSh
         {/* Offsets in px, not %: a percentage `top` resolves against the
             containing block's height, which for this section is viewport-derived
             and put the sphere almost entirely above the fold. */}
+        {/*
+         * Sizes are not a smooth ramp. Phone: large, because the sphere is the
+         * counter's backdrop and a small one behind that number reads as
+         * texture rather than a globe. Tablet: the smallest of the three — it
+         * is still centred behind the counter but the viewport is wide enough
+         * that a phone-scale sphere would swamp the column. Desktop: largest,
+         * because most of it is off-canvas and only the arc is doing the work.
+         */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -top-[7rem] left-1/2 -translate-x-1/2 lg:left-auto lg:right-[-8rem] lg:top-[-10rem] lg:translate-x-0"
+          className="pointer-events-none absolute -top-[8rem] left-1/2 -translate-x-1/2 sm:-top-[6rem] lg:left-auto lg:right-[-12rem] lg:top-[-10rem] lg:translate-x-0 xl:right-[-9rem] xl:top-[-11rem]"
         >
-          <DeathGlobe className="relative w-[26rem] sm:w-[30rem] lg:w-[34rem]" />
+          <DeathGlobe
+            className="relative w-[32rem] sm:w-[26rem] lg:w-[40rem] xl:w-[46rem]"
+            parked={desktopGlobe}
+            // Tipped further on desktop so the northern population band walks
+            // down into the cropped arc; Europe sits above the crop otherwise.
+            theta={desktopGlobe ? 0.45 : 0.18}
+            pingWindow={desktopGlobe ? DESKTOP_PING_WINDOW : undefined}
+          />
         </div>
 
         {/* Scrims. Two jobs: hold the counter legible over the dot field, and
@@ -237,7 +296,7 @@ export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeSh
             this layout were unreadable until the type had its own ground. */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_52%_14%_at_50%_16%,rgba(6,4,4,0.85)_0%,rgba(6,4,4,0.3)_62%,transparent_84%),linear-gradient(to_bottom,transparent_16%,rgba(6,4,4,0.92)_34%,#060404_46%)] lg:bg-[linear-gradient(to_right,#060404_26%,rgba(6,4,4,0.86)_50%,rgba(6,4,4,0.12)_72%,transparent_100%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_46%_12%_at_50%_15%,rgba(6,4,4,0.72)_0%,rgba(6,4,4,0.2)_66%,transparent_88%),linear-gradient(to_bottom,transparent_24%,rgba(6,4,4,0.86)_40%,#060404_54%)] lg:bg-[linear-gradient(to_bottom,rgba(6,4,4,0.8)_0%,rgba(6,4,4,0.25)_9%,transparent_16%),linear-gradient(to_right,#060404_20%,rgba(6,4,4,0.88)_50%,rgba(6,4,4,0.12)_70%,transparent_100%)]"
         />
 
         {/* Radial vignette — mobile only. It fades everything past 75% from the

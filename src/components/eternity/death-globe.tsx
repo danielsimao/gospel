@@ -59,10 +59,45 @@ interface DeathGlobeProps {
    * costs real GPU work.
    */
   className?: string;
+  /**
+   * Stop the auto-rotation and hold the populated hemisphere in view.
+   *
+   * For the cropped desktop globe, where only an arc of the sphere is on
+   * screen. Rotating, the populated band drifts out of that arc and pings land
+   * where nobody can see them — and a moving object beside a headline competes
+   * with reading it, which a decorative globe has not earned.
+   *
+   * Parked, this takes the same path reduced motion already used: a fixed view
+   * of the densest hemisphere, with pings drawn only from centres on it.
+   * Dragging still spins it.
+   */
+  parked?: boolean;
+  /**
+   * Vertical tilt, in cobe's units. Higher values tip the north pole toward the
+   * viewer, which walks the northern population band down the sphere — the
+   * difference between Europe sitting above the cropped edge and sitting inside
+   * it.
+   */
+  theta?: number;
+  /**
+   * Restricts pings to a lng/lat window of the parked view.
+   *
+   * `parked` alone only guarantees the near hemisphere, which is the right
+   * answer when the whole sphere is on screen. When the sphere is cropped, half
+   * that hemisphere is off-canvas and pings spawn where nobody can see them.
+   * The window belongs to the caller because only the caller knows how its
+   * layout crops the globe.
+   *
+   * Ignored unless parked, and ignored if it would leave nothing to ping.
+   */
+  pingWindow?: { lngMin: number; lngMax: number; latMax: number };
 }
 
 export function DeathGlobe({
   className = "relative mx-auto w-full max-w-[380px] sm:max-w-[440px]",
+  parked = false,
+  theta = 0.18,
+  pingWindow,
 }: DeathGlobeProps = {}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -74,8 +109,12 @@ export function DeathGlobe({
     if (!canvas || !container) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Reduced motion and the cropped desktop globe want the same behaviour:
+    // hold still, facing the populated hemisphere, and ping only where the
+    // reader can see it. One flag, so the two can never drift apart.
+    const held = reducedMotion || parked;
 
-    let phi = reducedMotion ? STATIC_PHI : 0.3;
+    let phi = held ? STATIC_PHI : 0.3;
     let width = 0;
     let pings: Ping[] = [];
     let globe: ReturnType<typeof createGlobe> | null = null;
@@ -94,9 +133,25 @@ export function DeathGlobe({
     onResize();
     window.addEventListener("resize", onResize);
 
+    /*
+     * Resolved once per mount, not per ping. Order matters: the caller's window
+     * is the tightest claim about what is actually on screen, the parked
+     * hemisphere is the next best, and the full set is for a globe that spins.
+     * An empty window falls back rather than silently stopping the pings.
+     */
+    const windowed =
+      held && pingWindow
+        ? POPULATION_CENTERS.filter(
+            (c) =>
+              c[0] >= pingWindow.lngMin &&
+              c[0] <= pingWindow.lngMax &&
+              c[1] <= pingWindow.latMax,
+          )
+        : [];
+    const pool = windowed.length > 0 ? windowed : held ? VISIBLE_CENTERS : POPULATION_CENTERS;
+
     const addPing = () => {
       if (!visible || document.hidden) return;
-      const pool = reducedMotion ? VISIBLE_CENTERS : POPULATION_CENTERS;
       const center = pool[Math.floor(Math.random() * pool.length)];
       pings.push({
         // POPULATION_CENTERS is [lng, lat]; cobe wants [lat, lng]. Jitter like the 2D map.
@@ -110,7 +165,7 @@ export function DeathGlobe({
       if (!globe) return;
       const now = performance.now();
       pings = pings.filter((p) => now - p.bornAt < PING_LIFE_MS);
-      if (!reducedMotion && pointerStart === null) phi -= 0.0035;
+      if (!held && pointerStart === null) phi -= 0.0035;
       globe.update({
         phi: phi + releasedDelta + pointerDelta,
         markers: pings.map((p) => ({
@@ -131,7 +186,7 @@ export function DeathGlobe({
           width: width * 2,
           height: width * 2,
           phi,
-          theta: 0.18,
+          theta,
           dark: 1,
           diffuse: 1.2,
           mapSamples: 16000,
@@ -225,7 +280,8 @@ export function DeathGlobe({
       window.removeEventListener("pointerup", endPointer);
       window.removeEventListener("pointercancel", endPointer);
     };
-  }, []);
+    // All three are read when cobe is created, so a change has to rebuild it.
+  }, [parked, theta, pingWindow]);
 
   if (webglFailed) {
     return <WorldMap />;
