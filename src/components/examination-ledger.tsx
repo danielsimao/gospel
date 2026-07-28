@@ -41,7 +41,9 @@ export function ExaminationLedger({
         aria-valuemax={TOTAL_QUESTIONS}
         aria-valuenow={answers.length}
         aria-label={testMessages.caseLabel}
-        className="flex w-full max-w-xs gap-1 sm:max-w-sm sm:gap-1.5"
+        // items-center so the taller active step grows from the centre line
+        // rather than pushing the row 1px taller and shifting the card.
+        className="flex h-[3px] w-full max-w-xs items-center gap-1 sm:max-w-sm sm:gap-1.5"
       >
         {Array.from({ length: TOTAL_QUESTIONS }).map((_, i) => {
           const answered = answers[i];
@@ -49,43 +51,58 @@ export function ExaminationLedger({
           const resolved =
             i < currentQuestion || (i === currentQuestion && !!answered);
 
+          /*
+           * The step being asked, and deliberately not red. Red is this app's
+           * judgment colour and belongs only to a recorded answer — using it
+           * here too made the current step and an admitted commandment the same
+           * mark, separated by 15% alpha on a two-pixel line, and had the bar
+           * claiming a verdict on a question nobody had answered yet.
+           *
+           * Neutral and a pixel taller, so the three states differ on colour,
+           * fill and height rather than on colour alone.
+           */
           if (isActive) {
             return (
-              <div key={i} className="relative h-[2px] flex-1 rounded-full bg-red-500">
+              <div key={i} className="relative h-[3px] flex-1 rounded-full bg-white/70">
                 <m.div
                   aria-hidden="true"
                   className="absolute inset-0 rounded-full"
-                  style={{ boxShadow: "0 0 12px rgba(239,68,68,0.7)" }}
-                  animate={{ opacity: [0.55, 1, 0.55] }}
+                  style={{ boxShadow: "0 0 10px rgba(255,255,255,0.55)" }}
+                  animate={{ opacity: [0.5, 1, 0.5] }}
                   transition={{ duration: 2.2, ease: "easeInOut", repeat: Infinity }}
                 />
               </div>
             );
           }
 
+          // Admitted: full red, no longer held at 85% to stay clear of the
+          // active step it used to be confused with.
           if (resolved && answered?.answer === "honest") {
             return (
               <div
                 key={i}
-                className={`h-[2px] flex-1 rounded-full bg-red-500/85 ${TRANSITION_CLASSES}`}
+                className={`h-[2px] flex-1 self-center rounded-full bg-red-500 ${TRANSITION_CLASSES}`}
               />
             );
           }
 
+          // Deflected: dashed, so the two answers are told apart without relying
+          // on colour at all.
           if (resolved && answered?.answer === "justify") {
             return (
               <div
                 key={i}
-                className={`h-[2px] flex-1 rounded-full ${TRANSITION_CLASSES}`}
+                className={`h-[2px] flex-1 self-center rounded-full ${TRANSITION_CLASSES}`}
                 style={{ backgroundImage: JUSTIFY_DASH_PATTERN }}
               />
             );
           }
 
+          // Not yet asked.
           return (
             <div
               key={i}
-              className={`h-[2px] flex-1 rounded-full bg-white/[0.06] ${TRANSITION_CLASSES}`}
+              className={`h-[2px] flex-1 self-center rounded-full bg-white/[0.06] ${TRANSITION_CLASSES}`}
             />
           );
         })}
