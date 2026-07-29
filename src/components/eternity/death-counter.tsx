@@ -24,17 +24,6 @@ const INTRO_STEP_MS = 55;
 const INTRO_BASE_STEPS = 5;
 /** Extra steps per column to the right, so the last digit rests last. */
 const INTRO_STEPS_PER_COLUMN = 2;
-/**
- * How late the spin may still start, measured from navigation.
- *
- * The pre-paint script puts the true number on screen in the first frame, but
- * this component only runs once React has hydrated. On a fast load those are
- * close enough that the spin reads as the number arriving. On a slow phone
- * hydration can be a second or more behind, and by then the reader has already
- * read the number — spinning it at that point looks like a fault, not an
- * entrance. Past this point the counter simply stands correct.
- */
-const INTRO_MAX_DELAY_MS = 600;
 
 /**
  * Marks the spin as spent for this tab.
@@ -294,14 +283,18 @@ export const DeathCounter = memo(function DeathCounter({
      * The reset itself predates this component's roll and is harmless to LCP:
      * "0" is smaller than what the pre-paint script already painted, so it
      * cannot become a new candidate.
+     *
+     * There is deliberately no deadline on how late the spin may start. A first
+     * version skipped it when hydration was more than 600ms behind navigation,
+     * on the theory that a reader who has already read the number would take a
+     * late spin for a fault. That theory was untested and the threshold was
+     * guesswork: throttled to a phone on 3G the effect ran at 1.5s or later and
+     * the entrance simply never existed. A feature that silently disappears on
+     * every real connection is worse than one that occasionally arrives late.
      */
     const introTimeouts: number[] = [];
     let introUntil = 0;
-    let introPending =
-      intro &&
-      !reduced?.matches &&
-      !introAlreadyPlayed() &&
-      performance.now() < INTRO_MAX_DELAY_MS;
+    let introPending = intro && !reduced?.matches && !introAlreadyPlayed();
     // Claimed up front, not when the spin starts: two counters mounting in the
     // same frame must not both decide they are the one that gets to play it.
     if (introPending) markIntroPlayed();
