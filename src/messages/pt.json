@@ -63,7 +63,7 @@
       "selfRatingLabel": "A tua própria resposta",
       "selfRatingMirror": {
         "yes": "Disseste que eras uma boa pessoa. As tuas próprias respostas dizem o contrário.",
-        "mostly": "Disseste que eras mais ou menos uma boa pessoa. “Mais ou menos” estava a fazer muito trabalho.",
+        "mostly": "Disseste que eras mais ou menos uma boa pessoa. “Mais ou menos” estava a esconder muita coisa.",
         "no": "Disseste que não eras uma boa pessoa. Era com isto que estavas a concordar."
       }
     }
@@ -1498,7 +1498,7 @@
       "no": "Não"
     },
     "testPreview": "6 perguntas · 2 minutos",
-    "questionsLabel": "Perguntas que as pessoas fazem mesmo",
+    "questionsLabel": "Perguntas que as pessoas fazem",
     "blogCard": {
       "eyebrow": "Do blog"
     },
