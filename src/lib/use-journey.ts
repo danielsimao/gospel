@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { subscribeToStorage } from "./client-storage";
+import { useIsomorphicLayoutEffect } from "./use-isomorphic-layout-effect";
 import { readJourney, deriveStage, migrateLegacyJourney, type JourneyStage } from "./journey-storage";
 import { readProgress, getCompletedCount } from "./reading-storage";
 import { isTopicCompleted } from "./learn-progress-storage";
@@ -63,6 +64,13 @@ export function computeJourneySnapshot(
  * return EMPTY_SNAPSHOT so hydration output is stable; the effect swaps in
  * the real snapshot post-mount and re-reads on storage changes and bfcache
  * restores (pageshow).
+ *
+ * That swap happens before the browser paints, not after. EMPTY_SNAPSHOT says
+ * "visitor", which is the one thing a returning reader is not — and read in a
+ * plain effect, the correction landed after the first paint, so every refresh
+ * of the homepage showed a committed reader the stranger's front door for a
+ * frame before replacing it with their own stage. Their word for it was
+ * flicker. A layout effect puts the read on the near side of that paint.
  */
 export function useJourney(
   topicSlugs: readonly string[] = [],
@@ -70,7 +78,7 @@ export function useJourney(
   const [snapshot, setSnapshot] = useState<JourneySnapshot>(EMPTY_SNAPSHOT);
   const slugsKey = topicSlugs.join(",");
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const slugs = slugsKey ? slugsKey.split(",") : [];
     const update = () => setSnapshot(computeJourneySnapshot(slugs));
     migrateLegacyJourney();

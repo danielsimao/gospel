@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { m, AnimatePresence } from "framer-motion";
 import * as Sentry from "@sentry/nextjs";
@@ -20,6 +20,7 @@ import { readSession } from "@/lib/test-session-storage";
 import { takeSelfRating } from "@/lib/self-rating-storage";
 import { markTestCompleted } from "@/lib/journey-storage";
 import { EASE_OUT_STRONG } from "@/lib/motion";
+import { useIsomorphicLayoutEffect } from "@/lib/use-isomorphic-layout-effect";
 import type { Messages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 
@@ -27,14 +28,6 @@ interface GameShellProps {
   messages: Messages;
   locale: Locale;
 }
-
-/**
- * useLayoutEffect on the client, useEffect on the server. React warns that
- * useLayoutEffect does nothing during SSR; this keeps the pre-paint timing
- * where it matters without the warning.
- */
-const useIsomorphicLayoutEffect =
-  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 const PHASE_ORDER = ["landing", "playing", "verdict", "grace", "invitation"] as const;
 

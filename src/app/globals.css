@@ -237,3 +237,22 @@ html[data-game-phase="invitation"] [data-slot="sticky-death-counter"] {
     display: none;
   }
 }
+
+/*
+ * The visitor block, withheld from readers who are not visitors.
+ *
+ * The journey stage lives in localStorage, so every server render of the
+ * homepage is the stranger's front door — the good-person question and its
+ * three chips. A reader who has already taken the test and answered the
+ * invitation had that painted at them on every refresh and corrected once
+ * React hydrated, which is what "the content flickers" meant.
+ *
+ * The inline script in home-shell stamps the real stage on <html> during
+ * parse, ahead of the first paint. This rule reads it. The attribute is absent
+ * until that script runs and absent entirely if it throws — in a private
+ * window, say — so the default is to show the block, which is the right
+ * failure: a visitor seeing the visitor block.
+ */
+html[data-journey-stage]:not([data-journey-stage="visitor"]) [data-stage="visitor"] > * {
+  visibility: hidden;
+}

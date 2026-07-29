@@ -97,6 +97,26 @@ function sincePhrase(
   return m.weeksAgo.replace("{n}", String(Math.floor(days / 7)));
 }
 
+/**
+ * Stamps the reader's journey stage on <html> during HTML parse, before the
+ * first paint.
+ *
+ * The stage lives in localStorage, so the server has no way to know it and
+ * always renders the visitor block — the stranger's front door. Every returning
+ * reader therefore had that painted at them first and corrected once React
+ * hydrated. Moving the read to a layout effect narrowed the window but cannot
+ * close it: the server's HTML is on screen before any component code runs at
+ * all. Only something inline and blocking gets ahead of that.
+ *
+ * It sets an attribute rather than touching the block itself, so the hiding is
+ * CSS's job and nothing here has to know what the markup looks like.
+ *
+ * Kept dependency-free and duplicated from deriveStage because it executes
+ * before any bundle loads. Both are three lines and the shape is guarded by
+ * the journey tests; if a fourth stage ever appears, this is the second place.
+ */
+const STAGE_PREPAINT_SCRIPT = `(function(){try{var r=JSON.parse(localStorage.getItem("gospel-journey")||"null"),s="visitor";if(r&&r.version===1){if(r.invitationResponse)s=r.invitationResponse;else if(typeof r.testCompletedAt==="number")s="undecided";}document.documentElement.setAttribute("data-journey-stage",s);}catch(e){}})()`;
+
 const RATE_CARDS = [
   { value: "1.8", key: "perSecond" },
   { value: "108", key: "perMinute" },
@@ -172,6 +192,9 @@ export function HomeShell({
 
   return (
     <main className="min-h-dvh overflow-x-hidden bg-[#060404]">
+      {/* First thing in the document body, so the attribute is set before the
+          block it governs has even been parsed. */}
+      <script dangerouslySetInnerHTML={{ __html: STAGE_PREPAINT_SCRIPT }} />
       <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-start overflow-hidden px-4 pt-8 pb-12 sm:px-6 sm:pt-10 sm:pb-16">
         {/* Offsets in px, not %: a percentage `top` resolves against the
             containing block's height, which for this section is viewport-derived
@@ -432,7 +455,10 @@ export function HomeShell({
           )}
 
           {journey.stage === "visitor" && (
-            <>
+            /* `contents` so the wrapper adds no box of its own and the children
+               stay direct flex items of the column. It exists only to give the
+               pre-paint rule something to hide. */
+            <div data-stage="visitor" className="contents">
               {/*
                * The turn from the world's dead to this reader's own standing.
                *
@@ -509,22 +535,6 @@ export function HomeShell({
                   one that asked rather than showed. The dismissed stage keeps
                   its own copy: that reader has declined the test, so a quiet
                   non-test door is the point rather than a duplicate. */}
-            </>
-          )}
-
-          {/*
-           * The wire feed, between the hero and the other doors.
-           *
-           * Withheld from the committed stage on the same grounds globals.css
-           * retires the broadcast strip over grace: "a ticking death count over
-           * the grace screen argues against the screen." That stage carries the
-           * gold grace atmosphere, and a mortality crawl running under it would
-           * be arguing with the copy directly above it.
-           */}
-          {journey.stage !== "committed" && (
-            <div className="-mx-4 mt-12 w-[calc(100%+2rem)] sm:-mx-6 sm:mt-14 sm:w-[calc(100%+3rem)]">
-              <FactCrawl facts={home.facts} />
-              <FactList facts={home.facts} />
             </div>
           )}
 
@@ -559,6 +569,27 @@ export function HomeShell({
               post={latestPost}
             />
           )}
+
+          {/*
+           * The wire feed, last thing above the footer.
+           *
+           * It used to sit between the hero and the bands, and it was withheld
+           * from the committed stage on the grounds globals.css gives for
+           * retiring the broadcast strip over grace: "a ticking death count over
+           * the grace screen argues against the screen." That reasoning was
+           * about proximity — the crawl ran directly under the gold grace copy
+           * and argued with it.
+           *
+           * Down here it is nowhere near that copy: the questions band, the
+           * reading plan and the blog card all sit in between. So it runs on
+           * every stage now. A reader who has professed faith is not owed a
+           * homepage with the world's dead edited out of it — the facts are
+           * still true, they are simply no longer the thing being said to them.
+           */}
+          <div className="-mx-4 mt-14 w-[calc(100%+2rem)] sm:-mx-6 sm:mt-16 sm:w-[calc(100%+3rem)]">
+            <FactCrawl facts={home.facts} />
+            <FactList facts={home.facts} />
+          </div>
         </div>
       </section>
     </main>
