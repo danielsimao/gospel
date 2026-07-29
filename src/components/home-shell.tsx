@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { m } from "framer-motion";
-import { ChevronDown } from "lucide-react";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { LatestPostCard } from "@/components/home/latest-post-card";
 import { QuestionsBand } from "@/components/home/questions-band";
@@ -14,7 +12,6 @@ import { StageSpine } from "@/components/home/stage-spine";
 import { FactCrawl, FactList } from "@/components/home/fact-crawl";
 import { SelfRating } from "@/components/home/self-rating";
 import { Button, ButtonArrow } from "@/components/ui/button";
-import { hasAnsweredConsent, subscribeToConsentAnswered } from "@/lib/consent";
 import { useJourney } from "@/lib/use-journey";
 import { saveInvitationResponse, resetJourney } from "@/lib/journey-storage";
 import { clearSession } from "@/lib/test-session-storage";
@@ -122,8 +119,6 @@ export function HomeShell({
   const journey = useJourney(topicSlugs);
 
   const router = useRouter();
-  const [scrolled, setScrolled] = useState(false);
-  const [isScrollable, setIsScrollable] = useState(false);
   const viewTracked = useRef(false);
 
   /*
@@ -151,16 +146,6 @@ export function HomeShell({
     router.prefetch(`/${locale}/test`);
   }, [router, locale]);
 
-  // Reveal the scroll hint only once the consent banner is gone. Server render
-  // reports "unanswered" for stable hydration; hasAnsweredConsent also counts
-  // an explicit accept/decline this session, so private-mode browsers (where
-  // the storage write can fail) still dismiss the hint gate.
-  const consentAnswered = useSyncExternalStore(
-    subscribeToConsentAnswered,
-    hasAnsweredConsent,
-    () => false,
-  );
-
   const desktopGlobe = useSyncExternalStore(subscribeToDesktop, isDesktop, () => false);
 
   useEffect(() => {
@@ -169,79 +154,8 @@ export function HomeShell({
     trackHomeViewed(locale, journey.stage);
   }, [journey.ready, journey.stage, locale]);
 
-  useEffect(() => {
-    function onScroll() {
-      setScrolled(window.scrollY > 60);
-    }
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Only hint at scrolling when there is actually content below the fold.
-  // The DeathGlobe mounts after first paint (ssr: false), so re-measure on any
-  // layout change via ResizeObserver, not just on mount.
-  useEffect(() => {
-    const root = document.documentElement;
-    function measure() {
-      setIsScrollable(root.scrollHeight - window.innerHeight > 24);
-    }
-    measure();
-    window.addEventListener("resize", measure);
-
-    // ResizeObserver catches the late DeathGlobe mount; degrade to resize-only
-    // where it's unavailable (older webviews, jsdom) instead of throwing.
-    if (typeof ResizeObserver === "undefined") {
-      return () => window.removeEventListener("resize", measure);
-    }
-    const observer = new ResizeObserver(measure);
-    observer.observe(root);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, []);
-
-  const showScrollHint =
-    journey.stage === "visitor" && !scrolled && consentAnswered && isScrollable;
-
   return (
     <main className="min-h-dvh overflow-x-hidden bg-[#060404]">
-      {/* Scroll hint — shown to new visitors at the top, once consent is answered and the page overflows the viewport */}
-      <m.div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-x-0 bottom-6 z-30 flex justify-center"
-        initial={false}
-        animate={{ opacity: showScrollHint ? 1 : 0 }}
-        transition={{ duration: 0.5, delay: showScrollHint ? 1.2 : 0 }}
-      >
-        <m.div
-          className="flex flex-col items-center"
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <ChevronDown className="size-5 text-red-400/70" strokeWidth={2.5} />
-          <ChevronDown className="-mt-3 size-5 text-red-400/40" strokeWidth={2.5} />
-        </m.div>
-      </m.div>
-
-      {/*
-       * The globe used to be a stacked block between the counter and the ask:
-       * 440px on desktop, and 358px of a 844px phone screen — 42% of the first
-       * thing anyone saw, spent on atmosphere, sitting exactly where the turn to
-       * the reader belongs. It is the same globe, moved to a layer instead of a
-       * row, so it costs no vertical space at either size.
-       *
-       * Two anchors, one element. From lg its centre sits off the top-right
-       * corner and only an arc is in frame: a cropped sphere reads as larger
-       * than the screen, where a small complete one reads as an object on a
-       * table. Below lg there is no corner to spare, so it sits behind the
-       * counter — the pings and the number they are counting become one
-       * statement rather than two, 500px apart.
-       *
-       * overflow-hidden on the section is what does the cropping. No changes to
-       * DeathGlobe: cobe already inscribes the sphere in a square canvas, so
-       * cropping the container crops the sphere.
-       */}
       <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-start overflow-hidden px-4 pt-8 pb-12 sm:px-6 sm:pt-10 sm:pb-16">
         {/* Offsets in px, not %: a percentage `top` resolves against the
             containing block's height, which for this section is viewport-derived
@@ -575,9 +489,13 @@ export function HomeShell({
                 </p>
               </div>
 
-              <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-6">
-                <Button variant="text">{home.secondaryLink}</Button>
-              </Link>
+              {/* No "Have questions first? Learn more" here any more. It sat
+                  forty pixels above the questions band, which answers the same
+                  offer with six real questions and an All topics link — it was
+                  the first of eight routes to /learn on one page, and the only
+                  one that asked rather than showed. The dismissed stage keeps
+                  its own copy: that reader has declined the test, so a quiet
+                  non-test door is the point rather than a duplicate. */}
             </>
           )}
 
