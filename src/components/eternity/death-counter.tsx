@@ -312,6 +312,31 @@ export const DeathCounter = memo(function DeathCounter({
         return;
       }
 
+      /*
+       * React re-applies the server's `dangerouslySetInnerHTML` on some
+       * re-renders, which empties every cell and leaves a bare "0". Measured on
+       * a preview deployment, it does this twice on a first load — around 490ms
+       * and again around 860ms — with the same DOM node throughout, so this is
+       * not a remount and nothing in this effect can prevent it.
+       *
+       * On its own that is invisible: the loop below rewrites the number on the
+       * very next frame, which is what has always happened. What made it
+       * visible was the spin — the second wipe lands mid-spin, and a loop that
+       * politely waits out `introUntil` left the reader looking at a
+       * five-storey red zero for half a second.
+       *
+       * So a wipe is now detected and taken as the end of the spin. The cells
+       * the spin was animating no longer exist; there is nothing left to
+       * finish, and repairing the number matters more than completing an
+       * entrance.
+       */
+      if (lastText && host.childElementCount !== lastText.length) {
+        for (const id of introTimeouts) clearTimeout(id);
+        introTimeouts.length = 0;
+        introUntil = 0;
+        lastText = "";
+      }
+
       // The live value is held back until the wheels have stopped. Writing to a
       // cell mid-spin would cut one of its steps short and the column would
       // land on the wrong digit.
