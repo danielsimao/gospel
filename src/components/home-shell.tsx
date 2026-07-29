@@ -293,8 +293,28 @@ export function HomeShell({
           </div>
 
 
-          {/* === Bottom CTA section — adapts to journey stage === */}
-          {journey.stage === "committed" && (
+          {/*
+           * === Bottom CTA section — adapts to journey stage ===
+           *
+           * All five stages are rendered, always, and CSS shows exactly one.
+           *
+           * They used to be branched on `journey.stage`, which is read from
+           * localStorage and therefore unknown to the server: every render
+           * emitted the visitor block and the real one replaced it at
+           * hydration. Hiding the wrong block before first paint stopped the
+           * reader seeing it, but not the swap — the variants stand 133px apart
+           * at the extremes, measured, so everything below the fold still
+           * jumped once the right one arrived. Reserving a fixed height instead
+           * would have handed that 133px of dead space to visitors, who are
+           * both the commonest case and the one the page is trying to convert.
+           *
+           * With every variant in the markup, the pre-paint script's choice is
+           * final: the correct block is laid out in the first frame and nothing
+           * moves afterwards. The cost is four unused blocks in the HTML, which
+           * is a few kilobytes and, being display:none, out of the
+           * accessibility tree.
+           */}
+          <div data-stage="committed" className="contents">
             <div className="relative flex w-full flex-col items-center">
               {/* Warm grace glow — this state continues the grace screen's atmosphere */}
               <div
@@ -355,10 +375,9 @@ export function HomeShell({
                 {home.journey.retakeLabel}
               </Link>
             </div>
-          )}
+          </div>
 
-          {journey.stage === "undecided" && (
-            <>
+          <div data-stage="undecided" className="contents">
               {/* whatHappened carries the temporal mirror that sinceLine used
                   to hold — how long "later" has already lasted, stated once,
                   no pressure mechanics — folded into the result sentence. */}
@@ -377,10 +396,9 @@ export function HomeShell({
                   <ButtonArrow />
                 </Button>
               </Link>
-            </>
-          )}
+          </div>
 
-          {journey.stage === "thinking" && (
+          <div data-stage="thinking" className="contents">
             <div className="flex w-full max-w-md flex-col items-center">
               <StageSpine
                 tone="dim"
@@ -424,10 +442,9 @@ export function HomeShell({
                 {home.journeyStages.thinking.retakeLabel}
               </Link>
             </div>
-          )}
+          </div>
 
-          {journey.stage === "dismissed" && (
-            <>
+          <div data-stage="dismissed" className="contents">
               {/* The only stage with a ghost primary. Present, honest,
                   unpressured — someone who said no should not be sold to. */}
               <StageSpine
@@ -451,14 +468,12 @@ export function HomeShell({
               <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-3">
                 <Button variant="text">{home.secondaryLink}</Button>
               </Link>
-            </>
-          )}
+          </div>
 
-          {journey.stage === "visitor" && (
-            /* `contents` so the wrapper adds no box of its own and the children
-               stay direct flex items of the column. It exists only to give the
-               pre-paint rule something to hide. */
-            <div data-stage="visitor" className="contents">
+          {/* `contents` on every wrapper so none of them adds a box of its own
+              and the children stay direct flex items of the column. They exist
+              only to give the pre-paint rule something to select. */}
+          <div data-stage="visitor" className="contents">
               {/*
                * The turn from the world's dead to this reader's own standing.
                *
@@ -535,8 +550,7 @@ export function HomeShell({
                   one that asked rather than showed. The dismissed stage keeps
                   its own copy: that reader has declined the test, so a quiet
                   non-test door is the point rather than a duplicate. */}
-            </div>
-          )}
+          </div>
 
           {/*
            * Three ungated bands, identical on all five stages. Each shows what
@@ -586,12 +600,25 @@ export function HomeShell({
            * homepage with the world's dead edited out of it — the facts are
            * still true, they are simply no longer the thing being said to them.
            */}
-          <div className="-mx-4 mt-14 w-[calc(100%+2rem)] sm:-mx-6 sm:mt-16 sm:w-[calc(100%+3rem)]">
-            <FactCrawl facts={home.facts} />
-            <FactList facts={home.facts} />
-          </div>
         </div>
       </section>
+
+      {/*
+       * The wire feed, flush against the footer.
+       *
+       * Outside the section rather than inside it: the section carries the
+       * page's horizontal padding and a bottom pad of its own, so in there the
+       * crawl needed negative margins to reach the edges and still left a gap
+       * underneath. As the last child of <main> it is full-bleed by default and
+       * its bottom border is the footer's top edge.
+       */}
+      {/* No top margin of its own: the section above already ends in pb-12 /
+          sm:pb-16, and stacking a margin on that opened a gap half a screen
+          tall between the blog card and the feed. */}
+      <div>
+        <FactCrawl facts={home.facts} />
+        <FactList facts={home.facts} />
+      </div>
     </main>
   );
 }

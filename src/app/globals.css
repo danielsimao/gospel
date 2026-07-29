@@ -239,20 +239,39 @@ html[data-game-phase="invitation"] [data-slot="sticky-death-counter"] {
 }
 
 /*
- * The visitor block, withheld from readers who are not visitors.
+ * One journey stage, chosen before the first paint.
  *
- * The journey stage lives in localStorage, so every server render of the
- * homepage is the stranger's front door — the good-person question and its
- * three chips. A reader who has already taken the test and answered the
- * invitation had that painted at them on every refresh and corrected once
- * React hydrated, which is what "the content flickers" meant.
+ * The stage lives in localStorage, so every server render of the homepage is
+ * the stranger's front door — the good-person question and its three chips. A
+ * reader who had taken the test and answered the invitation had that painted
+ * at them on every refresh and corrected once React hydrated. That was the
+ * flicker.
  *
- * The inline script in home-shell stamps the real stage on <html> during
- * parse, ahead of the first paint. This rule reads it. The attribute is absent
- * until that script runs and absent entirely if it throws — in a private
- * window, say — so the default is to show the block, which is the right
- * failure: a visitor seeing the visitor block.
+ * Hiding the wrong block was not enough on its own. The five variants stand
+ * 133px apart at the extremes, so swapping one for the other at hydration
+ * still moved everything below it. So all five are in the markup and this
+ * picks one: the layout is settled in the first frame and nothing moves after.
+ *
+ * The inline script in home-shell stamps the stage on <html> during parse. The
+ * attribute is absent until it runs and absent entirely if it throws — in a
+ * private window, say — so the default below is the visitor block, which is
+ * the right way to fail: a stranger sees the stranger's door.
  */
-html[data-journey-stage]:not([data-journey-stage="visitor"]) [data-stage="visitor"] > * {
-  visibility: hidden;
+[data-stage] {
+  display: none;
+}
+
+[data-stage="visitor"],
+html[data-journey-stage="visitor"] [data-stage="visitor"],
+html[data-journey-stage="undecided"] [data-stage="undecided"],
+html[data-journey-stage="committed"] [data-stage="committed"],
+html[data-journey-stage="thinking"] [data-stage="thinking"],
+html[data-journey-stage="dismissed"] [data-stage="dismissed"] {
+  display: contents;
+}
+
+/* The default above is unconditional, so it has to be taken back the moment
+   the script names a stage that is not "visitor". */
+html[data-journey-stage]:not([data-journey-stage="visitor"]) [data-stage="visitor"] {
+  display: none;
 }
