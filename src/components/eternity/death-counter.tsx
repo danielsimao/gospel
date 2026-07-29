@@ -18,6 +18,53 @@ const ROLL_MS = 380;
 /** CSS twin of EASE_OUT_STRONG. Inlined: this runs outside React's style pipeline. */
 const ROLL_EASING = "cubic-bezier(0.16, 1, 0.3, 1)";
 
+/** One turn of a wheel during the arrival spin. */
+const INTRO_STEP_MS = 55;
+/** Steps the leftmost column takes before settling. */
+const INTRO_BASE_STEPS = 5;
+/** Extra steps per column to the right, so the last digit rests last. */
+const INTRO_STEPS_PER_COLUMN = 2;
+/**
+ * How late the spin may still start, measured from navigation.
+ *
+ * The pre-paint script puts the true number on screen in the first frame, but
+ * this component only runs once React has hydrated. On a fast load those are
+ * close enough that the spin reads as the number arriving. On a slow phone
+ * hydration can be a second or more behind, and by then the reader has already
+ * read the number — spinning it at that point looks like a fault, not an
+ * entrance. Past this point the counter simply stands correct.
+ */
+const INTRO_MAX_DELAY_MS = 600;
+
+/**
+ * Marks the spin as spent for this tab.
+ *
+ * sessionStorage, not localStorage: the entrance should play once per visit,
+ * not once per person. It survives a reload and same-tab navigation and dies
+ * with the tab, which is what "again in the same window" means. A second tab
+ * gets its own store and will replay it — correct, since that is a new visit
+ * to a reader's eye.
+ */
+const INTRO_SESSION_KEY = "gospel-counter-intro";
+
+function introAlreadyPlayed(): boolean {
+  try {
+    return sessionStorage.getItem(INTRO_SESSION_KEY) === "1";
+  } catch {
+    // Private mode or storage disabled. Treated as already played, so the
+    // entrance is skipped rather than replayed on every single navigation.
+    return true;
+  }
+}
+
+function markIntroPlayed(): void {
+  try {
+    sessionStorage.setItem(INTRO_SESSION_KEY, "1");
+  } catch {
+    // Nothing to do — the read above fails the same way and skips the spin.
+  }
+}
+
 /*
  * One window per character, one glyph inside it.
  *
@@ -46,6 +93,13 @@ interface DeathCounterProps {
    * count with the test's own duration. Ignored when `fromMidnight` is set.
    */
   baseMs?: number;
+  /**
+   * Play the arrival spin — once per tab, on the first counter the reader
+   * meets. Deliberately separate from `fromMidnight`: what the counter counts
+   * and whether it makes an entrance are different questions, and only the
+   * homepage hero wants the second one.
+   */
+  intro?: boolean;
 }
 
 function getMsSinceMidnightUTC(): number {
@@ -93,6 +147,38 @@ function buildCells(host: HTMLElement, text: string): void {
  * advance and nothing has to be measured or hard-coded. Only transforms
  * animate, so both halves stay on the compositor.
  */
+function rollCell(cell: HTMLElement, char: string, ms: number): void {
+  const glyph = cell.firstElementChild as HTMLElement | undefined;
+  if (!glyph || glyph.textContent === char) return;
+
+  if (ms <= 0 || typeof glyph.animate !== "function") {
+    glyph.textContent = char;
+    return;
+  }
+
+  const leaving = glyph.cloneNode(true) as HTMLElement;
+  leaving.style.position = "absolute";
+  leaving.style.insetInlineStart = "0";
+  leaving.style.top = "0";
+  leaving.style.width = "100%";
+  cell.appendChild(leaving);
+
+  const exit = leaving.animate(
+    [{ transform: "translateY(0)" }, { transform: "translateY(-100%)" }],
+    { duration: ms, easing: ROLL_EASING, fill: "forwards" },
+  );
+  // Removed on finish AND on cancel: an unmount mid-roll cancels the
+  // animation, and a clone left behind would sit frozen over the live glyph.
+  exit.onfinish = () => leaving.remove();
+  exit.oncancel = () => leaving.remove();
+
+  glyph.textContent = char;
+  glyph.animate(
+    [{ transform: "translateY(100%)" }, { transform: "translateY(0)" }],
+    { duration: ms, easing: ROLL_EASING },
+  );
+}
+
 function updateCells(host: HTMLElement, text: string, animate: boolean): void {
   if (host.childElementCount !== text.length) {
     buildCells(host, text);
@@ -101,36 +187,56 @@ function updateCells(host: HTMLElement, text: string, animate: boolean): void {
 
   for (let i = 0; i < text.length; i++) {
     const cell = host.children[i] as HTMLElement | undefined;
-    const glyph = cell?.firstElementChild as HTMLElement | undefined;
-    if (!cell || !glyph || glyph.textContent === text[i]) continue;
-
-    if (!animate || typeof glyph.animate !== "function") {
-      glyph.textContent = text[i];
-      continue;
-    }
-
-    const leaving = glyph.cloneNode(true) as HTMLElement;
-    leaving.style.position = "absolute";
-    leaving.style.insetInlineStart = "0";
-    leaving.style.top = "0";
-    leaving.style.width = "100%";
-    cell.appendChild(leaving);
-
-    const exit = leaving.animate(
-      [{ transform: "translateY(0)" }, { transform: "translateY(-100%)" }],
-      { duration: ROLL_MS, easing: ROLL_EASING, fill: "forwards" },
-    );
-    // Removed on finish AND on cancel: an unmount mid-roll cancels the
-    // animation, and a clone left behind would sit frozen over the live glyph.
-    exit.onfinish = () => leaving.remove();
-    exit.oncancel = () => leaving.remove();
-
-    glyph.textContent = text[i];
-    glyph.animate(
-      [{ transform: "translateY(100%)" }, { transform: "translateY(0)" }],
-      { duration: ROLL_MS, easing: ROLL_EASING },
-    );
+    if (cell) rollCell(cell, text[i], animate ? ROLL_MS : 0);
   }
+}
+
+/**
+ * The arrival spin: every column runs up through the digits and settles into
+ * the number that is already on screen, left to right.
+ *
+ * Not a ramp from zero. A counter climbing 0 → 155,203 grows its text
+ * rectangle at every step, and each larger paint is a fresh LCP candidate —
+ * which would date LCP to the end of the animation and undo the entire reason
+ * PREPAINT_SCRIPT exists. Spinning keeps every column occupied, so the text
+ * rectangle is the same size on the first frame as on the last and no new
+ * candidate is ever produced. The drama is in the motion, not in the value.
+ *
+ * Later columns take more steps than earlier ones, so the number settles the
+ * way a mechanical odometer does: the slow wheels stop first and the last
+ * digit is still turning after the rest have come to rest.
+ *
+ * Returns how long the whole thing takes, so the caller knows when the live
+ * value may take back over.
+ */
+function playIntro(host: HTMLElement, text: string, timeouts: number[]): number {
+  let longest = 0;
+
+  for (let i = 0; i < text.length; i++) {
+    const cell = host.children[i] as HTMLElement | undefined;
+    const target = Number(text[i]);
+    // Separators have nothing to spin through, and spinning them would read as
+    // a glitch rather than as a wheel.
+    if (!cell || !Number.isInteger(target) || text[i] === " ") continue;
+
+    const steps = INTRO_BASE_STEPS + i * INTRO_STEPS_PER_COLUMN;
+    longest = Math.max(longest, steps * INTRO_STEP_MS);
+
+    for (let step = 1; step <= steps; step++) {
+      // Counted backwards from the target so the sequence always arrives from
+      // below: the final step is target-1 → target, like a wheel coming to
+      // rest, rather than an arbitrary digit snapping into place.
+      const digit = (((target - (steps - step)) % 10) + 10) % 10;
+      timeouts.push(
+        window.setTimeout(
+          () => rollCell(cell, String(digit), INTRO_STEP_MS),
+          step * INTRO_STEP_MS,
+        ),
+      );
+    }
+  }
+
+  return longest;
 }
 
 /**
@@ -153,6 +259,7 @@ export const DeathCounter = memo(function DeathCounter({
   style,
   fromMidnight = false,
   baseMs = 0,
+  intro = false,
 }: DeathCounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
 
@@ -172,8 +279,53 @@ export const DeathCounter = memo(function DeathCounter({
     // mid-roll a cell holds two glyphs, so the DOM is not a clean record of it.
     let lastText = "";
 
+    /*
+     * The arrival spin, once per tab.
+     *
+     * It builds its own cells rather than spinning the ones the pre-paint
+     * script wrote, and it does so from inside the first frame rather than
+     * here. Both are forced by the same thing: hydration re-applies the
+     * server's `dangerouslySetInnerHTML` and the span is briefly back to "0",
+     * and measured, that reset lands a few milliseconds AFTER this effect runs
+     * — cells built here were wiped the instant they appeared, leaving a bare
+     * "0" on screen for the whole length of the spin. A frame's wait puts the
+     * build on the far side of it.
+     *
+     * The reset itself predates this component's roll and is harmless to LCP:
+     * "0" is smaller than what the pre-paint script already painted, so it
+     * cannot become a new candidate.
+     */
+    const introTimeouts: number[] = [];
+    let introUntil = 0;
+    let introPending =
+      intro &&
+      !reduced?.matches &&
+      !introAlreadyPlayed() &&
+      performance.now() < INTRO_MAX_DELAY_MS;
+    // Claimed up front, not when the spin starts: two counters mounting in the
+    // same frame must not both decide they are the one that gets to play it.
+    if (introPending) markIntroPlayed();
+
     function tick() {
       if (!host) return;
+
+      if (introPending) {
+        introPending = false;
+        const text = Math.floor(targetBase * DEATHS_PER_MS).toLocaleString();
+        buildCells(host, text);
+        lastText = text;
+        introUntil = Date.now() + playIntro(host, text, introTimeouts);
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+
+      // The live value is held back until the wheels have stopped. Writing to a
+      // cell mid-spin would cut one of its steps short and the column would
+      // land on the wrong digit.
+      if (Date.now() < introUntil) {
+        raf = requestAnimationFrame(tick);
+        return;
+      }
       const elapsed = Date.now() - animStart;
       const realCount = Math.floor((targetBase + elapsed) * DEATHS_PER_MS);
 
@@ -203,8 +355,12 @@ export const DeathCounter = memo(function DeathCounter({
       raf = requestAnimationFrame(tick);
     }
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [fromMidnight, baseMs]);
+    return () => {
+      cancelAnimationFrame(raf);
+      // An unmount mid-spin would otherwise keep firing into a detached host.
+      for (const id of introTimeouts) clearTimeout(id);
+    };
+  }, [fromMidnight, baseMs, intro]);
 
   const span = (
     <span

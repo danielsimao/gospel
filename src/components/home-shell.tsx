@@ -230,6 +230,7 @@ export function HomeShell({
               itself, so nothing is needed here. */}
           <DeathCounter
             fromMidnight
+            intro
             className="mt-4 font-mono text-5xl font-black tabular-nums tracking-tighter text-red-500 sm:mt-5 sm:text-7xl md:text-8xl lg:text-9xl"
             style={{
               textShadow:
