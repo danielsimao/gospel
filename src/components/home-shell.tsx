@@ -13,7 +13,7 @@ import { FactCrawl, FactList } from "@/components/home/fact-crawl";
 import { SelfRating } from "@/components/home/self-rating";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { useJourney } from "@/lib/use-journey";
-import { saveInvitationResponse, resetJourney } from "@/lib/journey-storage";
+import { saveInvitationResponse } from "@/lib/journey-storage";
 import { clearSession } from "@/lib/test-session-storage";
 import { writeSelfRating } from "@/lib/self-rating-storage";
 import { TOTAL_QUESTIONS } from "@/lib/questions";
@@ -129,6 +129,22 @@ export function HomeShell({
    * Written before navigating so the value is already there when the shell's
    * first frame looks for it — the shell skips its landing screen only if it
    * finds one, and a race would mean the reader is asked the question twice.
+   */
+  /*
+   * Retaking the test clears the test, and nothing else.
+   *
+   * All three retake links used to call resetJourney() as well, which deletes
+   * the journey record — and that record is where the decision lives. A reader
+   * who had professed faith and then tapped "take the test again", to show
+   * someone or to walk it a second time, had that erased: the homepage dropped
+   * from "This is the beginning, not the finish line" back to a stranger's
+   * front door, and their next-steps track went with it.
+   *
+   * Reading and learn progress were never affected — those are separate keys —
+   * but the response was, and a diagnostic should not be able to revoke it.
+   * The response is overwritten when they answer the invitation again; until
+   * then their last actual decision is still the true one, so the homepage
+   * goes on showing it while the retake is in progress.
    */
   function handleSelfRating(rating: SelfRatingValue) {
     writeSelfRating(rating);
@@ -309,7 +325,6 @@ export function HomeShell({
                 href={`/${locale}/test`}
                 onClick={() => {
                   trackHomeRetakeClicked();
-                  resetJourney();
                   clearSession();
                 }}
                 className="mt-5 text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
@@ -379,7 +394,6 @@ export function HomeShell({
                 href={`/${locale}/test`}
                 onClick={() => {
                   trackHomeRetakeClicked();
-                  resetJourney();
                   clearSession();
                 }}
                 className="mt-2 text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
@@ -403,7 +417,6 @@ export function HomeShell({
                 href={`/${locale}/test`}
                 onClick={() => {
                   trackHomeRetakeClicked();
-                  resetJourney();
                   clearSession();
                 }}
                 className="mt-8"
