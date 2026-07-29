@@ -3,7 +3,27 @@
     "title": "Are you a good person?",
     "cta": "Begin the test",
     "label": "Test",
-    "subtitle": "God's Law. Six questions. One verdict."
+    "subtitle": "God's Law. Six questions. One verdict.",
+    "selfRating": {
+      "yes": "Yes",
+      "mostly": "Pretty much",
+      "no": "No"
+    },
+    "reply": {
+      "yes": {
+        "heading": "You said you're a good person.",
+        "body": "Almost everyone does. The question is which standard you are measuring against — because you do not get to pick it."
+      },
+      "mostly": {
+        "heading": "Pretty much.",
+        "body": "Compared to whom? Most of us find someone worse and come out looking fine. This test does not grade on a curve."
+      },
+      "no": {
+        "heading": "You said you're not a good person.",
+        "body": "Most people who say that mean “nobody's perfect.” Six questions will tell you what you actually meant."
+      }
+    },
+    "changeAnswer": "That's not what I meant"
   },
   "test": {
     "caseLabel": "Test",
@@ -39,7 +59,13 @@
       "confessionBoth": "You are {admitted} — by your own admission. And {denied} — by your evasions.",
       "separator": "and",
       "useOxfordComma": true,
-      "noneLabel": "Guilty still."
+      "noneLabel": "Guilty still.",
+      "selfRatingLabel": "Your own answer",
+      "selfRatingMirror": {
+        "yes": "You said you were a good person. Your own answers say otherwise.",
+        "mostly": "You said you were pretty much a good person. “Pretty much” was doing a great deal of work.",
+        "no": "You said you were not a good person. This is what you were agreeing to."
+      }
     }
   },
   "questions": [
@@ -1465,13 +1491,16 @@
     "mortalityStat": "10 / 10 people will die",
     "ctaButton": "Take the test",
     "secondaryLink": "Have questions first? Learn more",
+    "selfRatingQuestion": "Are you a good person?",
+    "selfRating": {
+      "yes": "Yes",
+      "mostly": "Pretty much",
+      "no": "No"
+    },
+    "testPreview": "6 questions · 2 minutes",
+    "questionsLabel": "Questions people ask",
     "blogCard": {
       "eyebrow": "From the blog"
-    },
-    "alsoHere": {
-      "label": "Also here",
-      "readingDescription": "Seven days in the Gospel of John.",
-      "learnDescription": "Short answers to the hard questions."
     },
     "facts": [
       "Last year, 56 million people died worldwide.",
@@ -1492,17 +1521,7 @@
       },
       "reading": {
         "label": "Seven days in John",
-        "descComplete": "You've read the Word for all seven days.",
-        "descActiveStart": "Start with John 1. Seven days in the Word.",
-        "descActiveProgress": "Day {current} of {total}. Keep going.",
-        "descUpcoming": "Read the Word each day."
-      },
-      "learn": {
-        "label": "Honest answers",
-        "descComplete": "You've explored every foundation.",
-        "descActiveStart": "Five foundations to explore.",
-        "descActiveProgress": "{current} of {total} topics studied.",
-        "descUpcoming": "Study the foundations of the gospel."
+        "descComplete": "You've read the Word for all seven days."
       },
       "share": {
         "label": "Pass it on",

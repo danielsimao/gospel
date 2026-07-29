@@ -3,25 +3,31 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { m } from "framer-motion";
-import { BookOpen, ChevronDown, Compass } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { DeathCounter } from "@/components/eternity/death-counter";
-import { RotatingFacts } from "@/components/eternity/rotating-facts";
 import { LatestPostCard } from "@/components/home/latest-post-card";
-import { AlsoHere, type AlsoHereRow } from "@/components/home/also-here";
+import { QuestionsBand } from "@/components/home/questions-band";
+import { ReadingBand, type ReadingDay } from "@/components/home/reading-band";
 import { StageSpine } from "@/components/home/stage-spine";
+import { FactCrawl, FactList } from "@/components/home/fact-crawl";
+import { SelfRating } from "@/components/home/self-rating";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { hasAnsweredConsent, subscribeToConsentAnswered } from "@/lib/consent";
-import { useJourney, TOTAL_READING_DAYS } from "@/lib/use-journey";
+import { useJourney } from "@/lib/use-journey";
 import { saveInvitationResponse, resetJourney } from "@/lib/journey-storage";
 import { clearSession } from "@/lib/test-session-storage";
+import { writeSelfRating } from "@/lib/self-rating-storage";
+import { TOTAL_QUESTIONS } from "@/lib/questions";
+import { trackSelfRating } from "@/lib/analytics";
 import {
   trackHomeViewed,
   trackHomeCtaClicked,
   trackHomeSecondaryClicked,
   trackHomeRetakeClicked,
 } from "@/lib/eternity-analytics";
-import type { HomeMessages } from "@/lib/types";
+import type { HomeMessages, SelfRating as SelfRatingValue } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 
 const DeathGlobe = dynamic(
@@ -46,6 +52,12 @@ interface HomeShellProps {
   home: HomeMessages;
   locale: Locale;
   topicSlugs: string[];
+  topics: Array<{ slug: string; title: string }>;
+  readingDays: ReadingDay[];
+  readingLabels: { dayLabel: string; complete: string };
+  /** Reused from the learn hub and the blog index rather than restated here. */
+  allTopicsLabel: string;
+  allPostsLabel: string;
   latestPost?: {
     slug: string;
     title: string;
@@ -53,6 +65,28 @@ interface HomeShellProps {
     datePublished: string;
     localeAvailable: boolean;
   } | null;
+}
+
+/*
+ * Whether the globe is the cropped corner one.
+ *
+ * Its speed and tilt are cobe arguments, not CSS, so they cannot be switched
+ * with a responsive class the way its size is — the breakpoint has to be read
+ * at runtime. Matches Tailwind's `lg`. The server always reports false; the
+ * globe is `ssr: false` and mounts client-side only, so there is no markup to
+ * mismatch.
+ */
+const DESKTOP_QUERY = "(min-width: 1024px)";
+
+function subscribeToDesktop(onChange: () => void) {
+  if (typeof window === "undefined") return () => {};
+  const mql = window.matchMedia(DESKTOP_QUERY);
+  mql.addEventListener("change", onChange);
+  return () => mql.removeEventListener("change", onChange);
+}
+
+function isDesktop() {
+  return typeof window !== "undefined" && window.matchMedia(DESKTOP_QUERY).matches;
 }
 
 /** "earlier today" / "yesterday" / "{n} days ago" / "{n} weeks ago" — pure. */
@@ -73,42 +107,49 @@ const RATE_CARDS = [
   { value: "155,000", key: "perDay" },
 ] as const;
 
-export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeShellProps) {
+export function HomeShell({
+  hero,
+  home,
+  locale,
+  topicSlugs,
+  topics,
+  readingDays,
+  readingLabels,
+  allTopicsLabel,
+  allPostsLabel,
+  latestPost,
+}: HomeShellProps) {
   const journey = useJourney(topicSlugs);
 
-  /*
-   * The band's rows. Progress replaces the description only once the reader has
-   * actually started — a count is information about something you began, not a
-   * prompt. Both destinations stay linked either way; nothing here gates.
-   */
-  const alsoHereRows: AlsoHereRow[] = [
-    {
-      href: `/${locale}/reading-plan`,
-      label: home.journey.reading.label,
-      description:
-        journey.readingDone > 0
-          ? home.journey.reading.descActiveProgress
-              .replace("{current}", String(journey.readingDone))
-              .replace("{total}", String(TOTAL_READING_DAYS))
-          : home.alsoHere.readingDescription,
-      icon: <BookOpen className="size-4" aria-hidden="true" />,
-    },
-    {
-      href: `/${locale}/learn`,
-      label: home.journey.learn.label,
-      description:
-        journey.learnDone > 0
-          ? home.journey.learn.descActiveProgress
-              .replace("{current}", String(journey.learnDone))
-              .replace("{total}", String(topicSlugs.length))
-          : home.alsoHere.learnDescription,
-      icon: <Compass className="size-4" aria-hidden="true" />,
-    },
-  ];
-
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [isScrollable, setIsScrollable] = useState(false);
   const viewTracked = useRef(false);
+
+  /*
+   * The answer is handed to the test through storage, not a route param: /test
+   * is prerendered, and reading search params during its render would push the
+   * whole route into client rendering.
+   *
+   * Written before navigating so the value is already there when the shell's
+   * first frame looks for it — the shell skips its landing screen only if it
+   * finds one, and a race would mean the reader is asked the question twice.
+   */
+  function handleSelfRating(rating: SelfRatingValue) {
+    writeSelfRating(rating);
+    trackSelfRating(rating, "homepage");
+    trackHomeCtaClicked();
+    router.push(`/${locale}/test`);
+  }
+
+  /*
+   * Warm the route before it is asked for. The gap a reader actually feels
+   * between tapping an answer and seeing the reply is the RSC fetch, not the
+   * animation — prefetching makes the push resolve immediately.
+   */
+  useEffect(() => {
+    router.prefetch(`/${locale}/test`);
+  }, [router, locale]);
 
   // Reveal the scroll hint only once the consent banner is gone. Server render
   // reports "unanswered" for stable hydration; hasAnsweredConsent also counts
@@ -119,6 +160,8 @@ export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeSh
     hasAnsweredConsent,
     () => false,
   );
+
+  const desktopGlobe = useSyncExternalStore(subscribeToDesktop, isDesktop, () => false);
 
   useEffect(() => {
     if (viewTracked.current || !journey.ready) return;
@@ -181,9 +224,70 @@ export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeSh
         </m.div>
       </m.div>
 
-      <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-start px-4 pt-8 pb-12 sm:px-6 sm:pt-10 sm:pb-16">
-        {/* Radial vignette */}
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
+      {/*
+       * The globe used to be a stacked block between the counter and the ask:
+       * 440px on desktop, and 358px of a 844px phone screen — 42% of the first
+       * thing anyone saw, spent on atmosphere, sitting exactly where the turn to
+       * the reader belongs. It is the same globe, moved to a layer instead of a
+       * row, so it costs no vertical space at either size.
+       *
+       * Two anchors, one element. From lg its centre sits off the top-right
+       * corner and only an arc is in frame: a cropped sphere reads as larger
+       * than the screen, where a small complete one reads as an object on a
+       * table. Below lg there is no corner to spare, so it sits behind the
+       * counter — the pings and the number they are counting become one
+       * statement rather than two, 500px apart.
+       *
+       * overflow-hidden on the section is what does the cropping. No changes to
+       * DeathGlobe: cobe already inscribes the sphere in a square canvas, so
+       * cropping the container crops the sphere.
+       */}
+      <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-start overflow-hidden px-4 pt-8 pb-12 sm:px-6 sm:pt-10 sm:pb-16">
+        {/* Offsets in px, not %: a percentage `top` resolves against the
+            containing block's height, which for this section is viewport-derived
+            and put the sphere almost entirely above the fold. */}
+        {/*
+         * Sizes are not a smooth ramp. Phone: large, because the sphere is the
+         * counter's backdrop and a small one behind that number reads as
+         * texture rather than a globe. Tablet: the smallest of the three — it
+         * is still centred behind the counter but the viewport is wide enough
+         * that a phone-scale sphere would swamp the column. Desktop: largest,
+         * because most of it is off-canvas and only the arc is doing the work.
+         */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-[5.5rem] left-1/2 -translate-x-1/2 sm:-top-[6rem] lg:left-auto lg:right-[-12rem] lg:top-[-10rem] lg:translate-x-0 xl:right-[-9rem] xl:top-[-11rem]"
+        >
+          <DeathGlobe
+            className="relative w-[32rem] sm:w-[26rem] lg:w-[40rem] xl:w-[46rem]"
+            // A quarter speed on desktop. Stopped, it stops being the thing it
+            // is for; at full speed beside the question it pulls the eye off
+            // the words. Slow enough to read as alive, not as movement.
+            rotationScale={desktopGlobe ? 0.25 : 1}
+            // Tipped further on desktop so the northern population band walks
+            // down into the cropped arc; Europe sits above the crop otherwise.
+            theta={desktopGlobe ? 0.45 : 0.18}
+            // Brighter below lg, where the sphere sits behind the counter and
+            // the scrim protecting that number is the same one flattening the
+            // landmass. On desktop the globe has its own ground and needs none.
+            mapBrightness={desktopGlobe ? 1.8 : 4.2}
+          />
+        </div>
+
+        {/* Scrims. Two jobs: hold the counter legible over the dot field, and
+            clear the ground under everything below it. The first mockups of
+            this layout were unreadable until the type had its own ground. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_46%_12%_at_50%_15%,rgba(6,4,4,0.72)_0%,rgba(6,4,4,0.2)_66%,transparent_88%),linear-gradient(to_bottom,transparent_24%,rgba(6,4,4,0.86)_40%,#060404_54%)] lg:bg-[linear-gradient(to_bottom,rgba(6,4,4,0.8)_0%,rgba(6,4,4,0.25)_9%,transparent_16%),linear-gradient(to_right,#060404_20%,rgba(6,4,4,0.88)_50%,rgba(6,4,4,0.12)_70%,transparent_100%)]"
+        />
+
+        {/* Radial vignette — mobile only. It fades everything past 75% from the
+            centre to solid #060404, which is precisely where the desktop globe
+            now sits: left on at lg it erased the corner completely. Above lg the
+            left-to-right scrim above does this job instead, and only on the side
+            that holds type. */}
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)] lg:bg-none" />
 
         <div className="relative z-[1] flex w-full flex-col items-center">
           {/* Label */}
@@ -191,7 +295,9 @@ export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeSh
             {hero.label}
           </p>
 
-          {/* Death counter */}
+          {/* Death counter. The daily 99,999 → 100,000 crossing does not shift
+              it: DeathCounter reserves minWidth 7ch and centres inside that
+              itself, so nothing is needed here. */}
           <DeathCounter
             fromMidnight
             className="mt-4 font-mono text-5xl font-black tabular-nums tracking-tighter text-red-500 sm:mt-5 sm:text-7xl md:text-8xl lg:text-9xl"
@@ -206,18 +312,20 @@ export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeSh
             {hero.suffix}
           </p>
 
-          {/* Rate cards */}
-          <div className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/[0.04] sm:mt-14 sm:flex sm:flex-wrap sm:justify-center">
+          {/*
+           * Rate cards. Below sm they are bare figures — no panel, no border,
+           * no fills: the globe sits directly behind them there, and a boxed
+           * grid over a dot sphere made two competing surfaces where the
+           * numbers should simply be lying on the earth. From sm up the globe
+           * moves out from behind them and the panel returns.
+           */}
+          <div className="mt-8 grid grid-cols-2 gap-x-8 gap-y-5 sm:mt-14 sm:flex sm:flex-wrap sm:justify-center sm:gap-px sm:overflow-hidden sm:rounded-lg sm:border sm:border-white/[0.04]">
             {RATE_CARDS.map((card, idx) => (
               <div
                 key={card.key}
-                className={`bg-white/[0.015] px-4 py-4 text-center sm:min-w-[110px] sm:px-6 sm:py-5 ${
+                className={`text-center sm:min-w-[110px] sm:bg-white/[0.015] sm:px-6 sm:py-5 ${
                   idx < RATE_CARDS.length - 1
                     ? "sm:border-r sm:border-white/[0.04]"
-                    : ""
-                } ${idx < 2 ? "border-b border-white/[0.04] sm:border-b-0" : ""} ${
-                  idx % 2 === 0
-                    ? "border-r border-white/[0.04] sm:border-r-0"
                     : ""
                 }`}
               >
@@ -231,26 +339,6 @@ export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeSh
             ))}
           </div>
 
-          {/* Rotating facts — news ticker */}
-          {home.facts.length > 0 && (
-            <div className="mt-8 w-full max-w-md sm:mt-10">
-              <RotatingFacts facts={home.facts} interval={9000} />
-            </div>
-          )}
-
-          {/* Death globe — one red ping per ~0.5s, drag to spin. Reserve the
-              square with padding-top (percentage padding is resolved from the
-              width and survives flex sizing), not aspect-square: an empty
-              aspect-square flex child collapses to 0 height until the canvas
-              mounts (~200ms in), which grew the centered hero and shifted it
-              (CLS 0.34). The padding box holds the full square from first paint. */}
-          <div className="mx-auto mt-6 w-full max-w-[380px] sm:mt-10 sm:max-w-[440px]">
-            <div className="relative w-full pt-[100%]">
-              <div className="absolute inset-0">
-                <DeathGlobe />
-              </div>
-            </div>
-          </div>
 
           {/* === Bottom CTA section — adapts to journey stage === */}
           {journey.stage === "committed" && (
@@ -418,37 +506,127 @@ export function HomeShell({ hero, home, locale, topicSlugs, latestPost }: HomeSh
 
           {journey.stage === "visitor" && (
             <>
-              {/* New visitor */}
-              <p className="mt-10 font-mono text-[10px] uppercase tracking-[3px] text-red-400/80 sm:mt-14 sm:text-[11px] sm:tracking-[4px]">
-                {home.mortalityStat}
-              </p>
-              <h1 className="mt-3 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-4 sm:text-3xl md:text-4xl">
+              {/*
+               * The turn from the world's dead to this reader's own standing.
+               *
+               * The eternity line is the bridge, not the ask — it states the
+               * stake the question is about, and it sits here rather than as the
+               * heading because a heading should be the thing the reader is
+               * about to act on. What they are about to answer is the good-person
+               * question, which is already this site's headline everywhere else:
+               * the page title, the test's own landing screen, and both share
+               * messages all lead with it.
+               *
+               * The `10 / 10 people will die` eyebrow that used to open this
+               * block is gone. The counter above and the crawl below both make
+               * that point; a third statement of it in between was the page
+               * repeating its premise instead of turning it on the reader.
+               */}
+              <p className="mt-8 max-w-md text-center text-[15px] leading-relaxed tracking-wide text-white/60 sm:mt-10 sm:text-base">
                 {home.provocativeQuestion}
+              </p>
+
+              <span
+                aria-hidden="true"
+                className="mt-7 h-px w-24 bg-gradient-to-r from-transparent via-white/[0.14] to-transparent sm:mt-9"
+              />
+
+              <h1 className="mt-7 max-w-md text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-9 sm:text-3xl md:text-4xl">
+                {home.selfRatingQuestion}
               </h1>
-              {/* One ask. The front door briefly asked the test's own first
-                  question inline instead — it read well, but it split the entry
-                  point in two and put a commandment on a page whose job is to
-                  get someone through the door. The Law is asked where the rest
-                  of it is asked. */}
-              <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
-                <Button variant="gold" size="lg" mist>
-                  {home.ctaButton}
-                  <ButtonArrow />
-                </Button>
-              </Link>
-              <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-4">
+
+              {/*
+               * One ask, three doors, all the same door.
+               *
+               * This is the front-door question the page briefly tried before
+               * and reverted: that attempt put a *commandment* here and left the
+               * gold button beside it, so the entry point genuinely was split in
+               * two. Here there is no second control — every option answers the
+               * question and begins the test — and the question is not the Law,
+               * it is the Law's opening question, which the test already asks on
+               * its own landing screen.
+               */}
+              <SelfRating
+                messages={home.selfRating}
+                ariaLabel={home.selfRatingQuestion}
+                onSelect={handleSelfRating}
+                className="mt-8"
+              />
+
+              {/* What a tap does, in the step bar the test itself uses. Cold
+                  visitors do not hesitate over motivation so much as over not
+                  knowing what "take the test" costs them. */}
+              <div className="mt-6 flex flex-col items-center gap-2.5">
+                <div
+                  aria-hidden="true"
+                  className="flex h-[3px] w-40 items-center gap-1.5 sm:w-48"
+                >
+                  {Array.from({ length: TOTAL_QUESTIONS }).map((_, i) => (
+                    <span
+                      key={i}
+                      className={`h-[3px] flex-1 rounded-full ${
+                        i === 0 ? "bg-white/70" : "bg-white/[0.14]"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <p className="font-mono text-[10px] uppercase tracking-[1.6px] text-white/50">
+                  {home.testPreview}
+                </p>
+              </div>
+
+              <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-6">
                 <Button variant="text">{home.secondaryLink}</Button>
               </Link>
             </>
           )}
 
-          {/* Ungated content band, identical on all five stages — the journey
-              tracker's replacement. Rendered once here rather than inside each
-              stage branch, so it cannot drift between them. */}
-          <AlsoHere label={home.alsoHere.label} rows={alsoHereRows} />
+          {/*
+           * The wire feed, between the hero and the other doors.
+           *
+           * Withheld from the committed stage on the same grounds globals.css
+           * retires the broadcast strip over grace: "a ticking death count over
+           * the grace screen argues against the screen." That stage carries the
+           * gold grace atmosphere, and a mortality crawl running under it would
+           * be arguing with the copy directly above it.
+           */}
+          {journey.stage !== "committed" && (
+            <div className="-mx-4 mt-12 w-[calc(100%+2rem)] sm:-mx-6 sm:mt-14 sm:w-[calc(100%+3rem)]">
+              <FactCrawl facts={home.facts} />
+              <FactList facts={home.facts} />
+            </div>
+          )}
+
+          {/*
+           * Three ungated bands, identical on all five stages. Each shows what
+           * is actually inside it rather than describing it: the topics as
+           * their own questions, the plan as the day this reader is on, the
+           * blog as its newest headline. Rendered once here rather than inside
+           * each stage branch, so they cannot drift between them.
+           */}
+          <QuestionsBand
+            locale={locale}
+            label={home.questionsLabel}
+            allLabel={allTopicsLabel}
+            topics={topics}
+          />
+
+          <ReadingBand
+            locale={locale}
+            label={home.journey.reading.label}
+            dayLabel={readingLabels.dayLabel}
+            completeDescription={readingLabels.complete}
+            days={readingDays}
+            completed={journey.readingDone}
+          />
 
           {latestPost && (
-            <LatestPostCard locale={locale} eyebrow={home.blogCard.eyebrow} post={latestPost} />
+            <LatestPostCard
+              locale={locale}
+              eyebrow={home.blogCard.eyebrow}
+              allLabel={allPostsLabel}
+              post={latestPost}
+            />
           )}
         </div>
       </section>

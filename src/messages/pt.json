@@ -3,7 +3,27 @@
     "title": "Tu és uma boa pessoa?",
     "cta": "Começar o teste",
     "label": "Teste",
-    "subtitle": "A Lei de Deus. Seis perguntas. Um veredicto."
+    "subtitle": "A Lei de Deus. Seis perguntas. Um veredicto.",
+    "selfRating": {
+      "yes": "Sim",
+      "mostly": "Mais ou menos",
+      "no": "Não"
+    },
+    "reply": {
+      "yes": {
+        "heading": "Disseste que és uma boa pessoa.",
+        "body": "Quase toda a gente diz o mesmo. A questão é qual o padrão com que te estás a medir — porque não és tu que o escolhes."
+      },
+      "mostly": {
+        "heading": "Mais ou menos.",
+        "body": "Em comparação com quem? Quase todos encontramos alguém pior e saímos bem na fotografia. Este teste não avalia por comparação."
+      },
+      "no": {
+        "heading": "Disseste que não és uma boa pessoa.",
+        "body": "A maioria de quem diz isso quer dizer “ninguém é perfeito”. Seis perguntas vão mostrar-te o que quiseste dizer de facto."
+      }
+    },
+    "changeAnswer": "Não era isso que eu queria dizer"
   },
   "test": {
     "caseLabel": "Teste",
@@ -39,7 +59,13 @@
       "confessionBoth": "És {admitted} — pela tua própria confissão. E {denied} — pelas tuas evasivas.",
       "separator": "e",
       "useOxfordComma": false,
-      "noneLabel": "Culpado na mesma."
+      "noneLabel": "Culpado na mesma.",
+      "selfRatingLabel": "A tua própria resposta",
+      "selfRatingMirror": {
+        "yes": "Disseste que eras uma boa pessoa. As tuas próprias respostas dizem o contrário.",
+        "mostly": "Disseste que eras mais ou menos uma boa pessoa. “Mais ou menos” estava a esconder muita coisa.",
+        "no": "Disseste que não eras uma boa pessoa. Era com isto que estavas a concordar."
+      }
     }
   },
   "questions": [
@@ -1465,13 +1491,16 @@
     "mortalityStat": "10 / 10 pessoas vão morrer",
     "ctaButton": "Faz o teste",
     "secondaryLink": "Tens perguntas primeiro? Sabe mais",
+    "selfRatingQuestion": "És uma boa pessoa?",
+    "selfRating": {
+      "yes": "Sim",
+      "mostly": "Mais ou menos",
+      "no": "Não"
+    },
+    "testPreview": "6 perguntas · 2 minutos",
+    "questionsLabel": "Perguntas que as pessoas fazem",
     "blogCard": {
       "eyebrow": "Do blog"
-    },
-    "alsoHere": {
-      "label": "Também aqui",
-      "readingDescription": "Sete dias no Evangelho de João.",
-      "learnDescription": "Respostas curtas às perguntas difíceis."
     },
     "facts": [
       "No ano passado, 56 milhões de pessoas morreram em todo o mundo.",
@@ -1492,17 +1521,7 @@
       },
       "reading": {
         "label": "Sete dias em João",
-        "descComplete": "Leste a Palavra durante os sete dias.",
-        "descActiveStart": "Começa por João 1. Sete dias na Palavra.",
-        "descActiveProgress": "Dia {current} de {total}. Continua.",
-        "descUpcoming": "Lê a Palavra todos os dias."
-      },
-      "learn": {
-        "label": "Respostas honestas",
-        "descComplete": "Exploraste todos os fundamentos.",
-        "descActiveStart": "Cinco fundamentos para explorar.",
-        "descActiveProgress": "{current} de {total} temas estudados.",
-        "descUpcoming": "Estuda os fundamentos do evangelho."
+        "descComplete": "Leste a Palavra durante os sete dias."
       },
       "share": {
         "label": "Partilha",

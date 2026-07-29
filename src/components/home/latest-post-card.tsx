@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { BandHeader } from "@/components/next-steps/band-header";
+import { BandRow, BandRows } from "@/components/home/band-row";
 import { trackHomeBlogCardClicked } from "@/lib/eternity-analytics";
 
 const MAX_AGE_DAYS = 60;
@@ -9,6 +10,8 @@ const MAX_AGE_DAYS = 60;
 interface LatestPostCardProps {
   locale: string;
   eyebrow: string;
+  /** "All posts" — the door to the other eleven, which one row cannot show. */
+  allLabel: string;
   post: {
     slug: string;
     title: string;
@@ -25,7 +28,7 @@ interface LatestPostCardProps {
  * door reads as abandonment; the footer link keeps the blog reachable.
  * Client-side age check on purpose: a build-time check freezes at deploy.
  */
-export function LatestPostCard({ locale, eyebrow, post }: LatestPostCardProps) {
+export function LatestPostCard({ locale, eyebrow, allLabel, post }: LatestPostCardProps) {
   // The SSR/client Date.now() skew only matters at the exact 60-day boundary,
   // where React reconciles the (silent, non-visual) difference; an effect
   // would flash the card in before hiding it. See JSDoc above.
@@ -36,26 +39,28 @@ export function LatestPostCard({ locale, eyebrow, post }: LatestPostCardProps) {
   const href = post.localeAvailable ? `/${locale}/blog/${post.slug}` : `/en/blog/${post.slug}`;
 
   return (
-    <div className="mt-10 w-full max-w-md text-left">
-      {/* Shares the AlsoHere band's header idiom rather than its old
-          divider + centred eyebrow. The two now sit directly above one
-          another, and two different chapter-break treatments stacked read as
-          a mistake. Gold tone keeps it distinct from the band's dim one. */}
+    <div className="mt-12 w-full max-w-md text-left sm:max-w-2xl">
+      {/* Shares the band header idiom with the two above it. Gold tone keeps it
+          distinct: the questions and the plan are the path, the blog is not. */}
       <BandHeader label={eyebrow} tone="gold" />
+      <BandRows>
+        <BandRow
+          href={href}
+          label={post.title}
+          description={post.hook}
+          onClick={() => trackHomeBlogCardClicked(post.slug)}
+          tone="gold"
+        />
+      </BandRows>
+      {/* One post is all this band can show, and the reader has no way of
+          knowing there are eleven more behind it. A door says so without
+          quoting a number that would need translating. */}
       <Link
-        href={href}
-        onClick={() => trackHomeBlogCardClicked(post.slug)}
-        className="group block rounded-xl border border-white/[0.06] bg-white/[0.015] p-5 transition-colors hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03]"
+        href={`/${locale}/blog`}
+        className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[1.6px] text-[#D4A843]/80 transition-colors hover:text-[#D4A843]"
       >
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="text-sm font-semibold text-white/85 group-hover:text-white/95">{post.title}</p>
-            <p className="mt-1 text-[13px] leading-relaxed text-white/55">{post.hook}</p>
-          </div>
-          <span aria-hidden="true" className="mt-0.5 text-white/60 transition-transform group-hover:translate-x-1">
-            →
-          </span>
-        </div>
+        {allLabel}{" "}
+        &rarr;
       </Link>
     </div>
   );

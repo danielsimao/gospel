@@ -40,6 +40,27 @@ export function trackQuestionAnswered(
   });
 }
 
+/**
+ * The reader's own claim, and which door they answered it at. Recorded because
+ * the gap between what people claim here and what the six answers show is the
+ * one number that says whether the Law is landing.
+ */
+export function trackSelfRating(
+  rating: "yes" | "mostly" | "no",
+  source: "homepage" | "test_landing",
+) {
+  safeCapture("self_rating_given", { rating, source });
+}
+
+/**
+ * A reader correcting their claim on the reply screen. Worth its own event:
+ * a high rate here means the chips are being mis-tapped, which is a layout
+ * problem, not a change of heart.
+ */
+export function trackSelfRatingChanged(from: "yes" | "mostly" | "no") {
+  safeCapture("self_rating_changed", { from });
+}
+
 export function trackFollowupShown(questionId: number) {
   safeCapture("question_followup_shown", { questionId });
 }

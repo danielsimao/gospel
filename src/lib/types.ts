@@ -9,6 +9,23 @@ export type AnswerType = "honest" | "justify";
 
 export type InvitationResponse = "committed" | "thinking" | "dismissed";
 
+/**
+ * The reader's own answer to "Are you a good person?", asked before the Law
+ * rather than derived from it.
+ *
+ * Testimony, never a measurement: nothing in the reducer's scoring path may
+ * read this. It does not change the drains, the question count, or the
+ * verdict — the verdict is what the six answers prove. All it does is let the
+ * verdict quote the reader back to themselves.
+ *
+ * All three answers take the same six questions. A reader who taps "no" has
+ * not earned a shorter Law: "grace to the humble" means humbled *by* the Law
+ * (Rom 3:20, Gal 3:24), and "I'm not perfect" is usually social modesty, not
+ * conviction. Shortening the Law on a self-report is the shortcut this method
+ * exists to prevent.
+ */
+export type SelfRating = "yes" | "mostly" | "no";
+
 export interface QuestionConfig {
   id: number;
   commandment: string;
@@ -45,6 +62,8 @@ export interface GameState {
   invitationReached: boolean;
   invitationResponse: InvitationResponse | null;
   questionStartedAt: number | null;
+  /** See SelfRating. Null when the reader reached the test without answering. */
+  selfRating: SelfRating | null;
 }
 
 /**
@@ -73,6 +92,7 @@ export interface ResumeSessionPayload {
   graceBeatsRevealed: number;
   invitationReached: boolean;
   invitationResponse: InvitationResponse | null;
+  selfRating: SelfRating | null;
 }
 
 export type GameAction =
@@ -85,6 +105,8 @@ export type GameAction =
   | { type: "REVEAL_GRACE_BEAT"; count: number }
   | { type: "SHOW_INVITATION" }
   | { type: "SET_INVITATION_RESPONSE"; response: InvitationResponse }
+  /** Null clears it, which is how "change my answer" returns to the question. */
+  | { type: "SET_SELF_RATING"; rating: SelfRating | null }
   | { type: "UNDO_ANSWER" }
   | { type: "BACK_TO_VERDICT" }
   | { type: "BACK_TO_GRACE" }
@@ -108,23 +130,10 @@ export interface JourneyMessages {
   };
   reading: {
     label: string;
+    /** Shown by the reading band once all seven days are read. */
     descComplete: string;
-    descActiveStart: string;
-    descActiveProgress: string;
-    descUpcoming: string;
   };
-  learn: {
-    label: string;
-    descComplete: string;
-    descActiveStart: string;
-    descActiveProgress: string;
-    descUpcoming: string;
-  };
-  share: {
-    label: string;
-    descActive: string;
-    descUpcoming: string;
-  };
+  share: { label: string; description: string };
   retakeLabel: string;
 }
 
@@ -172,16 +181,19 @@ export interface JourneyStagesMessages {
 }
 
 export interface HomeMessages {
+  /** The stake, under the counter. No longer the heading — see home-shell. */
   provocativeQuestion: string;
   mortalityStat: string;
   ctaButton: string;
   secondaryLink: string;
+  /** The visitor h1, and the question the chips answer. */
+  selfRatingQuestion: string;
+  selfRating: { yes: string; mostly: string; no: string };
+  /** What a tap costs: question count and rough duration. */
+  testPreview: string;
   blogCard: { eyebrow: string };
-  alsoHere: {
-    label: string;
-    readingDescription: string;
-    learnDescription: string;
-  };
+  /** Header for the band of learn topics shown as their own questions. */
+  questionsLabel: string;
   facts: string[];
   journey: JourneyMessages;
   journeyStages: JourneyStagesMessages;
@@ -213,11 +225,33 @@ export interface TestMessages {
     separator: string;
     useOxfordComma?: boolean;
     noneLabel: string;
+    selfRatingLabel: string;
+    /** One line per answer. A Record, so adding a SelfRating fails the build
+        rather than silently rendering nothing at the verdict. */
+    selfRatingMirror: Record<SelfRating, string>;
   };
 }
 
 export interface Messages {
-  landing: { title: string; cta: string; label: string; subtitle: string };
+  landing: {
+    title: string;
+    /** The reply screen's one button, shared by all three answers. The moment
+        this differs per answer, three answers become three products. */
+    cta: string;
+    label: string;
+    subtitle: string;
+    selfRating: { yes: string; mostly: string; no: string };
+    /**
+     * What each answer is told before the Law begins.
+     *
+     * A Record, so adding a SelfRating fails the build rather than dropping a
+     * reader into the questions with no reply. Three different presses because
+     * the three answers get three different things wrong: a claim, a
+     * comparison, and a word nobody has defined yet.
+     */
+    reply: Record<SelfRating, { heading: string; body: string }>;
+    changeAnswer: string;
+  };
   test: TestMessages;
   questions: Array<{
     id: number;

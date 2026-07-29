@@ -1,5 +1,6 @@
 import { emitStorageChange } from "./client-storage";
-import type { GameState, ResumeSessionPayload } from "./types";
+import { SELF_RATINGS } from "./self-rating-storage";
+import type { GameState, ResumeSessionPayload, SelfRating } from "./types";
 
 const STORAGE_KEY = "gospel-test-session";
 
@@ -73,6 +74,11 @@ export function readSession(): SavedSession | null {
       // rather than bumping the version and discarding them.
       graceBeatsRevealed:
         typeof parsed.graceBeatsRevealed === "number" ? parsed.graceBeatsRevealed : 0,
+      // Same policy. A session saved before the question existed simply has no
+      // testimony to quote, which the verdict already handles.
+      selfRating: SELF_RATINGS.includes(parsed.selfRating as SelfRating)
+        ? (parsed.selfRating as SelfRating)
+        : null,
     } as SavedSession;
   } catch (error) {
     console.warn("[test-session-storage] Failed to read session:", error);
@@ -99,6 +105,7 @@ export function writeSession(state: GameState): void {
       graceBeatsRevealed: state.graceBeatsRevealed,
       invitationReached: state.invitationReached,
       invitationResponse: state.invitationResponse,
+      selfRating: state.selfRating,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
     emitStorageChange();

@@ -138,6 +138,15 @@
   50% { opacity: 1; transform: scale(1.1); }
 }
 
+/* Homepage fact crawl. The track holds two identical passes of the facts, so
+   translating by exactly -50% lands the second pass where the first began and
+   the loop has no seam. Percentage, not pixels: the width depends on the copy,
+   which differs per locale. */
+@keyframes fact-crawl {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
 @keyframes pulse-ring {
   0% { r: 4; opacity: 0.9; }
   100% { r: 24; opacity: 0; }
@@ -205,5 +214,26 @@ html[data-game-phase="invitation"] [data-slot="sticky-death-counter"] {
   [data-slot="button"]::before {
     animation: none !important;
     opacity: 1;
+  }
+  /* The crawl runs for the whole visit, which makes it the least acceptable
+     motion on the page to leave running. Parked at the start rather than
+     hidden: the facts stay readable, they just stop moving. */
+  [data-slot="fact-crawl-track"] {
+    animation: none !important;
+    transform: none;
+    flex-wrap: wrap;
+    white-space: normal;
+    width: 100%;
+    gap: 0.5rem 2rem;
+  }
+  /* The wrap has to reach the pass itself, not just the track: the pass is its
+     own non-wrapping flex row, so without this the facts past the viewport edge
+     are simply clipped by the band's overflow and can never be read. */
+  [data-slot="fact-crawl-track"] > div {
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem;
+  }
+  [data-slot="fact-crawl-dupe"] {
+    display: none;
   }
 }

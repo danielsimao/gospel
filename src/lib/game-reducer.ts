@@ -15,6 +15,7 @@ export const initialGameState: GameState = {
   invitationReached: false,
   invitationResponse: null,
   questionStartedAt: null,
+  selfRating: null,
 };
 
 function calculateDrain(questionIndex: number, answer: AnswerType): number {
@@ -31,6 +32,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         phase: "playing",
         startedAt: Date.now(),
         questionStartedAt: Date.now(),
+        // Carried through the reset. The rating is answered *before* the game
+        // starts — on the homepage or on the landing screen — so rebuilding
+        // from initialGameState would discard the one thing already recorded.
+        selfRating: state.selfRating,
       };
 
     case "ANSWER_QUESTION": {
@@ -180,6 +185,13 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         invitationResponse: action.response,
       };
 
+    case "SET_SELF_RATING":
+      // Only before the Law begins. Once questions are being answered the
+      // reader's own claim is history and must not be editable — the verdict
+      // quotes it, so a mid-test change would rewrite what they said.
+      if (state.phase !== "landing") return state;
+      return { ...state, selfRating: action.rating };
+
     case "RESUME_SESSION": {
       // Rebase timestamps so active elapsed time survives resume without
       // counting the time spent away from the tab.
@@ -210,6 +222,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         graceBeatsRevealed: action.session.graceBeatsRevealed,
         invitationReached: action.session.invitationReached,
         invitationResponse: action.session.invitationResponse,
+        selfRating: action.session.selfRating,
         startedAt: now - activeElapsedMs,
         completedAt:
           action.session.completedAt === null ? null : now,

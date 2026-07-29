@@ -56,6 +56,22 @@ interface TopBarProps {
 export function TopBar({ locale, learnLabel, blogLabel, messages }: TopBarProps) {
   return (
     <div className="print-hide relative z-10 flex items-center justify-between px-4 pt-4 sm:px-6 sm:pt-5">
+      {/*
+       * A scrim, not a bar. The homepage bleeds the globe off the top-right
+       * corner and the nav sits directly on top of it, where dotted landmass
+       * and the sphere's lit limb pass behind 13px links. A solid band would
+       * read as chrome the rest of the site does not have; a gradient that
+       * fades out before the content starts just gives the type a ground.
+       *
+       * Extends past this element's own box on purpose: the links sit inside
+       * the padding, so the fade has to start above them and finish below.
+       * Invisible on pages with nothing behind it, which is every page but
+       * this one.
+       */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 -top-2 -bottom-8 -z-10 bg-gradient-to-b from-[#060404] via-[#060404]/80 to-transparent"
+      />
       <Link
         href={`/${locale}`}
         className="text-[13px] font-bold tracking-tight text-white/70 transition-colors hover:text-white/65"
