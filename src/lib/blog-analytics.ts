@@ -23,3 +23,14 @@ export function trackBlogCardDismissed(slug: string, stage: string) {
 export function trackStoryLinkCopied(slug: string) {
   safeCapture("blog_story_link_copied", { slug });
 }
+
+/**
+ * The story graphic leaving the page — the step the Instagram funnel actually
+ * turns on, and the one that was previously unmeasured. `method` separates the
+ * native share sheet (which hands straight off to Instagram) from the download
+ * and open-in-tab fallbacks, so a fallback path with real volume shows up
+ * rather than hiding inside one undifferentiated count.
+ */
+export function trackStorySaved(slug: string, method: "share" | "download" | "open") {
+  safeCapture("blog_story_saved", { slug, method });
+}
