@@ -17,6 +17,7 @@ import { saveInvitationResponse } from "@/lib/journey-storage";
 import { clearSession } from "@/lib/test-session-storage";
 import { writeSelfRating } from "@/lib/self-rating-storage";
 import { TOTAL_QUESTIONS } from "@/lib/questions";
+import { useIsomorphicLayoutEffect } from "@/lib/use-isomorphic-layout-effect";
 import { trackSelfRating } from "@/lib/analytics";
 import {
   trackHomeViewed,
@@ -183,6 +184,30 @@ export function HomeShell({
   }, [router, locale]);
 
   const desktopGlobe = useSyncExternalStore(subscribeToDesktop, isDesktop, () => false);
+
+  /*
+   * Keeps the attribute the stage CSS reads in step with the journey.
+   *
+   * The inline script below stamps it during HTML parse, which is what makes
+   * the first paint correct — but it fires once, on a full page load, and
+   * nothing else was updating it. React does not execute <script> elements it
+   * inserts, so a client-side navigation back to the homepage left whatever
+   * the last hard load had written; and committing on this page updated React
+   * without updating the attribute at all. A reader who answered the
+   * invitation and returned here was still being shown "Are you a good
+   * person?" until they happened to hard-refresh.
+   *
+   * Before paint, not after: on a client navigation this is the only thing
+   * choosing the stage, so an effect that ran afterwards would show the wrong
+   * block for a frame — the exact fault the pre-paint script exists to avoid.
+   *
+   * Guarded on `ready` so the first client render, which reports "visitor"
+   * before storage has been read, cannot overwrite what the script got right.
+   */
+  useIsomorphicLayoutEffect(() => {
+    if (!journey.ready) return;
+    document.documentElement.dataset.journeyStage = journey.stage;
+  }, [journey.ready, journey.stage]);
 
   useEffect(() => {
     if (viewTracked.current || !journey.ready) return;
