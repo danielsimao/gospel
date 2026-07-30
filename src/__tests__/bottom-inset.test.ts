@@ -3,8 +3,9 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 /**
- * Structural checks on the contract between the consent banner and the screens
- * that anchor content to the bottom of the viewport.
+ * Structural checks on the test screen's edge contracts — the bottom edge it
+ * shares with the consent banner and the home indicator, and the horizontal
+ * breakout the verdict's rule depends on.
  *
  * The behaviour itself cannot be tested here. Vitest runs in
  * `environment: "node"`, so there is no layout, no ResizeObserver and no
@@ -56,6 +57,26 @@ describe("consent banner height reserve", () => {
     // Accept and Decline sat 12px above the bottom edge, inside the 34px iOS
     // reserves for the swipe-up gesture.
     expect(bannerCode).toMatch(/pb-\[calc\([^\]]*env\(safe-area-inset-bottom\)/);
+  });
+});
+
+describe("the verdict's full-bleed rule", () => {
+  // Also an edge contract, and a more fragile one: it looks like a candidate
+  // for simplification and is not.
+  it("breaks out with margin, never with a transform", () => {
+    /*
+     * framer-motion animates `y` on the block this rule sits in, which writes
+     * the element's transform property from an inline style. A
+     * `-translate-x-1/2` breakout writes the same property and loses, so the
+     * rule would silently stop reaching the screen edge — visible only in the
+     * answered state, on a phone, which is where nobody runs a class rename.
+     */
+    expect(cardCode).toContain("mx-[calc(50%-50vw)]");
+    expect(cardCode).not.toMatch(/-translate-x-1\/2/);
+  });
+
+  it("returns to the column at sm, where full width would be a 1280px line", () => {
+    expect(cardCode).toMatch(/mx-\[calc\(50%-50vw\)\][^"]*sm:mx-0/);
   });
 });
 

@@ -266,10 +266,44 @@ export function QuestionCard({
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: 0.05 }}
                     >
+                      {/*
+                        * The mark the verdict arrives on.
+                        *
+                        * It used to be a hairline inside the 320px column, and
+                        * a reply that changes what the reader is called was
+                        * separated from the question by the same weight of line
+                        * the app uses between two paragraphs. Full-bleed and at
+                        * 2px it reads as a division of the screen rather than a
+                        * gap in a column — the same border-y-2 border-red-500
+                        * that frames GUILTY on the verdict screen, one beat
+                        * lighter.
+                        *
+                        * A rule, not a filled surface. Every judgment mark in
+                        * this app is a border on the same black ground; the one
+                        * filled, bottom-docked panel in the codebase is the
+                        * cookie banner, and a verdict that borrows its material
+                        * reads as chrome.
+                        *
+                        * The breakout is margin, not transform: framer-motion
+                        * animates `y` on this block, which writes the same
+                        * transform property a -translate-x-1/2 would need, and
+                        * the inline style wins. Percentage margins resolve
+                        * against the column, so 50%-50vw is exactly the 35px
+                        * each side that reaches the screen edge. Below sm on a
+                        * desktop window the scrollbar makes 50vw wider than the
+                        * content box; the shell's overflow-x-hidden clips it.
+                        *
+                        * Only the rule goes full width. The words stay in the
+                        * measure they were set in.
+                        */}
+                      <div
+                        aria-hidden="true"
+                        className="mx-[calc(50%-50vw)] border-t-2 border-red-500/25 sm:mx-0"
+                      />
                       {answered === "honest" ? (
                         <>
                           {/* Verdict word */}
-                          <div className="flex items-center gap-2 border-t border-red-900/30 pt-3">
+                          <div className="flex items-center gap-2 pt-3">
                             <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
                             <p className="font-mono text-[11px] font-bold uppercase tracking-[2px] text-red-400">
                               {testMessages.verdictLabels[config?.commandment ?? ""] ?? testMessages.answeredBadge}
@@ -287,7 +321,7 @@ export function QuestionCard({
                         </>
                       ) : (
                         <>
-                          <div className="flex items-center gap-2 border-t border-red-900/30 pt-3">
+                          <div className="flex items-center gap-2 pt-3">
                             <span className="h-1 w-1 rounded-full bg-red-500" />
                             <p className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-red-400/80">
                               {testMessages.justifiedBadge}
