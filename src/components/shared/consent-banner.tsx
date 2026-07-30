@@ -51,11 +51,16 @@ export function ConsentBanner() {
   return (
     <AnimatePresence>
       {visible && (
-        <m.div
+        <m.section
           initial={{ y: "100%" }}
           animate={{ y: 0 }}
           exit={{ y: "100%", opacity: 0, transition: { duration: 0.15, ease: "easeIn" } }}
           transition={{ duration: 0.3, ease: EASE_OUT_STRONG }}
+          /* A labelled <section> is a region landmark: fixed chrome sits
+             outside <main> and <footer>, so without one its text is content
+             belonging to no landmark. Labelled by the message it already shows
+             rather than a new string. */
+          aria-label={copy.message}
           className="fixed inset-x-0 bottom-0 z-50 border-t border-white/[0.08] bg-[#060404]/95 backdrop-blur-sm"
         >
       <div className="mx-auto flex max-w-2xl items-center justify-between gap-4 px-6 py-3 sm:px-8">
@@ -79,7 +84,7 @@ export function ConsentBanner() {
           </button>
         </div>
       </div>
-        </m.div>
+        </m.section>
       )}
     </AnimatePresence>
   );
