@@ -140,8 +140,25 @@ export function QuestionCard({
         />
       </m.div>
 
-      {/* Row 2: Card area + verdict shortcut — pinned to a stable top offset */}
-      <div className="flex w-full max-w-xs flex-col items-center self-start justify-self-center pt-[7vh] sm:max-w-sm sm:pt-[9vh]">
+      {/*
+       * Row 2: the card, pinned to a top offset chosen to meet the screen
+       * before it.
+       *
+       * Pinned rather than centred, because the card grows by up to 176px when
+       * it is answered — measured — and centring would lift the question by
+       * half of that at the moment the follow-up press appears beneath it. The
+       * question sits still at every state; only the reply grows downward.
+       *
+       * The offset itself is what changed. At 7vh the question landed 136px
+       * above where the landing screen's heading had just been, so beginning
+       * the test threw the reader's eye upward across a crossfade. The landing
+       * is centred and does not have this constraint; the card cannot be, so
+       * the offset does the meeting instead. 22vh puts the question within
+       * ~10px of the reply heading it replaces, and nothing overflows: checked
+       * on 667, 844, 932 and desktop, where the tallest answered state — the
+       * denial, with its follow-up — still ends well above the fold.
+       */}
+      <div className="flex w-full max-w-xs flex-col items-center self-start justify-self-center pt-[22vh] sm:max-w-sm sm:pt-[24vh]">
           <AnimatePresence mode="popLayout">
             <m.div
               key={questionIndex}
