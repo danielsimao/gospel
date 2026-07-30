@@ -122,10 +122,20 @@ export function QuestionCard({
   const isLastQuestion = questionIndex >= TOTAL_QUESTIONS - 1;
 
   return (
-    /* pt-2, not py-6: the shell's pt-3 plus this puts the ledger's label on the
-       same line as the fixed exit chip, which is what the departed deaths strip
-       used to occupy. Bottom padding is unchanged. */
-    <div className="grid flex-1 grid-rows-[auto_1fr] px-4 pt-2 pb-6 sm:px-6">
+    /*
+     * pt-2, not py-6: the shell's pt-3 plus this puts the ledger's label on the
+     * same line as the fixed exit chip, which is what the departed deaths strip
+     * used to occupy.
+     *
+     * The bottom is the contested edge. Three things claim it and only one of
+     * them is in the layout: the answer buttons (anchored here), the iOS home
+     * indicator (34px of reserved gesture area) and the consent banner (fixed,
+     * 58px, first visit only). 1.5rem is the original pb-6; the other two terms
+     * are what the buttons have to clear in order to be tappable. Both resolve
+     * to zero where they do not apply, so a returning reader on Android gets
+     * exactly the spacing this screen has always had.
+     */
+    <div className="grid flex-1 grid-rows-[auto_1fr] px-4 pt-2 pb-[calc(1.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] sm:px-6">
       {/* Row 1: Examination ledger — pinned to top; enters just behind the
           card on phase entry (mounts once, not per question) */}
       <m.div
@@ -158,7 +168,13 @@ export function QuestionCard({
        * thumb zone, which on a tall phone is the cost of anchoring the actions
        * to the bottom rather than to the question.
        */}
-      <div className="flex w-full min-h-0 max-w-xs flex-col justify-self-center pt-[24vh] pb-2 sm:max-w-sm sm:pt-[26vh]">
+      {/* The short-viewport clause exists because of the reserve above it. A
+          landscape phone is 390 tall: ledger 49, offset 101, content ~180, and
+          the banner's 50 tipped the screen 16px into scrolling, which it never
+          did before. 12vh buys back 55 and the whole test fits on one screen
+          again — which is the property worth protecting here, since a ledger
+          that can scroll out of view stops telling anyone where they are. */}
+      <div className="flex w-full min-h-0 max-w-xs flex-col justify-self-center pt-[24vh] pb-2 sm:max-w-sm sm:pt-[26vh] [@media(max-height:500px)]:pt-[12vh]">
           <AnimatePresence mode="popLayout">
             <m.div
               key={questionIndex}
