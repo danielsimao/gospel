@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { m, AnimatePresence } from "framer-motion";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { SelfRating, type SelfRatingMessages } from "@/components/home/self-rating";
@@ -47,6 +48,7 @@ interface LandingProps {
 export function Landing({ messages, locale }: LandingProps) {
   const state = useGameState();
   const dispatch = useGameDispatch();
+  const router = useRouter();
   const rating = state.selfRating;
 
   /*
@@ -94,7 +96,18 @@ export function Landing({ messages, locale }: LandingProps) {
    */
   function handleChange() {
     if (rating) trackSelfRatingChanged(rating);
-    dispatch({ type: "SET_SELF_RATING", rating: null });
+    /*
+     * Back to the unseeded route, because the URL currently asserts an answer
+     * the reader is retracting — and a reload of /test/yes would silently put
+     * them back on the reply they just left.
+     *
+     * `replace`, not `push`: Back should still return to the homepage, not to
+     * the answer they rejected. The navigation remounts the provider, which
+     * resets the reducer to a fresh landing state — that reset IS what this tap
+     * means, so no dispatch is needed alongside it. Safe only because nothing
+     * has been answered yet; once the Law starts the route never changes again.
+     */
+    router.replace(`/${locale}/test`);
   }
 
   function handleBegin() {

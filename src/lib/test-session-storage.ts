@@ -1,5 +1,5 @@
 import { emitStorageChange } from "./client-storage";
-import { SELF_RATINGS } from "./self-rating-storage";
+import { SELF_RATINGS } from "./self-rating";
 import type { GameState, ResumeSessionPayload, SelfRating } from "./types";
 
 const STORAGE_KEY = "gospel-test-session";
