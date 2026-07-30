@@ -15,23 +15,32 @@ export const LEGACY_TEST_COMPLETED_KEY = "test_completed";
 // silently discarded on read (same policy as test-session-storage).
 export const CURRENT_VERSION = 1;
 
-/** Every stage, in the order a reader passes through them. Exported so callers
-    that must enumerate stages — the pre-paint script's tests, the CSS parity
-    test — cannot fall out of step with the union above. */
-export const JOURNEY_STAGES: readonly JourneyStage[] = [
+/*
+ * Every stage and every response, enumerated once.
+ *
+ * Typed so omitting a member is a compile error rather than a silent gap: the
+ * `satisfies` clause checks the array covers the union, which a plain
+ * `readonly JourneyStage[]` annotation does not — that only checks each entry is
+ * a member, so a missing one passes. The stage script, its tests and the CSS
+ * parity test all enumerate from these.
+ */
+export const JOURNEY_STAGES = [
   "visitor",
   "undecided",
   "committed",
   "thinking",
   "dismissed",
-];
+] as const satisfies readonly [JourneyStage, ...JourneyStage[]] & {
+  length: 5;
+};
 
-/** Every valid invitation response. Exported for the same reason. */
-export const INVITATION_RESPONSES: readonly InvitationResponse[] = [
+export const INVITATION_RESPONSES = [
   "committed",
   "thinking",
   "dismissed",
-];
+] as const satisfies readonly [InvitationResponse, ...InvitationResponse[]] & {
+  length: 3;
+};
 
 export interface JourneyRecord {
   version: number;
@@ -55,7 +64,9 @@ const EMPTY_RECORD: JourneyRecord = Object.freeze({
 });
 
 function isValidResponse(value: unknown): value is InvitationResponse {
-  return INVITATION_RESPONSES.includes(value as InvitationResponse);
+  // Widened rather than asserted: `as InvitationResponse` would claim something
+  // about `value` that is exactly what this function is checking.
+  return (INVITATION_RESPONSES as readonly unknown[]).includes(value);
 }
 
 /**

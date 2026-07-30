@@ -260,12 +260,21 @@ html[data-game-phase="invitation"] [data-slot="sticky-death-counter"] {
  * and the default below shows the visitor block, which is the right way to
  * fail: a stranger sees the stranger's door.
  *
- * These rules MUST stay unlayered. They beat Tailwind's `.contents` utility,
- * which lives in `@layer utilities`, only because unlayered declarations
- * outrank layered ones regardless of specificity. Wrapping this block in an
- * `@layer` would put `[data-stage] { display: none }` and `.contents` at equal
- * specificity in one layer, leaving source order to decide — which can reveal
- * all five stages at once.
+ * These rules must stay AFTER the Tailwind import, and nothing else may set
+ * `display` on a stage wrapper.
+ *
+ * That is the real constraint, and it is worth stating precisely because the
+ * first version of this comment got it wrong. It claimed the rules had to stay
+ * unlayered, on the grounds that unlayered declarations outrank layered ones.
+ * Measured in a browser: moving this whole block into `@layer utilities`
+ * changes nothing for any attribute value, because the base rule and a
+ * `.contents` utility tie at (0,1,0) and this one is later in source order,
+ * while every reveal rule is (0,2,0) or higher. What does break it is putting
+ * these rules BEFORE Tailwind's utilities — then four stages show at once.
+ *
+ * So the guard is source order, not layers. The wrappers also no longer carry
+ * `class="contents"`; it was inert, and it was the only declaration that could
+ * ever compete with these.
  */
 [data-slot="journey-stage"] {
   display: none;

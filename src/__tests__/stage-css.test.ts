@@ -8,10 +8,9 @@ import { JOURNEY_STAGES, type JourneyStage } from "@/lib/journey-storage";
  *
  * The real behaviour — which block a browser reveals for a given attribute —
  * cannot be tested here. Vitest runs in `environment: "node"`, and even under
- * jsdom `globals.css` opens with `@import "tailwindcss"`: jsdom does not run
- * PostCSS, does not resolve the import, and does not implement `@layer`
- * precedence, which is the entire reason these rules beat Tailwind's `.contents`
- * utility. A jsdom assertion here would be testing a fiction.
+ * jsdom `globals.css` opens with `@import "tailwindcss"`, which jsdom neither
+ * resolves nor runs PostCSS over; the cascade these rules depend on would not
+ * exist. A jsdom assertion here would be testing a fiction.
  *
  * What this file can do is pin the three lists that have to agree — the
  * JourneyStage union, the `data-stage` attributes in the markup, and the reveal
@@ -26,13 +25,16 @@ const css = readFileSync(join(ROOT, "src", "app", "globals.css"), "utf8");
 const cssRules = css.replace(/\/\*[\s\S]*?\*\//g, "");
 const homeShell = readFileSync(join(ROOT, "src", "components", "home-shell.tsx"), "utf8");
 
-/** Whitespace-tolerant, so reformatting either file does not break these. */
+/** Whitespace-tolerant, so reformatting either file does not break these. Reads
+    the comment-stripped text: comments in globals.css quote selectors that were
+    removed, so matching against the raw file would let a deleted rule pass on
+    the strength of its own explanatory comment. */
 function hasRule(selector: string): boolean {
   const pattern = selector
     .split(/\s+/)
     .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
     .join("\\s+");
-  return new RegExp(pattern).test(css);
+  return new RegExp(pattern).test(cssRules);
 }
 
 describe("journey stage markup and CSS", () => {
@@ -85,26 +87,42 @@ describe("journey stage markup and CSS", () => {
 
   it("names no stage the JourneyStage union does not", () => {
     const inCss = new Set(
-      [...css.matchAll(/data-journey-stage="([^"]+)"/g)].map((m) => m[1] as JourneyStage),
+      [...cssRules.matchAll(/data-journey-stage="([^"]+)"/g)].map((m) => m[1] as JourneyStage),
     );
     for (const stage of inCss) {
       expect(JOURNEY_STAGES).toContain(stage);
     }
   });
 
-  it("keeps the stage rules unlayered", () => {
+  it("keeps the stage rules after the Tailwind import", () => {
     /*
-     * These rules outrank Tailwind's `.contents` utility only because unlayered
-     * declarations beat layered ones regardless of specificity. Inside an
-     * `@layer` they would tie with `.contents` at equal specificity and source
-     * order would decide, which can reveal all five stages at once.
+     * The real constraint, and the second attempt at testing it.
+     *
+     * The first version asserted these rules were not inside an `@layer`, by
+     * counting `@layer …{` against every `}` in the preceding stylesheet. Those
+     * counts are never unbalanced in a real file, so the assertion could not
+     * fail — wrapping the whole block in `@layer utilities` still passed. It was
+     * a guard that did not guard, which is the exact fault it was written to
+     * prevent elsewhere.
+     *
+     * Measured in a browser, layering turns out not to be the hazard at all:
+     * inside `@layer utilities` the behaviour is identical, because the base
+     * rule ties with a `.contents` utility at (0,1,0) and wins on source order.
+     * Putting these rules BEFORE Tailwind's utilities is what breaks it — four
+     * stages become visible at once. So source order is the invariant.
      */
-    const anchor = css.indexOf('[data-slot="journey-stage"] {');
-    expect(anchor).toBeGreaterThan(-1);
-    const before = css.slice(0, anchor);
-    const opened = (before.match(/@layer[^;{]*\{/g) ?? []).length;
-    const closed = (before.match(/\}/g) ?? []).length;
-    // Every @layer block opened before the stage rules must also have closed.
-    expect(opened).toBeLessThanOrEqual(closed);
+    const importAt = cssRules.indexOf('@import "tailwindcss"');
+    const rulesAt = cssRules.indexOf('[data-slot="journey-stage"] {');
+    expect(importAt).toBeGreaterThan(-1);
+    expect(rulesAt).toBeGreaterThan(importAt);
+  });
+
+  it("lets nothing else set display on a stage wrapper", () => {
+    // A `class="contents"` on these wrappers was inert but was the only
+    // declaration that could ever compete with the rules above. Keeping the
+    // wrappers class-free is what makes the source-order argument sufficient.
+    const wrappers = homeShell.match(/<div data-slot="journey-stage"[^>]*>/g) ?? [];
+    expect(wrappers).toHaveLength(JOURNEY_STAGES.length);
+    for (const w of wrappers) expect(w).not.toMatch(/className=/);
   });
 });

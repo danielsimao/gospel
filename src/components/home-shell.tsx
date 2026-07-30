@@ -117,10 +117,15 @@ function sincePhrase(
  * can take, so the line count cannot change when the real value lands. Blank
  * for a moment is honest; "earlier today" is not.
  */
-function splitWhen(template: string): [string, string] {
+function splitWhen(template: string): { before: string; after: string } | null {
   const at = template.indexOf("{when}");
-  if (at === -1) return [template, ""];
-  return [template.slice(0, at), template.slice(at + "{when}".length)];
+  // Null rather than [template, ""]: with no placeholder there is nothing to
+  // defer, and rendering the reserve anyway appended a blank box to the sentence
+  // and then left the phrase dangling past its full stop once it resolved. Not
+  // reachable with today's copy, but the owner's PT pass is open and a dropped
+  // placeholder is exactly how it would arrive.
+  if (at === -1) return null;
+  return { before: template.slice(0, at), after: template.slice(at + "{when}".length) };
 }
 
 function WhatHappened({
@@ -134,20 +139,31 @@ function WhatHappened({
   since: { today: string; yesterday: string; daysAgo: string; weeksAgo: string };
   ready: boolean;
 }) {
-  const [before, after] = splitWhen(template);
+  const parts = splitWhen(template);
   const known = ready && days !== null;
+  if (!parts) return <>{template}</>;
   return (
     <>
-      {before}
+      {parts.before}
       <span
-        /* Reserves the widest phrase the four forms produce, so resolving it
-           never re-wraps the paragraph. `ch` because the copy is proportional
-           and this only has to be close, not exact. */
-        style={{ display: "inline-block", minWidth: "13ch" }}
+        /*
+         * Reserves the phrase so resolving it never re-wraps the paragraph.
+         *
+         * 15ch, not the 13ch this started at. 13 was eyeballed against English
+         * and measured too narrow for Portuguese: at 14px in Geist,
+         * "há 156 semanas" is 103.5px against 13ch = 101.2px, so a pt reader
+         * whose record is 100+ weeks old — reachable in 2028 — would re-wrap
+         * the line, which is the one thing the box exists to prevent. 15ch
+         * clears every form in both locales through four-digit weeks.
+         */
+        style={{ display: "inline-block", minWidth: "15ch" }}
+        /* Empty until the timestamp is known, and a screen reader should not
+           announce the gap as part of the sentence. */
+        aria-hidden={known ? undefined : true}
       >
         {known ? sincePhrase(days, since) : " "}
       </span>
-      {after}
+      {parts.after}
     </>
   );
 }
@@ -384,17 +400,20 @@ export function HomeShell({
            * final: the correct block is laid out in the first frame and nothing
            * moves afterwards.
            *
-           * Two costs, both deliberate. Four unused blocks ride in every HTML
-           * response — out of the accessibility tree, being display:none, but
-           * present in the served document, so this page's source carries five
-           * h1 elements and four stages' worth of copy for a crawler to see.
-           * And `className="contents"` on each wrapper states the intent
-           * without being the mechanism: the rules in globals.css are unlayered
-           * and therefore outrank Tailwind's layered `.contents` utility, so
-           * that file decides `display` in both the shown and hidden case. It
-           * must stay unlayered — see the note beside those rules.
+           * One cost, deliberate: four unused blocks ride in every HTML
+           * response. They are out of the accessibility tree, being
+           * display:none, but present in the served document, so this page's
+           * source carries five h1 elements and four stages' worth of copy for
+           * a crawler to see.
+           *
+           * The wrappers carry no `display` class of their own. globals.css
+           * supplies it in both the shown and the hidden case, and a
+           * `class="contents"` here was inert — it tied on specificity and lost
+           * on source order — while being the only thing that could ever
+           * compete with those rules. See the note beside them for the
+           * constraint that does matter.
            */}
-          <div data-slot="journey-stage" data-stage="committed" className="contents">
+          <div data-slot="journey-stage" data-stage="committed">
             <div className="relative flex w-full flex-col items-center">
               {/* Warm grace glow — this state continues the grace screen's atmosphere */}
               <div
@@ -457,7 +476,7 @@ export function HomeShell({
             </div>
           </div>
 
-          <div data-slot="journey-stage" data-stage="undecided" className="contents">
+          <div data-slot="journey-stage" data-stage="undecided">
               {/* whatHappened carries the temporal mirror that sinceLine used
                   to hold — how long "later" has already lasted, stated once,
                   no pressure mechanics — folded into the result sentence. */}
@@ -482,7 +501,7 @@ export function HomeShell({
               </Link>
           </div>
 
-          <div data-slot="journey-stage" data-stage="thinking" className="contents">
+          <div data-slot="journey-stage" data-stage="thinking">
             <div className="flex w-full max-w-md flex-col items-center">
               <StageSpine
                 tone="dim"
@@ -532,7 +551,7 @@ export function HomeShell({
             </div>
           </div>
 
-          <div data-slot="journey-stage" data-stage="dismissed" className="contents">
+          <div data-slot="journey-stage" data-stage="dismissed">
               {/* The only stage with a ghost primary. Present, honest,
                   unpressured — someone who said no should not be sold to. */}
               <StageSpine
@@ -561,7 +580,7 @@ export function HomeShell({
           {/* `contents` on every wrapper so none of them adds a box of its own
               and the children stay direct flex items of the column. They exist
               only to give the pre-paint rule something to select. */}
-          <div data-slot="journey-stage" data-stage="visitor" className="contents">
+          <div data-slot="journey-stage" data-stage="visitor">
               {/*
                * The turn from the world's dead to this reader's own standing.
                *

@@ -31,6 +31,14 @@ import {
  * the flicker this whole mechanism exists to remove, and it was reachable by a
  * rollback, a deploy skew across two tabs, or adding a fourth response value.
  *
+ * The legacy branch gates on the raw storage key being absent, not on the
+ * parsed record being falsy, because that is what `migrateLegacyJourney` gates
+ * on. Gating on the parse meant a record holding "null", "", "0" or "false"
+ * plus a legacy flag stamped "undecided" here while the migration left the
+ * reader on "visitor" — the swap this exists to remove, in the population it
+ * exists to serve. Only reachable by tampering or a foreign writer, but the two
+ * should not be able to disagree at all.
+ *
  * The legacy flag is read for a subtler reason. `migrateLegacyJourney` folds
  * `test_completed` into a real record, but it runs in `useJourney`'s effect —
  * after this. A reader who has not visited since that migration shipped has
@@ -42,7 +50,7 @@ export function buildStagePrepaintScript(): string {
   const responses = INVITATION_RESPONSES.map((r) => JSON.stringify(r)).join(",");
   return `(function(){try{var K=${JSON.stringify(STORAGE_KEY)},L=${JSON.stringify(
     LEGACY_TEST_COMPLETED_KEY,
-  )},V=${CURRENT_VERSION},R=[${responses}],s="visitor",r=JSON.parse(localStorage.getItem(K)||"null");if(r&&r.version===V){if(R.indexOf(r.invitationResponse)>-1)s=r.invitationResponse;else if(typeof r.testCompletedAt==="number")s="undecided";}else if(!r&&localStorage.getItem(L)==="1"){s="undecided";}document.documentElement.setAttribute("data-journey-stage",s);}catch(e){}})()`;
+  )},V=${CURRENT_VERSION},R=[${responses}],s="visitor",r=JSON.parse(localStorage.getItem(K)||"null");if(r&&r.version===V){if(R.indexOf(r.invitationResponse)>-1)s=r.invitationResponse;else if(typeof r.testCompletedAt==="number")s="undecided";}else if(localStorage.getItem(K)===null&&localStorage.getItem(L)==="1"){s="undecided";}document.documentElement.setAttribute("data-journey-stage",s);}catch(e){}})()`;
 }
 
 export const STAGE_PREPAINT_SCRIPT = buildStagePrepaintScript();

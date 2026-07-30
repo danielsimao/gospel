@@ -52,10 +52,15 @@ function stamp(storageImpl: Partial<typeof localStorageMock> = localStorageMock)
 /**
  * What the CSS in globals.css will actually reveal for a stamped attribute.
  *
- * Mirrors the three rules there: no attribute falls back to visitor, a named
- * stage reveals its own block, and anything the rules do not name reveals
- * nothing at all. "nothing" is the failure this file exists to prevent — a
- * homepage with no heading and no call to action.
+ * Deliberately STRICTER than the stylesheet, and the difference matters.
+ *
+ * The CSS now enumerates its take-back rules, so an unrecognised attribute
+ * value falls back to the visitor block rather than hiding everything —
+ * confirmed in a browser. This helper still reports "nothing" for such a value,
+ * because the script is not supposed to produce one: the enumerated CSS is the
+ * safety net, not the contract. Reporting "visitor" here would make the parity
+ * assertions below pass on a script that stamps garbage, which is the bug this
+ * file was written after.
  */
 function visibleStage(stamped: string | null): JourneyStage | "nothing" {
   if (stamped === null) return "visitor";
@@ -171,9 +176,10 @@ describe("stage pre-paint script", () => {
       });
     }
 
-    it("never reveals nothing, for any record in the table", () => {
-      // The invariant the table exists to protect. A stamped value the CSS does
-      // not name hides every block, which is worse than any wrong block.
+    it("never stamps a value outside the five stages, for any record in the table", () => {
+      // The invariant the table exists to protect. The CSS would now fall such a
+      // value back to the visitor block, so this is about the script's contract
+      // rather than about what a reader would see.
       for (const { raw } of cases) {
         storage.clear();
         if (raw !== null) storage.set(STORAGE_KEY, raw);
