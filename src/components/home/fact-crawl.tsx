@@ -3,7 +3,7 @@ interface FactCrawlProps {
 }
 
 /**
- * The mortality facts as a wire feed under the hero.
+ * The mortality facts as a wire feed at the foot of the homepage.
  *
  * They used to sit in the hero as a single rotating line on a 9-second timer,
  * advancing sequentially from the first. That put the two facts that actually
@@ -22,10 +22,13 @@ interface FactCrawlProps {
  * navigation. The reduced-motion stop lives in globals.css, since
  * MotionConfig's reducedMotion only governs framer's own animations.
  *
- * Not rendered for the committed stage. `globals.css` already retires the
- * broadcast strip over verdict, grace and invitation for the stated reason that
- * "a ticking death count over the grace screen argues against the screen" — and
- * the committed stage is that screen's homepage equivalent, gold glow included.
+ * Shown on every stage, including committed. It was once withheld there on the
+ * grounds `globals.css` gives for retiring the broadcast strip over verdict,
+ * grace and invitation — "a ticking death count over the grace screen argues
+ * against the screen" — because the committed stage is that screen's homepage
+ * equivalent, gold glow included. That argument was about proximity, and it
+ * held while the crawl sat directly under the gold copy. It now sits below the
+ * questions band, the reading plan and the blog card, nowhere near it.
  */
 export function FactCrawl({ facts }: FactCrawlProps) {
   if (facts.length === 0) return null;

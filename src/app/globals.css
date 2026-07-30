@@ -237,3 +237,71 @@ html[data-game-phase="invitation"] [data-slot="sticky-death-counter"] {
     display: none;
   }
 }
+
+/*
+ * One journey stage, chosen before the first paint.
+ *
+ * The stage lives in localStorage, so the server cannot know it. All five
+ * blocks are rendered and these rules reveal one. Before that, the server
+ * emitted only the visitor block — the stranger's front door — and React
+ * replaced it at hydration; a reader who had taken the test and answered the
+ * invitation had the stranger's greeting painted at them on every refresh.
+ * That was the flicker.
+ *
+ * Hiding the wrong block was not enough on its own. The variants differ enough
+ * in height that swapping one for another at hydration still moved everything
+ * below it — see the measurement in home-shell's stage block comment. Choosing
+ * here instead settles the layout in the first frame.
+ *
+ * Written by two things, both in home-shell: STAGE_PREPAINT_SCRIPT stamps the
+ * attribute during HTML parse, and a layout effect keeps it in step on client
+ * navigations and in-place commits. If the script cannot run — storage blocked
+ * by policy, or a CSP added later without a nonce for it — no attribute is set
+ * and the default below shows the visitor block, which is the right way to
+ * fail: a stranger sees the stranger's door.
+ *
+ * These rules must stay AFTER the Tailwind import, and nothing else may set
+ * `display` on a stage wrapper.
+ *
+ * That is the real constraint, and it is worth stating precisely because the
+ * first version of this comment got it wrong. It claimed the rules had to stay
+ * unlayered, on the grounds that unlayered declarations outrank layered ones.
+ * Measured in a browser: moving this whole block into `@layer utilities`
+ * changes nothing for any attribute value, because the base rule and a
+ * `.contents` utility tie at (0,1,0) and this one is later in source order,
+ * while every reveal rule is (0,2,0) or higher. What does break it is putting
+ * these rules BEFORE Tailwind's utilities — then four stages show at once.
+ *
+ * So the guard is source order, not layers. The wrappers also no longer carry
+ * `class="contents"`; it was inert, and it was the only declaration that could
+ * ever compete with these.
+ */
+[data-slot="journey-stage"] {
+  display: none;
+}
+
+[data-slot="journey-stage"][data-stage="visitor"],
+html[data-journey-stage="visitor"] [data-slot="journey-stage"][data-stage="visitor"],
+html[data-journey-stage="undecided"] [data-slot="journey-stage"][data-stage="undecided"],
+html[data-journey-stage="committed"] [data-slot="journey-stage"][data-stage="committed"],
+html[data-journey-stage="thinking"] [data-slot="journey-stage"][data-stage="thinking"],
+html[data-journey-stage="dismissed"] [data-slot="journey-stage"][data-stage="dismissed"] {
+  display: contents;
+}
+
+/*
+ * The visitor default above is unconditional, so it has to be taken back once a
+ * different stage is named — but only for the four stages that actually have a
+ * block. This was written as `:not([data-journey-stage="visitor"])`, which took
+ * the default away for ANY other value, including one no rule matches. An
+ * unvalidated `invitationResponse` reaching <html> therefore hid all five
+ * blocks and the homepage painted with no heading and no call to action at all.
+ * The script validates now; enumerating here as well means an unrecognised
+ * stage degrades to the visitor door rather than to nothing.
+ */
+html[data-journey-stage="undecided"] [data-slot="journey-stage"][data-stage="visitor"],
+html[data-journey-stage="committed"] [data-slot="journey-stage"][data-stage="visitor"],
+html[data-journey-stage="thinking"] [data-slot="journey-stage"][data-stage="visitor"],
+html[data-journey-stage="dismissed"] [data-slot="journey-stage"][data-stage="visitor"] {
+  display: none;
+}

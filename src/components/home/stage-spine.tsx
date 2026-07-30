@@ -17,8 +17,11 @@ interface StageSpineProps {
    * What happened to this reader, in the app's courtroom language. This IS the
    * progression: told, not charted. Omitted only for `visitor`, where nothing
    * has happened yet.
+   *
+   * ReactNode rather than string because the two date-bearing stages pass a
+   * sentence with its time clause held back until the timestamp is known.
    */
-  whatHappened?: string;
+  whatHappened?: ReactNode;
   /** Optional extra beat (the house blockquote) between the sentence and the action. */
   children?: ReactNode;
 }

@@ -1,0 +1,128 @@
+import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { JOURNEY_STAGES, type JourneyStage } from "@/lib/journey-storage";
+
+/**
+ * Structural checks on the journey-stage markup and CSS, not a cascade test.
+ *
+ * The real behaviour — which block a browser reveals for a given attribute —
+ * cannot be tested here. Vitest runs in `environment: "node"`, and even under
+ * jsdom `globals.css` opens with `@import "tailwindcss"`, which jsdom neither
+ * resolves nor runs PostCSS over; the cascade these rules depend on would not
+ * exist. A jsdom assertion here would be testing a fiction.
+ *
+ * What this file can do is pin the three lists that have to agree — the
+ * JourneyStage union, the `data-stage` attributes in the markup, and the reveal
+ * rules in the stylesheet — so a sixth stage cannot be added to two of them and
+ * forgotten in the third. That is the failure mode: a stage whose block exists
+ * but which no rule reveals renders an empty page section, silently, forever.
+ */
+const ROOT = join(import.meta.dirname, "..", "..");
+const css = readFileSync(join(ROOT, "src", "app", "globals.css"), "utf8");
+/** Comments in this file quote selectors that were removed, so any assertion
+    about what the stylesheet no longer contains has to read the rules only. */
+const cssRules = css.replace(/\/\*[\s\S]*?\*\//g, "");
+const homeShell = readFileSync(join(ROOT, "src", "components", "home-shell.tsx"), "utf8");
+
+/** Whitespace-tolerant, so reformatting either file does not break these. Reads
+    the comment-stripped text: comments in globals.css quote selectors that were
+    removed, so matching against the raw file would let a deleted rule pass on
+    the strength of its own explanatory comment. */
+function hasRule(selector: string): boolean {
+  const pattern = selector
+    .split(/\s+/)
+    .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+    .join("\\s+");
+  return new RegExp(pattern).test(cssRules);
+}
+
+describe("journey stage markup and CSS", () => {
+  it("renders exactly one block per journey stage", () => {
+    const found = [...homeShell.matchAll(/data-stage="([^"]+)"/g)].map((m) => m[1]);
+    // Sorted rather than set-compared: a duplicated stage is its own bug, and a
+    // typo like data-stage="commited" produces a block hidden for every reader.
+    expect([...found].sort()).toEqual([...JOURNEY_STAGES].sort());
+  });
+
+  it("scopes every stage block with data-slot, so the global selector cannot overreach", () => {
+    // `[data-stage]` alone is one character from Radix's `data-state`. The CSS
+    // matches `[data-slot="journey-stage"][data-stage=...]`, so a wrapper that
+    // forgot the slot would never be revealed.
+    const wrappers = [...homeShell.matchAll(/data-slot="journey-stage" data-stage="([^"]+)"/g)];
+    expect(wrappers).toHaveLength(JOURNEY_STAGES.length);
+  });
+
+  it("has a reveal rule for every journey stage", () => {
+    for (const stage of JOURNEY_STAGES) {
+      expect(
+        hasRule(`html[data-journey-stage="${stage}"] [data-slot="journey-stage"][data-stage="${stage}"]`),
+        `globals.css has no reveal rule for the "${stage}" stage`,
+      ).toBe(true);
+    }
+  });
+
+  it("falls back to the visitor block when no stage is named", () => {
+    // The script sets no attribute if storage cannot be read. Without this
+    // unconditional default, that reader would see no stage block at all.
+    expect(hasRule('[data-slot="journey-stage"][data-stage="visitor"]')).toBe(true);
+  });
+
+  it("takes the visitor default back for each non-visitor stage by name", () => {
+    /*
+     * Enumerated, never negated. Written as
+     * `:not([data-journey-stage="visitor"])` this rule removed the visitor
+     * fallback for ANY other attribute value — so an unrecognised stage hid all
+     * five blocks and the homepage painted with no call to action. Naming the
+     * four means an unrecognised value degrades to the visitor door instead.
+     */
+    for (const stage of JOURNEY_STAGES.filter((s) => s !== "visitor")) {
+      expect(
+        hasRule(`html[data-journey-stage="${stage}"] [data-slot="journey-stage"][data-stage="visitor"]`),
+        `globals.css does not hide the visitor block for the "${stage}" stage`,
+      ).toBe(true);
+    }
+    expect(cssRules).not.toMatch(/:not\(\[data-journey-stage="visitor"\]\)/);
+  });
+
+  it("names no stage the JourneyStage union does not", () => {
+    const inCss = new Set(
+      [...cssRules.matchAll(/data-journey-stage="([^"]+)"/g)].map((m) => m[1] as JourneyStage),
+    );
+    for (const stage of inCss) {
+      expect(JOURNEY_STAGES).toContain(stage);
+    }
+  });
+
+  it("keeps the stage rules after the Tailwind import", () => {
+    /*
+     * The real constraint, and the second attempt at testing it.
+     *
+     * The first version asserted these rules were not inside an `@layer`, by
+     * counting `@layer …{` against every `}` in the preceding stylesheet. Those
+     * counts are never unbalanced in a real file, so the assertion could not
+     * fail — wrapping the whole block in `@layer utilities` still passed. It was
+     * a guard that did not guard, which is the exact fault it was written to
+     * prevent elsewhere.
+     *
+     * Measured in a browser, layering turns out not to be the hazard at all:
+     * inside `@layer utilities` the behaviour is identical, because the base
+     * rule ties with a `.contents` utility at (0,1,0) and wins on source order.
+     * Putting these rules BEFORE Tailwind's utilities is what breaks it — four
+     * stages become visible at once. So source order is the invariant.
+     */
+    const importAt = cssRules.indexOf('@import "tailwindcss"');
+    const rulesAt = cssRules.indexOf('[data-slot="journey-stage"] {');
+    expect(importAt).toBeGreaterThan(-1);
+    expect(rulesAt).toBeGreaterThan(importAt);
+  });
+
+  it("lets nothing else set display on a stage wrapper", () => {
+    // A `class="contents"` on these wrappers was inert but was the only
+    // declaration that could ever compete with the rules above. Keeping the
+    // wrappers class-free is what makes the source-order argument sufficient.
+    const wrappers = homeShell.match(/<div data-slot="journey-stage"[^>]*>/g) ?? [];
+    expect(wrappers).toHaveLength(JOURNEY_STAGES.length);
+    for (const w of wrappers) expect(w).not.toMatch(/className=/);
+  });
+});

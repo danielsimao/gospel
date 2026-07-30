@@ -17,6 +17,8 @@ import { saveInvitationResponse } from "@/lib/journey-storage";
 import { clearSession } from "@/lib/test-session-storage";
 import { writeSelfRating } from "@/lib/self-rating-storage";
 import { TOTAL_QUESTIONS } from "@/lib/questions";
+import { useIsomorphicLayoutEffect } from "@/lib/use-isomorphic-layout-effect";
+import { STAGE_PREPAINT_SCRIPT } from "@/lib/stage-prepaint-script";
 import { trackSelfRating } from "@/lib/analytics";
 import {
   trackHomeViewed,
@@ -97,6 +99,75 @@ function sincePhrase(
   return m.weeksAgo.replace("{n}", String(Math.floor(days / 7)));
 }
 
+/**
+ * Splits a `whatHappened` sentence at its `{when}` placeholder so the clause
+ * that names a date can be withheld until the date is actually known.
+ *
+ * The undecided and thinking stages are the only copy on this page that depends
+ * on a stored timestamp, and both blocks are now rendered by the server, which
+ * has no timestamp. Passing `daysSince ?? 0` therefore resolved `{when}` to
+ * "earlier today" and the first painted frame told a reader who took the test
+ * three weeks ago that they took it today — a false statement about their own
+ * history, corrected milliseconds later. `journey-storage` already carries a
+ * comment about the last time this app made that mistake from the other
+ * direction.
+ *
+ * The fix is not to hide the sentence: it would reflow when the words arrived.
+ * Only the phrase is deferred, inside a box wide enough for the longest form it
+ * can take, so the line count cannot change when the real value lands. Blank
+ * for a moment is honest; "earlier today" is not.
+ */
+function splitWhen(template: string): { before: string; after: string } | null {
+  const at = template.indexOf("{when}");
+  // Null rather than [template, ""]: with no placeholder there is nothing to
+  // defer, and rendering the reserve anyway appended a blank box to the sentence
+  // and then left the phrase dangling past its full stop once it resolved. Not
+  // reachable with today's copy, but the owner's PT pass is open and a dropped
+  // placeholder is exactly how it would arrive.
+  if (at === -1) return null;
+  return { before: template.slice(0, at), after: template.slice(at + "{when}".length) };
+}
+
+function WhatHappened({
+  template,
+  days,
+  since,
+  ready,
+}: {
+  template: string;
+  days: number | null;
+  since: { today: string; yesterday: string; daysAgo: string; weeksAgo: string };
+  ready: boolean;
+}) {
+  const parts = splitWhen(template);
+  const known = ready && days !== null;
+  if (!parts) return <>{template}</>;
+  return (
+    <>
+      {parts.before}
+      <span
+        /*
+         * Reserves the phrase so resolving it never re-wraps the paragraph.
+         *
+         * 15ch, not the 13ch this started at. 13 was eyeballed against English
+         * and measured too narrow for Portuguese: at 14px in Geist,
+         * "há 156 semanas" is 103.5px against 13ch = 101.2px, so a pt reader
+         * whose record is 100+ weeks old — reachable in 2028 — would re-wrap
+         * the line, which is the one thing the box exists to prevent. 15ch
+         * clears every form in both locales through four-digit weeks.
+         */
+        style={{ display: "inline-block", minWidth: "15ch" }}
+        /* Empty until the timestamp is known, and a screen reader should not
+           announce the gap as part of the sentence. */
+        aria-hidden={known ? undefined : true}
+      >
+        {known ? sincePhrase(days, since) : " "}
+      </span>
+      {parts.after}
+    </>
+  );
+}
+
 const RATE_CARDS = [
   { value: "1.8", key: "perSecond" },
   { value: "108", key: "perMinute" },
@@ -164,6 +235,40 @@ export function HomeShell({
 
   const desktopGlobe = useSyncExternalStore(subscribeToDesktop, isDesktop, () => false);
 
+  /*
+   * Keeps the attribute the stage CSS reads in step with the journey.
+   *
+   * STAGE_PREPAINT_SCRIPT stamps it during HTML parse, which is what makes the
+   * first paint correct — but it fires once, on a full page load, and nothing
+   * else was updating it. React does not execute <script> elements it inserts
+   * (react-dom builds script hosts through a throwaway fragment parse, so they
+   * are born with the spec's "already started" flag and never run), so a
+   * client-side navigation back to the homepage left whatever the last hard
+   * load had written; and committing on this page updated React without
+   * updating the attribute at all. A reader who answered the invitation and
+   * returned here was still being shown "Are you a good person?" until they
+   * happened to hard-refresh.
+   *
+   * Before paint, not after: on a client navigation this is the only thing
+   * choosing the stage, so an effect that ran afterwards would show the wrong
+   * block for a frame — the exact fault the script exists to avoid.
+   *
+   * Guarded on `ready` so the first client render, which reports "visitor"
+   * before storage has been read, cannot overwrite what the script got right.
+   *
+   * Cleared on unmount, matching game-shell's `data-game-phase`. The attribute
+   * is global and the selectors that read it are not scoped to this route, so
+   * leaving it set would make the homepage's stage a fact about every other
+   * page in the session.
+   */
+  useIsomorphicLayoutEffect(() => {
+    if (!journey.ready) return;
+    document.documentElement.dataset.journeyStage = journey.stage;
+    return () => {
+      delete document.documentElement.dataset.journeyStage;
+    };
+  }, [journey.ready, journey.stage]);
+
   useEffect(() => {
     if (viewTracked.current || !journey.ready) return;
     viewTracked.current = true;
@@ -172,6 +277,9 @@ export function HomeShell({
 
   return (
     <main className="min-h-dvh overflow-x-hidden bg-[#060404]">
+      {/* Ahead of the stage blocks it governs, so the attribute is already set
+          by the time they are parsed. */}
+      <script dangerouslySetInnerHTML={{ __html: STAGE_PREPAINT_SCRIPT }} />
       <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-start overflow-hidden px-4 pt-8 pb-12 sm:px-6 sm:pt-10 sm:pb-16">
         {/* Offsets in px, not %: a percentage `top` resolves against the
             containing block's height, which for this section is viewport-derived
@@ -270,8 +378,42 @@ export function HomeShell({
           </div>
 
 
-          {/* === Bottom CTA section — adapts to journey stage === */}
-          {journey.stage === "committed" && (
+          {/*
+           * === Bottom CTA section — adapts to journey stage ===
+           *
+           * All five stages are rendered, always, and CSS shows exactly one.
+           *
+           * They used to be branched on `journey.stage`, which is read from
+           * localStorage and therefore unknown to the server: every render
+           * emitted the visitor block and the real one replaced it at
+           * hydration. Hiding the wrong block before first paint stopped the
+           * reader seeing it, but not the swap — the variants differ enough in
+           * height that everything below the fold still jumped once the right
+           * one arrived. Measured at 390px wide in July 2026 the five ran
+           * 1454–1587px, a 133px spread; the figure will drift with the copy
+           * but it is not going to become zero. Reserving a fixed height
+           * instead would have handed that spread to visitors as dead space,
+           * and they are both the commonest case and the one the page is trying
+           * to convert.
+           *
+           * With every variant in the markup, the pre-paint script's choice is
+           * final: the correct block is laid out in the first frame and nothing
+           * moves afterwards.
+           *
+           * One cost, deliberate: four unused blocks ride in every HTML
+           * response. They are out of the accessibility tree, being
+           * display:none, but present in the served document, so this page's
+           * source carries five h1 elements and four stages' worth of copy for
+           * a crawler to see.
+           *
+           * The wrappers carry no `display` class of their own. globals.css
+           * supplies it in both the shown and the hidden case, and a
+           * `class="contents"` here was inert — it tied on specificity and lost
+           * on source order — while being the only thing that could ever
+           * compete with those rules. See the note beside them for the
+           * constraint that does matter.
+           */}
+          <div data-slot="journey-stage" data-stage="committed">
             <div className="relative flex w-full flex-col items-center">
               {/* Warm grace glow — this state continues the grace screen's atmosphere */}
               <div
@@ -332,10 +474,9 @@ export function HomeShell({
                 {home.journey.retakeLabel}
               </Link>
             </div>
-          )}
+          </div>
 
-          {journey.stage === "undecided" && (
-            <>
+          <div data-slot="journey-stage" data-stage="undecided">
               {/* whatHappened carries the temporal mirror that sinceLine used
                   to hold — how long "later" has already lasted, stated once,
                   no pressure mechanics — folded into the result sentence. */}
@@ -343,10 +484,14 @@ export function HomeShell({
                 tone="red"
                 eyebrow={home.journeyStages.undecided.eyebrow}
                 heading={home.journeyStages.undecided.heading}
-                whatHappened={home.journeyStages.undecided.whatHappened.replace(
-                  "{when}",
-                  sincePhrase(journey.daysSinceTest ?? 0, home.journeyStages.since),
-                )}
+                whatHappened={
+                  <WhatHappened
+                    template={home.journeyStages.undecided.whatHappened}
+                    days={journey.daysSinceTest}
+                    since={home.journeyStages.since}
+                    ready={journey.ready}
+                  />
+                }
               />
               <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
                 <Button variant="gold" size="lg" mist>
@@ -354,19 +499,22 @@ export function HomeShell({
                   <ButtonArrow />
                 </Button>
               </Link>
-            </>
-          )}
+          </div>
 
-          {journey.stage === "thinking" && (
+          <div data-slot="journey-stage" data-stage="thinking">
             <div className="flex w-full max-w-md flex-col items-center">
               <StageSpine
                 tone="dim"
                 eyebrow={home.journeyStages.thinking.eyebrow}
                 heading={home.journeyStages.thinking.heading}
-                whatHappened={home.journeyStages.thinking.whatHappened.replace(
-                  "{when}",
-                  sincePhrase(journey.daysSinceResponse ?? 0, home.journeyStages.since),
-                )}
+                whatHappened={
+                  <WhatHappened
+                    template={home.journeyStages.thinking.whatHappened}
+                    days={journey.daysSinceResponse}
+                    since={home.journeyStages.since}
+                    ready={journey.ready}
+                  />
+                }
               >
                 {/* The pastoral centre of this stage — kept as the second beat,
                     in the house blockquote. The John 3 and foundations cards
@@ -401,10 +549,9 @@ export function HomeShell({
                 {home.journeyStages.thinking.retakeLabel}
               </Link>
             </div>
-          )}
+          </div>
 
-          {journey.stage === "dismissed" && (
-            <>
+          <div data-slot="journey-stage" data-stage="dismissed">
               {/* The only stage with a ghost primary. Present, honest,
                   unpressured — someone who said no should not be sold to. */}
               <StageSpine
@@ -428,11 +575,12 @@ export function HomeShell({
               <Link href={`/${locale}/learn`} onClick={() => trackHomeSecondaryClicked()} className="mt-3">
                 <Button variant="text">{home.secondaryLink}</Button>
               </Link>
-            </>
-          )}
+          </div>
 
-          {journey.stage === "visitor" && (
-            <>
+          {/* `contents` on every wrapper so none of them adds a box of its own
+              and the children stay direct flex items of the column. They exist
+              only to give the pre-paint rule something to select. */}
+          <div data-slot="journey-stage" data-stage="visitor">
               {/*
                * The turn from the world's dead to this reader's own standing.
                *
@@ -509,24 +657,7 @@ export function HomeShell({
                   one that asked rather than showed. The dismissed stage keeps
                   its own copy: that reader has declined the test, so a quiet
                   non-test door is the point rather than a duplicate. */}
-            </>
-          )}
-
-          {/*
-           * The wire feed, between the hero and the other doors.
-           *
-           * Withheld from the committed stage on the same grounds globals.css
-           * retires the broadcast strip over grace: "a ticking death count over
-           * the grace screen argues against the screen." That stage carries the
-           * gold grace atmosphere, and a mortality crawl running under it would
-           * be arguing with the copy directly above it.
-           */}
-          {journey.stage !== "committed" && (
-            <div className="-mx-4 mt-12 w-[calc(100%+2rem)] sm:-mx-6 sm:mt-14 sm:w-[calc(100%+3rem)]">
-              <FactCrawl facts={home.facts} />
-              <FactList facts={home.facts} />
-            </div>
-          )}
+          </div>
 
           {/*
            * Three ungated bands, identical on all five stages. Each shows what
@@ -559,8 +690,40 @@ export function HomeShell({
               post={latestPost}
             />
           )}
+
         </div>
       </section>
+
+      {/*
+       * The wire feed, flush against the footer.
+       *
+       * Outside the section rather than inside it: the section carries the
+       * page's horizontal padding and a bottom pad of its own, so in there the
+       * crawl needed negative margins to reach the edges and still left a gap
+       * underneath. As the last child of <main> it is full-bleed by default and
+       * sits flush on the footer — measured gap 0. (Two hairlines meet at that
+       * seam, the crawl's border-y and the footer's border-t, at different
+       * opacities. Left alone deliberately; collapsing them is a look decision,
+       * not a layout one.)
+       *
+       * No top margin of its own either. The section above ends in pb-12 /
+       * sm:pb-16, which leaves ~50px on its own; stacking a margin on that
+       * doubled the gap between the blog card and the feed.
+       *
+       * It runs on every stage, including committed. It was once withheld there
+       * on the grounds globals.css gives for retiring the broadcast strip over
+       * grace — "a ticking death count over the grace screen argues against the
+       * screen" — but that reasoning was about proximity, and back then the
+       * crawl ran directly under the gold copy. Down here the questions band,
+       * the reading plan and the blog card all sit in between. A reader who has
+       * professed faith is not owed a homepage with the world's dead edited out
+       * of it; the facts are still true, they are simply no longer the thing
+       * being said to them.
+       */}
+      <div>
+        <FactCrawl facts={home.facts} />
+        <FactList facts={home.facts} />
+      </div>
     </main>
   );
 }
