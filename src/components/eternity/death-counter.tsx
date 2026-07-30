@@ -42,6 +42,26 @@ function easeOutCubic(t: number): number {
  */
 const PREPAINT_SCRIPT = `(function(){var s=document.currentScript,e=s&&s.previousElementSibling;if(!e)return;var n=new Date(),m=new Date(n);m.setUTCHours(0,0,0,0);e.textContent=Math.floor((n-m)*${DEATHS_PER_MS}).toLocaleString();})()`;
 
+/**
+ * The span's server-rendered content, hoisted to a module constant.
+ *
+ * The identity of this object is the whole point. React's hydration path only
+ * COMPARES what it finds in the DOM — verified in react-dom 19.2.4,
+ * `prepareToHydrateHostInstance` — so the pre-painted number survives hydration
+ * untouched. What overwrote it was the UPDATE path: `updateProperties` calls
+ * `setProp` for any prop whose identity changed, and `setProp`'s
+ * dangerouslySetInnerHTML branch ends in an unconditional
+ * `domElement.innerHTML = …`. Written inline as `{{ __html: "0" }}` this was a
+ * fresh object on every render, so the first parent re-render after mount — the
+ * homepage re-renders when the journey snapshot arrives — reset the counter to
+ * "0", and the next rAF tick restored it. On a throttled phone that landed 2.6
+ * seconds in, long after the reader had read the number.
+ *
+ * A stable object never compares unequal, so `setProp` is never called and the
+ * pre-paint survives for good.
+ */
+const SEED_HTML = { __html: "0" } as const;
+
 export const DeathCounter = memo(function DeathCounter({
   className,
   style,
@@ -86,13 +106,7 @@ export const DeathCounter = memo(function DeathCounter({
       suppressHydrationWarning
       className={className}
       style={{ ...style, display: "inline-block", minWidth: "7ch", textAlign: "center" }}
-      // dangerouslySetInnerHTML keeps React from reconciling this text node at
-      // hydration. With a plain "0" child, hydration patched the pre-painted
-      // value back through React's virtual DOM, repainting the element ~3s in
-      // — which registered as a fresh (and final) LCP candidate and pinned
-      // LCP to hydration time. React treats innerHTML as opaque, so the
-      // parse-time pre-paint survives untouched until the first rAF tick.
-      dangerouslySetInnerHTML={{ __html: "0" }}
+      dangerouslySetInnerHTML={SEED_HTML}
     />
   );
 
