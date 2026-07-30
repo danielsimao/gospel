@@ -204,7 +204,24 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
               </p>
             )}
 
-            {invitation.learnMoreLabel && (
+            {/*
+             * Only for the answer that has nowhere else to go.
+             *
+             * This used to render for all three, which gave the decision screen
+             * two onward routes at the one moment the app is otherwise strict
+             * about offering exactly one. For committed and thinking it was
+             * also offering something the very next screen already carries:
+             * /next-steps trackA has a Learn band ("Explore the foundations")
+             * and trackB has "Want the foundations?". A duplicate, competing
+             * with the primary action, on the quietest screen in the flow.
+             *
+             * Dismissed is different and keeps it. That answer gets no
+             * /next-steps — deliberately, since someone who said "not for me"
+             * should not be handed a task list — so this and the reading-plan
+             * line are the only doors they have, and a quiet non-committal one
+             * is exactly the right thing to leave open.
+             */}
+            {invitationResponse === "dismissed" && invitation.learnMoreLabel && (
               <p className="mt-4 text-center text-sm text-white/60">
                 <Link
                   href={`/${locale}/learn`}
