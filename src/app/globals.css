@@ -281,3 +281,30 @@ html[data-journey-stage="thinking"] [data-slot="journey-stage"][data-stage="visi
 html[data-journey-stage="dismissed"] [data-slot="journey-stage"][data-stage="visitor"] {
   display: none;
 }
+
+/*
+ * One next-steps track, chosen before the first paint.
+ *
+ * The track lives in localStorage, so the server could only render a
+ * placeholder and the real one dropped in at hydration — measured at 200ms of a
+ * page showing nothing but the top bar and the footer. Both tracks are rendered
+ * now and this reveals one, from the same `data-journey-stage` attribute the
+ * homepage uses; STAGE_PREPAINT_SCRIPT stamps it during parse and a layout
+ * effect keeps it in step on client navigations.
+ *
+ * Deliberately hides both by default. A reader with no recorded response has no
+ * track to be shown and is redirected home, so revealing one while that
+ * decision is being made would tell them something the page has not decided.
+ * PageShell carries min-h-dvh, so the empty state cannot pull the footer up.
+ *
+ * Same source-order constraint as the journey stage rules above: these must
+ * stay after the Tailwind import.
+ */
+[data-slot="next-steps-track"] {
+  display: none;
+}
+
+html[data-journey-stage="committed"] [data-slot="next-steps-track"][data-track="committed"],
+html[data-journey-stage="thinking"] [data-slot="next-steps-track"][data-track="thinking"] {
+  display: block;
+}
