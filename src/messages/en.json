@@ -1578,10 +1578,6 @@
       "perHour": "per hour",
       "perDay": "per day"
     },
-    "counter": {
-      "label": "people have died since you opened this page",
-      "liveBadge": "live"
-    },
     "meta": {
       "title": "Every Second Counts | Death Ticker",
       "description": "1.8 people die every second. Are you ready to face God?"

@@ -256,7 +256,7 @@ export function HomeShell({
    * Guarded on `ready` so the first client render, which reports "visitor"
    * before storage has been read, cannot overwrite what the script got right.
    *
-   * Cleared on unmount, matching game-shell's `data-game-phase`. The attribute
+   * Cleared on unmount. The attribute
    * is global and the selectors that read it are not scoped to this route, so
    * leaving it set would make the homepage's stage a fact about every other
    * page in the session.
