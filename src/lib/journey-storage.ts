@@ -1,12 +1,37 @@
 import { emitStorageChange } from "./client-storage";
 import type { InvitationResponse } from "./types";
 
-const STORAGE_KEY = "gospel-journey";
-const LEGACY_TEST_COMPLETED_KEY = "test_completed";
+/*
+ * Exported because the homepage's pre-paint script has to read the same key,
+ * the same legacy key and the same version without importing this module — it
+ * runs before any bundle loads. See `buildStagePrepaintScript` in
+ * lib/stage-prepaint-script.ts, which interpolates these three so a rename or
+ * a version bump cannot leave a second, stale copy behind.
+ */
+export const STORAGE_KEY = "gospel-journey";
+export const LEGACY_TEST_COMPLETED_KEY = "test_completed";
 
 // Bump when JourneyRecord shape changes. Mismatched versions are
 // silently discarded on read (same policy as test-session-storage).
-const CURRENT_VERSION = 1;
+export const CURRENT_VERSION = 1;
+
+/** Every stage, in the order a reader passes through them. Exported so callers
+    that must enumerate stages — the pre-paint script's tests, the CSS parity
+    test — cannot fall out of step with the union above. */
+export const JOURNEY_STAGES: readonly JourneyStage[] = [
+  "visitor",
+  "undecided",
+  "committed",
+  "thinking",
+  "dismissed",
+];
+
+/** Every valid invitation response. Exported for the same reason. */
+export const INVITATION_RESPONSES: readonly InvitationResponse[] = [
+  "committed",
+  "thinking",
+  "dismissed",
+];
 
 export interface JourneyRecord {
   version: number;
@@ -30,7 +55,7 @@ const EMPTY_RECORD: JourneyRecord = Object.freeze({
 });
 
 function isValidResponse(value: unknown): value is InvitationResponse {
-  return value === "committed" || value === "thinking" || value === "dismissed";
+  return INVITATION_RESPONSES.includes(value as InvitationResponse);
 }
 
 /**

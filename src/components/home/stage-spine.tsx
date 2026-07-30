@@ -18,7 +18,9 @@ interface StageSpineProps {
    * progression: told, not charted. Omitted only for `visitor`, where nothing
    * has happened yet.
    */
-  whatHappened?: string;
+  /** ReactNode, not string: the two date-bearing stages pass a sentence with
+      the time clause held back until the timestamp is known. */
+  whatHappened?: React.ReactNode;
   /** Optional extra beat (the house blockquote) between the sentence and the action. */
   children?: ReactNode;
 }

@@ -65,12 +65,21 @@ export function computeJourneySnapshot(
  * the real snapshot post-mount and re-reads on storage changes and bfcache
  * restores (pageshow).
  *
- * That swap happens before the browser paints, not after. EMPTY_SNAPSHOT says
- * "visitor", which is the one thing a returning reader is not — and read in a
- * plain effect, the correction landed after the first paint, so every refresh
- * of the homepage showed a committed reader the stranger's front door for a
- * frame before replacing it with their own stage. Their word for it was
- * flicker. A layout effect puts the read on the near side of that paint.
+ * The swap happens in a layout effect, so it lands before the browser paints
+ * the hydrated tree rather than after it. EMPTY_SNAPSHOT says "visitor", which
+ * is the one thing a returning reader is not, and read in a plain effect that
+ * correction arrived as a second visible paint — the homepage showed a
+ * committed reader the stranger's front door and then replaced it. Their word
+ * for it was flicker.
+ *
+ * This narrows that window; it does not close it, because the server's HTML is
+ * already on screen before hydration begins. The homepage additionally resolves
+ * its stage in a blocking inline script and reveals one of five pre-rendered
+ * blocks with CSS, which is what actually closes it — see
+ * `stage-prepaint-script.ts`. The other consumers of this hook (the footer's
+ * next-steps link, the topic nav, the blog ask-card and personal-turn blocks,
+ * the reading plan, and the next-steps page) still branch in JSX and so still
+ * have that first-paint gap.
  */
 export function useJourney(
   topicSlugs: readonly string[] = [],
