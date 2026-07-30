@@ -94,6 +94,13 @@ export function Landing({ messages, locale }: LandingProps) {
    */
   function handleChange() {
     if (rating) trackSelfRatingChanged(rating);
+    /*
+     * The one moment the question is wanted back, and so the one moment the
+     * pre-paint flag has to go. It hides the question for the pre-hydration
+     * window; left set, it would hide the question this tap exists to return to.
+     * Cleared before the dispatch so the re-render paints it visible.
+     */
+    delete document.documentElement.dataset.testEntry;
     dispatch({ type: "SET_SELF_RATING", rating: null });
   }
 
@@ -180,6 +187,9 @@ export function Landing({ messages, locale }: LandingProps) {
         {rating === null ? (
           <m.div
             key="question"
+            /* The pre-paint script withholds this when the reader arrived from
+               the homepage having already answered. See globals.css. */
+            data-slot="landing-question"
             ref={questionRef}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}

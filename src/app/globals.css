@@ -281,3 +281,24 @@ html[data-journey-stage="thinking"] [data-slot="journey-stage"][data-stage="visi
 html[data-journey-stage="dismissed"] [data-slot="journey-stage"][data-stage="visitor"] {
   display: none;
 }
+
+/*
+ * The landing screen's question, withheld from a reader who has already answered.
+ *
+ * `/test` is prerendered and the answer lives in localStorage, so the server
+ * always sends the question. Someone who tapped an answer on the homepage a
+ * second earlier was asked it again until React hydrated — 560ms on a throttled
+ * phone, measured. The pre-paint script in game-shell sets data-test-entry
+ * during parse, and clears it in the layout effect once React can render the
+ * reply itself, so this only ever applies to the pre-hydration window.
+ *
+ * `visibility`, not `display`: the box below reserves its height from this
+ * element, so collapsing it would trade the wrong content for a layout shift.
+ * A blank where the question would be is honest; asking twice is not.
+ *
+ * Absent attribute means a cold visitor, who should see the question at once —
+ * the right way to fail, and what happens if storage is unreadable.
+ */
+html[data-test-entry="reply"] [data-slot="landing-question"] {
+  visibility: hidden;
+}

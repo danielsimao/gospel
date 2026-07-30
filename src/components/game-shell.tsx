@@ -20,6 +20,7 @@ import { readSession } from "@/lib/test-session-storage";
 import { takeSelfRating } from "@/lib/self-rating-storage";
 import { markTestCompleted } from "@/lib/journey-storage";
 import { EASE_OUT_STRONG } from "@/lib/motion";
+import { TEST_ENTRY_PREPAINT_SCRIPT } from "@/lib/test-entry-prepaint-script";
 import { useIsomorphicLayoutEffect } from "@/lib/use-isomorphic-layout-effect";
 import type { Messages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
@@ -78,6 +79,18 @@ export function GameShell({ messages, locale }: GameShellProps) {
    * by the time any effect runs, so reading storage here is no less stable
    * than it was a frame later.
    */
+  // The pre-paint flag is scoped to this route; drop it on the way out so no
+  // other page carries it. It is NOT cleared when the rating is seeded: the
+  // reply does not render until React re-renders a frame later, and clearing it
+  // early let the question become visible for that frame — measured at 210ms on
+  // a throttled phone, which is the flicker this whole change removes. Landing
+  // clears it at the one moment the question is wanted back.
+  useEffect(() => {
+    return () => {
+      delete document.documentElement.dataset.testEntry;
+    };
+  }, []);
+
   useIsomorphicLayoutEffect(() => {
     if (restoredRef.current) return;
     restoredRef.current = true;
@@ -298,6 +311,9 @@ export function GameShell({ messages, locale }: GameShellProps) {
 
   return (
     <main className="relative min-h-dvh overflow-x-hidden bg-[#060404] flex flex-col">
+      {/* Ahead of the landing screen it governs, so the flag is set before that
+          markup has been parsed. */}
+      <script dangerouslySetInnerHTML={{ __html: TEST_ENTRY_PREPAINT_SCRIPT }} />
       {/* Radial vignette */}
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
 

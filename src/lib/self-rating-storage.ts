@@ -14,7 +14,13 @@ import type { SelfRating } from "./types";
  * the value lives in `GameState` and is persisted with the session; this key is
  * only the handoff, and is cleared as soon as it has been read.
  */
-const STORAGE_KEY = "gospel-self-rating";
+/*
+ * Exported because the test page's pre-paint script has to read the same key
+ * without importing this module — it runs before any bundle loads. See
+ * `buildTestEntryPrepaintScript` in lib/test-entry-prepaint-script.ts, which
+ * interpolates this so a rename cannot leave a stale second copy behind.
+ */
+export const STORAGE_KEY = "gospel-self-rating";
 
 /** Every valid answer. Exported so storage readers can validate without duplicating the union. */
 export const SELF_RATINGS: readonly SelfRating[] = ["yes", "mostly", "no"];
