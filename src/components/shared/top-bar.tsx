@@ -55,7 +55,7 @@ interface TopBarProps {
  */
 export function TopBar({ locale, learnLabel, blogLabel, messages }: TopBarProps) {
   return (
-    <div className="print-hide relative z-10 flex items-center justify-between px-4 pt-4 sm:px-6 sm:pt-5">
+    <header className="print-hide relative z-10 flex items-center justify-between px-4 pt-4 sm:px-6 sm:pt-5">
       {/*
        * A scrim, not a bar. The homepage bleeds the globe off the top-right
        * corner and the nav sits directly on top of it, where dotted landmass
@@ -78,7 +78,12 @@ export function TopBar({ locale, learnLabel, blogLabel, messages }: TopBarProps)
       >
         {messages.brand}
       </Link>
-      <nav className="flex items-center gap-4 text-[13px] font-medium tracking-tight">
+      {/* Labelled so it stays distinguishable from the prev/next nav on topic
+          pages. Uses the brand string, which is already translated. */}
+      <nav
+        aria-label={messages.brand}
+        className="flex items-center gap-4 text-[13px] font-medium tracking-tight"
+      >
         <Link
           href={`/${locale}/test`}
           onClick={() => trackTopBarTestClicked()}
@@ -101,6 +106,6 @@ export function TopBar({ locale, learnLabel, blogLabel, messages }: TopBarProps)
           {blogLabel}
         </Link>
       </nav>
-    </div>
+    </header>
   );
 }

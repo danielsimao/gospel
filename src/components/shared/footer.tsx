@@ -46,10 +46,16 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-10">
           {/* Explore */}
           <div>
-            <h2 className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
+            <h2
+              id="footer-explore"
+              className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70"
+            >
               {messages.exploreLabel}
             </h2>
-            <nav className="flex flex-col gap-2.5">
+            {/* Labelled by its own heading rather than a new aria-label string:
+                three unlabelled <nav>s made the landmarks indistinguishable, and
+                pointing at the heading invents no copy for either locale. */}
+            <nav aria-labelledby="footer-explore" className="flex flex-col gap-2.5">
               <Link
                 href={`/${locale}`}
                 prefetch={false}
@@ -83,10 +89,16 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
 
           {/* Learn */}
           <div>
-            <h2 className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
+            <h2
+              id="footer-learn"
+              className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70"
+            >
               {messages.learnLabel}
             </h2>
-            <nav className="flex flex-col gap-2.5">
+            {/* Labelled by its own heading rather than a new aria-label string:
+                three unlabelled <nav>s made the landmarks indistinguishable, and
+                pointing at the heading invents no copy for either locale. */}
+            <nav aria-labelledby="footer-learn" className="flex flex-col gap-2.5">
               {/* First few only — 14 stacked links dwarfed the other columns
                   (and made the mobile footer a scroll wall). Hub links them all. */}
               {learnTopics.slice(0, 5).map((topic) => (
@@ -111,10 +123,16 @@ export function Footer({ messages, learnTopics, locale }: FooterProps) {
 
           {/* Grow */}
           <div>
-            <h2 className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
+            <h2
+              id="footer-grow"
+              className="mb-4 font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70"
+            >
               {messages.growLabel}
             </h2>
-            <nav className="flex flex-col gap-2.5">
+            {/* Labelled by its own heading rather than a new aria-label string:
+                three unlabelled <nav>s made the landmarks indistinguishable, and
+                pointing at the heading invents no copy for either locale. */}
+            <nav aria-labelledby="footer-grow" className="flex flex-col gap-2.5">
               <Link
                 href={`/${locale}/reading-plan`}
                 prefetch={false}

@@ -15,8 +15,15 @@ interface StickyDeathCounterProps {
  */
 export function StickyDeathCounter({ label, liveBadge }: StickyDeathCounterProps) {
   return (
-    <div
+    <section
       data-slot="sticky-death-counter"
+      /* A labelled <section> is a region landmark, which is what this needs: the
+         strip is fixed chrome sitting outside every other landmark, so without
+         it axe reports the count as content belonging to nothing. `label` is the
+         copy already rendered beside the count, so nothing new is invented.
+         <section> rather than role="region" because the element carries the
+         meaning natively — biome's useSemanticElements says so and is right. */
+      aria-label={label}
       className="fixed top-0 left-0 right-0 z-50 border-b border-red-950/40 bg-[#060404]/[0.94] backdrop-blur-xl"
     >
       <div className="flex items-center justify-center gap-2 px-3 py-1.5 sm:gap-3 sm:px-4 sm:py-2">
@@ -45,6 +52,6 @@ export function StickyDeathCounter({ label, liveBadge }: StickyDeathCounterProps
 
       {/* Thin red accent line at bottom */}
       <div className="h-px w-full bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
-    </div>
+    </section>
   );
 }
