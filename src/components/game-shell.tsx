@@ -313,9 +313,14 @@ export function GameShell({ messages, locale }: GameShellProps) {
           <span>{messages.test.backLabel}</span>
         </Link>
 
-      {/* Offset clears the exit chip, which is fixed and ~34px tall including
-          its top inset. It was pt-10 for the sticky strip; the chip needs less. */}
-      <div className="relative z-[1] flex flex-1 flex-col pt-9">
+      {/* Just enough to clear the exit chip's top inset. This was pt-10 for the
+          sticky deaths strip and pt-9 after it went, but the strip is what the
+          space was for: with it gone the offset simply pushed the examination
+          ledger 34px below the chip, so the top of the screen read as two
+          header bands with a gap between them. The ledger now sits on the
+          chip's own line — see the question card's top padding, which is the
+          other half of that sum. */}
+      <div className="relative z-[1] flex flex-1 flex-col pt-3">
         <AnimatePresence mode="wait" initial={false}>
           <m.div
             key={state.phase}

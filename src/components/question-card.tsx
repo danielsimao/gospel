@@ -122,7 +122,10 @@ export function QuestionCard({
   const isLastQuestion = questionIndex >= TOTAL_QUESTIONS - 1;
 
   return (
-    <div className="grid flex-1 grid-rows-[auto_1fr] px-4 py-6 sm:px-6">
+    /* pt-2, not py-6: the shell's pt-3 plus this puts the ledger's label on the
+       same line as the fixed exit chip, which is what the departed deaths strip
+       used to occupy. Bottom padding is unchanged. */
+    <div className="grid flex-1 grid-rows-[auto_1fr] px-4 pt-2 pb-6 sm:px-6">
       {/* Row 1: Examination ledger — pinned to top; enters just behind the
           card on phase entry (mounts once, not per question) */}
       <m.div
