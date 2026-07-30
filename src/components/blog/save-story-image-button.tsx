@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Download, Copy } from "lucide-react";
-import { trackStoryLinkCopied } from "@/lib/blog-analytics";
+import { trackStoryLinkCopied, trackStorySaved } from "@/lib/blog-analytics";
 import type { Locale } from "@/lib/i18n";
 
 interface SaveStoryImageButtonProps {
@@ -64,31 +64,52 @@ export function SaveStoryImageButton({
     setTimeout(() => URL.revokeObjectURL(url), 60_000);
   };
 
+  const stickerLink = () => {
+    const target = stickerPath ?? `/${locale}/blog/${slug}`;
+    return `${window.location.origin}${target}?utm_source=ig_story&utm_medium=social&utm_campaign=${encodeURIComponent(slug)}`;
+  };
+
   const handleClick = () => {
     const file = fileRef.current;
 
+    /*
+     * The link goes on the clipboard in this same tap, before anything else.
+     * navigator.share() hands straight off to Instagram, so the copy button
+     * below this one is never reached — the reader is already in the story
+     * composer. The clipboard is the only state that survives the app switch,
+     * and Instagram's link sticker offers whatever is sitting on it. This is
+     * what Strava does for the same reason.
+     *
+     * Deliberately not awaited: an await ends the tap's transient activation
+     * and iOS Safari then refuses share() outright. Failures are swallowed
+     * because the copy button remains as the recovery path.
+     */
+    navigator.clipboard?.writeText(stickerLink()).catch(() => {});
+
     if (!file) {
       // Pre-fetch hasn't finished (or failed) — open the image directly.
+      trackStorySaved(slug, "open");
       window.open(storyUrl, "_blank", "noopener");
       return;
     }
 
     if (typeof navigator.canShare === "function" && navigator.canShare({ files: [file] })) {
+      trackStorySaved(slug, "share");
       navigator.share({ files: [file] }).catch((error: unknown) => {
         if (error instanceof Error && error.name === "AbortError") return;
+        trackStorySaved(slug, "download");
         downloadFile(file);
       });
       return;
     }
 
+    trackStorySaved(slug, "download");
     downloadFile(file);
   };
 
   const copyStickerLink = async () => {
-    const target = stickerPath ?? `/${locale}/blog/${slug}`;
-    const url = `${window.location.origin}${target}?utm_source=ig_story&utm_medium=social&utm_campaign=${encodeURIComponent(slug)}`;
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(stickerLink());
       trackStoryLinkCopied(slug);
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
