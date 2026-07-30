@@ -163,18 +163,28 @@ export function QuestionCard({
        * The offset meets the landing screen it follows. That screen is centred
        * and this one cannot be — a centred question would rise when the reply
        * appears beneath it — so the offset does the meeting instead. Measured
-       * against where the reply heading actually sits, not calculated. It also
-       * closes some of the gap this layout opens between the question and the
-       * thumb zone, which on a tall phone is the cost of anchoring the actions
-       * to the bottom rather than to the question.
+       * against where the reply heading actually sits, not calculated.
+       *
+       * It carries the whole responsive rule, because the question is the one
+       * thing that never moves at any size. 24vh on a phone puts it high enough
+       * for the actions to reach the bottom edge; 36vh from sm up puts the
+       * unanswered group on the optical centre instead, since the actions no
+       * longer travel there. Below 500px tall — a landscape phone — 12vh, where
+       * the only thing that matters is that all of it fits at once.
        */}
       {/* The short-viewport clause exists because of the reserve above it. A
           landscape phone is 390 tall: ledger 49, offset 101, content ~180, and
-          the banner's 50 tipped the screen 16px into scrolling, which it never
-          did before. 12vh buys back 55 and the whole test fits on one screen
-          again — which is the property worth protecting here, since a ledger
-          that can scroll out of view stops telling anyone where they are. */}
-      <div className="flex w-full min-h-0 max-w-xs flex-col justify-self-center pt-[24vh] pb-2 sm:max-w-sm sm:pt-[26vh] [@media(max-height:500px)]:pt-[12vh]">
+          the banner's 50 tipped the unanswered screen 16px into scrolling,
+          which it never did before. 12vh buys back 55.
+
+          It does not rescue the answered state, and does not pretend to. That
+          already overflowed a 390-tall viewport by 106px before any of this —
+          measured on the branch with these classes stashed — because a
+          question, a verdict, a follow-up, a Next and a chip do not fit in 390
+          pixels at any offset. This rule costs 8 of those 106. Fixing the rest
+          means smaller type in landscape, which is a design change and not
+          this one. */}
+      <div className="flex w-full min-h-0 max-w-xs flex-col justify-self-center pt-[24vh] pb-2 sm:max-w-sm sm:pt-[36vh] [@media(max-height:500px)]:pt-[12vh]">
           <AnimatePresence mode="popLayout">
             <m.div
               key={questionIndex}
@@ -185,8 +195,14 @@ export function QuestionCard({
               /* flex-1 and min-h-0: this wrapper sits between the sized row and
                  the card, so without them the card's height resolves against
                  nothing, the spacer collapses, and the actions ride up under
-                 the question instead of sitting in the thumb zone. */
-              className="flex w-full min-h-0 flex-1 flex-col"
+                 the question instead of sitting in the thumb zone.
+
+                 sm:flex-none because at that size nothing below is stretching:
+                 the spacer is fixed, so a wrapper that still filled the row
+                 would leave the answered chips stranded at the bottom edge —
+                 measured 340px below the group they belong to, alone on a
+                 1280x900 window. Sized to its content, they follow it. */
+              className="flex w-full min-h-0 flex-1 flex-col sm:flex-none"
             >
               <div className="flex w-full flex-1 flex-col">
                 {/*
@@ -207,10 +223,21 @@ export function QuestionCard({
                   {question.text}
                 </p>
 
-                {/* Buttons */}
-                {/* The gap that absorbs the answer. Both the question above
-                    and the action below stay put; only this shrinks. */}
-                <div className="min-h-6 flex-1" />
+                {/*
+                 * The gap that absorbs the answer — but only on a phone.
+                 *
+                 * Below sm it grows, which is what pushes the two verdicts to
+                 * the bottom edge and into the thumb zone. Six questions plus a
+                 * tap on every denial is six to twelve taps in one sitting, and
+                 * that is the case reach is worth buying.
+                 *
+                 * At sm and above there is no thumb to reach with, and the same
+                 * rule opened 435px of nothing between the question and the
+                 * buttons on a 900-tall window. A void is pure cost once the
+                 * reach it bought is worthless, so the gap stops growing and
+                 * the actions sit with the question they answer.
+                 */}
+                <div className="min-h-6 flex-1 sm:h-8 sm:flex-none" />
 
                 <AnimatePresence mode="wait">
                   {!answered ? (
