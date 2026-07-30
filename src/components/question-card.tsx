@@ -151,22 +151,47 @@ export function QuestionCard({
               transition={{ duration: 0.45, ease: EASE_OUT_STRONG }}
               className="w-full"
             >
-              <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.03] to-white/[0.01] p-6 sm:p-7">
-                {/* Commandment accent */}
-                <div className="mb-3 flex items-center gap-2">
-                  <span className="h-px w-6 bg-red-500/40" />
-                  <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
-                    {testMessages.commandmentLabel} {roman}
-                  </span>
-                </div>
+              {/*
+               * A ruled region of the page, not a panel.
+               *
+               * This was a rounded, bordered, gradient-filled card. Six elements
+               * inside a lit box read as a form to fill in, and every one of
+               * them is load-bearing — so the box was the part to remove, not
+               * the contents. What gives the card its structure now is the
+               * rules: a case line above, a divider between the two verdicts.
+               *
+               * The separate "Commandment VII" eyebrow is folded into that case
+               * line. It and the commandment's own name were two labels for one
+               * thing, and the name is the one carrying the Law.
+               *
+               * The question grows to 20px. Without a panel it is the only thing
+               * holding the hierarchy, and at 17px it no longer did.
+               */}
+              <div className="relative w-full">
+                {/* Case line. The count lives in the ledger directly above, so
+                    it is deliberately not repeated here. */}
+                <p className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
+                  {testMessages.commandmentLabel} {roman}
+                </p>
+                {/* The rule draws itself, left to right, like a line being
+                    ruled on a sheet. scaleX only — composited, and no layout to
+                    shift. MotionConfig reducedMotion="user" stops it for readers
+                    who ask. */}
+                <m.span
+                  aria-hidden="true"
+                  className="mt-2.5 block h-px origin-left bg-red-500/25"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.5, delay: 0.12, ease: EASE_OUT_STRONG }}
+                />
 
-                {/* Commandment scripture (from i18n) — the Law is the blade, not a caption */}
-                <p className="mb-3 font-mono text-[11px] uppercase tracking-[2px] text-white/75">
+                {/* The Law is the blade, not a caption */}
+                <p className="mt-4 font-mono text-[11px] uppercase tracking-[2px] text-white/75">
                   {question.commandment}
                 </p>
 
                 {/* Question text */}
-                <p className="text-[17px] font-semibold leading-snug text-white/95 sm:text-lg">
+                <p className="mt-2.5 text-[20px] font-semibold leading-[1.28] tracking-[-0.015em] text-white/95 sm:text-[21px]">
                   {question.text}
                 </p>
 
@@ -182,14 +207,32 @@ export function QuestionCard({
                       // from mounting, so its duration is a flat tax on every
                       // reveal below. Kept short for that reason.
                       transition={{ duration: 0.18 }}
-                      className="mt-5 flex gap-2"
+                      className="mt-6 border-t border-white/[0.08] pt-1"
                     >
-                      <Button variant="red" size="sm" onClick={() => handleAnswer("honest")} className="flex-1">
-                        {question.honestLabel}
-                      </Button>
-                      <Button variant="ghost" size="sm" onClick={() => handleAnswer("justify")} className="flex-1">
-                        {question.justifyLabel}
-                      </Button>
+                      {/*
+                       * Two verdicts either side of a hairline, rather than two
+                       * filled buttons. With no panel around them, filled pills
+                       * became the heaviest thing on screen and pulled rank over
+                       * the question. min-h-[44px] keeps the tap target honest
+                       * now that the fill is gone.
+                       */}
+                      <div className="grid grid-cols-[1fr_1px_1fr] items-stretch">
+                        <button
+                          type="button"
+                          onClick={() => handleAnswer("honest")}
+                          className="min-h-[44px] rounded-lg px-2 text-[13.5px] font-semibold text-red-400 transition-colors hover:bg-red-500/[0.07] hover:text-red-300"
+                        >
+                          {question.honestLabel}
+                        </button>
+                        <span aria-hidden="true" className="bg-white/[0.08]" />
+                        <button
+                          type="button"
+                          onClick={() => handleAnswer("justify")}
+                          className="min-h-[44px] rounded-lg px-2 text-[13.5px] font-semibold text-white/60 transition-colors hover:bg-white/[0.03] hover:text-white/80"
+                        >
+                          {question.justifyLabel}
+                        </button>
+                      </div>
                     </m.div>
                   ) : (
                     <m.div
@@ -202,7 +245,14 @@ export function QuestionCard({
                       {answered === "honest" ? (
                         <>
                           {/* Verdict word */}
-                          <div className="flex items-center gap-2 border-t border-red-900/30 pt-3">
+                          <m.span
+                            aria-hidden="true"
+                            className="block h-px origin-left bg-red-500/30"
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: 1 }}
+                            transition={{ duration: 0.45, ease: EASE_OUT_STRONG }}
+                          />
+                          <div className="flex items-center gap-2 pt-3">
                             <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
                             <p className="font-mono text-[11px] font-bold uppercase tracking-[2px] text-red-400">
                               {testMessages.verdictLabels[config?.commandment ?? ""] ?? testMessages.answeredBadge}
@@ -220,7 +270,14 @@ export function QuestionCard({
                         </>
                       ) : (
                         <>
-                          <div className="flex items-center gap-2 border-t border-red-900/30 pt-3">
+                          <m.span
+                            aria-hidden="true"
+                            className="block h-px origin-left bg-red-500/30"
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: 1 }}
+                            transition={{ duration: 0.45, ease: EASE_OUT_STRONG }}
+                          />
+                          <div className="flex items-center gap-2 pt-3">
                             <span className="h-1 w-1 rounded-full bg-red-500" />
                             <p className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-red-400/80">
                               {testMessages.justifiedBadge}
