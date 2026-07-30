@@ -164,17 +164,6 @@ export function GameShell({ messages, locale }: GameShellProps) {
     locale,
   ]);
 
-  // The sticky deaths-today bar lives in the (immersive) layout, outside this
-  // provider's tree, so it cannot read phase through React. Publishing the
-  // phase on <html> lets globals.css retire the bar once the verdict takes
-  // the count over. Cleaned up on unmount so no other route sees the flag.
-  useEffect(() => {
-    document.documentElement.dataset.gamePhase = state.phase;
-    return () => {
-      delete document.documentElement.dataset.gamePhase;
-    };
-  }, [state.phase]);
-
   // --- Back-navigation history integration -------------------------------
   // One path: re-read links call history.back(); popstate dispatches the
   // reducer action. Entries exist only for verdict/grace/invitation —
@@ -307,35 +296,34 @@ export function GameShell({ messages, locale }: GameShellProps) {
     }
   }, [state.invitationResponse]);
 
-  // The phases where the sticky death counter has slid away — kept in step with
-  // the selector list in globals.css.
-  const barRetired =
-    state.phase === "verdict" || state.phase === "grace" || state.phase === "invitation";
-
   return (
     <main className="relative min-h-dvh overflow-x-hidden bg-[#060404] flex flex-col">
       {/* Radial vignette */}
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
 
-      {/* Exit rides the sticky death counter, which retires from the verdict
-          onward (globals.css keys off the same data-game-phase published above).
-          Pinned, it sat stranded with the bar's height of nothing over it; it
-          now slides up by that height on the bar's own curve, so the two read
-          as one thing leaving. Transform, not a `top` swap — transform is
-          composited. */}
+      {/*
+       * The only way out of the Law, and now the only thing at the top of it.
+       *
+       * It used to sit at top-12 / sm:top-14 — under the sticky deaths strip —
+       * and translate up by the strip's own height (34px, 40px) once that strip
+       * retired at the verdict, so the two read as one thing leaving. With the
+       * strip gone there is nothing above it and nothing to retire, so it takes
+       * the position it previously only reached at the verdict: 48-34 = 14px,
+       * 56-40 = 16px, which is top-3.5 / sm:top-4. Same place the reader's eye
+       * already found it on the screens that mattered, and it no longer moves.
+       */}
       <Link
           href={`/${locale}`}
           aria-label={messages.test.backLabel}
-          className={`fixed left-3 top-12 z-40 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-[transform,color,border-color] duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-white/15 hover:text-white/80 motion-reduce:transition-none sm:left-4 sm:top-14 sm:text-[10px] ${
-            barRetired ? "-translate-y-[34px] sm:-translate-y-[40px]" : ""
-          }`}
+          className="fixed left-3 top-3.5 z-40 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/80 sm:left-4 sm:top-4 sm:text-[10px]"
         >
           <span aria-hidden="true">&larr;</span>
           <span>{messages.test.backLabel}</span>
         </Link>
 
-      {/* Content (offset below sticky bar) */}
-      <div className="relative z-[1] flex flex-1 flex-col pt-10">
+      {/* Offset clears the exit chip, which is fixed and ~34px tall including
+          its top inset. It was pt-10 for the sticky strip; the chip needs less. */}
+      <div className="relative z-[1] flex flex-1 flex-col pt-9">
         <AnimatePresence mode="wait" initial={false}>
           <m.div
             key={state.phase}

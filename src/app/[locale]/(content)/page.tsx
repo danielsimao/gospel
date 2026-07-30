@@ -20,7 +20,6 @@ interface HomeData {
     perHour: string;
     perDay: string;
   };
-  counter: { label: string; liveBadge: string };
   home: HomeMessages;
   /** Question 1 is asked and completed on the homepage. */
   questions: Array<{
@@ -69,7 +68,6 @@ async function getHomeData(locale: Locale): Promise<HomeData> {
   );
   return {
     hero: data.eternity.hero,
-    counter: data.eternity.counter,
     home: data.home,
     questions: data.questions,
     test: data.test,
