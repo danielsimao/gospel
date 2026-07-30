@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { isValidLocale, getMessages, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
 import { GameShell } from "@/components/game-shell";
+import { GameProvider } from "@/components/game-provider";
 import { StructuredData } from "@/components/structured-data";
 import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
 import type { Metadata } from "next";
@@ -42,7 +43,16 @@ export default async function GamePage({ params }: Props) {
   return (
     <>
       <StructuredData data={webPageSchema} />
-      <GameShell messages={messages} locale={locale as Locale} />
+      {/* The provider lives in the page rather than a layout. It used to sit in
+          `test/layout.tsx`, whose comment reasoned that a layout would keep the
+          reducer from being remounted by "any future segment added under
+          /test". That segment now exists — `[rating]` — and the reasoning
+          inverts: a layout sits above that segment, so it can never see the
+          param, and it deliberately does not remount when the param changes.
+          Both are exactly what seeding from the route needs. */}
+      <GameProvider>
+        <GameShell messages={messages} locale={locale as Locale} />
+      </GameProvider>
     </>
   );
 }

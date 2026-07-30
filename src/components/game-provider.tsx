@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useReducer, type Dispatch } from "react";
 import { gameReducer, initialGameState } from "@/lib/game-reducer";
 import { writeSession } from "@/lib/test-session-storage";
-import type { GameState, GameAction } from "@/lib/types";
+import type { GameState, GameAction, SelfRating } from "@/lib/types";
 
 const GameStateContext = createContext<GameState>(initialGameState);
 const GameDispatchContext = createContext<Dispatch<GameAction>>(() => {});
@@ -16,8 +16,37 @@ export function useGameDispatch() {
   return useContext(GameDispatchContext);
 }
 
-export function GameProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(gameReducer, initialGameState);
+/**
+ * @param initialSelfRating The answer the reader gave on the homepage, read
+ * from the route rather than from storage. See the seeded page under
+ * `test/[rating]` for why it arrives this way.
+ */
+export function GameProvider({
+  children,
+  initialSelfRating = null,
+}: {
+  children: React.ReactNode;
+  initialSelfRating?: SelfRating | null;
+}) {
+  /*
+   * Seeded in the initialiser, not by an effect, and this is the entire point.
+   *
+   * The answer used to be handed over in localStorage and dispatched from a
+   * layout effect, which meant the first render always had `selfRating: null`
+   * — so the landing screen rendered its *question*, and when the answer
+   * arrived a frame later AnimatePresence played the question's 200ms exit.
+   * A reader who had just tapped an answer watched it ask them again. Measured
+   * at 219ms on the real journey, against a 0.2s exit duration.
+   *
+   * Three attempts to patch that failed in the same way: a layout effect runs
+   * after the first render, and an inline pre-paint script never runs at all on
+   * a client-side navigation, which is how readers actually arrive. The answer
+   * comes from `params` now, so the very first render already has it — on the
+   * server and in the browser alike, with nothing to synchronise.
+   */
+  const [state, dispatch] = useReducer(gameReducer, initialSelfRating, (rating) =>
+    rating ? { ...initialGameState, selfRating: rating } : initialGameState,
+  );
 
   useEffect(() => {
     if (state.phase === "landing") {

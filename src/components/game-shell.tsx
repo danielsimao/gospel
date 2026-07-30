@@ -17,7 +17,6 @@ import {
 } from "@/lib/analytics";
 import { QUESTION_CONFIGS, TOTAL_QUESTIONS } from "@/lib/questions";
 import { readSession } from "@/lib/test-session-storage";
-import { takeSelfRating } from "@/lib/self-rating-storage";
 import { markTestCompleted } from "@/lib/journey-storage";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import { useIsomorphicLayoutEffect } from "@/lib/use-isomorphic-layout-effect";
@@ -82,24 +81,17 @@ export function GameShell({ messages, locale }: GameShellProps) {
     if (restoredRef.current) return;
     restoredRef.current = true;
     /*
-     * A tap on the homepage outranks a resume. Arriving with a pending rating
-     * means the reader answered "Are you a good person?" seconds ago and
-     * expects to be met on it; dropping them back into a half-finished test
-     * would ignore what they just did. A resume, by contrast, is inferred.
+     * A tap on the homepage still outranks a resume, and now says so by
+     * arriving in the route: the provider seeds `selfRating` before this runs,
+     * so a seeded entry is recognised by reading state rather than storage.
+     * Dropping such a reader into a half-finished test would ignore what they
+     * did one second ago; a resume, by contrast, is inferred.
      *
-     * Seeded, not started. The landing screen stays — it just stops asking a
-     * question that has been answered and replies to it instead. The reader
-     * begins the Law by choosing to, from a screen that told them what their
-     * answer was and gave them a way to change it.
-     *
-     * The read also clears the key, so a later visit from the nav asks the
-     * question again rather than quoting a stale claim in the verdict.
+     * Seeded, not started. The landing screen stays — it just replies to the
+     * answer instead of asking for it again, and the reader begins the Law by
+     * choosing to, from a screen that gave them a way to change their mind.
      */
-    const rating = takeSelfRating();
-    if (rating) {
-      dispatch({ type: "SET_SELF_RATING", rating });
-      return;
-    }
+    if (state.selfRating) return;
 
     const saved = readSession();
     // The whole saved record, not a field-by-field copy. Transcribing it is
@@ -107,7 +99,7 @@ export function GameShell({ messages, locale }: GameShellProps) {
     if (!saved) return;
     dispatch({ type: "RESUME_SESSION", session: saved });
     trackTestRestored(saved.phase, locale);
-  }, [dispatch, locale]);
+  }, [dispatch, locale, state.selfRating]);
 
   useEffect(() => {
     Sentry.addBreadcrumb({

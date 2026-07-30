@@ -15,8 +15,8 @@ import { Button, ButtonArrow } from "@/components/ui/button";
 import { useJourney } from "@/lib/use-journey";
 import { saveInvitationResponse } from "@/lib/journey-storage";
 import { clearSession } from "@/lib/test-session-storage";
-import { writeSelfRating } from "@/lib/self-rating-storage";
 import { TOTAL_QUESTIONS } from "@/lib/questions";
+import { SELF_RATINGS } from "@/lib/self-rating";
 import { useIsomorphicLayoutEffect } from "@/lib/use-isomorphic-layout-effect";
 import { STAGE_PREPAINT_SCRIPT } from "@/lib/stage-prepaint-script";
 import { trackSelfRating } from "@/lib/analytics";
@@ -218,10 +218,12 @@ export function HomeShell({
    * goes on showing it while the retake is in progress.
    */
   function handleSelfRating(rating: SelfRatingValue) {
-    writeSelfRating(rating);
     trackSelfRating(rating, "homepage");
     trackHomeCtaClicked();
-    router.push(`/${locale}/test`);
+    // The answer travels in the route, not in storage. /test/{rating} is
+    // prerendered with the reply already rendered, so the screen the reader
+    // lands on never asks them the question they just answered.
+    router.push(`/${locale}/test/${rating}`);
   }
 
   /*
@@ -230,7 +232,11 @@ export function HomeShell({
    * animation — prefetching makes the push resolve immediately.
    */
   useEffect(() => {
+    // All three, not just one: they are prerendered and tiny, and which one the
+    // reader will tap is exactly what is not known in advance. The unseeded
+    // /test is prefetched too — the other links on this page point at it.
     router.prefetch(`/${locale}/test`);
+    for (const rating of SELF_RATINGS) router.prefetch(`/${locale}/test/${rating}`);
   }, [router, locale]);
 
   const desktopGlobe = useSyncExternalStore(subscribeToDesktop, isDesktop, () => false);
