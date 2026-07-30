@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, memo } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 
 const DEATHS_PER_SECOND = 1.8;
 const DEATHS_PER_MS = DEATHS_PER_SECOND / 1000;
@@ -135,18 +135,57 @@ function updateCells(host: HTMLElement, text: string, animate: boolean): void {
 
 /**
  * Inline script that paints the live deaths-today number during HTML parse,
- * BEFORE first paint. Without it the span SSRs "0" and the post-hydration
- * count-up makes every digit-growth repaint a new (larger) LCP candidate —
- * pinning LCP to hydration + animation end instead of first paint.
- * Kept dependency-free and duplicated from the module constants above
- * because it executes before any bundle loads.
+ * BEFORE first paint. Without it the span carries whatever the build produced
+ * and the correction arrives at hydration, which on a phone is seconds later.
+ * Kept dependency-free and duplicated from the module constants above because
+ * it executes before any bundle loads.
  *
- * It emits the same cell markup buildCells does, so the structure the roll
- * needs is already in the parse-time HTML. A library that renders its digits
- * into a shadow root cannot be reached from here, which is why this counter
- * rolls its own: the pre-paint value is worth more than the dependency.
+ * It writes `textContent`, not `innerHTML`. That is the whole difference
+ * between this working and not, and it is worth spelling out.
+ *
+ * The span used to be handed `dangerouslySetInnerHTML={{ __html: "0" }}` on the
+ * theory that React treats innerHTML as opaque and would leave the pre-painted
+ * value alone. That was true of React 18. React 19 changed it: with
+ * `dangerouslySetInnerHTML` and `suppressHydrationWarning` together, hydration
+ * no longer bails out of the subtree — it proceeds and re-applies the server's
+ * HTML (facebook/react#32975). Measured on this branch, the counter showed the
+ * right number, dropped to a bare "0" at hydration, and came back one frame
+ * later; throttled to a phone that "0" landed 2.6 seconds in, long after the
+ * reader had read the number.
+ *
+ * Text children plus `suppressHydrationWarning` is the pattern Next documents
+ * for exactly this (its guide on preventing flash before hydration), and its
+ * rule is the one that matters here: for a text mismatch under
+ * `suppressHydrationWarning`, React keeps the DOM and discards its own output.
+ * The DOM wins. So the script writes text and React never overwrites it.
+ *
+ * The digit cells are built by the effect rather than emitted here. First paint
+ * only needs the right number; the cell structure is only needed to animate,
+ * and it is measured to occupy the same box as the plain text it replaces.
  */
-const PREPAINT_SCRIPT = `(function(){var s=document.currentScript,e=s&&s.previousElementSibling;if(!e)return;var n=new Date(),m=new Date(n);m.setUTCHours(0,0,0,0);var t=Math.floor((n-m)*${DEATHS_PER_MS}).toLocaleString(),h='';for(var i=0;i<t.length;i++){h+='<span style="${CELL_CSS}"><span style="${GLYPH_CSS}">'+t[i]+'</span></span>';}e.innerHTML=h;})()`;
+const PREPAINT_SCRIPT = `(function(){var s=document.currentScript,e=s&&s.previousElementSibling;if(!e)return;var n=new Date(),m=new Date(n);m.setUTCHours(0,0,0,0);e.textContent=Math.floor((n-m)*${DEATHS_PER_MS}).toLocaleString();})()`;
+
+/**
+ * The value React renders as the span's children.
+ *
+ * Only the deaths-today counter seeds itself live. Server-side that is the
+ * build's own clock, stale by design — the script above corrects it before the
+ * first paint, and on a soft navigation this runs in the browser and is simply
+ * right either way.
+ *
+ * The page-load counters seed "0" on purpose, because 0 is where they start:
+ * they exist to count up to their value over COUNT_UP_MS, and seeding the
+ * answer would show the total, snap back, and climb to it again — which is the
+ * fault this whole change is fixing, just moved to the verdict screen.
+ *
+ * Held in state with a lazy initialiser so it is computed once. Recomputing per
+ * render would change the children React holds, and React would then patch the
+ * text on any re-render, wiping the digit cells the effect built.
+ */
+function initialText(fromMidnight: boolean): string {
+  if (!fromMidnight) return "0";
+  return Math.floor(getMsSinceMidnightUTC() * DEATHS_PER_MS).toLocaleString();
+}
 
 export const DeathCounter = memo(function DeathCounter({
   className,
@@ -155,6 +194,7 @@ export const DeathCounter = memo(function DeathCounter({
   baseMs = 0,
 }: DeathCounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
+  const [seed] = useState(() => initialText(fromMidnight));
 
   useEffect(() => {
     const host = ref.current;
@@ -174,6 +214,16 @@ export const DeathCounter = memo(function DeathCounter({
 
     function tick() {
       if (!host) return;
+
+      /*
+       * If anything outside this loop has replaced the contents — a React
+       * re-render patching the text, an extension, a devtools edit — the cells
+       * are gone and `lastText` no longer describes what is on screen. Forcing
+       * a rebuild costs one frame and stops the display sitting on a stale
+       * value until the next tick happens to differ.
+       */
+      if (lastText && host.childElementCount !== lastText.length) lastText = "";
+
       const elapsed = Date.now() - animStart;
       const realCount = Math.floor((targetBase + elapsed) * DEATHS_PER_MS);
 
@@ -225,14 +275,19 @@ export const DeathCounter = memo(function DeathCounter({
         justifyContent: "center",
         minWidth: "7ch",
       }}
-      // dangerouslySetInnerHTML keeps React from reconciling this text node at
-      // hydration. With a plain "0" child, hydration patched the pre-painted
-      // value back through React's virtual DOM, repainting the element ~3s in
-      // — which registered as a fresh (and final) LCP candidate and pinned
-      // LCP to hydration time. React treats innerHTML as opaque, so the
-      // parse-time pre-paint survives untouched until the first rAF tick.
-      dangerouslySetInnerHTML={{ __html: "0" }}
-    />
+    >
+      {/*
+        Text children, and `suppressHydrationWarning` above. Under that flag a
+        text mismatch resolves in the DOM's favour, so the value the pre-paint
+        script wrote survives hydration. `dangerouslySetInnerHTML` used to sit
+        here for the same purpose and no longer works — see PREPAINT_SCRIPT.
+
+        The children never change after the first render (state, lazily
+        initialised), so React has nothing to patch on a re-render either, and
+        the digit cells the effect builds are left alone.
+      */}
+      {seed}
+    </span>
   );
 
   if (!fromMidnight) return span;
