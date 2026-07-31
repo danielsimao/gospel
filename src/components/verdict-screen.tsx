@@ -101,6 +101,22 @@ export function VerdictScreen({
   const beat: Beat = BEATS[beatIndex] ?? "door";
   const isLastBeat = beatIndex >= LAST_BEAT;
 
+  /*
+   * Re-entry shows the whole verdict at once, not the beat it ended on.
+   *
+   * "Re-read the verdict" walks one history entry back from grace, which
+   * remounts this screen with graceReached already true — so it opened on the
+   * last beat, and the last beat is a gold question with no verdict on it. A
+   * link that promises to re-read the verdict was showing none of it.
+   *
+   * The sequence is for the first hearing. Someone who has heard it and came
+   * back deliberately wants the record, so they get it as a document: the
+   * charge, the confession, the count and their own claim in one column, with
+   * the way on at the bottom. Grace already resolves the same way once its
+   * chain is complete, and for the same reason.
+   */
+  const showAll = returning;
+
   const advance = useCallback(() => {
     setBeatIndex((i) => Math.min(i + 1, LAST_BEAT));
   }, []);
@@ -220,6 +236,7 @@ export function VerdictScreen({
        * accessible name is the question itself, which is exactly what activating
        * it means; before that there is nothing to read and it carries a label.
        */}
+      {!showAll && (
       <button
         type="button"
         ref={doorRef}
@@ -259,14 +276,17 @@ export function VerdictScreen({
           </m.span>
         )}
       </button>
+      )}
 
       <div
         ref={beatRef}
         tabIndex={-1}
         key={beat}
-        className="relative z-10 flex w-full max-w-md flex-col items-center text-center outline-none sm:max-w-2xl lg:max-w-4xl"
+        className={`relative z-10 flex w-full max-w-md flex-col items-center text-center outline-none sm:max-w-2xl lg:max-w-4xl ${
+          showAll ? "gap-14 py-6 sm:gap-16" : ""
+        }`}
       >
-        {beat === "charge" && (
+        {(showAll || beat === "charge") && (
           <m.p
             initial={{ opacity: 0, scale: 1.12 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -285,7 +305,7 @@ export function VerdictScreen({
          * fill a desktop. Centred text past ~60 characters a line stops being
          * readable, and this is the sentence that has to land.
          */}
-        {beat === "confession" && (
+        {(showAll || beat === "confession") && (
           <m.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -310,7 +330,7 @@ export function VerdictScreen({
          * as long as the reader looks at it, which is strictly better than the
          * old 2.5s window: the number climbs while they sit with it.
          */}
-        {beat === "count" && (
+        {(showAll || beat === "count") && (
           <m.div
             initial={{ opacity: 0, y: -14, scale: 1.06 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -338,7 +358,7 @@ export function VerdictScreen({
          * is nothing to infer when it is absent. James 2:10 carries the beat
          * alone in that case, which is the argument the six questions build.
          */}
-        {beat === "claim" && (
+        {(showAll || beat === "claim") && (
           <m.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -363,6 +383,28 @@ export function VerdictScreen({
           </m.div>
         )}
 
+        {/* The way on, for the document. The sequence carries its door inside
+            the full-screen control, which does not exist here — so a re-reader
+            would have had the whole verdict and no way forward. Same words,
+            same gold, as an ordinary button because on this version it is one
+            element among several rather than the only thing on screen. */}
+        {showAll && (
+          <button
+            type="button"
+            onClick={handleBridgeClick}
+            className="inline-flex flex-col items-center gap-4 rounded-lg px-4 py-2 outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[#D4A843]/70"
+          >
+            <span
+              className="text-[26px] font-medium leading-[1.3] tracking-[-0.02em] text-[#D4A843] sm:text-[34px]"
+              style={{ textShadow: "0 0 60px rgba(212,168,67,0.3)" }}
+            >
+              {testMessages.verdict.bridgeButton}
+            </span>
+            <span aria-hidden="true" className="text-2xl text-[#D4A843]/60">
+              &darr;
+            </span>
+          </button>
+        )}
       </div>
 
       {/* Where the reader is, and the first signal that the colour of the flow
@@ -372,6 +414,7 @@ export function VerdictScreen({
           to the fixed consent banner and on an iPhone to the home indicator.
           --consent-h is published by the banner; both terms resolve to 0 for a
           returning reader on a device without one. */}
+      {!showAll && (
       <div
         aria-hidden="true"
         className="absolute inset-x-0 bottom-[calc(1.75rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] z-10 flex justify-center gap-2"
@@ -389,6 +432,7 @@ export function VerdictScreen({
           />
         ))}
       </div>
+      )}
 
       {/*
        * The affordance, on every beat including the last, and worded for the
