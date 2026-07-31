@@ -369,14 +369,29 @@ export function VerdictScreen({
         ))}
       </div>
 
-      {/* The affordance. Only where there is somewhere to go, and worded for
-          the device: a thumb taps, a pointer has nothing to aim at. */}
-      {!isLastBeat && (
-        <p className="absolute inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] z-10 text-center font-mono text-[9px] uppercase tracking-[2.4px] text-white/30 sm:text-[11px]">
-          <span className="sm:hidden">{testMessages.verdict.advanceHintTouch}</span>
-          <span className="hidden sm:inline">{testMessages.verdict.advanceHintPointer}</span>
-        </p>
-      )}
+      {/*
+       * The affordance, on every beat including the last, and worded for the
+       * device: a thumb taps, a pointer has nothing to aim at.
+       *
+       * The last beat used to go without, on the reasoning that four beats of
+       * tapping teach the interaction before the training wheels come off. That
+       * reasoning has a hole in it: `returning` lands a reader coming back from
+       * grace directly on the last beat, so they arrive having tapped nothing
+       * and seen no hint — a gold question, a chevron, and a dead end with no
+       * other way forward.
+       *
+       * Persistent rather than revealed after an idle timer. A prompt that
+       * appears once the reader stops moving says "you are doing it wrong" or
+       * "hurry up", and this is the one screen in the app built to be sat with:
+       * the count beat exists so that a number climbs while nothing happens.
+       * Nudging there would break the thing the sequence is for. At 9px and 30%
+       * opacity a permanent label costs the last frame almost nothing, and it
+       * cannot arrive at the wrong moment because it never arrives.
+       */}
+      <p className="absolute inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] z-10 text-center font-mono text-[9px] uppercase tracking-[2.4px] text-white/30 sm:text-[11px]">
+        <span className="sm:hidden">{testMessages.verdict.advanceHintTouch}</span>
+        <span className="hidden sm:inline">{testMessages.verdict.advanceHintPointer}</span>
+      </p>
     </div>
   );
 }
