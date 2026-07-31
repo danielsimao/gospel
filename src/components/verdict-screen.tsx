@@ -8,7 +8,6 @@ import { DeathCounter } from "@/components/eternity/death-counter";
 import { trackVerdictReached } from "@/lib/analytics";
 import { splitConfession, type ConfessionTone } from "@/lib/confession";
 import { EASE_OUT_STRONG } from "@/lib/motion";
-import { VerdictEmblem } from "@/components/emblems";
 import type { TestMessages } from "@/lib/types";
 
 interface VerdictScreenProps {
@@ -32,7 +31,7 @@ const BRIDGE_DELAY_MS = 1200;
  */
 const TONE_CLASS: Record<Exclude<ConfessionTone, "plain">, string> = {
   admitted: "text-red-400",
-  denied: "text-white/55",
+  denied: "text-white/45",
 };
 
 export function VerdictScreen({
@@ -109,210 +108,184 @@ export function VerdictScreen({
   const at = (ms: number) => (returning ? 0 : ms / 1000);
 
   return (
-    <div className="relative flex flex-1 flex-col items-center justify-center px-4 py-16 sm:px-6">
-      {/* Judgment pressing down from above. Grace has a warm wash from centre
-          and the invitation has a two-point crossroads gradient; the verdict
-          was the only screen in the flow on bare black. No blur filter here
-          (unlike grace): the gradient already fades out at 58%, and blurring
-          a fixed full-viewport layer costs a composited pass for nothing. */}
+    /*
+     * The charge, not a report.
+     *
+     * What was here: eight centred blocks in one column — emblem, eyebrow,
+     * GUILTY in a double frame, scripture, confession, mirror, the count in an
+     * identical double frame, CTA. Measured on a 390x844 phone it came to 889px
+     * of content, so the gold way out sat below the fold, behind the consent
+     * banner on a first visit.
+     *
+     * Three things were wrong and only one of them was the scroll. GUILTY and
+     * the count were the same colour, the same weight and wore the same frame,
+     * so two heroes fought and neither won. The frame itself appeared four
+     * times, which is texture rather than emphasis. And the confession — the
+     * one sentence on this screen assembled from what this reader just said —
+     * was set at 16px between them, the third-loudest thing on a screen that
+     * exists to deliver it.
+     *
+     * So the hierarchy is inverted rather than tuned. The confession is the
+     * screen. GUILTY is a stamp, because a verdict is stamped on a document and
+     * is not the document. Everything else is evidence, set small, at the
+     * bottom on a phone and in a rail on a desktop.
+     *
+     * The bottom padding is a reserve, not spacing. This screen no longer
+     * scrolls, so anything the fixed consent banner covers on a first visit is
+     * unrecoverable rather than a scroll away — and the evidence block now sits
+     * at the bottom edge. --consent-h is published by the banner itself and
+     * resolves to 0 for every returning reader, as does the safe-area inset on
+     * every device without a home indicator.
+     */
+    <div className="relative flex flex-1 flex-col px-6 pt-14 pb-[calc(3.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] sm:px-10 sm:pt-16 lg:px-16">
+      {/* Judgment pressing down, now from the same corner the charge starts in
+          rather than from dead centre. */}
       <div
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 z-0"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 0%, rgba(239,68,68,0.13) 0%, transparent 58%)",
+            "radial-gradient(ellipse at 18% 0%, rgba(239,68,68,0.12) 0%, transparent 62%)",
         }}
       />
 
-      {/* No aria-live here, and this is load-bearing. The old screen needed it
-          because the confession, count, and CTA arrived on setTimeout — with
-          nothing announced, a screen reader never heard them. Now the whole
-          verdict is in the DOM from mount, so it reads as ordinary content.
-          Keeping aria-live would be actively harmful: the counter's text node
-          changes ~2×/second, and a polite live region containing it would
-          announce a new number forever. */}
-      <div className="relative z-10 flex w-full max-w-md flex-col items-center text-center">
-        {/* The scales + the house eyebrow. At the old size-6/60% the emblem
-            was invisible — paying for a graphic and not getting one. The
-            hairline-label-hairline row is the pattern grace and the
-            invitation both use; the verdict was the odd one out. */}
-        <m.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <VerdictEmblem
-            className="mx-auto mb-3.5 size-10 text-red-400/70"
-            strokeWidth={1.4}
-            aria-hidden
-          />
-          <div className="flex items-center justify-center gap-2">
-            <span aria-hidden="true" className="h-px w-6 bg-red-500/40" />
-            <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
-              {testMessages.verdict.prelude}
-            </span>
-            <span aria-hidden="true" className="h-px w-6 bg-red-500/40" />
-          </div>
-        </m.div>
-
-        {/* GUILTY — stamped verdict block. Entrance lands from above
-            (1.15 → 1, composite-only) instead of growing in: a stamp hit,
-            not a bloom. Double hairlines frame it as an official record. */}
-        <m.div
-          initial={{ opacity: 0, scale: 1.15 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.55, delay: at(200), ease: EASE_OUT_STRONG }}
-          className="mt-4 w-full max-w-sm border-y-2 border-red-500/30 py-4 sm:py-5"
-        >
-          <p
-            className="text-5xl font-black uppercase tracking-[0.15em] text-red-500 sm:text-6xl md:text-7xl"
-            style={{
-              textShadow:
-                "0 0 80px rgba(239,68,68,0.35), 0 0 160px rgba(239,68,68,0.12), 0 4px 40px rgba(0,0,0,0.8)",
-            }}
+      {/* No aria-live, and this is load-bearing — the count's text node changes
+          ~2x/second and a polite live region containing it would announce a new
+          number forever. The whole verdict is in the DOM from mount, so it
+          reads as ordinary content. */}
+      <div className="relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col sm:max-w-xl lg:max-w-5xl lg:flex-row lg:items-end lg:gap-14">
+        <div className="flex flex-col lg:flex-1">
+          {/*
+           * GUILTY, stamped. Two degrees off true is the whole gesture: this
+           * app has no other rotated element, and without it the block reads as
+           * a badge — a label the interface applied — rather than a mark
+           * pressed onto a finished record.
+           */}
+          <m.div
+            initial={{ opacity: 0, scale: 1.12 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: at(150), ease: EASE_OUT_STRONG }}
+            className="-rotate-2 self-start rounded-sm border-[1.5px] border-red-500/55 px-3 py-1"
           >
-            {messages.title.replace(/\.$/, "")}
-          </p>
-        </m.div>
+            <p className="font-mono text-xs font-bold uppercase tracking-[5px] text-red-500">
+              {messages.title.replace(/\.$/, "")}
+            </p>
+          </m.div>
 
-        {/* The authority. Previously the screen asserted guilt in the app's
-            own voice (a subtitle since deleted) and the law screen cited no
-            law. James 2:10 is the exact argument the six questions build — one
-            point failed, guilty of all — and it rhymes with the heading above
-            it in both languages. Red border, not the house gold: this is the
-            law side of the flow. */}
-        <m.blockquote
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: at(520), ease: EASE_OUT_STRONG }}
-          className="mt-6 w-full max-w-sm border-l border-red-500/30 pl-4 text-left"
-        >
-          <p className="text-sm italic leading-[1.8] text-white/60 sm:text-[15px]">
-            &ldquo;{testMessages.verdict.scripture}&rdquo;
-          </p>
-          {/* red-400/75 is the AA floor for small text on #060404 (≈4.6:1) —
-              the same value the existing chips and prelude already use.
-              red-400/70 measures 4.1:1 and fails 1.4.3. Do not dim it. */}
-          <p className="mt-2 font-mono text-[10px] uppercase tracking-[2px] text-red-400/75">
-            {testMessages.verdict.scriptureRef}
-          </p>
-        </m.blockquote>
+          {/*
+           * The subject. Ranged left, not centred: centred body text gives the
+           * eye no edge to return to, and the reader has just spent ninety
+           * seconds on question screens that are all ranged left.
+           *
+           * The tone colours are doing more work at this size than they ever
+           * did at 16px — admitted runs are what the reader owns, denied runs
+           * recede, and at 31px and up that contrast carries before the sentence
+           * is read at all.
+           */}
+          <m.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: at(320), ease: EASE_OUT_STRONG }}
+            className="mt-7 text-[31px] font-medium leading-[1.22] tracking-[-0.02em] text-white/90 sm:mt-9 sm:text-[44px] sm:leading-[1.18] lg:text-[52px] lg:leading-[1.14]"
+          >
+            {confession.map((segment, i) => {
+              if (segment.tone === "plain") {
+                return <Fragment key={i}>{segment.text}</Fragment>;
+              }
+              return (
+                <span key={i} className={TONE_CLASS[segment.tone]}>
+                  {segment.text}
+                </span>
+              );
+            })}
+          </m.p>
 
-        {/* Dynamic confession prose — the personalised centre of the screen,
-            and the only white text mass on a screen that is otherwise all red.
-            The commandment labels are the payload, so they carry colour — but
-            NOT the same colour. Admitted runs go red because the reader owns
-            them; denied runs recede. Painting both red would state the evaded
-            commandments with the same force as the confessed ones, which is
-            exactly what "by your evasions" exists to deny.
+          {/* The way out. Full-width on a phone because it is the only control
+              and the thumb is at the bottom; inline from sm up, where nothing
+              is reaching for it. */}
+          <m.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: at(1200), ease: EASE_OUT_STRONG }}
+            className="mt-8 flex sm:mt-10 sm:justify-start"
+          >
+            <Button
+              variant="gold"
+              mist={showBridge}
+              onClick={handleBridgeClick}
+              disabled={!showBridge}
+              className="w-full sm:w-auto"
+            >
+              {testMessages.verdict.bridgeButton}
+              <ButtonArrow direction="down" />
+            </Button>
+          </m.div>
+        </div>
 
-            Three levels, deliberately: red owns, white/85 narrates, white/55
-            recedes. A dashed underline on the denied run was tried and cut —
-            once the run wraps, the dashes form a band that outshouts the red
-            and reads as a spell-check error. The word "evasions" already does
-            that work. */}
-        <m.p
+        {/*
+         * Evidence. Pushed to the bottom of the screen by mt-auto below lg, and
+         * turned into a rail beside the charge above it — the extra width of a
+         * desktop becomes a second column rather than bigger type, and both
+         * columns land on the same baseline.
+         *
+         * Delayed past the counter's first frame. DeathCounter paints a literal
+         * "0" for one frame before its first rAF tick, and this block is at
+         * opacity 0 until well past it. Do not shorten below ~100ms.
+         */}
+        <m.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: at(700), ease: EASE_OUT_STRONG }}
-          className="mt-6 max-w-sm text-base leading-relaxed text-white/85 sm:text-lg"
+          className="mt-auto flex flex-col pt-12 lg:mt-0 lg:w-80 lg:shrink-0 lg:border-l lg:border-white/[0.08] lg:pt-0 lg:pl-8"
         >
-          {confession.map((segment, i) => {
-            if (segment.tone === "plain") {
-              return <Fragment key={i}>{segment.text}</Fragment>;
-            }
-            return (
-              <span key={i} className={TONE_CLASS[segment.tone]}>
-                {segment.text}
-              </span>
-            );
-          })}
-        </m.p>
+          {/* James 2:10 is the exact argument the six questions build — one
+              point failed, guilty of all. It cites the law rather than
+              asserting guilt in the app's own voice. */}
+          <p className="text-[12.5px] italic leading-[1.7] text-white/50 sm:text-[15px] lg:text-[13.5px]">
+            &ldquo;{testMessages.verdict.scripture}&rdquo;{" "}
+            {/* red-400/75 is the AA floor for text this size on #060404
+                (≈4.6:1). red-400/70 measures 4.1:1 and fails 1.4.3. Do not
+                dim it. */}
+            <span className="whitespace-nowrap font-mono text-[9px] uppercase not-italic tracking-[2px] text-red-400/75 sm:text-[11px] lg:text-[10px]">
+              {testMessages.verdict.scriptureRef}
+            </span>
+          </p>
 
-        {/*
-         * The reader's own claim, quoted back.
-         *
-         * Only when they made one — someone who reached the test without
-         * passing the question (an older saved session, a private window where
-         * the write failed) simply does not meet this beat. It is testimony, so
-         * there is nothing to infer when it is absent.
-         *
-         * The "no" variant agrees and then points at the detail; it must not
-         * congratulate. An earlier draft read "you were right — and you are the
-         * first person here with nothing left to defend", which flatters the
-         * reader for the answer, quietly makes "no" the clever tap, and is
-         * affirmation where this screen's whole job is the diagnosis.
-         */}
-        {state.selfRating && (
-          <m.blockquote
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: at(790), ease: EASE_OUT_STRONG }}
-            className="mt-6 w-full max-w-sm border-l border-red-500/25 pl-4 text-left"
-          >
-            <p className="font-mono text-[9px] uppercase tracking-[2.5px] text-red-400/70">
-              {testMessages.verdict.selfRatingLabel}
-            </p>
-            <p className="mt-2 text-[14px] leading-relaxed text-white/70 sm:text-[15px]">
+          {/*
+           * The reader's own claim, quoted back — and only when they made one.
+           * Someone who reached the test without passing the question simply
+           * does not meet this beat; it is testimony, so there is nothing to
+           * infer when it is absent.
+           */}
+          {state.selfRating && (
+            <p className="mt-4 border-l border-red-500/30 pl-3 text-[12.5px] leading-[1.65] text-white/60 sm:mt-5 sm:text-[15px] lg:text-[13.5px]">
               {testMessages.verdict.selfRatingMirror[state.selfRating]}
             </p>
-          </m.blockquote>
-        )}
+          )}
 
-        {/* No evidence list here. The old chips were the test HUD's markup
-            verbatim, and promoting them to a full record would have restated
-            the confession sentence above — which already names every
-            commandment and how it was answered — while adding ~270px that
-            pushed the CTA off a 390×844 viewport. The confession IS the
-            record, in better prose. */}
-
-        {/* The count, live. A number whose entire meaning is "time is
-            passing" cannot be a static fade-in, and because it never stops
-            the reader is never parked in front of a finished screen. Framed
-            in the same border-y-2 as GUILTY so the word and the number read
-            as siblings instead of one dominating. Lands from above. */}
-        <m.div
-          initial={{ opacity: 0, y: -14, scale: 1.06 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.62, delay: at(880), ease: EASE_OUT_STRONG }}
-          className="mt-8 w-full max-w-sm border-y-2 border-red-500/25 py-5"
-        >
-          {/* The component's own minWidth: 7ch stays — at these sizes it is
-              ≈200-250px inside a 384px column, and it is what stops the
-              centred number shifting as digits are added. The span also
-              paints a literal "0" for one frame before the first rAF tick;
-              that frame happens at opacity 0 behind this block's 880ms
-              delay, so it is never visible. Do not shorten that delay below
-              ~100ms without re-checking. */}
-          <DeathCounter
-            baseMs={counterBaseMs}
-            className="font-mono text-5xl font-extrabold tabular-nums text-red-500 sm:text-6xl"
-            style={{ textShadow: "0 0 60px rgba(239,68,68,0.28)" }}
-          />
-          <p className="mt-2.5 text-xs italic leading-relaxed text-white/60 sm:text-[13px]">
-            {testMessages.verdict.deathLineTemplate}
-          </p>
-          <p className="mt-2 text-xs leading-relaxed text-red-400/85 sm:text-[13px]">
-            {testMessages.verdict.deathLineImplication}
-          </p>
-        </m.div>
-
-        {/* Bridge — the one gold thing on a red screen. */}
-        <m.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: at(1200), ease: EASE_OUT_STRONG }}
-          className="mt-9"
-        >
-          <Button
-            variant="gold"
-            mist={showBridge}
-            onClick={handleBridgeClick}
-            disabled={!showBridge}
-          >
-            {testMessages.verdict.bridgeButton}
-            <ButtonArrow direction="down" />
-          </Button>
+          {/*
+           * The count, live, and no longer a monument. It keeps its red and its
+           * tick and loses the 44px and the double frame, so it stops competing
+           * with a verdict for the same role.
+           *
+           * Still its own line rather than inline in the sentence: the
+           * component carries minWidth 7ch to stop the digits shifting as they
+           * are added, which inside a run of prose would open a gap around a
+           * three-digit number.
+           */}
+          <div className="mt-5 border-t border-white/[0.08] pt-5 sm:mt-7 sm:pt-7">
+            <DeathCounter
+              baseMs={counterBaseMs}
+              className="font-mono text-2xl font-bold tabular-nums text-red-500"
+              style={{ textShadow: "0 0 40px rgba(239,68,68,0.25)" }}
+            />
+            <p className="mt-1.5 text-[12.5px] italic leading-[1.6] text-white/55 sm:text-[14px] lg:text-[13px]">
+              {testMessages.verdict.deathLineTemplate}
+            </p>
+            <p className="mt-1 text-[12.5px] leading-[1.6] text-red-400/85 sm:text-[14px] lg:text-[13px]">
+              {testMessages.verdict.deathLineImplication}
+            </p>
+          </div>
         </m.div>
       </div>
     </div>
