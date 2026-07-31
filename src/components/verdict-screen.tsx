@@ -410,8 +410,13 @@ export function VerdictScreen({
        * cannot arrive at the wrong moment because it never arrives.
        */}
       <p className="absolute inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] z-10 text-center font-mono text-[9px] uppercase tracking-[2.4px] text-white/30 sm:text-[11px]">
-        <span className="sm:hidden">{testMessages.verdict.advanceHintTouch}</span>
-        <span className="hidden sm:inline">{testMessages.verdict.advanceHintPointer}</span>
+        {/* Keyed on the pointer, not the width. At sm: a tablet is 768 wide and
+            touch, so it was being told to click anywhere or press space — the
+            wrong instrument, on the device most likely to be held in two hands
+            for something this long. pointer-coarse is the input, which is what
+            the sentence is actually about. */}
+        <span className="pointer-fine:hidden">{testMessages.verdict.advanceHintTouch}</span>
+        <span className="hidden pointer-fine:inline">{testMessages.verdict.advanceHintPointer}</span>
       </p>
     </div>
   );
