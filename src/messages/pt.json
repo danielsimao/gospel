@@ -158,7 +158,20 @@
         "subtitle": "Não se trata de uma oração ou de ser religioso. Trata-se de abandonar o pecado e colocar a tua confiança n'Aquele que pagou tudo."
       }
     ],
-    "tapContinue": "Toca para continuar"
+    "tapContinue": "Toca para continuar",
+    "record": {
+      "eyebrow": "O registo",
+      "count": "Acusação",
+      "charge": "Culpa",
+      "plea": "Declaração",
+      "admitted": "Confessado",
+      "contested": "Contestado",
+      "finding": "Decisão",
+      "guilty": "Culpado em todas as acusações",
+      "ability": "A tua capacidade de pagar",
+      "none": "Nenhuma",
+      "paid": "Paga por inteiro"
+    }
   },
   "invitation": {
     "eyebrow": "A decisão",

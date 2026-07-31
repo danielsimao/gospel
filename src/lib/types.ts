@@ -280,6 +280,27 @@ export interface Messages {
     beats: Array<{ label: string; headline: string; subtitle: string }>;
     tapContinue: string;
     rereadVerdict: string;
+    /* The court record shown after the argument. Chrome only — every charge in
+       it comes from `verdictLabels`, so the six nouns are not restated here and
+       cannot drift from the confession sentence that uses the same set. */
+    record: {
+      eyebrow: string;
+      /** Column headings. Visually hidden: the record reads as a document, but
+          it is tabular data and a screen reader is owed the structure. */
+      count: string;
+      charge: string;
+      plea: string;
+      /** The two pleas, in the reader's own voice — what they did with each
+          count, never what the court concluded about it. */
+      admitted: string;
+      contested: string;
+      /** The finding, which does not depend on the pleas. */
+      finding: string;
+      guilty: string;
+      ability: string;
+      none: string;
+      paid: string;
+    };
   };
   invitation: {
     eyebrow: string;

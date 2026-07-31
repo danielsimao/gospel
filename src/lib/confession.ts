@@ -126,6 +126,61 @@ export function splitConfession(
 }
 
 /**
+ * How the reader answered a single count.
+ *
+ * `admitted` is an honest answer — they owned it. `contested` is a
+ * justification — they did not. The distinction is the same one
+ * splitConfession draws, under the names a record uses for it, and it is the
+ * reason the grace record can name a commandment at all: printing "a liar" flat
+ * would state as fact something a justifying reader never said.
+ */
+export type Plea = "admitted" | "contested";
+
+export interface RecordRow {
+  /** The commandment key — "9th", "8th" — which orders and identifies the count. */
+  commandment: string;
+  /** The verdict label, e.g. "a liar". Committed vocabulary, reused verbatim
+      rather than re-worded for the record: a second set of nouns for the same
+      six charges would be a second vocabulary to keep in step. */
+  label: string;
+  plea: Plea;
+}
+
+/**
+ * The reader's own test as a court record: one row per count, in the order they
+ * were answered, each carrying how it was answered.
+ *
+ * This is a second rendering of what the verdict already computes — the same
+ * answers, the same labels, the same admitted/denied split — laid out as rows
+ * rather than assembled into a sentence. Nothing new is derived here, and
+ * nothing is judged: the *finding* is not in this data, because the finding
+ * does not depend on the pleas. A reader who contested all six is guilty on all
+ * six, which is exactly what the verdict's "by your evasions" already says.
+ *
+ * Answers whose commandment has no label are skipped, matching partitionLabels
+ * — an unlabelled count would otherwise print a blank row.
+ */
+export function buildRecord(
+  answers: Answer[],
+  /* Just the labels, not the whole TestMessages that splitConfession takes.
+     This needs one map and saying so keeps grace from having to be handed the
+     entire message tree to draw six rows. */
+  verdictLabels: Record<string, string>,
+): RecordRow[] {
+  const rows: RecordRow[] = [];
+  for (const answer of answers) {
+    const label = verdictLabels[answer.commandment];
+    if (!label) continue;
+    rows.push({
+      commandment: answer.commandment,
+      label,
+      plea: answer.answer === "honest" ? "admitted" : "contested",
+    });
+  }
+  return rows;
+}
+
+/**
  * The same confession as a flat string. Delegates to splitConfession so the
  * two can never drift apart.
  */
