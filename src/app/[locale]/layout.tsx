@@ -44,7 +44,14 @@ export default async function LocaleLayout({ params, children }: Props) {
   const siteSchema = buildSiteSchema();
 
   return (
-    <html lang={locale} className="dark">
+    /* suppressHydrationWarning because the pre-paint script in <head> sets
+       data-journey-stage on this element before React hydrates — that is the
+       whole point of it, and it is the documented way to avoid a flash of the
+       wrong homepage block. Without this, React compares an attribute the
+       server never rendered and logs a hydration error on every page load.
+       Two costs: the noise, and that a real hydration bug would hide inside
+       it. Scoped to <html> itself, so it silences nothing below. */
+    <html lang={locale} className="dark" suppressHydrationWarning>
       <body
         className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased bg-black text-white min-h-dvh`}
       >
