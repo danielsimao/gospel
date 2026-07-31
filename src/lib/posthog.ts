@@ -1,7 +1,31 @@
 import type { PostHog } from "posthog-js";
 
+/**
+ * Set to "true" in localStorage, by hand, in whichever browser the owner tests
+ * in. Marks that browser's events `is_internal` so PostHog can filter them.
+ * Nothing in the UI writes it — a flag anyone could set by accident is worse
+ * than no flag.
+ */
+const INTERNAL_FLAG_KEY = "gospel:internal";
+
 let client: PostHog | null = null;
 let loading: Promise<PostHog | null> | null = null;
+
+/*
+ * Production only, and this is not a nicety.
+ *
+ * Every branch preview Vercel builds carries the same NEXT_PUBLIC_POSTHOG_KEY
+ * as production, so walking a flow on a preview to check a design wrote real
+ * events into the real project — indistinguishable from a reader's, because
+ * nothing marked them. Over a day of testing that is most of the dataset.
+ *
+ * NEXT_PUBLIC_VERCEL_ENV is "production", "preview" or "development" and is
+ * inlined at build time by Vercel. Absent locally, which is the point: a dev
+ * server has no env and never initialises.
+ */
+function isAnalyticsEnvironment(): boolean {
+  return process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
+}
 
 /**
  * Loads and initializes posthog-js on demand. The bundle only downloads
@@ -9,7 +33,11 @@ let loading: Promise<PostHog | null> | null = null;
  * outside this file (they would put rrweb in the critical path).
  */
 export function initPostHog(): Promise<PostHog | null> {
-  if (typeof window === "undefined" || !process.env.NEXT_PUBLIC_POSTHOG_KEY) {
+  if (
+    typeof window === "undefined" ||
+    !process.env.NEXT_PUBLIC_POSTHOG_KEY ||
+    !isAnalyticsEnvironment()
+  ) {
     return Promise.resolve(null);
   }
   if (client) return Promise.resolve(client);
@@ -23,6 +51,27 @@ export function initPostHog(): Promise<PostHog | null> {
         capture_pageview: false,
         capture_pageleave: true,
       });
+
+      /*
+       * Marked rather than excluded, so owner traffic can be filtered out of an
+       * insight instead of having to be deleted out of the project. Set as a
+       * person property because that is what PostHog's own internal-user filter
+       * reads; it survives across sessions on the same browser.
+       *
+       * The flag is a localStorage key the owner sets by hand once, in the
+       * browser they test in. Deliberately not an env var: it has to travel
+       * with the person, not with the deployment, and production is exactly
+       * where their testing is indistinguishable from anyone else's.
+       */
+      try {
+        if (window.localStorage.getItem(INTERNAL_FLAG_KEY) === "true") {
+          posthog.setPersonProperties({ is_internal: true });
+        }
+      } catch {
+        // Private mode. An unmarked internal session is a bad statistic, not a
+        // broken app.
+      }
+
       client = posthog;
       return client;
     })
