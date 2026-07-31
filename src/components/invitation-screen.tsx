@@ -53,11 +53,10 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
   const answeredAtMount = useRef(invitationResponse !== null);
   const [onwardReady, setOnwardReady] = useState(answeredAtMount.current);
   useEffect(() => {
-    if (!invitationResponse || answeredAtMount.current) return;
-    if (invitationResponse !== "committed") {
-      setOnwardReady(true);
-      return;
-    }
+    // Only the committed answer reads onwardReady, so there is nothing to
+    // release for the other two. An else branch here set a flag no branch
+    // consults, and implied a hold that does not apply to them.
+    if (invitationResponse !== "committed" || answeredAtMount.current) return;
     const t = setTimeout(() => setOnwardReady(true), COMMITTED_HOLD_MS);
     return () => clearTimeout(t);
   }, [invitationResponse]);
@@ -114,7 +113,7 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
             <>
               {/* The eyebrow, and the way back beside it. A way back is only
                   useful before the choice; under the options it arrived after
-                  the reader had already made one. It stays a link and not a
+                  the reader had already made one. It stays styled as a text link rather than as a
                   button — a fourth control would compete with the three that
                   are the point — but it is here because the method requires
                   that leaving be possible and be visible, not because anyone
@@ -261,7 +260,7 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
                * nothing here should look like the app has read their answer as
                * a yes.
                */}
-              {!committed && messages.readingPlan?.heading && (
+              {!committed && (
                 <p className="mt-8">
                   <Link
                     href={`/${locale}/reading-plan`}
@@ -273,11 +272,14 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
               )}
 
               {/*
-               * Learn more stays on the answer that has nowhere else to go.
+               * Learn more stays on dismissed alone.
                *
-               * For committed it duplicates what /next-steps already carries,
-               * and for thinking the reading plan above is the better door —
-               * it is the text itself rather than an explanation of it.
+               * For committed it duplicates what /next-steps already carries.
+               * For thinking the reading plan above is the better door — the
+               * text itself rather than an explanation of it — and two routes
+               * would break the one-way-on rule the rest of the flow keeps.
+               * Dismissed gets both deliberately: a reader who said no should
+               * have the quietest doors, not the fewest.
                */}
               {invitationResponse === "dismissed" && invitation.learnMoreLabel && (
                 <p className="mt-5">

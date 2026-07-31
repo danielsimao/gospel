@@ -288,7 +288,7 @@ export interface Messages {
     rereadGrace: string;
     committedEncouragement: string;
     thinkingEncouragement: string;
-    dismissedEncouragement?: string;
+    dismissedEncouragement: string;
     responses: Record<InvitationResponse, string>;
     learnMoreLabel: string;
   };
@@ -301,9 +301,12 @@ export interface Messages {
   home: HomeMessages;
   share: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
   nextSteps?: { cta: string; dismissedReturn: string };
-  /** Only the heading is read here — the decision screen links an undecided
-      reader to the text itself rather than to a list of next steps. The plan's
-      own page owns the rest. */
-  readingPlan?: { heading: string };
+  /** Required, not optional, because it is the only onward route an undecided
+      reader has: next-steps is committed-only and learn is dismissed-only. An
+      optional marker here turned a renamed key into a terminal screen that
+      nothing reports — and reading-plan's own page already throws when it is
+      absent, so the two contracts disagreed. Only the heading is modelled; the
+      plan's page owns the rest. */
+  readingPlan: { heading: string };
   meta: { title: string; description: string };
 }

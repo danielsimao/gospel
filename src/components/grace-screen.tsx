@@ -29,6 +29,10 @@ interface GraceScreenProps {
   onBack: () => void;
 }
 
+/** How long the chain waits before offering the way to the next rung. Long
+    enough that the first rung is read rather than skipped past. */
+const PILL_DELAY_MS = 2200;
+
 export function GraceScreen({ messages, onBack }: GraceScreenProps) {
   const dispatch = useGameDispatch();
   const state = useGameState();
@@ -76,13 +80,14 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
    * the argument opened by re-proving guilt. This does not add the answer; it
    * stops burying it.
    *
-   * Same place, same colour, same size as the question it replies to. No new
+   * Same place and same colour as the question it replies to, and a step
+   * larger, because the reply should not be quieter than the question. No new
    * copy: both strings are committed vocabulary and go in verbatim.
    *
    * "But God…" sits above rather than below, and that placement is doing
    * doctrinal work rather than visual work. At 33px alone, "Someone paid your
    * fine" stops naming a topic and becomes a declaration to this reader —
-   * before repentance is named at all, in beat five. Ephesians 2:4 above it
+   * before repentance is named at all, in the last rung. Ephesians 2:4 above it
    * frames the line as the scriptural turn rather than a personal guarantee.
    *
    * Shown on a first arrival only — the same signal the analytics now use, for
@@ -91,6 +96,18 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
    * answered once and does not need answering again on the way back.
    */
   const [showAnswer, setShowAnswer] = useState(firstVisitRef.current);
+  /*
+   * The timer is keyed on showAnswer, not run once on mount. The answer frame
+   * is an early return, so starting the clock behind it would either have the
+   * pill waiting on a screen nobody is looking at, or — if guarded by a ref —
+   * never start at all once the frame was dismissed, because the effect would
+   * not re-run. Keyed this way it starts when the chain actually appears.
+   */
+  useEffect(() => {
+    if (showAnswer || returning) return;
+    const t = setTimeout(() => setPillReady(true), PILL_DELAY_MS);
+    return () => clearTimeout(t);
+  }, [showAnswer, returning]);
 
   // Idempotent: the verdict's bridge is what dispatches SHOW_GRACE, and the
   // reducer refuses it from any phase but the verdict. Kept so the screen still
@@ -100,14 +117,14 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
   }, [dispatch]);
   const maxScrollDepth = useRef(0);
 
-  // Beat 1 is reserved in the layout from mount to avoid a content shift
-  // when it fades in. Subsequent beats are revealed by user tap, which
-  // intentionally shifts the page.
+  // Every rung is in the DOM from mount now; revealing one changes a
+  // max-height rather than adding it to the layout. What this count still
+  // decides is how many rungs are open-able and when Continue appears.
   //
   // Seeded from the persisted count so a refresh mid-argument does not throw
   // away beats the reader already opened. graceReached cannot serve here: it
-  // is true from the moment grace is entered, so seeding from it would hand a
-  // first-time reader all eight at once and destroy the reveal.
+  // is true from the moment grace is entered, so seeding from it would open
+  // every rung at once for a first-time reader and destroy the reveal.
   const [revealedCount, setRevealedCount] = useState(
     returning ? messages.beats.length : Math.max(1, state.graceBeatsRevealed),
   );
@@ -121,6 +138,18 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
    * Invisible while every revealed beat stayed expanded; not invisible once
    * only one is.
    */
+  /*
+   * The continue pill is gated, not faded in.
+   *
+   * It entered on a 2.2s motion delay, which left the chain's only forward
+   * control clickable while invisible — the exact hazard the decision screen's
+   * hold is written to avoid, in the file that comment was written next to.
+   * The answer frame made it worse: that frame is an early return, so the pill
+   * mounts fresh when the frame is dismissed and the 2.2s starts from there
+   * rather than overlapping the screen's entrance.
+   */
+  const [pillReady, setPillReady] = useState(returning);
+
   const [activeIndex, setActiveIndex] = useState(() =>
     Math.max(0, (returning ? messages.beats.length : Math.max(1, state.graceBeatsRevealed)) - 1),
   );
@@ -151,13 +180,12 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
     };
   }, []);
 
-  // Track grace phase entry. Beat 1 is already present in the layout
-  // (see useState above) — its visual fade-in is delayed via motion
-  // transition so the title animates first without causing a layout shift.
+  // Track grace phase entry, once per genuine first arrival.
   //
-  // Guarded on graceReached, not invitationReached: re-entering grace before
-  // ever reaching the decision is now one back press away, and the old guard
-  // counted every one of those as a fresh reveal.
+  // Guarded on firstVisitRef — see its declaration for why neither graceReached
+  // nor invitationReached can serve alone. The naming here used to claim
+  // graceReached, which was both the wrong flag and the one that made these
+  // three events dead for every real reader.
   useEffect(() => {
     if (!firstVisitRef.current) return;
     trackGraceRevealed();
@@ -207,8 +235,8 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
 
         {/*
          * One control, covering the screen, exactly as the verdict's beats do —
-         * the reader has just tapped four of them and this is the fifth gesture
-         * in the same sequence. A real <button> so it is reachable by Tab and
+         * the reader has just tapped through all five of them, and this is the
+         * next gesture in the same sequence. A real <button> so it is reachable by Tab and
          * activatable by space; nothing about it looks like one.
          *
          * Its accessible name is the answer, which is what activating it means:
@@ -216,7 +244,25 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
          */}
         <button
           type="button"
-          onClick={() => setShowAnswer(false)}
+          onClick={() => {
+            setShowAnswer(false);
+            /*
+             * Passing this frame is recorded, and it has to be.
+             *
+             * revealedCount seeds at Math.max(1, graceBeatsRevealed), so the
+             * first tap-continue dispatches count 2 and beat 0 is never
+             * written. graceBeatsRevealed therefore stayed 0 for a reader who
+             * had passed this frame and read the first rung — and this screen's
+             * entire first-visit signal is `graceBeatsRevealed === 0`. Any back
+             * and forward before the second rung replayed this frame and
+             * re-fired trackGraceRevealed and trackGraceBeatRevealed(0), which
+             * is the inflation that signal exists to prevent.
+             *
+             * The reducer's guard is monotonic, so dispatching it again is a
+             * no-op.
+             */
+            dispatch({ type: "REVEAL_GRACE_BEAT", count: 1 });
+          }}
           className="relative z-10 flex flex-1 cursor-pointer flex-col items-center justify-center px-7 outline-none focus-visible:outline focus-visible:outline-1 focus-visible:-outline-offset-[6px] focus-visible:outline-[#D4A843]/70"
         >
           <m.span
@@ -301,8 +347,9 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
            * The chain.
            *
            * Every rung is on screen from the first frame — dim, a single line,
-           * destination readable. Only one body is open at a time, so 1,316px
-           * of argument becomes one screen, and the reader knows the three
+           * destination readable. Only one body is open at a time, so the 1,316px
+           * measured on the five-beat wall this replaces
+           * becomes one screen, and the reader knows the three
            * things the wall never told them: where they are, how much is left,
            * and what it is building to.
            *
@@ -408,12 +455,12 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
 
           {/* Tap to continue pill — fades out when the last beat is revealed */}
           <AnimatePresence>
-            {revealedCount > 0 && !allBeatsRevealed && (
+            {revealedCount > 0 && !allBeatsRevealed && pillReady && (
               <m.div
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, transition: { duration: 0.15, delay: 0 } }}
-                transition={{ duration: 0.4, delay: 2.2 }}
+                transition={{ duration: 0.4 }}
                 className="mt-6 flex justify-center"
               >
                 <Button variant="gold" size="sm" mist onClick={handleTapContinue}>

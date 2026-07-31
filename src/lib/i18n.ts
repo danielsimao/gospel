@@ -49,6 +49,28 @@ export function validateMessages(messages: unknown, locale: string): Messages {
   if (!m.verdict?.title || !m.grace?.beatsHeading || !m.invitation?.heading || !m.share?.prompt || !m.meta?.title) {
     throw new Error(`[i18n] Missing required content sections for locale "${locale}"`);
   }
+  /*
+   * The three strings the redesigned grace and decision screens cannot degrade
+   * without going silent.
+   *
+   * readingPlan.heading is the only onward route for a reader who answered
+   * "thinking" — next-steps is committed-only, learn is dismissed-only — so a
+   * renamed key leaves them on a terminal screen with no error anywhere.
+   *
+   * beats[].label is now the only text a collapsed rung renders, so a beat
+   * authored in the old {headline, subtitle} shape draws a numeral, a dot and
+   * nothing else. Locale parity cannot catch either, because both files would
+   * be wrong together.
+   */
+  if (!m.readingPlan?.heading) {
+    throw new Error(`[i18n] Missing "readingPlan.heading" for locale "${locale}"`);
+  }
+  const unlabelled = (m.grace?.beats ?? []).findIndex((b) => !b?.label);
+  if (!m.grace?.beats?.length || unlabelled !== -1) {
+    throw new Error(
+      `[i18n] grace.beats is empty or beat ${unlabelled} has no label for locale "${locale}"`,
+    );
+  }
   if (
     !m.test?.caseLabel ||
     !m.test?.verdictLabels ||

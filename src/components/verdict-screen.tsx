@@ -94,9 +94,9 @@ export function VerdictScreen({
   // exactly means "verdict fully seen" — re-entry replays nothing.
   const returning = state.graceReached;
 
-  // A reader coming back from grace lands on the last beat. The sentence has
-  // already been delivered; replaying it would make the way back cost four taps
-  // and would deliver a verdict to someone who has already heard it.
+  // Seeded to the end for a reader coming back from grace, though showAll
+  // below means they see the document rather than any single beat — this now
+  // only feeds isLastBeat and the pager, both of which the document hides.
   const [beatIndex, setBeatIndex] = useState(returning ? LAST_BEAT : 0);
   const beat: Beat = BEATS[beatIndex] ?? "door";
   const isLastBeat = beatIndex >= LAST_BEAT;
@@ -204,8 +204,13 @@ export function VerdictScreen({
   return (
     <div className="relative flex flex-1 flex-col items-center justify-center px-7 pt-14 pb-[calc(5.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] sm:px-16 lg:px-28">
       {/*
-       * The wash drains on the last beat. Everything since the landing screen
-       * has been red; the door arrives on ground that is no longer.
+       * The wash drains on the last beat, so the door arrives on ground that is
+       * no longer red — everything since the landing screen has been.
+       *
+       * On the document it is drained from the start, because isLastBeat is
+       * true from mount there. Correct rather than accidental: a re-reader is
+       * past the pressure the wash carries, and the record is not the sentence
+       * being passed a second time.
        */}
       <div
         aria-hidden="true"
@@ -438,12 +443,17 @@ export function VerdictScreen({
        * The affordance, on every beat including the last, and worded for the
        * device: a thumb taps, a pointer has nothing to aim at.
        *
-       * The last beat used to go without, on the reasoning that four beats of
-       * tapping teach the interaction before the training wheels come off. That
-       * reasoning has a hole in it: `returning` lands a reader coming back from
-       * grace directly on the last beat, so they arrive having tapped nothing
-       * and seen no hint — a gold question, a chevron, and a dead end with no
-       * other way forward.
+       * On every beat of the sequence, and on none of the document.
+       *
+       * The last beat used to go without, on the reasoning that the beats
+       * before it teach the interaction. That had a hole in it, because a
+       * reader could arrive at that beat cold.
+       *
+       * It is gone entirely when showAll is set, and that is not symmetry: the
+       * document has no full-screen control, so "tap to continue" and "press
+       * space" would both name something that is not there. An affordance
+       * pointing at a control that does not exist is worse than no affordance,
+       * and the pager above already draws the same line.
        *
        * Persistent rather than revealed after an idle timer. A prompt that
        * appears once the reader stops moving says "you are doing it wrong" or
@@ -453,10 +463,12 @@ export function VerdictScreen({
        * opacity a permanent label costs the last frame almost nothing, and it
        * cannot arrive at the wrong moment because it never arrives.
        */}
+      {!showAll && (
       <p className="absolute inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] z-10 text-center font-mono text-[9px] uppercase tracking-[2.4px] text-white/30 sm:text-[11px]">
         <span className="sm:hidden">{testMessages.verdict.advanceHintTouch}</span>
         <span className="hidden sm:inline">{testMessages.verdict.advanceHintPointer}</span>
       </p>
+      )}
     </div>
   );
 }
