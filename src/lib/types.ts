@@ -133,7 +133,7 @@ export interface JourneyMessages {
     /** Shown by the reading band once all seven days are read. */
     descComplete: string;
   };
-  share: { label: string; description: string };
+  share: { label: string; descActive: string; descUpcoming: string };
   retakeLabel: string;
 }
 
@@ -300,7 +300,11 @@ export interface Messages {
    */
   home: HomeMessages;
   share: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
-  nextSteps?: { cta: string; dismissedReturn: string };
+  /** Required for the same reason as readingPlan: it is the committed
+      reader's only route on, and next-steps' own page throws without it. The
+      optional marker bought nothing but an English fallback rendered over a
+      Portuguese button. */
+  nextSteps: { cta: string; dismissedReturn: string };
   /** Required, not optional, because it is the only onward route an undecided
       reader has: next-steps is committed-only and learn is dismissed-only. An
       optional marker here turned a renamed key into a terminal screen that

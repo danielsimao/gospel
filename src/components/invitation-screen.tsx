@@ -245,7 +245,7 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
                 >
                   <Link href={`/${locale}/next-steps`} className="block">
                     <Button variant="gold" mist className="w-full sm:w-auto">
-                      {messages.nextSteps?.cta ?? "What now?"}
+                      {messages.nextSteps.cta}
                       <ButtonArrow />
                     </Button>
                   </Link>
