@@ -56,11 +56,32 @@ const LAST_BEAT = BEATS.length - 1;
  * same force as a confessed one states something the reader did not say. A
  * ternary made every tone that was not "admitted" render as a denial, so adding
  * a fourth would have been silent — this way it fails the build.
+ *
+ * Three levels, and the plain run is the quietest of them — see CONFESSION_PLAIN.
+ * The order that matters is admitted > denied > plain: the reader owns the first,
+ * the second is recorded rather than dismissed, and the third is grammar.
  */
 const TONE_CLASS: Record<Exclude<ConfessionTone, "plain">, string> = {
   admitted: "text-red-400",
-  denied: "text-white/55",
+  denied: "text-white/75",
 };
+
+/*
+ * The connective tissue — "You are", "— by your own admission" — set below both
+ * name tones rather than above them.
+ *
+ * It used to inherit the paragraph at white/90 while denied names sat at
+ * white/55. At 16px in the old layout that was invisible. At 29-46px it is not:
+ * a reader who evaded all six got a screen where "You are" and "by your
+ * evasions" were the loudest things on it and the six names had receded to the
+ * dimmest, which reads as though nothing was found. Evasions are recorded, not
+ * dismissed, and the sentence has to say so at every mix of answers — including
+ * the two where one tone is absent entirely.
+ *
+ * white/55 measures ~5.6:1 on #060404, so the scaffolding stays legible; it is
+ * simply no longer the thing the eye lands on.
+ */
+const CONFESSION_PLAIN = "text-white/55";
 
 export function VerdictScreen({
   messages,
@@ -269,7 +290,7 @@ export function VerdictScreen({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, ease: EASE_OUT_STRONG }}
-            className="text-[29px] font-medium leading-[1.26] tracking-[-0.02em] text-white/90 sm:text-[42px] sm:leading-[1.24] lg:text-[46px]"
+            className={`text-[29px] font-medium leading-[1.26] tracking-[-0.02em] sm:text-[42px] sm:leading-[1.24] lg:text-[46px] ${CONFESSION_PLAIN}`}
           >
             {confession.map((segment, i) => {
               if (segment.tone === "plain") {
