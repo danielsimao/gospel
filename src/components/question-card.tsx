@@ -122,20 +122,10 @@ export function QuestionCard({
   const isLastQuestion = questionIndex >= TOTAL_QUESTIONS - 1;
 
   return (
-    /*
-     * pt-2, not py-6: the shell's pt-3 plus this puts the ledger's label on the
-     * same line as the fixed exit chip, which is what the departed deaths strip
-     * used to occupy.
-     *
-     * The bottom is the contested edge. Three things claim it and only one of
-     * them is in the layout: the answer buttons (anchored here), the iOS home
-     * indicator (34px of reserved gesture area) and the consent banner (fixed,
-     * 58px, first visit only). 1.5rem is the original pb-6; the other two terms
-     * are what the buttons have to clear in order to be tappable. Both resolve
-     * to zero where they do not apply, so a returning reader on Android gets
-     * exactly the spacing this screen has always had.
-     */
-    <div className="grid flex-1 grid-rows-[auto_1fr] px-4 pt-2 pb-[calc(1.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] sm:px-6">
+    /* pt-2, not py-6: the shell's pt-3 plus this puts the ledger's label on the
+       same line as the fixed exit chip, which is what the departed deaths strip
+       used to occupy. Bottom padding is unchanged. */
+    <div className="grid flex-1 grid-rows-[auto_1fr] px-4 pt-2 pb-6 sm:px-6">
       {/* Row 1: Examination ledger — pinned to top; enters just behind the
           card on phase entry (mounts once, not per question) */}
       <m.div
@@ -150,41 +140,8 @@ export function QuestionCard({
         />
       </m.div>
 
-      {/*
-       * Row 2: one subject, filling the screen.
-       *
-       * The card is gone entirely — the screen is the card. The question holds
-       * a fixed offset near the top and the two verdicts sit at the bottom, in
-       * the thumb zone, with the space between them absorbing whatever the
-       * answer brings. Both ends are therefore stationary: the question never
-       * moves as the reply arrives, and the action never moves as the reply
-       * grows above it. The old layout only held the first of those.
-       *
-       * The offset meets the landing screen it follows. That screen is centred
-       * and this one cannot be — a centred question would rise when the reply
-       * appears beneath it — so the offset does the meeting instead. Measured
-       * against where the reply heading actually sits, not calculated.
-       *
-       * It carries the whole responsive rule, because the question is the one
-       * thing that never moves at any size. 24vh on a phone puts it high enough
-       * for the actions to reach the bottom edge; 36vh from sm up puts the
-       * unanswered group on the optical centre instead, since the actions no
-       * longer travel there. Below 500px tall — a landscape phone — 12vh, where
-       * the only thing that matters is that all of it fits at once.
-       */}
-      {/* The short-viewport clause exists because of the reserve above it. A
-          landscape phone is 390 tall: ledger 49, offset 101, content ~180, and
-          the banner's 50 tipped the unanswered screen 16px into scrolling,
-          which it never did before. 12vh buys back 55.
-
-          It does not rescue the answered state, and does not pretend to. That
-          already overflowed a 390-tall viewport by 106px before any of this —
-          measured on the branch with these classes stashed — because a
-          question, a verdict, a follow-up, a Next and a chip do not fit in 390
-          pixels at any offset. This rule costs 8 of those 106. Fixing the rest
-          means smaller type in landscape, which is a design change and not
-          this one. */}
-      <div className="flex w-full min-h-0 max-w-xs flex-col justify-self-center pt-[24vh] pb-2 sm:max-w-sm sm:pt-[36vh] [@media(max-height:500px)]:pt-[12vh]">
+      {/* Row 2: Card area + verdict shortcut — pinned to a stable top offset */}
+      <div className="flex w-full max-w-xs flex-col items-center self-start justify-self-center pt-[7vh] sm:max-w-sm sm:pt-[9vh]">
           <AnimatePresence mode="popLayout">
             <m.div
               key={questionIndex}
@@ -192,53 +149,28 @@ export function QuestionCard({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.45, ease: EASE_OUT_STRONG }}
-              /* flex-1 and min-h-0: this wrapper sits between the sized row and
-                 the card, so without them the card's height resolves against
-                 nothing, the spacer collapses, and the actions ride up under
-                 the question instead of sitting in the thumb zone.
-
-                 sm:flex-none because at that size nothing below is stretching:
-                 the spacer is fixed, so a wrapper that still filled the row
-                 would leave the answered chips stranded at the bottom edge —
-                 measured 340px below the group they belong to, alone on a
-                 1280x900 window. Sized to its content, they follow it. */
-              className="flex w-full min-h-0 flex-1 flex-col sm:flex-none"
+              className="w-full"
             >
-              <div className="flex w-full flex-1 flex-col">
-                {/*
-                 * One line of metadata, not three elements. The numeral, the
-                 * Law and the old accent rule were all identifying the same
-                 * commandment; here the numeral simply prefixes the name it
-                 * belongs to, and the eye goes straight past it to the question.
-                 */}
-                <p className="font-mono text-[9.5px] uppercase tracking-[2.5px] text-white/45">
-                  <span className="text-red-400/75">{roman}</span>
-                  <span aria-hidden="true"> · </span>
+              <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.03] to-white/[0.01] p-6 sm:p-7">
+                {/* Commandment accent */}
+                <div className="mb-3 flex items-center gap-2">
+                  <span className="h-px w-6 bg-red-500/40" />
+                  <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
+                    {testMessages.commandmentLabel} {roman}
+                  </span>
+                </div>
+
+                {/* Commandment scripture (from i18n) — the Law is the blade, not a caption */}
+                <p className="mb-3 font-mono text-[11px] uppercase tracking-[2px] text-white/75">
                   {question.commandment}
                 </p>
 
-                {/* The one subject. At 28px it is the only thing on screen with
-                    any weight, which is the whole argument of this layout. */}
-                <p className="mt-5 text-[28px] font-semibold leading-[1.16] tracking-[-0.028em] text-white/95 sm:text-[31px]">
+                {/* Question text */}
+                <p className="text-[17px] font-semibold leading-snug text-white/95 sm:text-lg">
                   {question.text}
                 </p>
 
-                {/*
-                 * The gap that absorbs the answer — but only on a phone.
-                 *
-                 * Below sm it grows, which is what pushes the two verdicts to
-                 * the bottom edge and into the thumb zone. Six questions plus a
-                 * tap on every denial is six to twelve taps in one sitting, and
-                 * that is the case reach is worth buying.
-                 *
-                 * At sm and above there is no thumb to reach with, and the same
-                 * rule opened 435px of nothing between the question and the
-                 * buttons on a 900-tall window. A void is pure cost once the
-                 * reach it bought is worthless, so the gap stops growing and
-                 * the actions sit with the question they answer.
-                 */}
-                <div className="min-h-6 flex-1 sm:h-8 sm:flex-none" />
-
+                {/* Buttons */}
                 <AnimatePresence mode="wait">
                   {!answered ? (
                     <m.div
@@ -250,7 +182,7 @@ export function QuestionCard({
                       // from mounting, so its duration is a flat tax on every
                       // reveal below. Kept short for that reason.
                       transition={{ duration: 0.18 }}
-                      className="flex gap-2"
+                      className="mt-5 flex gap-2"
                     >
                       <Button variant="red" size="sm" onClick={() => handleAnswer("honest")} className="flex-1">
                         {question.honestLabel}
@@ -265,45 +197,12 @@ export function QuestionCard({
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: 0.05 }}
+                      className="mt-4"
                     >
-                      {/*
-                        * The mark the verdict arrives on.
-                        *
-                        * It used to be a hairline inside the 320px column, and
-                        * a reply that changes what the reader is called was
-                        * separated from the question by the same weight of line
-                        * the app uses between two paragraphs. Full-bleed and at
-                        * 2px it reads as a division of the screen rather than a
-                        * gap in a column — the same border-y-2 border-red-500
-                        * that frames GUILTY on the verdict screen, one beat
-                        * lighter.
-                        *
-                        * A rule, not a filled surface. Every judgment mark in
-                        * this app is a border on the same black ground; the one
-                        * filled, bottom-docked panel in the codebase is the
-                        * cookie banner, and a verdict that borrows its material
-                        * reads as chrome.
-                        *
-                        * The breakout is margin, not transform: framer-motion
-                        * animates `y` on this block, which writes the same
-                        * transform property a -translate-x-1/2 would need, and
-                        * the inline style wins. Percentage margins resolve
-                        * against the column, so 50%-50vw is exactly the 35px
-                        * each side that reaches the screen edge. Below sm on a
-                        * desktop window the scrollbar makes 50vw wider than the
-                        * content box; the shell's overflow-x-hidden clips it.
-                        *
-                        * Only the rule goes full width. The words stay in the
-                        * measure they were set in.
-                        */}
-                      <div
-                        aria-hidden="true"
-                        className="mx-[calc(50%-50vw)] border-t-2 border-red-500/25 sm:mx-0"
-                      />
                       {answered === "honest" ? (
                         <>
                           {/* Verdict word */}
-                          <div className="flex items-center gap-2 pt-3">
+                          <div className="flex items-center gap-2 border-t border-red-900/30 pt-3">
                             <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
                             <p className="font-mono text-[11px] font-bold uppercase tracking-[2px] text-red-400">
                               {testMessages.verdictLabels[config?.commandment ?? ""] ?? testMessages.answeredBadge}
@@ -321,7 +220,7 @@ export function QuestionCard({
                         </>
                       ) : (
                         <>
-                          <div className="flex items-center gap-2 pt-3">
+                          <div className="flex items-center gap-2 border-t border-red-900/30 pt-3">
                             <span className="h-1 w-1 rounded-full bg-red-500" />
                             <p className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-red-400/80">
                               {testMessages.justifiedBadge}
@@ -331,39 +230,6 @@ export function QuestionCard({
                         </>
                       )}
 
-                      {/* The correction is the reply to the follow-up press, so it
-                          only exists on the denial path: they deny, the follow-up
-                          presses, and this is how they answer it. After an honest
-                          admission it would be a retraction offered at the exact
-                          moment conviction lands — so it isn't rendered there.
-
-                          Above Next, not below it. The verse presses and there
-                          are two replies to it: accept the charge, or retract.
-                          Sitting after Next it answered nothing, because the
-                          reader had already been handed the way out of the beat.
-                          Both now arrive on the same 0.6s delay — one decision
-                          with two doors, not a control and then an afterthought.
-
-                          Deliberately not a button beside Next either. A
-                          retraction at equal weight in the thumb zone is a
-                          mis-tap that undoes a confession. */}
-                      {answered === "justify" && (
-                        <m.button
-                          type="button"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ duration: 0.3, delay: 0.6 }}
-                          onClick={() => {
-                            trackAnswerChanged(question.id, answered);
-                            dispatch({ type: "UNDO_ANSWER" });
-                          }}
-                          className="mt-4 inline-flex min-h-[32px] items-center font-mono text-[10px] uppercase tracking-[1.6px] text-white/60 transition-colors hover:text-white/80"
-                        >
-                          <span className="border-b border-white/15 pb-0.5">
-                            {testMessages.changeAnswerLabel}
-                          </span>
-                        </m.button>
-                      )}
                       {/* Action button */}
                       <m.div
                         initial={{ opacity: 0 }}
@@ -377,8 +243,6 @@ export function QuestionCard({
                         }}
                         className="mt-4"
                         onAnimationComplete={() => {
-                          // Note this reads the slot, not a ref: the retraction
-                          // now renders above it and neither is the last child.
                           // Scroll the Next button into view after it fades in
                           const el = document.querySelector('[data-slot="action-buttons"]');
                           el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -393,44 +257,67 @@ export function QuestionCard({
                         </Button>
                       </m.div>
 
+                      {/* The correction is the reply to the follow-up press, so it
+                          only exists on the denial path: they deny, the follow-up
+                          presses, and this is how they answer it. After an honest
+                          admission it would be a retraction offered at the exact
+                          moment conviction lands — so it isn't rendered there. */}
+                      {answered === "justify" && (
+                        <m.button
+                          type="button"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.3, delay: 0.75 }}
+                          onClick={() => {
+                            trackAnswerChanged(question.id, answered);
+                            dispatch({ type: "UNDO_ANSWER" });
+                          }}
+                          className="mt-3 inline-flex min-h-[32px] items-center font-mono text-[10px] uppercase tracking-[1.6px] text-white/60 transition-colors hover:text-white/80"
+                        >
+                          <span className="border-b border-white/15 pb-0.5">
+                            {testMessages.changeAnswerLabel}
+                          </span>
+                        </m.button>
+                      )}
                     </m.div>
                   )}
                 </AnimatePresence>
               </div>
             </m.div>
           </AnimatePresence>
-          {/*
-            * No running list here.
-            *
-            * It was a chip per answer, below the Next button, and it was the
-            * third copy of the same six facts. The ledger above already encodes
-            * every answer and how it was given; the verdict word 100px up the
-            * screen states the current one in the same words the chip used; and
-            * the verdict screen's confession sentence names all six again, in
-            * prose that distinguishes what was admitted from what was evaded —
-            * which chips cannot do.
-            *
-            * verdict-screen.tsx reached this conclusion one screen later and
-            * left the reasoning in place: an evidence list there "would have
-            * restated the confession sentence above ... while adding ~270px
-            * that pushed the CTA off a 390x844 viewport". The same argument
-            * holds here, where the chips restated a bar and a badge instead of
-            * a sentence, and cost ~90px below the primary action on the most
-            * crowded screen in the flow.
-            *
-            * The method agrees. The summing up is the verdict's beat — the
-            * names land together, once, or they land six times and the sentence
-            * becomes a recap.
-            *
-            * What this does give up: the chips were the only self-authored
-            * thing on the screen, and a screen reader now has no way to review
-            * earlier answers mid-test (the ledger exposes only aria-valuenow).
-            * Nothing depends on knowing them and the confession states them
-            * all, but it is a subtraction, not a free one.
-            *
-            * state.answers is untouched — the ledger and the confession both
-            * still read it.
-            */}
+          {state.answers.length > 0 && (
+            <m.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mt-5 flex w-full max-w-xs flex-wrap justify-center gap-1.5 sm:max-w-sm"
+            >
+              {state.answers.map((answer, i) => {
+                const label = testMessages.verdictLabels[answer.commandment];
+                if (!label) return null;
+                const isJustified = answer.answer === "justify";
+                return (
+                  <m.div
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: isJustified ? 0.5 : 1, scale: 1 }}
+                    transition={{ duration: 0.18, ease: EASE_OUT_STRONG }}
+                    className={`flex items-center gap-1.5 rounded-full border px-3 py-1 ${
+                      isJustified
+                        ? "border-dashed border-red-900/30 bg-red-950/10"
+                        : "border-red-900/40 bg-red-950/25"
+                    }`}
+                  >
+                    <span className="font-mono text-[10px] tabular-nums text-red-400/75">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="font-mono text-[11px] lowercase italic text-red-400/85">
+                      {label}
+                    </span>
+                  </m.div>
+                );
+              })}
+            </m.div>
+          )}
       </div>
     </div>
   );
