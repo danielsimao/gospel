@@ -18,7 +18,10 @@ interface GraceScreenProps {
     continueLabel: string;
     label: string;
     beatsHeading: string;
-    beats: Array<{ headline: string; subtitle: string }>;
+    /** `label` is the rung: the one line that stays on screen while another
+        beat is open, so the whole argument's shape is always readable. It is a
+        compression of its own headline, never a separate claim. */
+    beats: Array<{ label: string; headline: string; subtitle: string }>;
     tapContinue: string;
     rereadVerdict: string;
   };
@@ -108,9 +111,19 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
   const [revealedCount, setRevealedCount] = useState(
     returning ? messages.beats.length : Math.max(1, state.graceBeatsRevealed),
   );
-  // The spotlight beat. Follows the newest reveal, but tapping any earlier
-  // beat moves it back — re-reading the argument is supported, not punished.
-  const [activeIndex, setActiveIndex] = useState(0);
+  /*
+   * The open rung. Follows the newest reveal, and tapping any earlier rung
+   * moves it back — re-reading is supported, not punished.
+   *
+   * Seeded from revealedCount rather than 0. revealedCount restores from
+   * storage after a refresh but this did not, so a reader who reloaded at rung
+   * IV came back with rung I open and the one they were reading collapsed.
+   * Invisible while every revealed beat stayed expanded; not invisible once
+   * only one is.
+   */
+  const [activeIndex, setActiveIndex] = useState(() =>
+    Math.max(0, (returning ? messages.beats.length : Math.max(1, state.graceBeatsRevealed)) - 1),
+  );
   const allBeatsRevealed = revealedCount >= messages.beats.length;
   const [beatRefs] = useState(() => messages.beats.map(() => createRef<HTMLDivElement>()));
 
@@ -235,7 +248,10 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
   }
 
   return (
-    <div className="relative flex flex-1 flex-col min-h-dvh">
+    /* No min-h-dvh: the shell already carries it and adds 12px of its own top
+       padding, so claiming a full viewport on top of that put every grace
+       screen 12px into scroll. flex-1 fills what is actually left. */
+    <div className="relative flex flex-1 flex-col">
       {/* Warm radial glow */}
       <div
         className="pointer-events-none fixed inset-0 z-0 opacity-70"
@@ -246,7 +262,7 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
         }}
       />
 
-      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-20 text-center sm:px-6 sm:py-24">
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-10 text-center sm:px-6 sm:py-14">
         <div className="max-w-lg w-full">
           {/* Label */}
           <m.div
@@ -281,62 +297,111 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
            * louder place for the hinge than a subheading was.
            */}
 
-          {/* Beats */}
-          {/* aria-live: beats are revealed by taps — announce each arrival
-              to screen readers instead of silently growing the page. */}
-          <div aria-live="polite" className="mt-10 text-left">
+          {/*
+           * The chain.
+           *
+           * Every rung is on screen from the first frame — dim, a single line,
+           * destination readable. Only one body is open at a time, so 1,316px
+           * of argument becomes one screen, and the reader knows the three
+           * things the wall never told them: where they are, how much is left,
+           * and what it is building to.
+           *
+           * This is deliberately the opposite of the verdict's mechanic. The
+           * Law works by surprise, so it withholds what is coming. Grace works
+           * by clarity: someone who can see the argument is four short steps
+           * and where it ends is more willing to walk it, not less.
+           *
+           * Once every rung has been opened the collapse lifts entirely and
+           * the whole thing reads as one document. That was already true of
+           * this screen and it stays true: the moment before a decision is
+           * exactly when the reader should be able to weigh the whole case.
+           * The tall page returns there — but only there, and only after they
+           * have read every word of it, which is a different thing from
+           * meeting it cold.
+           *
+           * No aria-live any more, and its absence is the point. Every beat is
+           * now in the DOM from mount rather than appearing on tap, so there
+           * is no arrival to announce — a screen reader gets the whole
+           * argument as ordinary content, which is the better reading of it.
+           * The collapse is visual only.
+           */}
+          <div className="mt-10 text-left">
             {messages.beats.map((beat, i) => {
-              const isRevealed = i < revealedCount;
-              // Once every beat is revealed the spotlight lifts entirely —
-              // the whole argument reads as one document before Continue.
-              const isActive = allBeatsRevealed || i === activeIndex;
-              const isGold = i >= 2;
-
-              if (!isRevealed) return null;
+              const isOpen = allBeatsRevealed || i === activeIndex;
+              const isReached = i < revealedCount;
+              // The hinge. Beat 0 is still Law — a judge, a sentence — and the
+              // argument turns at 1, where someone pays. The colour turns with
+              // it. Cutting the old first beat moved this from index 2 to 1.
+              const isGold = i >= 1;
 
               return (
-                <m.div
+                <div
                   key={i}
                   ref={beatRefs[i]}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{
-                    // Rest state stays readable (this is the gospel argument,
-                    // not decoration) while the active beat still leads.
-                    opacity: isActive ? 1 : 0.6,
-                    y: 0,
-                  }}
-                  transition={{ duration: 0.5, ease: "easeOut", delay: i === 0 && !returning ? 1.5 : 0 }}
-                  onClick={allBeatsRevealed ? undefined : () => setActiveIndex(i)}
-                  role={allBeatsRevealed ? undefined : "button"}
-                  tabIndex={allBeatsRevealed ? undefined : 0}
-                  onKeyDown={
-                    allBeatsRevealed
-                      ? undefined
-                      : (e) => {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            setActiveIndex(i);
-                          }
-                        }
-                  }
-                  className={`border-t border-white/[0.04] py-4 first:border-t-0 first:pt-0 ${
-                    allBeatsRevealed ? "" : "cursor-pointer"
-                  }`}
+                  className="border-t border-white/[0.04] first:border-t-0"
                 >
-                  <p className="mb-2 font-mono text-[9px] uppercase tracking-[2.5px] text-[#D4A843]/70">
-                    {ROMAN[i] ?? String(i + 1)}
-                  </p>
-                  <p
-                    className={`text-lg font-semibold leading-snug sm:text-xl ${
-                      isGold ? "text-[#D4A843]" : "text-white/95"
+                  <button
+                    type="button"
+                    onClick={isReached ? () => setActiveIndex(i) : undefined}
+                    disabled={!isReached}
+                    className="flex w-full items-center gap-3 py-3.5 text-left disabled:cursor-default"
+                  >
+                    <span
+                      className={`font-mono text-[9px] tracking-[2.5px] ${
+                        isReached ? "text-[#D4A843]/70" : "text-white/20"
+                      }`}
+                    >
+                      {ROMAN[i] ?? String(i + 1)}
+                    </span>
+                    <span
+                      className={`flex-1 font-mono tracking-[0.3px] transition-colors duration-300 ${
+                        isOpen
+                          ? "text-[10px] text-white/25"
+                          : isReached
+                            ? "text-[11.5px] text-white/55 md:text-[13px]"
+                            : "text-[11.5px] text-white/25 md:text-[13px]"
+                      }`}
+                    >
+                      {beat.label}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className={`size-[5px] shrink-0 rounded-full transition-colors duration-300 ${
+                        isOpen
+                          ? isGold
+                            ? "bg-[#D4A843]"
+                            : "bg-white/75"
+                          : isReached
+                            ? isGold
+                              ? "bg-[#D4A843]/55"
+                              : "bg-white/40"
+                            : "bg-white/12"
+                      }`}
+                    />
+                  </button>
+
+                  {/* The body. Collapsed by max-height rather than unmounted,
+                      so the argument is always readable by a screen reader and
+                      only the eye is spared. motion-reduce cuts the height
+                      animation: MotionConfig reducedMotion="user" governs
+                      framer's own animations and this is a CSS transition. */}
+                  <div
+                    className={`overflow-hidden transition-[max-height,opacity,padding] duration-[450ms] ease-[var(--ease-out-strong)] motion-reduce:transition-none ${
+                      isOpen ? "max-h-[420px] pb-5 opacity-100" : "max-h-0 opacity-0"
                     }`}
                   >
-                    {beat.headline}
-                  </p>
-                  <p className="mt-2 text-[13px] leading-relaxed text-white/60 sm:text-sm">
-                    {beat.subtitle}
-                  </p>
-                </m.div>
+                    <p
+                      className={`pl-7 text-lg font-semibold leading-snug sm:text-xl md:text-[22px] ${
+                        isGold ? "text-[#D4A843]" : "text-white/95"
+                      }`}
+                    >
+                      {beat.headline}
+                    </p>
+                    <p className="mt-2 pl-7 text-[13px] leading-relaxed text-white/60 sm:text-sm md:text-[15px]">
+                      {beat.subtitle}
+                    </p>
+                  </div>
+                </div>
               );
             })}
           </div>

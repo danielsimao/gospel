@@ -138,22 +138,22 @@
     "beatsHeading": "But God…",
     "beats": [
       {
-        "headline": "You're guilty. The fine is eternal.",
-        "subtitle": "You've broken God's Law — not once, but repeatedly. And the penalty for sin is not a fine you can pay. It's death."
-      },
-      {
+        "label": "Justice demands death",
         "headline": "Imagine standing before a just Judge. You can't pay. Justice demands death.",
         "subtitle": "A good judge can't let a guilty criminal walk free. And God is the ultimate good Judge. Your guilt must be answered for."
       },
       {
+        "label": "Someone pays it in full",
         "headline": "But someone steps into the courtroom and pays your fine in full.",
         "subtitle": "Every penny. The judge can now legally dismiss your case — not because he's overlooking justice, but because justice has been satisfied."
       },
       {
+        "label": "Jesus Christ",
         "headline": "Jesus Christ — God in flesh — lived the life you couldn't, died the death you deserved, and rose.",
         "subtitle": "Two thousand years ago, the Creator entered His creation. He lived perfectly, took your punishment on the cross, and three days later conquered death itself."
       },
       {
+        "label": "Repent and trust",
         "headline": "Repent — turn from your sin. Trust in Christ alone. God will forgive you and grant you eternal life.",
         "subtitle": "This isn't about a prayer or being religious. It's about turning from sin and placing your trust in the One who paid it all."
       }

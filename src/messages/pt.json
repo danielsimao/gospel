@@ -138,22 +138,22 @@
     "beatsHeading": "Mas Deus…",
     "beats": [
       {
-        "headline": "És culpado. A dívida é eterna.",
-        "subtitle": "Quebraste a Lei de Deus — não uma vez, mas repetidamente. E a pena pelo pecado não é uma dívida que possas pagar. É a morte."
-      },
-      {
+        "label": "A justiça exige a morte",
         "headline": "Imagina que estás perante um Juiz justo. Não podes pagar. A justiça exige a morte.",
         "subtitle": "Um bom juiz não pode deixar um criminoso culpado sair livre. E Deus é o supremo bom Juiz. A tua culpa tem de ser respondida."
       },
       {
+        "label": "Alguém a paga por inteiro",
         "headline": "Mas alguém entra no tribunal e paga a tua dívida por inteiro.",
         "subtitle": "Cada cêntimo. O juiz pode agora legalmente absolver o teu caso — não porque está a ignorar a justiça, mas porque a justiça foi satisfeita."
       },
       {
+        "label": "Jesus Cristo",
         "headline": "Jesus Cristo — Deus em carne — viveu a vida que não conseguiste, morreu a morte que merecias, e ressuscitou.",
         "subtitle": "Há dois mil anos, o Criador entrou na Sua criação. Viveu perfeitamente, tomou o teu castigo na cruz, e três dias depois venceu a própria morte."
       },
       {
+        "label": "Arrepende-te e confia",
         "headline": "Arrepende-te — abandona o teu pecado. Confia só em Cristo. Deus vai perdoar-te e conceder-te a vida eterna.",
         "subtitle": "Não se trata de uma oração ou de ser religioso. Trata-se de abandonar o pecado e colocar a tua confiança n'Aquele que pagou tudo."
       }

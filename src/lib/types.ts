@@ -274,7 +274,10 @@ export interface Messages {
     continueLabel: string;
     label: string;
     beatsHeading: string;
-    beats: Array<{ headline: string; subtitle: string }>;
+    /** `label` is the rung: the one line that stays on screen while another
+        beat is open, so the whole argument's shape is always readable. It is a
+        compression of its own headline, never a separate claim. */
+    beats: Array<{ label: string; headline: string; subtitle: string }>;
     tapContinue: string;
     rereadVerdict: string;
   };
