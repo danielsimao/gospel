@@ -120,7 +120,23 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
         }}
       />
 
-      <div className="relative z-10 flex flex-1 flex-col justify-center px-6 py-14 sm:px-10 sm:py-16 lg:px-16">
+      {/*
+       * Centred, like the two screens the reader arrives from.
+       *
+       * This was ranged left, and the reason given was that the reader "has
+       * spent the whole flow reading from one edge". That is true of the
+       * landing and the six questions and false of the two screens either side
+       * of this one: the verdict and grace both centre their column and their
+       * display type, so the reader crosses from a centred screen to a left
+       * one at the exact moment the flow should feel most continuous.
+       *
+       * The half of that argument that was right — centred body text gives the
+       * eye no edge to return to — survives where it applies. The urgency line
+       * is the only real reading matter here and keeps its left edge on the
+       * Law's hairline, which is what grace already does with its scripture
+       * inside the same centred column.
+       */}
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 py-14 text-center sm:px-10 sm:py-16 lg:px-16">
         <div className="w-full max-w-lg lg:max-w-2xl">
           {!invitationResponse && (
             <>
@@ -135,7 +151,7 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.7 }}
-                className="flex flex-wrap items-center gap-x-4 gap-y-2"
+                className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2"
               >
                 <span className="font-mono text-[9.5px] uppercase tracking-[3px] text-[#D4A843]/70">
                   {invitation.eyebrow}
@@ -151,9 +167,8 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
 
               {/* The question, at the size the two screens before it set. The
                   verdict's confession and grace's answer were both the largest
-                  thing on their screen; this is the third. Ranged left, because
-                  centred body text gives the eye no edge to return to and the
-                  reader has spent the whole flow reading from one. */}
+                  thing on their screen; this is the third — and now the third
+                  set the same way, centred like the two it answers to. */}
               <m.h2
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -194,12 +209,14 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
                   and the answer. Same words. Directly above the buttons it
                   could only be read as question, pressure, choose; here it is
                   what is true, on the Law's own hairline, available to anyone
-                  who wants the reason and skippable by anyone who does not. */}
+                  who wants the reason and skippable by anyone who does not.
+                  Ranged left inside a centred column, because a hairline is an
+                  edge and text centred against one reads as neither. */}
               <m.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
-                className="mt-8 border-l border-red-500/35 pl-4 text-[13px] leading-relaxed text-white/45 sm:text-sm"
+                className="mt-8 border-l border-red-500/35 pl-4 text-left text-[13px] leading-relaxed text-white/45 sm:text-sm"
               >
                 {invitation.urgencyLine}
               </m.p>
