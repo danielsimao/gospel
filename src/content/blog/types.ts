@@ -2,6 +2,13 @@ import type { Locale } from "@/lib/i18n";
 
 export interface BlogPostContent {
   title: string;
+  /**
+   * Shorter title for the `<title>` tag, when the editorial headline plus the
+   * brand suffix runs past what a result page shows — roughly 60 characters,
+   * so about 40 for the headline itself. The page's own h1 and the share card
+   * keep the full headline either way. Omit when the headline already fits.
+   */
+  metaTitle?: string;
   /** Subtitle on the page; also the tagline on the OG/story cards. */
   hook: string;
   metaDescription: string;

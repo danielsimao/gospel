@@ -4,20 +4,50 @@ import { getLocaleUrl, getLanguageAlternates } from "@/lib/seo";
 import { TOPIC_DATES } from "@/lib/topic-dates";
 import { getPublishedPosts, getPostLocales, getPostDateModified } from "@/content/blog/posts";
 
-const BUILD_TIMESTAMP = new Date();
+function newest(dates: string[]): Date | undefined {
+  if (!dates.length) return undefined;
+  return new Date(dates.reduce((latest, date) => (date > latest ? date : latest)));
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const messages = await import("@/messages/en.json");
   const learnSlugs = (messages.default.learn?.topics ?? []).map((topic) => topic.slug);
   const entries: MetadataRoute.Sitemap = [];
 
+  const posts = getPublishedPosts();
+  const newestPostDate = newest(posts.map(getPostDateModified));
+  const newestTopicDate = newest(
+    learnSlugs.map((slug) => TOPIC_DATES[slug]?.modified).filter((d): d is string => Boolean(d)),
+  );
+  // The homepage carries the latest post and the topic list, so its date is
+  // honestly the newest of the two.
+  const newestContentDate = newest(
+    [newestPostDate, newestTopicDate]
+      .filter((d): d is Date => d !== undefined)
+      .map((d) => d.toISOString()),
+  );
+
+  /**
+   * Every static page used to stamp `new Date()` at build. A CSS-only deploy
+   * then told Google that sixteen pages had changed, on a site where a real
+   * content change is a post or a topic — and a lastmod that moves every
+   * deploy is one crawlers learn to ignore, which costs the pages that do
+   * change. Pages with no honest date now send none: lastmod is optional, and
+   * omitting it says less than a wrong value does.
+   */
+  const staticPageDates: Record<string, Date | undefined> = {
+    "": newestContentDate,
+    "/learn": newestTopicDate,
+  };
+
   for (const locale of SUPPORTED_LOCALES) {
     // Static pages
     const staticPages = ["", "/test", "/reading-plan", "/learn", "/about", "/privacy", "/terms", "/find-a-church"];
     for (const page of staticPages) {
+      const lastModified = staticPageDates[page];
       entries.push({
         url: getLocaleUrl(locale, page),
-        lastModified: BUILD_TIMESTAMP,
+        ...(lastModified ? { lastModified } : {}),
         changeFrequency: page === "" ? "weekly" : "monthly",
         priority: page === "" ? 1.0 : page === "/test" ? 0.9 : 0.7,
         alternates: { languages: getLanguageAlternates(page) },
@@ -29,7 +59,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const dates = TOPIC_DATES[slug];
       entries.push({
         url: getLocaleUrl(locale, `/learn/${slug}`),
-        lastModified: dates ? new Date(dates.modified) : BUILD_TIMESTAMP,
+        ...(dates ? { lastModified: new Date(dates.modified) } : {}),
         changeFrequency: "monthly",
         priority: 0.8,
         alternates: { languages: getLanguageAlternates(`/learn/${slug}`) },
@@ -38,19 +68,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // Blog — the index exists in every locale; posts only in locales they declare
-  const posts = getPublishedPosts();
-  const newestPostDate = posts.length
-    ? new Date(
-        posts
-          .map(getPostDateModified)
-          .reduce((latest, date) => (date > latest ? date : latest)),
-      )
-    : BUILD_TIMESTAMP;
-
   for (const locale of SUPPORTED_LOCALES) {
     entries.push({
       url: getLocaleUrl(locale, "/blog"),
-      lastModified: newestPostDate,
+      ...(newestPostDate ? { lastModified: newestPostDate } : {}),
       changeFrequency: "weekly",
       priority: 0.7,
       alternates: { languages: getLanguageAlternates("/blog") },

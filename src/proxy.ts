@@ -15,29 +15,48 @@ function preferredLocale(request: NextRequest): string {
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const pathnameHasLocale = SUPPORTED_LOCALES.some(
-    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
+  const segments = pathname.split("/");
+  const firstSegment = segments[1] ?? "";
+  const localePrefix = SUPPORTED_LOCALES.find(
+    (locale) => firstSegment.toLowerCase() === locale,
   );
 
-  if (pathnameHasLocale) return NextResponse.next();
+  if (localePrefix) {
+    if (firstSegment === localePrefix) return NextResponse.next();
+
+    // The prefix is a locale, just miscased. This used to fall through to the
+    // deep-link branch below, which prepends a locale to whatever it is given:
+    // /EN/learn became /en/EN/learn, a 404. Capitalisation arrives on its own
+    // — mail clients and phone keyboards both do it to a typed URL — so the
+    // casing is normalised rather than treated as a missing prefix. 308: a
+    // locale segment's canonical casing does not change.
+    segments[1] = localePrefix;
+    const normalized = request.nextUrl.clone();
+    normalized.pathname = segments.join("/");
+    return NextResponse.redirect(normalized, 308);
+  }
 
   // Bare domain gets the locale home REWRITTEN, not redirected — the 307
   // round trip cost ~330ms of blank screen on every first visit. The /en
   // page's canonical/hreflang metadata still points search engines at the
   // locale URL, and every in-app link is locale-prefixed from there.
   if (pathname === "/") {
-    return NextResponse.rewrite(
-      new URL(`/${preferredLocale(request)}`, request.url),
-    );
+    const home = request.nextUrl.clone();
+    home.pathname = `/${preferredLocale(request)}`;
+    return NextResponse.rewrite(home);
   }
 
   // Locale-less deep links (typed or shared without /en) get the locale
   // prefixed instead of 404ing: /test → /en/test, /learn/... → /en/learn/...
   // These stay redirects so the canonical locale URL lands in the address
   // bar for sharing.
-  return NextResponse.redirect(
-    new URL(`/${preferredLocale(request)}${pathname}`, request.url),
-  );
+  //
+  // Cloned rather than rebuilt from `request.url`: a fresh URL drops the query
+  // string, so a shared /test?utm_source=tract lost its attribution on the way
+  // to /en/test and the street cards' scans landed in PostHog as direct.
+  const localized = request.nextUrl.clone();
+  localized.pathname = `/${preferredLocale(request)}${pathname}`;
+  return NextResponse.redirect(localized);
 }
 
 export const config = {

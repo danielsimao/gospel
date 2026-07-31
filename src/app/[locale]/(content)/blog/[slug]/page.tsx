@@ -47,9 +47,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildPageMetadata({
     locale,
     path: `/blog/${slug}`,
-    title: `${content.title} | ${brand}`,
+    // metaTitle where the headline plus the brand overran the result page —
+    // the Don't Die post's Portuguese title was 85 characters, so Google cut
+    // it mid-clause and the brand never showed at all.
+    title: `${content.metaTitle ?? content.title} | ${brand}`,
     description: content.metaDescription,
     availableLocales: getPostLocales(post),
+    // This route has opengraph-image.tsx beside it, and an explicit
+    // openGraph.images would replace it rather than defer to it.
+    hasOwnOgImage: true,
     article: {
       publishedTime: post.datePublished,
       modifiedTime: getPostDateModified(post),

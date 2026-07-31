@@ -8,6 +8,7 @@ const POSTS: BlogPost[] = [
     locales: {
       en: {
         title: "The Final Whistle and the One Nobody Schedules",
+        metaTitle: "The Final Whistle Nobody Schedules",
         hook: "A billion people watched the clock run out on the greatest player alive. Every one of them is on a clock too.",
         metaDescription:
           "Spain beat Argentina in the 2026 World Cup final. Messi sat alone on the grass as the clock ran out. Every life has a final whistle. What happens after yours?",
@@ -63,9 +64,10 @@ const POSTS: BlogPost[] = [
       },
       pt: {
         title: "O Apito Final — e Aquele Que Ninguém Marca",
+        metaTitle: "O Apito Que Ninguém Marca",
         hook: "Mil milhões de pessoas viram o relógio esgotar-se para o melhor jogador vivo. Todas elas têm um relógio a contar.",
         metaDescription:
-          "A Espanha venceu a Argentina na final do Mundial de 2026. Messi ficou sozinho na relva enquanto o tempo acabava. Toda a vida tem um apito final. O que acontece depois do teu?",
+          "A Espanha venceu a Argentina na final do Mundial de 2026. Messi ficou sozinho na relva. Toda a vida tem um apito final. O que acontece depois do teu?",
         sections: [
           {
             heading: "Ele não saiu do relvado",
@@ -127,7 +129,7 @@ const POSTS: BlogPost[] = [
         title: "The Headline Jesus Was Handed",
         hook: "Thirteen nights of strikes, and the death toll scrolls past. Someone once pushed a headline exactly like it across a table to him — and his answer was not the one anybody expected.",
         metaDescription:
-          "The Iran war escalated through July 2026. Someone brought Jesus a headline just like it. His answer turned the news back on the people reading it. What happens when you die?",
+          "The Iran war escalated through July 2026. Someone brought Jesus a headline like it. His answer turned the news back on the reader. What happens when you die?",
         sections: [
           {
             heading: "Thirteen nights",
@@ -182,7 +184,7 @@ const POSTS: BlogPost[] = [
         title: "A Notícia Que Trouxeram a Jesus",
         hook: "Treze noites de ataques, e o número de mortos passa no ecrã. Uma vez alguém empurrou uma notícia exactamente assim na direcção d’Ele — e a resposta não foi a que ninguém esperava.",
         metaDescription:
-          "A guerra do Irão escalou ao longo de Julho de 2026. Trouxeram a Jesus uma notícia igual a esta. A resposta d’Ele virou o assunto para quem estava a ler. O que acontece quando morreres?",
+          "A guerra do Irão escalou em Julho de 2026. Trouxeram a Jesus uma notícia assim. A resposta d’Ele virou o assunto para o leitor. O que acontece quando morreres?",
         sections: [
           {
             heading: "Treze noites",
@@ -243,7 +245,7 @@ const POSTS: BlogPost[] = [
         title: "Humanity’s Last Exam",
         hook: "The most capable machine ever built just scored 58% on a test actually called Humanity’s Last Exam. There is another last exam, and it cannot sit that one for you.",
         metaDescription:
-          "AI labs are racing toward superintelligence while their own researchers ask to slow down. The smartest system ever built still can’t tell you what happens when you die.",
+          "AI labs are racing toward superintelligence while their own researchers ask to slow down. None of it can tell you what happens when you die.",
         sections: [
           {
             heading: "Fifty-eight per cent",
@@ -297,7 +299,7 @@ const POSTS: BlogPost[] = [
         title: "O Último Exame da Humanidade",
         hook: "A máquina mais capaz alguma vez construída acabou de tirar 58% num teste chamado, literalmente, “O Último Exame da Humanidade”. Há outro último exame — e esse ela não o pode fazer por ti.",
         metaDescription:
-          "Os laboratórios de IA correm para a superinteligência enquanto os próprios investigadores pedem para abrandar. O sistema mais inteligente de sempre continua sem te saber dizer o que acontece quando morreres.",
+          "Os laboratórios de IA correm para a superinteligência enquanto os investigadores pedem para abrandar. Nenhum deles sabe dizer-te o que acontece quando morreres.",
         sections: [
           {
             heading: "Cinquenta e oito por cento",
@@ -356,6 +358,7 @@ const POSTS: BlogPost[] = [
     locales: {
       en: {
         title: "France Just Admitted Something Is Forming Its Children",
+        metaTitle: "France Admitted What Forms a Child",
         hook: "The first blanket ban of its kind in Europe. A whole country conceding that what goes into a soul comes out of a life.",
         metaDescription:
           "France became the first EU country to pass a blanket social media ban for minors. A nation admitted that what forms a heart matters. Nobody is regulating yours.",
@@ -409,9 +412,10 @@ const POSTS: BlogPost[] = [
       },
       pt: {
         title: "A França Acabou de Admitir Que Alguma Coisa Está a Formar as Suas Crianças",
+        metaTitle: "A França Admitiu o Que Forma a Criança",
         hook: "A primeira proibição geral do género na Europa. Um país inteiro a admitir que aquilo que entra numa alma sai depois numa vida.",
         metaDescription:
-          "A França tornou-se o primeiro país da UE a aprovar uma proibição geral das redes sociais para menores. Uma nação admitiu que o que forma o coração conta. O teu não está regulado por ninguém.",
+          "A França foi o primeiro país da UE a proibir as redes sociais a menores. Uma nação admitiu que o que forma o coração conta. O teu não está regulado por ninguém.",
         sections: [
           {
             heading: "O primeiro país a fazê-lo mesmo",
@@ -593,9 +597,10 @@ const POSTS: BlogPost[] = [
     locales: {
       en: {
         title: "A Pill for the Body. Nothing for the Record.",
+        metaTitle: "A Pill for the Body, Not the Record",
         hook: "Europe just approved the first weight-loss pill of its kind. Hundreds of millions of people are about to fix something willpower never could — and it touches nothing that follows them through the door.",
         metaDescription:
-          "The EU approved the first oral GLP-1 for weight management. Medicine can now change the body. It still cannot change what you have done. What happens when you die?",
+          "The EU approved the first oral GLP-1 for weight management. Medicine can change the body. It cannot change what you have done. What happens when you die?",
         sections: [
           {
             heading: "The first one you can swallow",
@@ -644,6 +649,7 @@ const POSTS: BlogPost[] = [
       },
       pt: {
         title: "Um Comprimido Para o Corpo. Nada Para o Registo.",
+        metaTitle: "Um Comprimido Para o Corpo",
         hook: "A Europa acabou de aprovar o primeiro comprimido do género para perder peso. Centenas de milhões de pessoas vão resolver aquilo que a força de vontade nunca resolveu — e não toca em nada do que as segue pela porta fora.",
         metaDescription:
           "A UE aprovou o primeiro GLP-1 oral para controlo de peso. A medicina já muda o corpo. Continua a não mudar aquilo que fizeste. O que acontece quando morreres?",
@@ -754,7 +760,7 @@ const POSTS: BlogPost[] = [
         title: "Sete Dias de Luto",
         hook: "A Venezuela parou uma semana por causa de um número que não parava de subir. Nunca ninguém decretou luto nacional pela gravidade.",
         metaDescription:
-          "A Venezuela decretou sete dias de luto nacional quando o número de mortos dos sismos chegou a 2.295. O luto é a única coisa em que todos concordam: a morte está errada. Porquê?",
+          "A Venezuela decretou sete dias de luto nacional com 2.295 mortos nos sismos. O luto é a única coisa em que todos concordam: a morte está errada. Porquê?",
         sections: [
           {
             heading: "Dois mil duzentos e noventa e cinco",
@@ -809,6 +815,7 @@ const POSTS: BlogPost[] = [
     locales: {
       en: {
         title: "A Law About Dying That Says Nothing About Death",
+        metaTitle: "A Law About Dying, Not About Death",
         hook: "France spent years debating who may choose the hour. Not one clause of it touches what happens at the hour after.",
         metaDescription:
           "France’s National Assembly approved assisted dying in July 2026 after years of debate. The law governs the hour of death. It says nothing about what follows it.",
@@ -864,9 +871,10 @@ const POSTS: BlogPost[] = [
       },
       pt: {
         title: "Uma Lei Sobre Morrer Que Nada Diz Sobre a Morte",
+        metaTitle: "Uma Lei Sobre Morrer",
         hook: "A França passou anos a debater quem pode escolher a hora. Nenhuma cláusula toca no que acontece na hora seguinte.",
         metaDescription:
-          "A Assembleia Nacional francesa aprovou a morte assistida em Julho de 2026, após anos de debate. A lei regula a hora da morte. Não diz nada sobre o que vem depois.",
+          "A Assembleia Nacional francesa aprovou a morte assistida em Julho de 2026. A lei regula a hora da morte. Não diz nada sobre o que vem depois.",
         sections: [
           {
             heading: "291 contra 241",
@@ -926,9 +934,10 @@ const POSTS: BlogPost[] = [
     locales: {
       en: {
         title: "The “Don’t Die” Movement and the Question It Can’t Answer",
+        metaTitle: "What “Don’t Die” Can’t Answer",
         hook: "The man spending millions to never die just announced an incurable diagnosis. His project asks the right question — and still can’t answer it.",
         metaDescription:
-          "Bryan Johnson, who spends millions a year trying not to die, announced he has an incurable autoimmune disease. His project asks the right question. What happens when you die?",
+          "Bryan Johnson, who spends millions trying not to die, has an incurable autoimmune disease. His project asks the right question. What happens when you die?",
         sections: [
           {
             heading: "“My stomach is eating itself”",
@@ -985,9 +994,10 @@ const POSTS: BlogPost[] = [
       },
       pt: {
         title: "O Movimento “Don’t Die” e a Pergunta a Que Não Consegue Responder",
+        metaTitle: "O Movimento “Don’t Die”",
         hook: "O homem que gasta milhões para nunca morrer acabou de anunciar um diagnóstico incurável. O projecto dele faz a pergunta certa — e continua sem lhe saber responder.",
         metaDescription:
-          "Bryan Johnson, que gasta milhões por ano para não morrer, anunciou que tem uma doença autoimune incurável. O projecto dele faz a pergunta certa. O que acontece quando morreres?",
+          "Bryan Johnson, que gasta milhões para não morrer, tem uma doença autoimune incurável. O projecto dele faz a pergunta certa. O que acontece quando morreres?",
         sections: [
           {
             heading: "“O meu estômago está a comer-se a si próprio”",
@@ -1103,9 +1113,10 @@ const POSTS: BlogPost[] = [
       },
       pt: {
         title: "Cinquenta e Três Pessoas Compraram Bilhete",
+        metaTitle: "Cinquenta e Três Bilhetes",
         hook: "O MV Barima afundou-se ao largo da Guiana. Ninguém a bordo estava a fazer nada fora do normal.",
         metaDescription:
-          "O ferry de passageiros MV Barima afundou-se ao largo da Guiana; o número de mortos chegou a 53, com dezenas de desaparecidos. Nenhum passageiro tinha aquele dia marcado.",
+          "O ferry MV Barima afundou-se ao largo da Guiana; 53 mortos e dezenas de desaparecidos. Nenhum passageiro tinha aquele dia marcado.",
         sections: [
           {
             heading: "Uma travessia vulgar",
@@ -1162,6 +1173,7 @@ const POSTS: BlogPost[] = [
     locales: {
       en: {
         title: "Everyone Is Forecasting the Economy. Nobody Is Forecasting You.",
+        metaTitle: "Nobody Is Forecasting You",
         hook: "“Crosscurrents of war and technology,” says the IMF. Thousands of pages of projection, and not one line about the only certainty in any of our lives.",
         metaDescription:
           "The IMF’s July 2026 outlook models war, technology and growth years ahead. No forecast on earth prices in the one event certain to happen to you.",
@@ -1213,9 +1225,10 @@ const POSTS: BlogPost[] = [
       },
       pt: {
         title: "Toda a Gente Faz Previsões Sobre a Economia. Ninguém Faz Previsões Sobre Ti.",
+        metaTitle: "Ninguém Faz Previsões Sobre Ti",
         hook: "“Correntes cruzadas de guerra e tecnologia”, diz o FMI. Milhares de páginas de projecção, e nem uma linha sobre a única certeza que qualquer um de nós tem.",
         metaDescription:
-          "As perspectivas do FMI de Julho de 2026 modelam guerra, tecnologia e crescimento a anos de distância. Nenhuma previsão no mundo contabiliza o único acontecimento certo na tua vida.",
+          "As perspectivas do FMI modelam guerra, tecnologia e crescimento a anos de distância. Nenhuma previsão contabiliza o único acontecimento certo na tua vida.",
         sections: [
           {
             heading: "O palpite mais bem modelado do mundo",
@@ -1270,6 +1283,15 @@ export function getPublishedPosts(): BlogPost[] {
   return POSTS.filter((post) => !post.draft).sort((a, b) =>
     b.datePublished.localeCompare(a.datePublished),
   );
+}
+
+/**
+ * Drafts included. Only the search-budget tests want these: a draft that is
+ * written with a 207-character description is the same bug, found on the day
+ * it ships instead of the day it was typed.
+ */
+export function getAllPosts(): BlogPost[] {
+  return POSTS;
 }
 
 export function getPost(slug: string): BlogPost | undefined {

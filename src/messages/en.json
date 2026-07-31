@@ -26,6 +26,8 @@
     "changeAnswer": "That's not what I meant"
   },
   "test": {
+    "metaTitle": "The Good Person Test: Six Questions | If You Died Today",
+    "metaDescription": "Six questions from God's Law, and a verdict built from your own answers — not ours. Start the Good Person Test and see where you actually stand.",
     "caseLabel": "Test",
     "guiltLabel": "Guilt",
     "counterLabel": "died since you opened this page",
@@ -1484,7 +1486,7 @@
   },
   "meta": {
     "title": "Are You a Good Person? | Take the Test",
-    "description": "Most people think they're good. Find out where you really stand."
+    "description": "Most people think they're good. Measure yourself against God's Law, one commandment at a time, and find out where you really stand."
   },
   "home": {
     "provocativeQuestion": "If you died today, where will you spend eternity?",
@@ -1647,7 +1649,7 @@
   },
   "about": {
     "heading": "About",
-    "description": "Who we are and why this site exists.",
+    "description": "Who we are, why this site exists, and what we believe. The test is built on the Ten Commandments, and it is here to show you your need of a Saviour.",
     "sections": [
       {
         "title": "Our mission",
