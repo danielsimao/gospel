@@ -3,7 +3,6 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { m } from "framer-motion";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
-import { Button, ButtonArrow } from "@/components/ui/button";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { trackVerdictReached } from "@/lib/analytics";
 import { splitConfession, type ConfessionTone } from "@/lib/confession";
@@ -98,6 +97,7 @@ export function VerdictScreen({
    * wherever the reader left it.
    */
   const beatRef = useRef<HTMLDivElement>(null);
+  const doorRef = useRef<HTMLButtonElement>(null);
   const firstRenderRef = useRef(true);
   useEffect(() => {
     const isMount = firstRenderRef.current;
@@ -105,7 +105,11 @@ export function VerdictScreen({
     // Both guards are the mount, reached two ways: beat 0 for a first arrival,
     // and the last beat for a reader coming back from grace.
     if (isMount || beatIndex === 0) return;
-    beatRef.current?.focus();
+    // On the last beat the stage is empty — the question lives inside the
+    // control — so focus goes to the control, which is also the only thing left
+    // to activate.
+    if (beatIndex >= LAST_BEAT) doorRef.current?.focus();
+    else beatRef.current?.focus();
   }, [beatIndex]);
 
   const confession = splitConfession(state.answers, testMessages);
@@ -177,22 +181,63 @@ export function VerdictScreen({
       />
 
       {/*
-       * The advance control, and it is a real button rather than a click
-       * handler on the stage: it is what makes the sequence operable by
-       * keyboard at all, and a pointer on a desktop has nothing else to aim at.
-       * Covers the screen because on touch the target is the screen.
+       * One control for the whole sequence, including the last beat.
        *
-       * Gone on the last beat, where the gold button underneath is the only
-       * thing that should be clickable.
+       * It is a real <button> and not a click handler on a div — that is what
+       * makes this reachable by Tab, activatable by space or enter, and
+       * announced as an action. Nothing about it looks like a button; the
+       * element is doing accessibility work, not visual work.
+       *
+       * It covers the screen because on touch the target is the screen, and
+       * because a pointer on a desktop has nothing else to aim at. The last
+       * beat used to be the exception — a gold pill you had to hit, after four
+       * beats that advanced from anywhere — which is two interaction models in
+       * one screen, and put the only piece of chrome in the sequence at the one
+       * moment that should be nothing but the question.
+       *
+       * So the question moved inside the control. On the last beat the button's
+       * accessible name is the question itself, which is exactly what activating
+       * it means; before that there is nothing to read and it carries a label.
        */}
-      {!isLastBeat && (
-        <button
-          type="button"
-          onClick={advance}
-          aria-label={testMessages.nextLabel}
-          className="absolute inset-0 z-20 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-[#D4A843]"
-        />
-      )}
+      <button
+        type="button"
+        ref={doorRef}
+        onClick={isLastBeat ? handleBridgeClick : advance}
+        aria-label={isLastBeat ? undefined : testMessages.nextLabel}
+        /* The focus ring is the screen edge because the control is the screen —
+           that is honest rather than decorative. Thin and inset, though: at 2px
+           full-bleed it read as a border the design had grown, not as a
+           transient indicator. #D4A843 at 70% measures ~4.4:1 on #060404, past
+           the 3:1 that 1.4.11 asks of a focus indicator. */
+        className="absolute inset-0 z-20 flex cursor-pointer items-center justify-center px-7 outline-none focus-visible:outline focus-visible:outline-1 focus-visible:-outline-offset-[6px] focus-visible:outline-[#D4A843]/70"
+      >
+        {/*
+         * The one gold thing in the flow, and now the gold is the words rather
+         * than a border around them. GUILTY and the count are both set with a
+         * coloured glow of their own colour; this is the same treatment, which
+         * makes the change of colour the whole event. The pill was diluting it.
+         */}
+        {isLastBeat && (
+          <m.span
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: EASE_OUT_STRONG }}
+            className="flex flex-col items-center gap-5"
+          >
+            <span
+              className="text-[29px] font-medium leading-[1.3] tracking-[-0.02em] text-[#D4A843] sm:text-[40px] lg:text-[46px]"
+              style={{ textShadow: "0 0 70px rgba(212,168,67,0.35)" }}
+            >
+              {testMessages.verdict.bridgeButton}
+            </span>
+            {/* Down, not forward. Grace is underneath this, and the old button
+                carried the same direction on its arrow. */}
+            <span aria-hidden="true" className="text-2xl text-[#D4A843]/60 sm:text-3xl">
+              &darr;
+            </span>
+          </m.span>
+        )}
+      </button>
 
       <div
         ref={beatRef}
@@ -297,20 +342,6 @@ export function VerdictScreen({
           </m.div>
         )}
 
-        {/* The door. The only gold in the flow, alone, on ground the red has
-            drained out of — and the only beat with anything to click. */}
-        {beat === "door" && (
-          <m.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: EASE_OUT_STRONG }}
-          >
-            <Button variant="gold" mist onClick={handleBridgeClick}>
-              {testMessages.verdict.bridgeButton}
-              <ButtonArrow direction="down" />
-            </Button>
-          </m.div>
-        )}
       </div>
 
       {/* Where the reader is, and the first signal that the colour of the flow
