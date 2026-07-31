@@ -301,5 +301,9 @@ export interface Messages {
   home: HomeMessages;
   share: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
   nextSteps?: { cta: string; dismissedReturn: string };
+  /** Only the heading is read here — the decision screen links an undecided
+      reader to the text itself rather than to a list of next steps. The plan's
+      own page owns the rest. */
+  readingPlan?: { heading: string };
   meta: { title: string; description: string };
 }

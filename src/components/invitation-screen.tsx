@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { m } from "framer-motion";
 import Link from "next/link";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
@@ -21,6 +21,17 @@ interface InvitationScreenProps {
   onBack: () => void;
 }
 
+/*
+ * How long the way forward is withheld after a profession of faith.
+ *
+ * The verdict withholds its exit for four beats to build pressure. This
+ * withholds it once, to do the opposite: the app has been talking for fifteen
+ * taps, and answering "I will repent and trust in Christ" with an itinerary in
+ * the same frame is the wrong reply. Two seconds of a screen with one line on
+ * it is the only place in the flow where nothing is being asked.
+ */
+const COMMITTED_HOLD_MS = 2000;
+
 export function InvitationScreen({ messages, locale, onBack }: InvitationScreenProps) {
   const { invitation } = messages;
   const state = useGameState();
@@ -34,6 +45,23 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
     dispatch({ type: "SHOW_INVITATION" });
   }, [dispatch]);
 
+  /*
+   * The hold runs on the transition into "committed", never on arrival at a
+   * screen that already carries one. A reader coming back to their own answer
+   * would otherwise wait two seconds to be shown the way on again.
+   */
+  const answeredAtMount = useRef(invitationResponse !== null);
+  const [onwardReady, setOnwardReady] = useState(answeredAtMount.current);
+  useEffect(() => {
+    if (!invitationResponse || answeredAtMount.current) return;
+    if (invitationResponse !== "committed") {
+      setOnwardReady(true);
+      return;
+    }
+    const t = setTimeout(() => setOnwardReady(true), COMMITTED_HOLD_MS);
+    return () => clearTimeout(t);
+  }, [invitationResponse]);
+
   function handleResponse(response: InvitationResponse) {
     const totalTime = Date.now() - state.startedAt;
     trackInvitationResponse(response, totalTime);
@@ -41,207 +69,230 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
     dispatch({ type: "SET_INVITATION_RESPONSE", response });
   }
 
-  return (
-    <div className="relative flex flex-1 flex-col items-center justify-center px-6 py-16">
-      {/* Crossroads atmosphere — judgment above, the door below. This screen is
-          the hinge of the whole flow (red law → gold grace) and the gradient
-          was already here, just pitched at 0.05/0.07 behind a 36px blur, which
-          made it undetectable. Alphas raised and the blur dropped: both stops
-          already fade to transparent, so blurring only bought a composited
-          layer. Same reasoning as the verdict wash.
+  const committed = invitationResponse === "committed";
 
-          Both stops stay deliberately below their neighbours: the verdict is
-          the reddest screen in the flow and grace is the goldest (its wash is
-          0.08 at opacity-70, ≈0.056 effective). This is the hinge, so it must
+  return (
+    /*
+     * The seam is the screen.
+     *
+     * A 1px, 40px gradient used to sit between the question and the buttons —
+     * the only place in the app where red and gold are both legitimate at once,
+     * drawn as the smallest thing on it. It now runs the full height of the
+     * left edge: red where the reader came from, gold where they are going, and
+     * the content ranged against it.
+     *
+     * Two layers rather than an animated gradient, because background-image
+     * does not transition. Gold underneath, the red-to-gold pass on top, and on
+     * a profession of faith the top layer fades out and the seam resolves to
+     * gold. Nothing announces that; it is simply true afterwards.
+     */
+    <div className="relative flex flex-1">
+      <div aria-hidden="true" className="relative w-[3px] shrink-0 bg-[#D4A843] sm:w-[5px]">
+        <div
+          className={`absolute inset-0 bg-gradient-to-b from-red-500 via-red-500 to-[#D4A843] transition-opacity duration-1000 ease-[var(--ease-out-strong)] motion-reduce:transition-none ${
+            committed ? "opacity-0" : "opacity-100"
+          }`}
+        />
+      </div>
+
+      {/* Crossroads atmosphere — judgment above, the door below. Both stops stay
+          deliberately below their neighbours: the verdict is the reddest screen
+          in the flow and grace the goldest, and this is the hinge, so it must
           not out-red the verdict or out-gold grace. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 8%, rgba(239,68,68,0.09) 0%, transparent 55%), radial-gradient(ellipse at 50% 78%, rgba(212,168,67,0.08) 0%, transparent 60%)",
+            "radial-gradient(ellipse at 20% 8%, rgba(239,68,68,0.09) 0%, transparent 55%), radial-gradient(ellipse at 30% 82%, rgba(212,168,67,0.08) 0%, transparent 60%)",
         }}
       />
-      <div className="relative max-w-lg w-full text-center">
-        {/* Eyebrow — red meets gold at the crossroads */}
-        <m.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="mb-4 flex items-center justify-center gap-2"
-        >
-          <span className="h-px w-6 bg-red-500/40" />
-          <span className="font-mono text-[9px] uppercase tracking-[3px] text-white/60">
-            {invitation.eyebrow}
-          </span>
-          <span className="h-px w-6 bg-[#D4A843]/40" />
-        </m.div>
 
-        {/* Heading — retired once answered rather than dimmed to 0.4. A ghost
-            question sitting above the answer reads as leftover, not as
-            resolution; the eyebrow above still labels the section. */}
-        {!invitationResponse && (
-          <m.h2
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-balance text-3xl font-bold sm:text-4xl"
-          >
-            {invitation.heading}
-          </m.h2>
-        )}
-
-        {/* The fact, pressed before the choice — the form itself stays fully
-            released (Living Waters: never gate the answer, never confirm-shame
-            the exit).
-
-            This is the only argument on the screen and it used to be its
-            smallest, dimmest text — 13px italic white/60 under a 36px heading,
-            so the question shouted and the reason whispered. Now sized as a
-            statement, and no longer italic: italic is this app's aside/scripture
-            treatment, and this is neither. */}
-        {!invitationResponse && (
-          <m.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="mx-auto mt-5 max-w-sm text-[15px] leading-relaxed text-white/75 sm:text-base"
-          >
-            {invitation.urgencyLine}
-          </m.p>
-        )}
-
-        {/* The hinge, drawn. Red at the top, gold at the bottom, growing
-            downward — the flow's whole arc in 40px. Composite-only (scaleY). */}
-        {!invitationResponse && (
-          <m.div
-            aria-hidden="true"
-            initial={{ opacity: 0, scaleY: 0 }}
-            animate={{ opacity: 1, scaleY: 1 }}
-            transition={{ duration: 0.7, delay: 0.5, ease: EASE_OUT_STRONG }}
-            className="mx-auto mt-8 h-10 w-px origin-top bg-gradient-to-b from-red-500/70 to-[#D4A843]/70"
-          />
-        )}
-
-        {/* Response buttons — no text block, straight to the decision */}
-        {!invitationResponse && (
-          <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.65 }}
-            className="mt-8 flex flex-col items-center gap-3"
-          >
-            <Button variant="gold" mist onClick={() => handleResponse("committed")} className="w-full max-w-sm">
-              {invitation.responses.committed}
-            </Button>
-            <Button variant="ghost" onClick={() => handleResponse("thinking")} className="w-full max-w-sm">
-              {invitation.responses.thinking}
-            </Button>
-            <Button variant="text" onClick={() => handleResponse("dismissed")}>
-              {invitation.responses.dismissed}
-            </Button>
-            {/* Trails the three responses rather than arriving with them.
-                Walking back is the lowest-priority action on the screen that
-                asks for a decision, so it should be the last thing to appear —
-                and the shell's popstate handler is the single place a backward
-                move becomes an action. */}
-            <m.button
-              type="button"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 1.15 }}
-              onClick={onBack}
-              className="mt-3 inline-flex min-h-[32px] items-center text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
-            >
-              {invitation.rereadGrace}
-            </m.button>
-          </m.div>
-        )}
-
-        {/* Post-response */}
-        {invitationResponse && (
-          <m.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mt-10"
-          >
-            {/* Encouragement — now the lead voice; the question above has yielded */}
-            {invitationResponse === "committed" && (
-              <p
-                className="text-2xl font-bold tracking-tight text-[#D4A843] sm:text-3xl"
-                style={{ textShadow: "0 0 50px rgba(212,168,67,0.25)" }}
+      <div className="relative z-10 flex flex-1 flex-col justify-center px-6 py-14 sm:px-10 sm:py-16 lg:px-16">
+        <div className="w-full max-w-lg lg:max-w-2xl">
+          {!invitationResponse && (
+            <>
+              {/* The eyebrow, and the way back beside it. A way back is only
+                  useful before the choice; under the options it arrived after
+                  the reader had already made one. It stays a link and not a
+                  button — a fourth control would compete with the three that
+                  are the point — but it is here because the method requires
+                  that leaving be possible and be visible, not because anyone
+                  needs help finding the back gesture. */}
+              <m.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.7 }}
+                className="flex flex-wrap items-center gap-x-4 gap-y-2"
               >
-                {invitation.committedEncouragement}
-              </p>
-            )}
-            {invitationResponse === "thinking" && (
-              <p className="text-xl font-semibold text-white/80 sm:text-2xl">
-                {invitation.thinkingEncouragement}
-              </p>
-            )}
-            {invitationResponse === "dismissed" && invitation.dismissedEncouragement && (
-              <p className="text-xl font-semibold text-white/80 sm:text-2xl">
-                {invitation.dismissedEncouragement}
-              </p>
-            )}
-
-            {/* What now? CTA */}
-            {invitationResponse !== "dismissed" && (
-              <Link href={`/${locale}/next-steps`} className="mt-6 block">
-                <Button variant="gold" mist className="w-full">
-                  {messages.nextSteps?.cta ?? "What now?"}
-                  <ButtonArrow />
-                </Button>
-              </Link>
-            )}
-
-            {invitationResponse === "dismissed" && messages.nextSteps?.dismissedReturn && (
-              <p className="mt-6 text-center text-sm leading-relaxed text-white/60">
-                <Link href={`/${locale}/reading-plan`} className="underline transition-colors hover:text-white/75">
-                  {messages.nextSteps.dismissedReturn}
-                </Link>
-              </p>
-            )}
-
-            {/*
-             * Only for the answer that has nowhere else to go.
-             *
-             * This used to render for all three, which gave the decision screen
-             * two onward routes at the one moment the app is otherwise strict
-             * about offering exactly one. For committed and thinking it was
-             * also offering something the very next screen already carries:
-             * /next-steps trackA has a Learn band ("Explore the foundations")
-             * and trackB has "Want the foundations?". A duplicate, competing
-             * with the primary action, on the quietest screen in the flow.
-             *
-             * Dismissed is different and keeps it. That answer gets no
-             * /next-steps — deliberately, since someone who said "not for me"
-             * should not be handed a task list — so this and the reading-plan
-             * line are the only doors they have, and a quiet non-committal one
-             * is exactly the right thing to leave open.
-             */}
-            {invitationResponse === "dismissed" && invitation.learnMoreLabel && (
-              <p className="mt-4 text-center text-sm text-white/60">
-                <Link
-                  href={`/${locale}/learn`}
-                  onClick={() => trackInvitationLearnMoreClicked(invitationResponse, locale)}
-                  className="underline transition-colors hover:text-white/75"
+                <span className="font-mono text-[9.5px] uppercase tracking-[3px] text-[#D4A843]/70">
+                  {invitation.eyebrow}
+                </span>
+                <button
+                  type="button"
+                  onClick={onBack}
+                  className="inline-flex min-h-[32px] items-center text-[11px] text-white/50 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
                 >
-                  {invitation.learnMoreLabel}
-                </Link>
-              </p>
-            )}
+                  {invitation.rereadGrace}
+                </button>
+              </m.div>
 
-            {/* No share row here, for any of the three answers. Sharing is a
-                next step, and /next-steps owns it — track-committed carries the
-                share block and the story graphic, while track-thinking
-                deliberately carries none. Asking someone who just said "I want
-                to think about it", or "Not for me", to post this reads as
-                farming them, and it was rendering for the dismissed path too.
-                Leaves every answer with exactly one primary route. */}
-          </m.div>
-        )}
+              {/* The question, at the size the two screens before it set. The
+                  verdict's confession and grace's answer were both the largest
+                  thing on their screen; this is the third. Ranged left, because
+                  centred body text gives the eye no edge to return to and the
+                  reader has spent the whole flow reading from one. */}
+              <m.h2
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.1, ease: EASE_OUT_STRONG }}
+                className="mt-4 text-balance text-[34px] font-semibold leading-[1.16] tracking-[-0.03em] text-white/95 sm:text-[42px] lg:text-[52px]"
+              >
+                {invitation.heading}
+              </m.h2>
+
+              {/*
+               * Three answers, three buttons.
+               *
+               * "Not for me" was a bare text link at 55% white under two solid
+               * buttons — hierarchy doing persuasion, on the one screen where
+               * the method is explicit that nothing may push. All three are
+               * now findable. Gold still marks what is being offered, which is
+               * honest; the other two share a treatment because they are the
+               * same answer at different temperatures, and neither is a no.
+               */}
+              <m.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.35 }}
+                className="mt-9 flex flex-col gap-2.5"
+              >
+                <Button variant="gold" mist onClick={() => handleResponse("committed")} className="w-full">
+                  {invitation.responses.committed}
+                </Button>
+                <Button variant="ghost" onClick={() => handleResponse("thinking")} className="w-full">
+                  {invitation.responses.thinking}
+                </Button>
+                <Button variant="ghost" onClick={() => handleResponse("dismissed")} className="w-full">
+                  {invitation.responses.dismissed}
+                </Button>
+              </m.div>
+
+              {/* The stake, below the choice rather than between the question
+                  and the answer. Same words. Directly above the buttons it
+                  could only be read as question, pressure, choose; here it is
+                  what is true, on the Law's own hairline, available to anyone
+                  who wants the reason and skippable by anyone who does not. */}
+              <m.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                className="mt-8 border-l border-red-500/35 pl-4 text-[13px] leading-relaxed text-white/45 sm:text-sm"
+              >
+                {invitation.urgencyLine}
+              </m.p>
+            </>
+          )}
+
+          {/*
+           * The answer, and three genuinely different things that just
+           * happened.
+           *
+           * The route used to be chosen by `invitationResponse !== "dismissed"`,
+           * which handed a reader who said "I want to think about it" the same
+           * discipleship task list as one who said "I will repent and trust in
+           * Christ". The comment that used to sit here already made the
+           * argument for the third answer — someone who said "not for me"
+           * should not be handed a task list — and did not apply it one row up.
+           * There is no "now" yet for a person still thinking.
+           */}
+          {invitationResponse && (
+            <m.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: EASE_OUT_STRONG }}
+            >
+              {/* The line, at the size of the moment. Committed carries the
+                  screen; the other two are answers, not events. */}
+              <p
+                className={
+                  committed
+                    ? "text-[30px] font-semibold leading-[1.2] tracking-[-0.025em] text-[#D4A843] sm:text-[42px] lg:text-[52px]"
+                    : "text-[22px] font-medium leading-[1.32] tracking-[-0.02em] text-white/85 sm:text-[28px] lg:text-[32px]"
+                }
+                style={committed ? { textShadow: "0 0 60px rgba(212,168,67,0.28)" } : undefined}
+              >
+                {committed
+                  ? invitation.committedEncouragement
+                  : invitationResponse === "thinking"
+                    ? invitation.thinkingEncouragement
+                    : invitation.dismissedEncouragement}
+              </p>
+
+              {/*
+               * Committed: the way on, held.
+               *
+               * onwardReady gates the element rather than its opacity — a
+               * button at opacity 0 is an invisible click target, which this
+               * codebase has been caught by before. For two seconds there is
+               * nothing here at all.
+               */}
+              {committed && onwardReady && (
+                <m.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, ease: EASE_OUT_STRONG }}
+                  className="mt-10"
+                >
+                  <Link href={`/${locale}/next-steps`} className="block">
+                    <Button variant="gold" mist className="w-full sm:w-auto">
+                      {messages.nextSteps?.cta ?? "What now?"}
+                      <ButtonArrow />
+                    </Button>
+                  </Link>
+                </m.div>
+              )}
+
+              {/*
+               * Thinking and dismissed: the primary source, not a task list.
+               *
+               * Someone still deciding needs the thing to decide with, so both
+               * go to the reading plan. A quiet link and not a gold button —
+               * nothing here should look like the app has read their answer as
+               * a yes.
+               */}
+              {!committed && messages.readingPlan?.heading && (
+                <p className="mt-8">
+                  <Link
+                    href={`/${locale}/reading-plan`}
+                    className="inline-flex min-h-[44px] items-center text-[15px] text-[#D4A843] underline decoration-[#D4A843]/30 underline-offset-[5px] transition-colors hover:decoration-[#D4A843]/60"
+                  >
+                    {messages.readingPlan.heading} &rarr;
+                  </Link>
+                </p>
+              )}
+
+              {/*
+               * Learn more stays on the answer that has nowhere else to go.
+               *
+               * For committed it duplicates what /next-steps already carries,
+               * and for thinking the reading plan above is the better door —
+               * it is the text itself rather than an explanation of it.
+               */}
+              {invitationResponse === "dismissed" && invitation.learnMoreLabel && (
+                <p className="mt-5">
+                  <Link
+                    href={`/${locale}/learn`}
+                    onClick={() => trackInvitationLearnMoreClicked(invitationResponse, locale)}
+                    className="inline-flex min-h-[32px] items-center text-[13px] text-white/50 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
+                  >
+                    {invitation.learnMoreLabel}
+                  </Link>
+                </p>
+              )}
+            </m.div>
+          )}
+        </div>
       </div>
     </div>
   );
