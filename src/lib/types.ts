@@ -226,11 +226,6 @@ export interface TestMessages {
     useOxfordComma?: boolean;
     noneLabel: string;
     selfRatingLabel: string;
-    /** Two words for one instruction, because a thumb and a pointer are given
-        different ones — a pointer has nothing to aim at on a screen whose
-        target is the screen. Both are shown by breakpoint, not by sniffing. */
-    advanceHintTouch: string;
-    advanceHintPointer: string;
     /** One line per answer. A Record, so adding a SelfRating fails the build
         rather than silently rendering nothing at the verdict. */
     selfRatingMirror: Record<SelfRating, string>;

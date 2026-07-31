@@ -65,9 +65,7 @@
         "yes": "You said you were a good person. Your own answers say otherwise.",
         "mostly": "You said you were pretty much a good person. “Pretty much” was doing a great deal of work.",
         "no": "You said you were not a good person. This is what you were agreeing to."
-      },
-      "advanceHintTouch": "Tap to continue",
-      "advanceHintPointer": "Click anywhere, or press space"
+      }
     }
   },
   "questions": [

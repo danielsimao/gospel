@@ -65,9 +65,7 @@
         "yes": "Disseste que eras uma boa pessoa. As tuas próprias respostas dizem o contrário.",
         "mostly": "Disseste que eras mais ou menos uma boa pessoa. “Mais ou menos” estava a esconder muita coisa.",
         "no": "Disseste que não eras uma boa pessoa. Era com isto que estavas a concordar."
-      },
-      "advanceHintTouch": "Toca para continuar",
-      "advanceHintPointer": "Clica em qualquer lado, ou carrega no espaço"
+      }
     }
   },
   "questions": [
