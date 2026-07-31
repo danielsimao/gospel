@@ -423,8 +423,12 @@ export function HomeShell({
            * One cost, deliberate: four unused blocks ride in every HTML
            * response. They are out of the accessibility tree, being
            * display:none, but present in the served document, so this page's
-           * source carries five h1 elements and four stages' worth of copy for
-           * a crawler to see.
+           * source carries four stages' worth of copy for a crawler to see.
+           * That is why the four returning-stage headings are h2 and only the
+           * visitor block keeps an h1 — see stage-spine. Hidden copy itself is
+           * left alone: it is state-dependent UI, which is a pattern search
+           * engines discount rather than penalise, and removing it would hand
+           * the layout jump back to the visitors this page exists to convert.
            *
            * The wrappers carry no `display` class of their own. globals.css
            * supplies it in both the shown and the hidden case, and a

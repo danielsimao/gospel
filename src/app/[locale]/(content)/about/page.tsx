@@ -26,7 +26,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildPageMetadata({
     locale,
     path: "/about",
-    title: about.heading,
+    // Branded, like learn and blog already are. The bare heading put a
+    // five-character title in the results — "About" — with no way for anyone
+    // scanning a SERP to tell whose about page it was.
+    title: `${about.heading} | ${messages.default.topBar.brand}`,
     description: about.description,
   });
 }

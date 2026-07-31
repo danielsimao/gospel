@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import en from "@/messages/en.json";
 import pt from "@/messages/pt.json";
-import { getPublishedPosts, getPostLocales, getPostContent } from "@/content/blog/posts";
+import { getPublishedPosts, getAllPosts, getPostLocales, getPostContent } from "@/content/blog/posts";
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -71,6 +71,47 @@ describe("blog registry", () => {
         expect(content.personalTurn.setup.length).toBeGreaterThan(20);
         expect(content.personalTurn.question.length).toBeGreaterThan(10);
         expect(content.personalTurn.question).toMatch(/\?/);
+      }
+    }
+  });
+});
+
+/**
+ * Search budgets, checked against every post rather than the published four —
+ * a draft that ships with a 207-character description is the same bug found
+ * later. The Don't Die post's Portuguese title reached 85 characters with the
+ * brand, so Google cut it mid-clause and never showed the brand at all.
+ */
+describe("blog search budgets", () => {
+  const BRAND = { en: en.topBar.brand, pt: pt.topBar.brand } as const;
+
+  it("the rendered title fits a result page", () => {
+    for (const post of getAllPosts()) {
+      for (const locale of getPostLocales(post)) {
+        const content = getPostContent(post, locale)!;
+        const rendered = `${content.metaTitle ?? content.title} | ${BRAND[locale]}`;
+        expect(rendered.length, `${post.slug} (${locale}): ${rendered}`).toBeLessThanOrEqual(60);
+      }
+    }
+  });
+
+  it("metaTitle is only present where the full headline would not fit", () => {
+    for (const post of getAllPosts()) {
+      for (const locale of getPostLocales(post)) {
+        const content = getPostContent(post, locale)!;
+        if (!content.metaTitle) continue;
+        const full = `${content.title} | ${BRAND[locale]}`;
+        expect(full.length, `${post.slug} (${locale}) does not need a metaTitle`).toBeGreaterThan(60);
+      }
+    }
+  });
+
+  it("metaDescription fits the snippet", () => {
+    for (const post of getAllPosts()) {
+      for (const locale of getPostLocales(post)) {
+        const { metaDescription } = getPostContent(post, locale)!;
+        expect(metaDescription.length, `${post.slug} (${locale})`).toBeGreaterThanOrEqual(70);
+        expect(metaDescription.length, `${post.slug} (${locale})`).toBeLessThanOrEqual(160);
       }
     }
   });

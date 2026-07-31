@@ -200,6 +200,13 @@ export interface HomeMessages {
 }
 
 export interface TestMessages {
+  /**
+   * /test's own search title and snippet. Separate from `meta`, which the
+   * homepage uses: both pages shipped the identical pair, so the site's two
+   * strongest URLs competed for the same query with the same words.
+   */
+  metaTitle: string;
+  metaDescription: string;
   caseLabel: string;
   guiltLabel: string;
   counterLabel: string;

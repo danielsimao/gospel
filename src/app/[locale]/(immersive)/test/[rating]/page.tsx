@@ -48,8 +48,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     // Deliberately /test, not this page's own path: canonical and the language
     // alternates should point at the entry readers are meant to share.
     path: "/test",
-    title: messages.meta.title,
-    description: messages.meta.description,
+    title: messages.test.metaTitle,
+    description: messages.test.metaDescription,
     // The three seeded routes are the same page as /test with one field
     // pre-filled. Indexing them would offer a search result that asserts an
     // answer on the reader's behalf.
