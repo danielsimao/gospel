@@ -35,13 +35,59 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
   const startTime = useRef(0);
 
   /*
-   * Whether this is the reader's first arrival, captured before SHOW_GRACE
-   * lands. Back and forward are a single gesture here, so this screen unmounts
-   * and remounts routinely — every analytics event has to be once-per-session
-   * rather than once-per-mount, or the metrics inflate with every glance
-   * backwards.
+   * Whether this is the reader's first arrival. Back and forward are a single
+   * gesture here, so this screen unmounts and remounts routinely — every
+   * analytics event has to be once-per-session rather than once-per-mount, or
+   * the metrics inflate with every glance backwards.
+   *
+   * graceReached cannot answer it, and the version that used it was reading a
+   * flag that is always already set.
+   *
+   * SHOW_GRACE sets graceReached AND is dispatched by the verdict's own door
+   * tap (game-reducer.ts:151-157), so by the time this component first renders
+   * the flag is true. `useRef(!state.graceReached)` was therefore false on a
+   * genuine first arrival, which means trackGraceRevealed, trackGraceBeatRevealed(0)
+   * and trackGraceViewed have never fired for a real reader — the grace funnel
+   * has been dark since the guard was written.
+   *
+   * graceBeatsRevealed is the honest signal: persisted, starts at 0, and only
+   * moves when the reader opens a beat themselves. It is still 0 on a refresh
+   * taken before that first tap, so this can over-count a reader who reloads
+   * without engaging — which is a far smaller error than counting nobody.
    */
-  const firstVisitRef = useRef(!state.graceReached);
+  const firstVisitRef = useRef(
+    state.graceBeatsRevealed === 0 && !state.invitationReached,
+  );
+
+  /*
+   * The answer, before the argument.
+   *
+   * The verdict's last frame now withholds everything except one gold question
+   * on black — "Is there any hope?" — and the reader taps it to get here. What
+   * they used to arrive at was a header, a heading, and then beat one: "You're
+   * guilty. The fine is eternal." The verdict restated, after five beats spent
+   * establishing exactly that. The actual answer was two taps further on.
+   *
+   * Meanwhile "Someone paid your fine" already sat in the eyebrow above the
+   * whole argument, so the conclusion was on screen from the first frame while
+   * the argument opened by re-proving guilt. This does not add the answer; it
+   * stops burying it.
+   *
+   * Same place, same colour, same size as the question it replies to. No new
+   * copy: both strings are committed vocabulary and go in verbatim.
+   *
+   * "But God…" sits above rather than below, and that placement is doing
+   * doctrinal work rather than visual work. At 33px alone, "Someone paid your
+   * fine" stops naming a topic and becomes a declaration to this reader —
+   * before repentance is named at all, in beat five. Ephesians 2:4 above it
+   * frames the line as the scriptural turn rather than a personal guarantee.
+   *
+   * Shown on a first arrival only — the same signal the analytics now use, for
+   * the same reason. Once the reader has opened a beat of the argument, or has
+   * ever reached the decision, this frame is skipped: the question has been
+   * answered once and does not need answering again on the way back.
+   */
+  const [showAnswer, setShowAnswer] = useState(firstVisitRef.current);
 
   // Idempotent: the verdict's bridge is what dispatches SHOW_GRACE, and the
   // reducer refuses it from any phase but the verdict. Kept so the screen still
@@ -125,6 +171,68 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
   }
 
   const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];  // more slots than beats, harmless
+
+  if (showAnswer) {
+    return (
+      /* flex-1 without min-h-dvh. The shell is already min-h-dvh and adds 12px
+         of its own top padding, so a child claiming a full viewport on top of
+         that made this frame 849px in an 837 viewport — 12px of scroll on a
+         screen whose entire content is two centred lines. */
+      <div className="relative flex flex-1 flex-col">
+        {/* Gold blooming from centre, where the verdict's red drained out of
+            the same spot one tap ago. Stronger than the argument's ambient
+            wash below, because this frame is the moment the colour of the
+            flow changes. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-0 z-0"
+          style={{
+            background:
+              "radial-gradient(ellipse at 50% 50%, rgba(212,168,67,0.15) 0%, transparent 62%)",
+          }}
+        />
+
+        {/*
+         * One control, covering the screen, exactly as the verdict's beats do —
+         * the reader has just tapped four of them and this is the fifth gesture
+         * in the same sequence. A real <button> so it is reachable by Tab and
+         * activatable by space; nothing about it looks like one.
+         *
+         * Its accessible name is the answer, which is what activating it means:
+         * carry on into why.
+         */}
+        <button
+          type="button"
+          onClick={() => setShowAnswer(false)}
+          className="relative z-10 flex flex-1 cursor-pointer flex-col items-center justify-center px-7 outline-none focus-visible:outline focus-visible:outline-1 focus-visible:-outline-offset-[6px] focus-visible:outline-[#D4A843]/70"
+        >
+          <m.span
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: EASE_OUT_STRONG }}
+            className="flex flex-col items-center gap-4 text-center"
+          >
+            {/* Ephesians 2:4. The hinge of the whole flow, and here the frame
+                around the claim under it rather than a heading competing with
+                it. Verbatim — the vocabulary map holds this one unchanged. */}
+            <span className="font-mono text-[10px] uppercase tracking-[3px] text-[#D4A843]/60 sm:text-xs">
+              {messages.beatsHeading}
+            </span>
+            <span
+              className="text-[33px] font-semibold leading-[1.24] tracking-[-0.025em] text-[#D4A843] sm:text-[46px] lg:text-[56px]"
+              style={{ textShadow: "0 0 70px rgba(212,168,67,0.32)" }}
+            >
+              {messages.label}
+            </span>
+          </m.span>
+        </button>
+
+        <p className="pointer-events-none absolute inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] z-10 text-center font-mono text-[9px] uppercase tracking-[2.4px] text-white/30 sm:text-[11px]">
+          {messages.tapContinue}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="relative flex flex-1 flex-col min-h-dvh">
