@@ -31,7 +31,15 @@ interface GraceScreenProps {
 
 /** How long the chain waits before offering the way to the next rung. Long
     enough that the first rung is read rather than skipped past. */
-const PILL_DELAY_MS = 2200;
+/*
+ * How long the chain sits before its only forward control appears.
+ *
+ * 2200 was a reading pause for the first rung, and it was too long by more
+ * than double: the pill is not decoration, it is the single way onward, and a
+ * screen that offers no control for over two seconds reads as one that has
+ * finished loading wrong. 900 still lets the rung's own entrance land first.
+ */
+const PILL_DELAY_MS = 900;
 
 export function GraceScreen({ messages, onBack }: GraceScreenProps) {
   const dispatch = useGameDispatch();
@@ -358,13 +366,19 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
            * by clarity: someone who can see the argument is four short steps
            * and where it ends is more willing to walk it, not less.
            *
-           * Once every rung has been opened the collapse lifts entirely and
-           * the whole thing reads as one document. That was already true of
-           * this screen and it stays true: the moment before a decision is
-           * exactly when the reader should be able to weigh the whole case.
-           * The tall page returns there — but only there, and only after they
-           * have read every word of it, which is a different thing from
-           * meeting it cold.
+           * The whole argument opens as one document for a reader who has
+           * already been to the decision and come back. It does NOT open on
+           * the last tap of a first walk, and that is a correction: it used
+           * to, and the tap that revealed rung IV expanded the three rungs
+           * above it in the same frame. Measured on a 390px viewport, the page
+           * went from 844px to 1221px — half a viewport of new content — while
+           * a smooth scroll to rung IV was already in flight, so the target
+           * moved under the animation. The reader's own beat lurched.
+           *
+           * The document view survives where it costs nothing: a returning
+           * reader gets it in their first painted frame, so there is no shift
+           * to feel. On a first walk every earlier rung is still one tap away,
+           * which is the same argument available without the avalanche.
            *
            * No aria-live any more, and its absence is the point. Every beat is
            * now in the DOM from mount rather than appearing on tap, so there
@@ -374,7 +388,7 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
            */}
           <div className="mt-10 text-left">
             {messages.beats.map((beat, i) => {
-              const isOpen = allBeatsRevealed || i === activeIndex;
+              const isOpen = returning || i === activeIndex;
               const isReached = i < revealedCount;
               // The hinge. Beat 0 is still Law — a judge, a sentence — and the
               // argument turns at 1, where someone pays. The colour turns with
@@ -479,12 +493,12 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
               <m.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
+                transition={{ duration: 0.45, delay: 0.1 }}
               >
                 <m.blockquote
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.6 }}
+                  transition={{ duration: 0.5, delay: 0.25 }}
                   className="mt-8 border-l border-[#D4A843]/30 pl-4 text-left"
                 >
                   <p className="text-[15px] italic leading-[1.8] text-white/60 sm:text-base">
@@ -495,10 +509,17 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
                   </p>
                 </m.blockquote>
 
+                {/* These delays nest: this button's clock runs inside the
+                    wrapper's own fade, so 1.2 + 0.8 put the one control that
+                    ends this screen at two full seconds after the last tap,
+                    invisible for the first 1.2 of them. It read as broken. Now
+                    it lands at 0.55 and settles by 1.0 — behind the rung that
+                    is still opening, which is the beat it should follow, and
+                    not a second behind that. */}
                 <m.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ duration: 0.8, delay: 1.2 }}
+                  transition={{ duration: 0.45, delay: 0.55 }}
                   className="mt-10"
                 >
                   <Button variant="gold" mist onClick={handleContinue}>
