@@ -14,7 +14,23 @@ interface SelfRatingProps {
   /** Accessible name for the group, since the visible question is a separate heading. */
   ariaLabel: string;
   className?: string;
+  /**
+   * `row` — three chips centred on one line. The homepage hero, where the
+   * question is the only thing on screen and has the width to hold them.
+   *
+   * `stack` — one chip per line on a phone, returning to a row from `sm`. The
+   * test's landing ranges its type left inside the same narrow column the
+   * questions use, and at that width the third chip wraps: two answers on one
+   * line and one alone underneath, which reads as a different kind of answer
+   * rather than the third of three.
+   */
+  layout?: "row" | "stack";
 }
+
+const FIELDSET_LAYOUT: Record<NonNullable<SelfRatingProps["layout"]>, string> = {
+  row: "flex-wrap items-center justify-center",
+  stack: "flex-col items-stretch sm:flex-row sm:flex-wrap sm:items-center sm:justify-start",
+};
 
 /**
  * The three answers to "Are you a good person?".
@@ -31,7 +47,13 @@ interface SelfRatingProps {
  * Rendered on the homepage and on the test's landing screen, so the question is
  * asked exactly once wherever the reader first meets it.
  */
-export function SelfRating({ messages, onSelect, ariaLabel, className }: SelfRatingProps) {
+export function SelfRating({
+  messages,
+  onSelect,
+  ariaLabel,
+  className,
+  layout = "row",
+}: SelfRatingProps) {
   const options: { value: SelfRatingValue; label: string }[] = [
     { value: "yes", label: messages.yes },
     { value: "mostly", label: messages.mostly },
@@ -44,7 +66,7 @@ export function SelfRating({ messages, onSelect, ariaLabel, className }: SelfRat
     // The legend carries the accessible name and is hidden visually, since the
     // question is already on screen as the heading above.
     <fieldset
-      className={`m-0 flex min-w-0 flex-wrap items-center justify-center gap-2.5 border-0 p-0 sm:gap-3 ${className ?? ""}`}
+      className={`m-0 flex min-w-0 gap-2.5 border-0 p-0 sm:gap-3 ${FIELDSET_LAYOUT[layout]} ${className ?? ""}`}
     >
       <legend className="sr-only">{ariaLabel}</legend>
       {options.map((option) => (
