@@ -53,10 +53,23 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
   const answeredAtMount = useRef(invitationResponse !== null);
   const [onwardReady, setOnwardReady] = useState(answeredAtMount.current);
   useEffect(() => {
-    // Only the committed answer reads onwardReady, so there is nothing to
-    // release for the other two. An else branch here set a flag no branch
-    // consults, and implied a hold that does not apply to them.
-    if (invitationResponse !== "committed" || answeredAtMount.current) return;
+    if (!invitationResponse || answeredAtMount.current) return;
+    /*
+     * Released immediately for every answer but the committed one.
+     *
+     * A review called this branch dead, and it was — but only because the
+     * routing bug above had narrowed the gate to `committed &&`, so nothing
+     * else ever read the flag. Restoring "thinking" to its /next-steps track
+     * makes it load-bearing again: without this, a reader who is still
+     * deciding waits on a flag that never flips and never gets a way on.
+     *
+     * The hold is for a profession of faith. Someone still deciding has not
+     * made one, so there is no beat to protect.
+     */
+    if (invitationResponse !== "committed") {
+      setOnwardReady(true);
+      return;
+    }
     const t = setTimeout(() => setOnwardReady(true), COMMITTED_HOLD_MS);
     return () => clearTimeout(t);
   }, [invitationResponse]);
@@ -229,14 +242,28 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
               </p>
 
               {/*
-               * Committed: the way on, held.
+               * The way on, for the two answers /next-steps has a track for.
+               *
+               * This briefly routed "thinking" to the reading plan instead, on
+               * the reading that `!== "dismissed"` was a category error handing
+               * an undecided reader a discipleship task list. It was not.
+               * /next-steps picks a track (next-steps/client.tsx), and
+               * TrackThinking is written for exactly this reader: "That's
+               * honest. Here are some things worth thinking about", three
+               * reflection questions, and John 3 — chosen because it is a
+               * conversation with a man who had questions. The reading plan
+               * links out to bible.com and keeps a progress record; trackB is
+               * the better answer and it already existed.
+               *
+               * The hold applies only to committed. A reader who is still
+               * deciding has not just professed anything, so there is no beat
+               * to protect — onwardReady is true immediately for them.
                *
                * onwardReady gates the element rather than its opacity — a
                * button at opacity 0 is an invisible click target, which this
-               * codebase has been caught by before. For two seconds there is
-               * nothing here at all.
+               * codebase has been caught by before.
                */}
-              {committed && onwardReady && (
+              {invitationResponse !== "dismissed" && onwardReady && (
                 <m.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -252,21 +279,17 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
                 </m.div>
               )}
 
-              {/*
-               * Thinking and dismissed: the primary source, not a task list.
-               *
-               * Someone still deciding needs the thing to decide with, so both
-               * go to the reading plan. A quiet link and not a gold button —
-               * nothing here should look like the app has read their answer as
-               * a yes.
-               */}
-              {!committed && (
-                <p className="mt-8">
+              {/* Dismissed gets no track at /next-steps, deliberately — someone
+                  who said "not for me" should not be handed a task list. Their
+                  door is this one, and it is conditional by construction:
+                  "Changed your mind? The reading plan is waiting." */}
+              {invitationResponse === "dismissed" && messages.nextSteps.dismissedReturn && (
+                <p className="mt-8 text-[14px] leading-relaxed text-white/60">
                   <Link
                     href={`/${locale}/reading-plan`}
-                    className="inline-flex min-h-[44px] items-center text-[15px] text-[#D4A843] underline decoration-[#D4A843]/30 underline-offset-[5px] transition-colors hover:decoration-[#D4A843]/60"
+                    className="underline decoration-white/20 underline-offset-4 transition-colors hover:text-white/80"
                   >
-                    {messages.readingPlan.heading} &rarr;
+                    {messages.nextSteps.dismissedReturn}
                   </Link>
                 </p>
               )}
@@ -274,12 +297,12 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
               {/*
                * Learn more stays on dismissed alone.
                *
-               * For committed it duplicates what /next-steps already carries.
-               * For thinking the reading plan above is the better door — the
-               * text itself rather than an explanation of it — and two routes
-               * would break the one-way-on rule the rest of the flow keeps.
-               * Dismissed gets both deliberately: a reader who said no should
-               * have the quietest doors, not the fewest.
+               * For committed and thinking it duplicates what their /next-steps
+               * track already carries — trackA has a Learn band and trackB has
+               * "Want the foundations?". Dismissed has no track there at all,
+               * so this and the reading-plan line above are the only doors it
+               * has, and a quiet non-committal one is the right thing to leave
+               * open.
                */}
               {invitationResponse === "dismissed" && invitation.learnMoreLabel && (
                 <p className="mt-5">

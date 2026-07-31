@@ -6,63 +6,94 @@ import { INVITATION_RESPONSES } from "@/lib/journey-storage";
 /**
  * Where each answer to the decision sends the reader.
  *
- * This exists because the routing was wrong once and wrong silently. The
- * destination was chosen by `invitationResponse !== "dismissed"`, which handed
- * a reader who answered "I want to think about it" the discipleship task list
- * built for someone who had just professed faith. Nothing crashed, nothing
- * logged, and the screen looked entirely reasonable — the app simply treated an
- * undecided reader as decided, which `docs/METHOD.md` counts as method damage
- * rather than a bug.
+ * This file exists because I got the routing wrong and nearly shipped a test
+ * that locked the mistake in. The original predicate — `!== "dismissed"` — was
+ * read as a category error handing an undecided reader a discipleship task
+ * list, and changed so that "thinking" went to the reading plan instead.
  *
- * The destinations live inside JSX, so `environment: "node"` cannot observe
- * them as behaviour. These are source assertions in the same idiom as
- * bottom-inset.test.ts and stage-css.test.ts, and the load-bearing one is
- * negative: the predicate that caused the bug must not come back. A positive
- * assertion about markup shape would break on the next restyle and teach
- * everyone to delete it.
+ * It was not an error. `/next-steps` picks a track (next-steps/client.tsx),
+ * and TrackThinking is written for precisely that reader: "That's honest. Here
+ * are some things worth thinking about", three reflection questions, and John
+ * 3 — chosen because it is a conversation with a man who had questions. The
+ * comment that justified the old predicate is about *dismissed*, which is
+ * correctly excluded, and it was never about "thinking".
+ *
+ * So the assertions below pin the behaviour that was already right, and the
+ * one that matters most is the negative: "thinking" must keep its track. A
+ * test written against the wrong reading of a predicate is worse than no test,
+ * because it makes the correct behaviour look like the regression.
+ *
+ * These are source assertions in the idiom of bottom-inset.test.ts — the
+ * destinations live inside JSX and vitest runs in `environment: "node"`, so
+ * there is no way to observe them as behaviour here.
  */
 const ROOT = join(import.meta.dirname, "..", "..");
-const source = readFileSync(join(ROOT, "src", "components", "invitation-screen.tsx"), "utf8");
+const invitation = readFileSync(
+  join(ROOT, "src", "components", "invitation-screen.tsx"),
+  "utf8",
+);
+const nextStepsClient = readFileSync(
+  join(ROOT, "src", "app", "[locale]", "(content)", "next-steps", "client.tsx"),
+  "utf8",
+);
 
-/** Comments in that file describe the bug and quote the old predicate, so every
+/** Comments in both files narrate the mistake and quote the predicates, so every
     assertion reads the code with comments stripped — otherwise a deleted
-    implementation passes on the strength of the comment explaining it. */
-const code = source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+    implementation passes on the strength of the prose explaining it. */
+function code(source: string): string {
+  return source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+}
 
-/** What each answer is owed. Committed gets the steps; neither undecided answer
-    does, because there is no "now" yet for someone still deciding. */
-const ONWARD: Record<(typeof INVITATION_RESPONSES)[number], "next-steps" | "reading-plan"> = {
-  committed: "next-steps",
-  thinking: "reading-plan",
-  dismissed: "reading-plan",
+const invitationCode = code(invitation);
+const trackCode = code(nextStepsClient);
+
+/** What each answer is owed. Two have a track at /next-steps; the third does
+    not, and that is the distinction the decision screen is drawing. */
+const HAS_NEXT_STEPS_TRACK: Record<(typeof INVITATION_RESPONSES)[number], boolean> = {
+  committed: true,
+  thinking: true,
+  dismissed: false,
 };
 
 describe("what each decision answer is offered", () => {
-  it("keeps the three answers the reducer knows", () => {
-    // If a fourth is added, ONWARD above fails to typecheck and someone has to
-    // decide where it goes rather than inheriting a default.
-    expect([...INVITATION_RESPONSES].sort()).toEqual(Object.keys(ONWARD).sort());
+  it("covers exactly the responses the reducer knows", () => {
+    // A fourth response fails to typecheck against the table above, so someone
+    // has to decide where it goes rather than inheriting a default.
+    expect([...INVITATION_RESPONSES].sort()).toEqual(Object.keys(HAS_NEXT_STEPS_TRACK).sort());
   });
 
-  it("never reintroduces the predicate that misrouted the undecided", () => {
-    expect(code).not.toMatch(/!==\s*["']dismissed["']/);
+  it("keeps a track at next-steps for every answer that has one", () => {
+    for (const [response, hasTrack] of Object.entries(HAS_NEXT_STEPS_TRACK)) {
+      if (!hasTrack) continue;
+      expect(trackCode, `next-steps has no branch for "${response}"`).toContain(`"${response}"`);
+    }
   });
 
-  it("offers next-steps to the committed answer alone", () => {
-    // One link, and it is inside a branch keyed on `committed`.
-    expect(code.match(/next-steps/g) ?? []).toHaveLength(1);
-    expect(code).toMatch(/\{committed && onwardReady && \(/);
+  it("sends both tracked answers to next-steps, not just the committed one", () => {
+    // The assertion that would have failed on my version. "thinking" losing
+    // its track is silent: the reader gets a plausible screen written for
+    // somebody else.
+    expect(invitationCode).toMatch(/invitationResponse !== "dismissed" && onwardReady/);
+    expect(invitationCode.match(/next-steps/g) ?? []).toHaveLength(1);
   });
 
-  it("offers the reading plan to both undecided answers", () => {
-    expect(code.match(/reading-plan/g) ?? []).toHaveLength(1);
-    expect(code).toMatch(/\{!committed && \(/);
+  it("offers the reading plan to the dismissed answer alone, and conditionally", () => {
+    // "Changed your mind? The reading plan is waiting" — a door for someone who
+    // has none at next-steps, worded so it does not assume they walked through.
+    expect(invitationCode).toMatch(
+      /invitationResponse === "dismissed" && messages\.nextSteps\.dismissedReturn/,
+    );
+    expect(invitationCode.match(/reading-plan/g) ?? []).toHaveLength(1);
   });
 
-  it("keeps learn-more on the dismissed answer only", () => {
-    // Committed and thinking each already carry exactly one route on; a second
-    // door there competes with the primary action on the quietest screen in
-    // the flow.
-    expect(code).toMatch(/invitationResponse === "dismissed" && invitation\.learnMoreLabel/);
+  it("holds the way on only for a profession of faith", () => {
+    // The two-second hold is for someone who just said they would repent and
+    // trust. A reader still deciding has professed nothing, so there is no beat
+    // to protect — they are released without waiting, and the timer sits behind
+    // the committed check rather than in front of it.
+    expect(invitationCode).toMatch(
+      /invitationResponse !== "committed"\)\s*\{\s*setOnwardReady\(true\);/,
+    );
+    expect(invitationCode).toMatch(/setTimeout\(\(\) => setOnwardReady\(true\), COMMITTED_HOLD_MS\)/);
   });
 });

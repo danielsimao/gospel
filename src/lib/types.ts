@@ -305,12 +305,9 @@ export interface Messages {
       optional marker bought nothing but an English fallback rendered over a
       Portuguese button. */
   nextSteps: { cta: string; dismissedReturn: string };
-  /** Required, not optional, because it is the only onward route an undecided
-      reader has: next-steps is committed-only and learn is dismissed-only. An
-      optional marker here turned a renamed key into a terminal screen that
-      nothing reports — and reading-plan's own page already throws when it is
-      absent, so the two contracts disagreed. Only the heading is modelled; the
-      plan's page owns the rest. */
+  /** Required because reading-plan's own page throws when it is absent, and an
+      optional marker here left the two contracts disagreeing about the same
+      key. Only the heading is modelled; the plan's page owns the rest. */
   readingPlan: { heading: string };
   meta: { title: string; description: string };
 }
