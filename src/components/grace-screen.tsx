@@ -262,16 +262,24 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
             <span className="h-px w-6 bg-[#D4A843]/40" />
           </m.div>
 
-          {/* Beats heading */}
-          <m.h2
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.5, ease: EASE_OUT_STRONG }}
-            className="text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl md:text-5xl"
-            style={{ textShadow: "0 0 60px rgba(212,168,67,0.2)" }}
-          >
-            {messages.beatsHeading}
-          </m.h2>
+          {/*
+           * No heading here any more.
+           *
+           * "But God…" was a 30px gold h2 at the top of this screen. The answer
+           * frame one tap earlier now shows the same two strings at 33px, so
+           * keeping both meant the reader met them twice, in swapped order,
+           * within one gesture — the eyebrow restating the conclusion above an
+           * argument, which is the exact fault the answer frame exists to fix,
+           * doubled instead of removed.
+           *
+           * The eyebrow above stays. An eyebrow captioning the screen the
+           * reader just tapped through is orientation, not repetition, and it
+           * is what a reader who re-enters grace from the decision — and so
+           * never sees the answer frame — has to tell them where they are.
+           *
+           * Ephesians 2:4 is not lost: it carries the answer frame, which is a
+           * louder place for the hinge than a subheading was.
+           */}
 
           {/* Beats */}
           {/* aria-live: beats are revealed by taps — announce each arrival
