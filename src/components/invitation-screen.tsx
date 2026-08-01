@@ -17,8 +17,6 @@ import type { Locale } from "@/lib/i18n";
 interface InvitationScreenProps {
   messages: Messages;
   locale: Locale;
-  /** Walks back one history entry, so the browser stack and the reducer agree. */
-  onBack: () => void;
 }
 
 /*
@@ -32,7 +30,7 @@ interface InvitationScreenProps {
  */
 const COMMITTED_HOLD_MS = 2000;
 
-export function InvitationScreen({ messages, locale, onBack }: InvitationScreenProps) {
+export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
   const { invitation } = messages;
   const state = useGameState();
   const dispatch = useGameDispatch();
@@ -140,31 +138,19 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
         <div className="w-full max-w-lg lg:max-w-2xl">
           {!invitationResponse && (
             <>
-              {/* The eyebrow, and the way back beside it. A way back is only
-                  useful before the choice; under the options it arrived after
-                  the reader had already made one. It stays styled as a text link rather than as a
-                  button — a fourth control would compete with the three that
-                  are the point — but it is here because the method requires
-                  that leaving be possible and be visible, not because anyone
-                  needs help finding the back gesture. */}
-              <m.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.7 }}
-                className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2"
-              >
-                <span className="font-mono text-[9.5px] uppercase tracking-[3px] text-[#D4A843]/70">
-                  {invitation.eyebrow}
-                </span>
-                <button
-                  type="button"
-                  onClick={onBack}
-                  className="inline-flex min-h-[32px] items-center text-[11px] text-white/50 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
-                >
-                  {invitation.rereadGrace}
-                </button>
-              </m.div>
-
+              {/*
+               * No eyebrow here, and no way back beside it.
+               *
+               * Both were replaced by the flow band the shell renders above:
+               * it names this stage in the eyebrow's own weight and position,
+               * and every stage behind it is one tap away. Keeping this row
+               * would have stated the same fact twice, 60px apart, and offered
+               * two different controls — "Re-read grace" and the band's own
+               * PAID — for the identical destination.
+               *
+               * The method's requirement that leaving be visible is unaffected:
+               * that is EXIT's job, and EXIT has not moved.
+               */}
               {/* The question, at the size the two screens before it set. The
                   verdict's confession and grace's answer were both the largest
                   thing on their screen; this is the third — and now the third

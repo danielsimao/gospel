@@ -25,8 +25,6 @@ interface GraceScreenProps {
     tapContinue: string;
     rereadVerdict: string;
   };
-  /** Walks back one history entry, so the browser stack and the reducer agree. */
-  onBack: () => void;
 }
 
 /** How long the chain waits before offering the way to the next rung. Long
@@ -41,7 +39,7 @@ interface GraceScreenProps {
  */
 const PILL_DELAY_MS = 900;
 
-export function GraceScreen({ messages, onBack }: GraceScreenProps) {
+export function GraceScreen({ messages }: GraceScreenProps) {
   const dispatch = useGameDispatch();
   const state = useGameState();
   // Re-read: once the invitation has been reached, coming back here replays
@@ -531,31 +529,15 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
             )}
           </AnimatePresence>
 
-          {/* Quiet walk-back — re-reading the verdict, not reopening it. Walks
-              one history entry back rather than dispatching directly, so the
-              browser stack and the reducer stay in agreement: the shell's
-              popstate handler is the single place a backward move is turned
-              into an action. */}
-          {/* Last in, deliberately. It had no entrance at all, so the one
-              control on this screen that matters least was the first thing on
-              it — present at frame 0 while the label, the heading, the first
-              beat and the continue button were all still arriving. It now
-              trails the continue button, and comes in slowly. A returning
-              reader has seen the screen, so it need not make them wait. */}
-          <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: returning ? 0.4 : 2.6 }}
-            className="mt-8 flex justify-center"
-          >
-            <button
-              type="button"
-              onClick={onBack}
-              className="inline-flex min-h-[32px] items-center text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
-            >
-              {messages.rereadVerdict}
-            </button>
-          </m.div>
+          {/*
+           * No walk-back link here any more.
+           *
+           * The flow band above carries it: VERDICT sits one tap away, in the
+           * same place on every screen, instead of a bespoke link at the foot
+           * of this one and another at the top of the next. `rereadVerdict`
+           * stays in both locales — orphaning a string costs less to undo than
+           * deleting one, and the owner's PT pass is open.
+           */}
         </div>
       </div>
     </div>

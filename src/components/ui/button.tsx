@@ -169,20 +169,30 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
 Button.displayName = "Button"
 
-/** Arrow icon that slides right on hover */
-function ButtonArrow({ direction = "right" }: { direction?: "right" | "down" }) {
+/** Arrow icon that slides in its own direction on hover */
+function ButtonArrow({
+  direction = "right",
+}: {
+  direction?: "right" | "down" | "left"
+}) {
+  const GLYPH = { right: "\u2192", down: "\u2193", left: "\u2190" } as const
+  const SLIDE = {
+    right: "group-hover/btn:translate-x-[3px]",
+    down: "group-hover/btn:translate-y-[2px]",
+    // Away from the text, like the other two \u2014 a Back arrow that slid right
+    // would point one way and move the other.
+    left: "group-hover/btn:-translate-x-[3px]",
+  } as const
   return (
     <span
       className={cn(
         "inline-flex transition-transform duration-250",
         "ease-[cubic-bezier(.3,.7,.4,1.5)]",
-        direction === "right"
-          ? "group-hover/btn:translate-x-[3px]"
-          : "group-hover/btn:translate-y-[2px]"
+        SLIDE[direction]
       )}
       aria-hidden="true"
     >
-      {direction === "right" ? "\u2192" : "\u2193"}
+      {GLYPH[direction]}
     </span>
   )
 }

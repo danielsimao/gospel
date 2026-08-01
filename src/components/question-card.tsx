@@ -24,6 +24,21 @@ interface QuestionCardProps {
   questionIndex: number;
   score: number;
   testMessages: TestMessages;
+  /**
+   * Set when the reader has walked back into the test from a later stage.
+   *
+   * The screen is the one they lived: same ledger, same eyebrow, same question,
+   * same answered state. What changes is that it reports rather than records —
+   * every dispatch is inert, `answer` comes from the stored testimony instead
+   * of live state, and the two walk controls replace Next's single one.
+   */
+  review?: {
+    answer: AnswerType;
+    /** Walks toward question I; at I, leaves the corridor the way it was entered. */
+    onBack: () => void;
+    /** Walks toward VI; at VI, leaves forward — as "See the verdict" always did. */
+    onNext: () => void;
+  };
 }
 
 /*
@@ -57,12 +72,20 @@ export function QuestionCard({
   questionIndex,
   score,
   testMessages,
+  review,
 }: QuestionCardProps) {
   const dispatch = useGameDispatch();
   const state = useGameState();
   const timersRef = useRef<NodeJS.Timeout[]>([]);
-  const answered = state.currentAnswer;
-  const showFollowUp = state.showFollowUp;
+  /*
+   * In review the answer is the recorded one and the follow-up is already
+   * open. Live, both come from state — the reader is mid-beat and the
+   * follow-up is still on its timer. Reading them through one pair of names
+   * keeps the JSX below identical for both, which is the point: one screen,
+   * not two that must be kept in step.
+   */
+  const answered = review ? review.answer : state.currentAnswer;
+  const showFollowUp = review ? true : state.showFollowUp;
 
   // Advancing is a reducer move, including off the last question — the whole
   // flow is one route again, so the verdict arrives in the same commit as the
@@ -78,7 +101,9 @@ export function QuestionCard({
     timersRef.current.forEach(clearTimeout);
     timersRef.current = [];
 
-    if (answered !== "justify" || showFollowUp) {
+    // Nothing to pace in review: the beat was lived once and its follow-up is
+    // rendered open from the first frame.
+    if (review || answered !== "justify" || showFollowUp) {
       return;
     }
 
@@ -93,10 +118,12 @@ export function QuestionCard({
       timersRef.current.forEach(clearTimeout);
       timersRef.current = [];
     };
-  }, [answered, dispatch, question.id, showFollowUp]);
+  }, [answered, dispatch, question.id, showFollowUp, review]);
 
   function handleAnswer(answer: AnswerType) {
-    if (answered) return;
+    // Testimony is recorded and there is no way back — the reducer's own rule,
+    // enforced here too so a revisited screen can never write.
+    if (review || answered) return;
     const timeOnQuestion = state.questionStartedAt
       ? Date.now() - state.questionStartedAt
       : 0;
@@ -347,7 +374,7 @@ export function QuestionCard({
                           Deliberately not a button beside Next either. A
                           retraction at equal weight in the thumb zone is a
                           mis-tap that undoes a confession. */}
-                      {answered === "justify" && (
+                      {answered === "justify" && !review && (
                         <m.button
                           type="button"
                           initial={{ opacity: 0 }}
@@ -385,12 +412,49 @@ export function QuestionCard({
                         }}
                         data-slot="action-buttons"
                       >
-                        <Button variant="ghost" size="sm" onClick={advance} className="w-full">
-                          {isLastQuestion
-                            ? testMessages.seeVerdictLabel
-                            : testMessages.nextLabel}
-                          <ButtonArrow />
-                        </Button>
+                        {/*
+                         * Live: one control, Next, exactly as it always was.
+                         *
+                         * In review: Back joins it, and it is the only control
+                         * the whole spine adds — the Law never offered one,
+                         * because going backwards through it was not a thing a
+                         * reader could do. It takes Next's own size and
+                         * variant, mirrored, so nothing about the row is a new
+                         * idea. Next keeps its live meaning: walk forward, and
+                         * at question VI "See the verdict" leaves the test the
+                         * same way it did the first time.
+                         */}
+                        {review ? (
+                          <div className="flex gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={review.onBack}
+                              className="flex-1"
+                            >
+                              <ButtonArrow direction="left" />
+                              {testMessages.flow.back}
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={review.onNext}
+                              className="flex-1"
+                            >
+                              {isLastQuestion
+                                ? testMessages.seeVerdictLabel
+                                : testMessages.nextLabel}
+                              <ButtonArrow />
+                            </Button>
+                          </div>
+                        ) : (
+                          <Button variant="ghost" size="sm" onClick={advance} className="w-full">
+                            {isLastQuestion
+                              ? testMessages.seeVerdictLabel
+                              : testMessages.nextLabel}
+                            <ButtonArrow />
+                          </Button>
+                        )}
                       </m.div>
 
                     </m.div>

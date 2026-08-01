@@ -68,6 +68,15 @@
       },
       "advanceHintTouch": "Toca para continuar",
       "advanceHintPointer": "Clica em qualquer lado, ou carrega no espaço"
+    },
+    "flow": {
+      "test": "Teste",
+      "verdict": "Veredicto",
+      "paid": "Paga",
+      "decision": "Decisão",
+      "label": "Onde estás",
+      "review": "Rever as tuas respostas",
+      "back": "Voltar"
     }
   },
   "questions": [

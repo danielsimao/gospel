@@ -68,6 +68,15 @@
       },
       "advanceHintTouch": "Tap to continue",
       "advanceHintPointer": "Click anywhere, or press space"
+    },
+    "flow": {
+      "test": "Test",
+      "verdict": "Verdict",
+      "paid": "Paid",
+      "decision": "Decision",
+      "label": "Where you are",
+      "review": "Review your answers",
+      "back": "Back"
     }
   },
   "questions": [

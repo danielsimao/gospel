@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { m, AnimatePresence } from "framer-motion";
 import * as Sentry from "@sentry/nextjs";
@@ -9,6 +9,7 @@ import { Landing } from "@/components/landing";
 import { QuestionCard } from "@/components/question-card";
 import { VerdictScreen } from "@/components/verdict-screen";
 import { GraceScreen } from "@/components/grace-screen";
+import { FlowBand } from "@/components/flow-band";
 import { InvitationScreen } from "@/components/invitation-screen";
 import {
   trackGameAbandoned,
@@ -17,10 +18,11 @@ import {
 } from "@/lib/analytics";
 import { QUESTION_CONFIGS, TOTAL_QUESTIONS } from "@/lib/questions";
 import { readSession } from "@/lib/test-session-storage";
+import { furthestStageIndex, stageOfPhase, type FlowStage } from "@/lib/flow-stages";
 import { markTestCompleted } from "@/lib/journey-storage";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import { useIsomorphicLayoutEffect } from "@/lib/use-isomorphic-layout-effect";
-import type { Messages } from "@/lib/types";
+import type { GamePhase, Messages } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 
 interface GameShellProps {
@@ -164,6 +166,40 @@ export function GameShell({ messages, locale }: GameShellProps) {
   const depthRef = useRef(0); // entries pushed beyond the verdict baseline
   const unwindingRef = useRef(false);
   const viaLinkRef = useRef(false);
+
+  /*
+   * The test region, entered from a later stage.
+   *
+   * View state, not journey state: the phase stays exactly what it was, the
+   * reducer is never told, and nothing persists. A refresh mid-review lands
+   * back on the decision, which is the right answer — the reader had not gone
+   * anywhere. `index` is the question being read; `from` is the phase to
+   * return to when Back walks off the front of the corridor.
+   */
+  const [review, setReview] = useState<{ index: number; from: GamePhase } | null>(null);
+
+  /*
+   * Band taps move the history stack rather than dispatching directly, so the
+   * stack stays the single source of truth for where the reader is — the same
+   * contract the re-read links already had. The popstate handler above turns
+   * the landing entry into the right dispatches, including the two-step case.
+   */
+  const handleBandNavigate = useCallback(
+    (stage: FlowStage) => {
+      if (stage === "test") {
+        setReview({ index: 0, from: stateRef.current.phase });
+        return;
+      }
+      const targetPhase =
+        stage === "verdict" ? "verdict" : stage === "paid" ? "grace" : "invitation";
+      const targetDepth = targetPhase === "verdict" ? 0 : targetPhase === "grace" ? 1 : 2;
+      const delta = targetDepth - depthRef.current;
+      if (delta === 0) return;
+      viaLinkRef.current = true;
+      window.history.go(delta);
+    },
+    [],
+  );
   // Set by the popstate handler before it dispatches: the phase change it
   // triggers is a MOVE along existing history, so the phase effect must sync
   // state without pushing a new entry (a re-push would clobber the forward
@@ -269,6 +305,31 @@ export function GameShell({ messages, locale }: GameShellProps) {
         depthRef.current = i;
         poppingRef.current = true;
         dispatch({ type: "SHOW_INVITATION" });
+      } else if (backward && target === "verdict" && phase === "invitation") {
+        /*
+         * The two-step jump, which only the band can produce: `history.go(-2)`
+         * fires one popstate landing on the verdict from the decision.
+         *
+         * The reducer has no action for it and should not grow one — each of
+         * its backward moves guards on the phase it is leaving, and those
+         * guards are the method's rules in code. So the chain is dispatched in
+         * order instead: the decision's own rule (a recorded response closes
+         * the book) still refuses the first step, and the second only runs
+         * because the first legitimately landed on grace.
+         */
+        if (stateRef.current.invitationResponse) return; // recorded — inert
+        trackTestBack("invitation", "verdict", via);
+        depthRef.current = i;
+        poppingRef.current = true;
+        dispatch({ type: "BACK_TO_GRACE" });
+        dispatch({ type: "BACK_TO_VERDICT" });
+      } else if (forward && target === "invitation" && phase === "verdict") {
+        // The same jump forward, for a reader who walked back and changed
+        // their mind. Both steps are already legal from where they start.
+        depthRef.current = i;
+        poppingRef.current = true;
+        dispatch({ type: "SHOW_GRACE" });
+        dispatch({ type: "SHOW_INVITATION" });
       }
       // Anything else: inert entry (e.g. stale forward after unwind).
     }
@@ -321,7 +382,84 @@ export function GameShell({ messages, locale }: GameShellProps) {
           chip's own line — see the question card's top padding, which is the
           other half of that sum. */}
       <div className="relative z-[1] flex flex-1 flex-col pt-3">
+        {/*
+         * The band, on the stages that have something behind them.
+         *
+         * Not on the questions: they carry the examination ledger, which is a
+         * finer-grained readout of the same journey, and stacking the two was
+         * the collision this placement exists to avoid. Not on the answered
+         * decision either — a recorded response closes the book, and the chrome
+         * follows the same rule the reducer does.
+         */}
+        {review === null &&
+          state.phase !== "landing" &&
+          state.phase !== "playing" &&
+          /* Never on the first run of the verdict. That screen strips itself to
+             a sentence on black and the reader has nothing behind them worth
+             offering — the band arrives only once they have been further and
+             walked back. */
+          !(state.phase === "verdict" && furthestStageIndex(state) <= 1) &&
+          !(state.phase === "invitation" && state.invitationResponse) && (
+            /* Its own line, below the fixed exit chip. On the chip's line it
+               ran into it: "← EXIT" ends at 76px and a centred band on a 390
+               viewport starts at 78. */
+            <div className="px-4 pt-7 pb-1 sm:pt-8">
+              <FlowBand
+                current={stageOfPhase(state.phase) ?? "test"}
+                furthest={furthestStageIndex(state)}
+                onNavigate={handleBandNavigate}
+                testMessages={messages.test}
+                tone={
+                  state.phase === "verdict"
+                    ? "red"
+                    : state.phase === "grace"
+                      ? "gold"
+                      : "plain"
+                }
+              />
+            </div>
+          )}
+
+        {/*
+         * The test region — the same question screen, revisited.
+         *
+         * Rendered in place of the phase rather than over it: this is a walk
+         * along the spine, not a viewer floating above one. The reader left the
+         * decision and is standing on question III; when they walk off either
+         * end they are back where they were.
+         */}
+        {review !== null && (
+          <m.div
+            key={`review-${review.index}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2, ease: EASE_OUT_STRONG }}
+            className="flex flex-1 flex-col"
+          >
+            <QuestionCard
+              question={messages.questions[review.index]!}
+              questionIndex={review.index}
+              score={state.score}
+              testMessages={messages.test}
+              review={{
+                answer: state.answers[review.index]?.answer ?? "honest",
+                onBack: () =>
+                  setReview((r) =>
+                    r === null ? null : r.index === 0 ? null : { ...r, index: r.index - 1 },
+                  ),
+                onNext: () =>
+                  setReview((r) =>
+                    r === null || r.index >= TOTAL_QUESTIONS - 1
+                      ? null
+                      : { ...r, index: r.index + 1 },
+                  ),
+              }}
+            />
+          </m.div>
+        )}
+
         <AnimatePresence mode="wait" initial={false}>
+          {review === null && (
           <m.div
             key={state.phase}
             initial={{ opacity: 0 }}
@@ -351,26 +489,14 @@ export function GameShell({ messages, locale }: GameShellProps) {
             )}
 
             {state.phase === "grace" && (
-              <GraceScreen
-                messages={messages.grace}
-                onBack={() => {
-                  viaLinkRef.current = true;
-                  window.history.back();
-                }}
-              />
+<GraceScreen messages={messages.grace} />
             )}
 
             {state.phase === "invitation" && (
-              <InvitationScreen
-                messages={messages}
-                locale={locale}
-                onBack={() => {
-                  viaLinkRef.current = true;
-                  window.history.back();
-                }}
-              />
+<InvitationScreen messages={messages} locale={locale} />
             )}
           </m.div>
+          )}
         </AnimatePresence>
       </div>
 

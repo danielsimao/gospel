@@ -212,6 +212,28 @@ export interface TestMessages {
   backLabel: string;
   changeAnswerLabel: string;
   verdictLabels: Record<string, string>;
+  /**
+   * The wayfinding band: four short stage names, plus the words for the two
+   * controls the spine adds.
+   *
+   * Short by rule. The band sits on the eyebrow's own line, and grace's
+   * on-screen name — "Someone paid your fine" / "Alguém pagou a tua dívida" —
+   * is a sentence that runs past the column at band size. The full phrase stays
+   * in the screen's own content where it always was; `paid` is the label.
+   */
+  flow: {
+    test: string;
+    verdict: string;
+    paid: string;
+    decision: string;
+    /** Accessible name for the band itself, which is a nav landmark. */
+    label: string;
+    /** What tapping `test` opens, said plainly — the word alone promises the
+        test itself, which is not what happens. */
+    review: string;
+    /** The one control the spine adds, on the question screens. */
+    back: string;
+  };
   verdict: {
     prelude: string;
     scripture: string;
