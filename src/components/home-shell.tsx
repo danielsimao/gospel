@@ -9,7 +9,6 @@ import { LatestPostCard } from "@/components/home/latest-post-card";
 import { QuestionsBand } from "@/components/home/questions-band";
 import { ReadingBand, type ReadingDay } from "@/components/home/reading-band";
 import { StageSpine } from "@/components/home/stage-spine";
-import { FactCrawl, FactList } from "@/components/home/fact-crawl";
 import { SelfRating } from "@/components/home/self-rating";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { useJourney } from "@/lib/use-journey";
@@ -745,8 +744,9 @@ export function HomeShell({
        * being said to them.
        */}
       <div>
-        <FactCrawl facts={home.facts} />
-        <FactList facts={home.facts} />
+        {/* The crawl moved to the footer's top edge, where it is now site-wide.
+            It sat here, immediately above the footer, so the homepage loses
+            nothing but the duplicate. */}
       </div>
     </main>
   );
