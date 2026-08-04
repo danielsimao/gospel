@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildPageMetadata({
     locale,
     path: "/privacy",
-    title: privacy.heading,
+    title: `${privacy.heading} | ${messages.default.topBar.brand}`,
     description: privacy.description,
   });
 }

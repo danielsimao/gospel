@@ -74,6 +74,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     path: `/learn/${slug}`,
     title: `${topic.title} | ${brand}`,
     description: topic.metaDescription,
+    // This route has opengraph-image.tsx beside it, and an explicit
+    // openGraph.images would replace it rather than defer to it.
+    hasOwnOgImage: true,
   });
 }
 

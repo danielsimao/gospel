@@ -26,6 +26,8 @@
     "changeAnswer": "Não era isso que eu queria dizer"
   },
   "test": {
+    "metaTitle": "Faz o Teste: Seis Perguntas | Se Morresses Hoje",
+    "metaDescription": "Seis perguntas da Lei de Deus, e um veredicto construído a partir das tuas próprias respostas — não das nossas. Faz o teste e descobre onde estás.",
     "caseLabel": "Teste",
     "guiltLabel": "Culpa",
     "counterLabel": "morreram desde que abriste esta página",
@@ -1499,7 +1501,7 @@
   },
   "meta": {
     "title": "Tu és uma Boa Pessoa? | Faz o Teste",
-    "description": "A maioria das pessoas pensa que é boa. Descobre onde realmente estás."
+    "description": "A maioria das pessoas pensa que é boa. Mede-te pela Lei de Deus, um mandamento de cada vez, e descobre onde realmente estás."
   },
   "home": {
     "provocativeQuestion": "Se morresses hoje, onde passarias a eternidade?",
@@ -1662,7 +1664,7 @@
   },
   "about": {
     "heading": "Sobre",
-    "description": "Quem somos e porque existe este site.",
+    "description": "Quem somos, porque existe este site e no que acreditamos. O teste assenta nos Dez Mandamentos, e está aqui para te mostrar a tua necessidade de um Salvador.",
     "sections": [
       {
         "title": "A nossa missão",

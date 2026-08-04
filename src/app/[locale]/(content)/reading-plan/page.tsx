@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildPageMetadata({
     locale,
     path: "/reading-plan",
-    title: readingPlan.heading,
+    title: `${readingPlan.heading} | ${messages.default.topBar.brand}`,
     description: readingPlan.subtitle,
   });
 }

@@ -9,7 +9,6 @@ import { LatestPostCard } from "@/components/home/latest-post-card";
 import { QuestionsBand } from "@/components/home/questions-band";
 import { ReadingBand, type ReadingDay } from "@/components/home/reading-band";
 import { StageSpine } from "@/components/home/stage-spine";
-import { FactCrawl, FactList } from "@/components/home/fact-crawl";
 import { SelfRating } from "@/components/home/self-rating";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { useJourney } from "@/lib/use-journey";
@@ -147,7 +146,8 @@ function WhatHappened({
       {parts.before}
       <span
         /*
-         * Reserves the phrase so resolving it never re-wraps the paragraph.
+         * Reserves the phrase while it is still unknown, and stops reserving
+         * the moment it lands.
          *
          * 15ch, not the 13ch this started at. 13 was eyeballed against English
          * and measured too narrow for Portuguese: at 14px in Geist,
@@ -155,8 +155,21 @@ function WhatHappened({
          * whose record is 100+ weeks old — reachable in 2028 — would re-wrap
          * the line, which is the one thing the box exists to prevent. 15ch
          * clears every form in both locales through four-digit weeks.
+         *
+         * The reserve used to survive resolution, and that is a worse bug than
+         * the one it was fixing. 15ch is 141.7px; "earlier today" is 85px. Every
+         * returning reader on the undecided stage read "You stood trial earlier
+         * today" followed by 57px of nothing and then the full stop — measured,
+         * not estimated — and the same hole opened in the thinking stage's
+         * "That was {when}." A held-open box is only honest while it is empty.
+         *
+         * Dropping it on resolution costs one reflow of this sentence at
+         * hydration, which is the shift the reserve existed to prevent. It is
+         * the right trade: that shift is sub-second and happens once, and no
+         * reserve can be both wide enough for the unknown phrase and exactly as
+         * wide as the phrase that arrives. Permanent beats momentary.
          */
-        style={{ display: "inline-block", minWidth: "15ch" }}
+        style={known ? undefined : { display: "inline-block", minWidth: "15ch" }}
         /* Empty until the timestamp is known, and a screen reader should not
            announce the gap as part of the sentence. */
         aria-hidden={known ? undefined : true}
@@ -409,8 +422,12 @@ export function HomeShell({
            * One cost, deliberate: four unused blocks ride in every HTML
            * response. They are out of the accessibility tree, being
            * display:none, but present in the served document, so this page's
-           * source carries five h1 elements and four stages' worth of copy for
-           * a crawler to see.
+           * source carries four stages' worth of copy for a crawler to see.
+           * That is why the four returning-stage headings are h2 and only the
+           * visitor block keeps an h1 — see stage-spine. Hidden copy itself is
+           * left alone: it is state-dependent UI, which is a pattern search
+           * engines discount rather than penalise, and removing it would hand
+           * the layout jump back to the visitors this page exists to convert.
            *
            * The wrappers carry no `display` class of their own. globals.css
            * supplies it in both the shown and the hidden case, and a
@@ -727,8 +744,9 @@ export function HomeShell({
        * being said to them.
        */}
       <div>
-        <FactCrawl facts={home.facts} />
-        <FactList facts={home.facts} />
+        {/* The crawl moved to the footer's top edge, where it is now site-wide.
+            It sat here, immediately above the footer, so the homepage loses
+            nothing but the duplicate. */}
       </div>
     </main>
   );

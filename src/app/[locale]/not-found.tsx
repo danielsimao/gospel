@@ -1,10 +1,13 @@
 import Link from "next/link";
+import { Footer } from "@/components/shared/footer";
+import en from "@/messages/en.json";
 
 // Rendered inside the [locale] layout for any unmatched path (via the
 // [...rest] catch-all). Copy is EN-only by design — not-found pages don't
 // receive params in Next, and the line carries the site's voice either way.
 export default function NotFound() {
   return (
+    <>
     <main className="flex min-h-dvh flex-col items-center justify-center bg-[#060404] px-6 py-16 text-center">
       <div className="flex items-center gap-2">
         <span className="h-px w-6 bg-red-500/40" />
@@ -33,5 +36,28 @@ export default function NotFound() {
         &larr; Back to the beginning
       </Link>
     </main>
+
+    {/*
+     * The footer, and with it the crawl.
+     *
+     * This page sits at the [locale] segment, outside the (content) group
+     * whose layout renders the footer — so the one page a reader reaches by
+     * being lost was the one page offering a single way out. A footer earns
+     * its place here more than anywhere.
+     *
+     * Messages are imported rather than resolved from params, for the same
+     * reason the copy above is English: Next hands a not-found page no params,
+     * so there is no locale to read.
+     */}
+    <Footer
+      messages={en.footer}
+      learnTopics={en.learn.topics.map((topic) => ({
+        slug: topic.slug,
+        title: topic.title,
+      }))}
+      locale="en"
+      facts={en.home.facts}
+    />
+    </>
   );
 }

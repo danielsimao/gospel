@@ -11,7 +11,7 @@ const TONE: Record<Tone, { rule: string; text: string }> = {
 interface StageSpineProps {
   tone: Tone;
   eyebrow: string;
-  /** The stage's one and only h1. Required — three stages used to render none. */
+  /** The stage's one and only heading. Required — three stages used to render none. */
   heading: string;
   /**
    * What happened to this reader, in the app's courtroom language. This IS the
@@ -27,11 +27,18 @@ interface StageSpineProps {
 }
 
 /**
- * The shared top of every homepage journey stage: eyebrow → one h1 → what
+ * The shared top of every homepage journey stage: eyebrow → one heading → what
  * happened. Extracted so the spine is guaranteed by construction rather than
  * by five blocks agreeing to look alike — a returning reader feeling lost was
  * the whole complaint, and the states previously differed in heading level,
  * control type and element count.
+ *
+ * The heading is an h2, not an h1. All four returning-reader stages ship in
+ * every HTML response (see the note in home-shell beside the wrappers — it is
+ * how the page avoids a 133px layout jump), so an h1 here put five of them in
+ * the document. The visitor block keeps the page's single h1, and it is the
+ * block a crawler resolves to anyway: the stage comes from localStorage, which
+ * is empty for every bot.
  *
  * Actions stay with each stage: they differ enough (reset-and-retake vs.
  * navigate vs. record a response) that folding them in here would take more
@@ -57,9 +64,9 @@ export function StageSpine({
         <span aria-hidden="true" className={`h-px w-6 ${t.rule}`} />
       </div>
 
-      <h1 className="mt-3 max-w-md text-balance text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-4 sm:text-3xl">
+      <h2 className="mt-3 max-w-md text-balance text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-4 sm:text-3xl">
         {heading}
-      </h1>
+      </h2>
 
       {whatHappened && (
         <p className="mt-4 max-w-md text-center text-[14px] leading-[1.7] text-white/65 sm:text-[15px]">

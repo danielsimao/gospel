@@ -23,8 +23,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildPageMetadata({
     locale,
     path: "/test",
-    title: messages.meta.title,
-    description: messages.meta.description,
+    title: messages.test.metaTitle,
+    description: messages.test.metaDescription,
   });
 }
 
@@ -36,8 +36,8 @@ export default async function GamePage({ params }: Props) {
   const webPageSchema = buildWebPageSchema({
     locale,
     path: "/test",
-    title: messages.meta.title,
-    description: messages.meta.description,
+    title: messages.test.metaTitle,
+    description: messages.test.metaDescription,
   });
 
   return (

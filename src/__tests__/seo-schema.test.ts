@@ -1,5 +1,82 @@
 import { describe, it, expect } from "vitest";
-import { buildArticleSchema, buildBreadcrumbSchema, SITE_URL } from "@/lib/seo";
+import {
+  buildArticleSchema,
+  buildBreadcrumbSchema,
+  buildPageMetadata,
+  SITE_URL,
+} from "@/lib/seo";
+import { SUPPORTED_LOCALES } from "@/lib/i18n";
+import en from "@/messages/en.json";
+import pt from "@/messages/pt.json";
+
+describe("buildPageMetadata", () => {
+  it.each(SUPPORTED_LOCALES)("gives %s pages a share card", (locale) => {
+    // Every page outside learn/[slug] and blog/[slug] shipped
+    // twitter:card=summary_large_image with no image, because the
+    // [locale]/opengraph-image file convention covers its own segment only and
+    // the real pages all sit under a route group below it.
+    const metadata = buildPageMetadata({
+      locale,
+      path: "/about",
+      title: "About",
+      description: "desc",
+    });
+
+    const images = metadata.openGraph?.images;
+    expect(Array.isArray(images) && images.length).toBeTruthy();
+    const [image] = images as Array<{ url: string; alt: string }>;
+    expect(image.url).toBe(`${SITE_URL}/${locale}/opengraph-image`);
+    expect(image.alt.length).toBeGreaterThan(0);
+    expect(metadata.twitter?.images).toEqual([image.url]);
+  });
+
+  it("keeps canonical and hreflang on the locale URL", () => {
+    const metadata = buildPageMetadata({
+      locale: "pt",
+      path: "/learn",
+      title: "Aprender",
+      description: "desc",
+    });
+    expect(metadata.alternates?.canonical).toBe(`${SITE_URL}/pt/learn`);
+    expect(metadata.alternates?.languages).toEqual({
+      en: `${SITE_URL}/en/learn`,
+      pt: `${SITE_URL}/pt/learn`,
+      "x-default": `${SITE_URL}/en/learn`,
+    });
+  });
+});
+
+describe("home and test metadata", () => {
+  // The two strongest URLs on the site shipped byte-identical titles and
+  // descriptions, so they competed for the same query with the same words.
+  it.each([
+    ["en", en],
+    ["pt", pt],
+  ])("%s gives /test its own title and description", (_locale, messages) => {
+    expect(messages.test.metaTitle).not.toBe(messages.meta.title);
+    expect(messages.test.metaDescription).not.toBe(messages.meta.description);
+    expect(messages.test.metaTitle.length).toBeGreaterThan(0);
+    expect(messages.test.metaDescription.length).toBeGreaterThan(0);
+  });
+
+  it.each([
+    ["en", en],
+    ["pt", pt],
+  ])("%s keeps both titles inside what a result page shows", (_locale, messages) => {
+    expect(messages.meta.title.length).toBeLessThanOrEqual(60);
+    expect(messages.test.metaTitle.length).toBeLessThanOrEqual(60);
+  });
+
+  it.each([
+    ["en", en],
+    ["pt", pt],
+  ])("%s keeps both descriptions inside the snippet budget", (_locale, messages) => {
+    for (const description of [messages.meta.description, messages.test.metaDescription]) {
+      expect(description.length).toBeGreaterThanOrEqual(70);
+      expect(description.length).toBeLessThanOrEqual(160);
+    }
+  });
+});
 
 describe("buildArticleSchema", () => {
   it("builds a complete Article node", () => {

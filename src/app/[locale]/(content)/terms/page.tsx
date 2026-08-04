@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildPageMetadata({
     locale,
     path: "/terms",
-    title: terms.heading,
+    title: `${terms.heading} | ${messages.default.topBar.brand}`,
     description: terms.description,
   });
 }

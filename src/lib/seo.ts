@@ -78,6 +78,39 @@ function getOpenGraphLocale(locale: Locale): string {
   return locale === "pt" ? "pt_PT" : "en_US";
 }
 
+const OG_IMAGE_ALT: Record<Locale, string> = {
+  en: "If You Died Today — Are You a Good Person?",
+  pt: "Se Morresses Hoje — Tu és uma boa pessoa?",
+};
+
+/**
+ * The locale's generic share card, named here because Next will not hand it
+ * down on its own.
+ *
+ * An `opengraph-image` file covers the one segment it sits in. It does not
+ * cascade: `[locale]/opengraph-image.tsx` reached the 404 page, which renders
+ * at `[locale]` itself, and nothing else. Every real page sits at least one
+ * segment deeper, under `(content)` or `(immersive)`, so the homepage, /test,
+ * /learn, /blog, /about and the rest all shipped
+ * `twitter:card=summary_large_image` with no image to put in it, and shared as
+ * bare text.
+ *
+ * Verified on 16.2.1, both directions: copies of the file in the two route
+ * groups reached only the pages sitting directly in them, and an explicit
+ * `openGraph.images` here replaced the colocated cards under `learn/[slug]`
+ * and `blog/[slug]` rather than yielding to them. Hence `hasOwnOgImage`: the
+ * two routes that own a card opt out by hand, and `og-image-coverage.test.ts`
+ * fails if a third one appears without saying so.
+ */
+function getDefaultOgImage(locale: Locale) {
+  return {
+    url: getAbsoluteUrl(`/${locale}/opengraph-image`),
+    width: 1200,
+    height: 630,
+    alt: OG_IMAGE_ALT[locale],
+  };
+}
+
 type BuildPageMetadataArgs = {
   locale: Locale;
   path?: string;
@@ -88,6 +121,11 @@ type BuildPageMetadataArgs = {
   availableLocales?: readonly Locale[];
   /** When set, emits og:type article with published/modified times. */
   article?: { publishedTime: string; modifiedTime?: string };
+  /**
+   * Set on the routes that ship their own `opengraph-image.tsx`, so the
+   * generic card is not written over the top of it. See getDefaultOgImage.
+   */
+  hasOwnOgImage?: boolean;
 };
 
 export function buildPageMetadata({
@@ -98,8 +136,10 @@ export function buildPageMetadata({
   robots,
   availableLocales,
   article,
+  hasOwnOgImage,
 }: BuildPageMetadataArgs): Metadata {
   const url = getLocaleUrl(locale, path);
+  const image = hasOwnOgImage ? undefined : getDefaultOgImage(locale);
 
   return {
     title,
@@ -114,6 +154,7 @@ export function buildPageMetadata({
       locale: getOpenGraphLocale(locale),
       title,
       description,
+      ...(image ? { images: [image] } : {}),
       ...(article
         ? {
             type: "article",
@@ -126,6 +167,7 @@ export function buildPageMetadata({
       card: "summary_large_image",
       title,
       description,
+      ...(image ? { images: [image.url] } : {}),
     },
     robots,
   };

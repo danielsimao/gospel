@@ -1,6 +1,12 @@
 import { notFound } from "next/navigation";
 import { isValidLocale, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n";
-import { buildPageMetadata } from "@/lib/seo";
+import { StructuredData } from "@/components/structured-data";
+import {
+  buildPageMetadata,
+  buildWebPageSchema,
+  buildBreadcrumbSchema,
+  getLocaleUrl,
+} from "@/lib/seo";
 import type { Metadata } from "next";
 
 // On-site guidance for finding a biblically-sound church. We do NOT recommend
@@ -49,10 +55,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function FindChurchPage({ params }: Props) {
   const { locale } = await params;
   if (!isValidLocale(locale)) notFound();
-  const { fc } = await getData(locale as Locale);
+  const { fc, brand } = await getData(locale as Locale);
+
+  // The only content page that shipped no page-level JSON-LD: it inherited the
+  // site's WebSite/Organization graph from the locale layout and stopped there,
+  // so its own URL was described by nothing.
+  const webPageSchema = buildWebPageSchema({
+    locale,
+    path: "/find-a-church",
+    title: `${fc.title} | ${brand}`,
+    description: fc.metaDescription,
+  });
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: brand, url: getLocaleUrl(locale) },
+    { name: fc.title, url: getLocaleUrl(locale, "/find-a-church") },
+  ]);
 
   return (
     <main className="relative z-[1] mx-auto max-w-2xl px-6 py-16 sm:px-8">
+      <StructuredData data={webPageSchema} />
+      <StructuredData data={breadcrumbSchema} />
       <h1
         className="text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl"
         style={{ textShadow: "0 0 60px rgba(212,168,67,0.2)" }}

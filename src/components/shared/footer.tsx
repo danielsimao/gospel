@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FactCrawl, FactList } from "./fact-crawl";
 import { FooterLocaleSwitch } from "./footer-locale-switch";
 import { FooterNextStepsLink } from "./footer-next-steps-link";
 import type { Locale } from "@/lib/i18n";
@@ -36,11 +37,22 @@ interface FooterProps {
   messages: FooterMessages;
   learnTopics: LearnTopic[];
   locale: Locale;
+  /** The mortality facts. Empty on any locale that has none, which renders
+      nothing and leaves the footer its plain hairline. */
+  facts?: string[];
 }
 
-export function Footer({ messages, learnTopics, locale }: FooterProps) {
+export function Footer({ messages, learnTopics, locale, facts = [] }: FooterProps) {
+  const hasCrawl = facts.length > 0;
   return (
-    <footer className="print-hide relative z-[1] border-t border-white/[0.08] bg-[#060404]">
+    /* The top rule is the crawl's when there is one: the footer has always
+       drawn a hairline here, and the crawl is that hairline with the facts
+       moving along it. Two would have stacked a band on a band. */
+    <footer
+      className={`print-hide relative z-[1] bg-[#060404] ${hasCrawl ? "" : "border-t border-white/[0.08]"}`}
+    >
+      <FactCrawl facts={facts} />
+      <FactList facts={facts} />
       <div className="mx-auto max-w-2xl px-6 py-12 sm:px-8 sm:py-14">
         {/* 3-column grid — stacks on mobile */}
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-10">
