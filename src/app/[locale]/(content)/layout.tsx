@@ -34,6 +34,7 @@ export default async function ContentLayout({ params, children }: Props) {
           messages={footerMessages}
           learnTopics={learnTopics}
           locale={locale as Locale}
+          facts={data.home?.facts ?? []}
         />
       )}
     </>
