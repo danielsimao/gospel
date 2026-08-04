@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback, createRef } from "react";
-import { m, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { m } from "framer-motion";
 import { useGameDispatch, useGameState } from "@/components/game-provider";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { trackGraceViewed } from "@/lib/analytics";
@@ -10,6 +10,7 @@ import {
   trackGraceBeatRevealed,
 } from "@/lib/eternity-analytics";
 import { EASE_OUT_STRONG } from "@/lib/motion";
+import { useIsomorphicLayoutEffect } from "@/lib/use-isomorphic-layout-effect";
 
 interface GraceScreenProps {
   messages: {
@@ -18,36 +19,85 @@ interface GraceScreenProps {
     continueLabel: string;
     label: string;
     beatsHeading: string;
-    /** `label` is the rung: the one line that stays on screen while another
-        beat is open, so the whole argument's shape is always readable. It is a
-        compression of its own headline, never a separate claim. */
+    /** Four movements of the courtroom analogy, in Comfort's load-bearing
+        order. `label` names the movement; the headline states it; the subtitle
+        argues it. See docs/METHOD.md § "Grace — the courtroom analogy". */
     beats: Array<{ label: string; headline: string; subtitle: string }>;
-    tapContinue: string;
+    /* `grace.tapContinue` is deliberately absent. It said "Tap to continue",
+       which is the wrong instruction for a page that scrolls, and the cue below
+       the announcement is a chevron rather than a word. The key still exists in
+       both locales — orphaning a string is cheaper to undo than deleting one,
+       and the owner's PT pass is open. */
     rereadVerdict: string;
   };
   /** Walks back one history entry, so the browser stack and the reducer agree. */
   onBack: () => void;
 }
 
-/** How long the chain waits before offering the way to the next rung. Long
-    enough that the first rung is read rather than skipped past. */
 /*
- * How long the chain sits before its only forward control appears.
+ * Grace, as one scroll.
  *
- * 2200 was a reading pause for the first rung, and it was too long by more
- * than double: the pill is not decoration, it is the single way onward, and a
- * screen that offers no control for over two seconds reads as one that has
- * finished loading wrong. 900 still lets the rung's own entrance land first.
+ * It used to be five taps: an answer frame the reader tapped away, then a
+ * four-rung accordion advanced one rung at a time, then Continue. The verdict
+ * before it costs five more, so a reader crossed ten gates between the sixth
+ * commandment and the decision, and every gate is a place to leave.
+ *
+ * The mechanic was also arguing against itself. This file's own comment said
+ * the chain was "deliberately the opposite of the verdict's mechanic — the Law
+ * works by surprise, grace works by clarity" — and then hid three of its four
+ * beats behind taps. Withholding is the Law's instrument. Borrowed here it made
+ * the argument impossible to see as an argument: one rung open, three greyed
+ * labels, and no way to feel the case accumulate.
+ *
+ * The courtroom analogy is delivered out loud as continuous speech, and it
+ * persuades by accumulation. So it is delivered that way here. One tap remains
+ * in grace, and it is the one that leaves for the decision.
+ *
+ * ── The shape, and why gold sits where it does ──────────────────────────────
+ *
+ * docs/METHOD.md holds two rules that pull against each other. Gold "arrives
+ * once, and its arrival is the event"; and grace must answer the verdict door's
+ * question — "Is there any hope?" — immediately, "rather than three beats
+ * later". A scroll could satisfy either: open quietly and spend gold on a
+ * full-bleed turn later, or open at full volume.
+ *
+ * It opens at full volume. The door asks a question and the first frame is the
+ * answer, in gold, alone — which is also the indicative-before-imperative rule,
+ * since the announcement lands before repentance is named in movement IV. The
+ * turn later is therefore not a second arrival: it is the proof landing. Red
+ * recalls the courtroom in movement I, and the full-bleed panel resolves it
+ * back to gold on the beat where someone pays.
+ *
+ * No new copy. Every string is the one that was already there, in the order it
+ * was already in — the four beats map one-to-one onto the four movements.
  */
-const PILL_DELAY_MS = 900;
+
+/** The announcement, four movements, the scripture, the way on. Only the four
+    movements carry beat analytics; see BEAT_SECTIONS. */
+const REVEAL_SECTIONS = 6;
+const BEAT_SECTIONS = 4;
+
+/**
+ * How far up the viewport a section must come before it counts as read.
+ *
+ * A section is marked when its top passes 90% of the viewport height — early
+ * enough that it is never still fading while the reader is looking straight at
+ * it, late enough that a fast scroll does not mark the whole page at once.
+ */
+const SEED_THRESHOLD = 0.9;
 
 export function GraceScreen({ messages, onBack }: GraceScreenProps) {
   const dispatch = useGameDispatch();
   const state = useGameState();
-  // Re-read: once the invitation has been reached, coming back here replays
-  // nothing — every beat is already open.
-  const returning = state.invitationReached;
   const startTime = useRef(0);
+
+  /*
+   * No `returning` branch anywhere in this file, and its absence is the point.
+   * The accordion needed one: a reader coming back from the decision had to be
+   * given every rung open, or they would have met a collapsed chain they had
+   * already walked. A scroll is the same document on the first visit and the
+   * fifth, so there is nothing to restore and no second layout to keep in sync.
+   */
 
   /*
    * Whether this is the reader's first arrival. Back and forward are a single
@@ -55,67 +105,84 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
    * analytics event has to be once-per-session rather than once-per-mount, or
    * the metrics inflate with every glance backwards.
    *
-   * graceReached cannot answer it, and the version that used it was reading a
-   * flag that is always already set.
+   * graceReached cannot answer it: SHOW_GRACE sets it and is dispatched by the
+   * verdict's own door tap, so it is already true by the time this component
+   * first renders.
    *
-   * SHOW_GRACE sets graceReached AND is dispatched by the verdict's own door
-   * tap (game-reducer.ts:151-157), so by the time this component first renders
-   * the flag is true. `useRef(!state.graceReached)` was therefore false on a
-   * genuine first arrival, which means trackGraceRevealed, trackGraceBeatRevealed(0)
-   * and trackGraceViewed have never fired for a real reader — the grace funnel
-   * has been dark since the guard was written.
-   *
-   * graceBeatsRevealed is the honest signal: persisted, starts at 0, and only
-   * moves when the reader opens a beat themselves. It is still 0 on a refresh
-   * taken before that first tap, so this can over-count a reader who reloads
-   * without engaging — which is a far smaller error than counting nobody.
+   * graceBeatsRevealed is the honest signal — persisted, starts at 0, and only
+   * moves when the reader actually reaches a movement. It is more honest now
+   * than it was: nothing dispatches it on arrival any more, so it stays 0 until
+   * the reader scrolls off the announcement and into the argument.
    */
   const firstVisitRef = useRef(
     state.graceBeatsRevealed === 0 && !state.invitationReached,
   );
 
+  const maxScrollDepth = useRef(0);
+
+  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+  const reportedRef = useRef<Set<number>>(new Set());
+
   /*
-   * The answer, before the argument.
+   * Every section starts visible and only the off-screen ones are hidden, in a
+   * layout effect, before paint.
    *
-   * The verdict's last frame now withholds everything except one gold question
-   * on black — "Is there any hope?" — and the reader taps it to get here. What
-   * they used to arrive at was a header, a heading, and then beat one: "You're
-   * guilty. The fine is eternal." The verdict restated, after five beats spent
-   * establishing exactly that. The actual answer was two taps further on.
-   *
-   * Meanwhile "Someone paid your fine" already sat in the eyebrow above the
-   * whole argument, so the conclusion was on screen from the first frame while
-   * the argument opened by re-proving guilt. This does not add the answer; it
-   * stops burying it.
-   *
-   * Same place and same colour as the question it replies to, and a step
-   * larger, because the reply should not be quieter than the question. No new
-   * copy: both strings are committed vocabulary and go in verbatim.
-   *
-   * "But God…" sits above rather than below, and that placement is doing
-   * doctrinal work rather than visual work. At 33px alone, "Someone paid your
-   * fine" stops naming a topic and becomes a declaration to this reader —
-   * before repentance is named at all, in the last rung. Ephesians 2:4 above it
-   * frames the line as the scriptural turn rather than a personal guarantee.
-   *
-   * Shown on a first arrival only — the same signal the analytics now use, for
-   * the same reason. Once the reader has opened a beat of the argument, or has
-   * ever reached the decision, this frame is skipped: the question has been
-   * answered once and does not need answering again on the way back.
+   * The obvious way round — start hidden, reveal on intersection — breaks twice.
+   * Server-rendered HTML would carry the whole argument at opacity 0, so a
+   * reader without JS gets a blank screen where the gospel should be; and the
+   * sections already on screen at mount would flash out and back in. Seeding
+   * from a measurement costs one synchronous re-render and avoids both.
    */
-  const [showAnswer, setShowAnswer] = useState(firstVisitRef.current);
-  /*
-   * The timer is keyed on showAnswer, not run once on mount. The answer frame
-   * is an early return, so starting the clock behind it would either have the
-   * pill waiting on a screen nobody is looking at, or — if guarded by a ref —
-   * never start at all once the frame was dismissed, because the effect would
-   * not re-run. Keyed this way it starts when the chain actually appears.
-   */
-  useEffect(() => {
-    if (showAnswer || returning) return;
-    const t = setTimeout(() => setPillReady(true), PILL_DELAY_MS);
-    return () => clearTimeout(t);
-  }, [showAnswer, returning]);
+  const [shown, setShown] = useState<boolean[]>(() =>
+    new Array(REVEAL_SECTIONS).fill(true),
+  );
+
+  useIsomorphicLayoutEffect(() => {
+    // No observer, no reveal: everything stays visible rather than staying
+    // hidden. The argument is the point; the animation is not.
+    if (typeof IntersectionObserver === "undefined") return;
+
+    const els = sectionRefs.current;
+    setShown(
+      els.map((el) =>
+        el ? el.getBoundingClientRect().top < window.innerHeight * SEED_THRESHOLD : true,
+      ),
+    );
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const index = Number((entry.target as HTMLElement).dataset.reveal);
+          if (Number.isNaN(index)) continue;
+
+          /*
+           * Reaching a movement is what "revealing a beat" now means. The old
+           * screen could only know this from a tap; a scroll knows it better,
+           * because the reader had to bring the words into view to trigger it.
+           *
+           * The reducer's guard is monotonic, so a reader scrolling back up and
+           * down again re-dispatches harmlessly — but trackGraceBeatRevealed is
+           * not idempotent, hence the set.
+           */
+          if (index < BEAT_SECTIONS && !reportedRef.current.has(index)) {
+            reportedRef.current.add(index);
+            trackGraceBeatRevealed(index);
+            dispatch({ type: "REVEAL_GRACE_BEAT", count: index + 1 });
+          }
+
+          setShown((prev) =>
+            prev[index] ? prev : prev.map((v, j) => (j === index ? true : v)),
+          );
+          observer.unobserve(entry.target);
+        }
+      },
+      { rootMargin: `0px 0px -${Math.round((1 - SEED_THRESHOLD) * 100)}% 0px` },
+    );
+
+    for (const el of els) if (el) observer.observe(el);
+    return () => observer.disconnect();
+  }, [dispatch]);
 
   // Idempotent: the verdict's bridge is what dispatches SHOW_GRACE, and the
   // reducer refuses it from any phase but the verdict. Kept so the screen still
@@ -123,48 +190,15 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
   useEffect(() => {
     dispatch({ type: "SHOW_GRACE" });
   }, [dispatch]);
-  const maxScrollDepth = useRef(0);
 
-  // Every rung is in the DOM from mount now; revealing one changes a
-  // max-height rather than adding it to the layout. What this count still
-  // decides is how many rungs are open-able and when Continue appears.
-  //
-  // Seeded from the persisted count so a refresh mid-argument does not throw
-  // away beats the reader already opened. graceReached cannot serve here: it
-  // is true from the moment grace is entered, so seeding from it would open
-  // every rung at once for a first-time reader and destroy the reveal.
-  const [revealedCount, setRevealedCount] = useState(
-    returning ? messages.beats.length : Math.max(1, state.graceBeatsRevealed),
-  );
   /*
-   * The open rung. Follows the newest reveal, and tapping any earlier rung
-   * moves it back — re-reading is supported, not punished.
+   * Scroll depth, which finally measures something.
    *
-   * Seeded from revealedCount rather than 0. revealedCount restores from
-   * storage after a refresh but this did not, so a reader who reloaded at rung
-   * IV came back with rung I open and the one they were reading collapsed.
-   * Invisible while every revealed beat stayed expanded; not invisible once
-   * only one is.
+   * This screen never scrolled — every beat was a swap inside one viewport — so
+   * the depth handed to trackGraceViewed was structurally 0 for every reader.
+   * The whole argument is now below the fold by construction, so the number
+   * reports how much of it was actually travelled.
    */
-  /*
-   * The continue pill is gated, not faded in.
-   *
-   * It entered on a 2.2s motion delay, which left the chain's only forward
-   * control clickable while invisible — the exact hazard the decision screen's
-   * hold is written to avoid, in the file that comment was written next to.
-   * The answer frame made it worse: that frame is an early return, so the pill
-   * mounts fresh when the frame is dismissed and the 2.2s starts from there
-   * rather than overlapping the screen's entrance.
-   */
-  const [pillReady, setPillReady] = useState(returning);
-
-  const [activeIndex, setActiveIndex] = useState(() =>
-    Math.max(0, (returning ? messages.beats.length : Math.max(1, state.graceBeatsRevealed)) - 1),
-  );
-  const allBeatsRevealed = revealedCount >= messages.beats.length;
-  const [beatRefs] = useState(() => messages.beats.map(() => createRef<HTMLDivElement>()));
-
-  // Track scroll depth + time
   useEffect(() => {
     startTime.current = Date.now();
 
@@ -180,108 +214,79 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
     const wasFirstVisit = firstVisitRef.current;
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      // Only the first visit is measured. This fires on unmount, and with real
-      // routes a back press to re-read the verdict unmounts the screen — so
-      // reporting every departure would bury the genuine dwell time under a
-      // pile of two-second re-reads.
+      // Only the first visit is measured. This fires on unmount, and a back
+      // press to re-read the verdict unmounts the screen — so reporting every
+      // departure would bury the genuine dwell time under short re-reads.
       if (wasFirstVisit) trackGraceViewed(Date.now() - start, maxDepth.current);
     };
   }, []);
 
-  // Track grace phase entry, once per genuine first arrival.
-  //
-  // Guarded on firstVisitRef — see its declaration for why neither graceReached
-  // nor invitationReached can serve alone. The naming here used to claim
-  // graceReached, which was both the wrong flag and the one that made these
-  // three events dead for every real reader.
   useEffect(() => {
     if (!firstVisitRef.current) return;
     trackGraceRevealed();
-    trackGraceBeatRevealed(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- fire once per mount
   }, []);
-
-  const handleTapContinue = useCallback(() => {
-    if (revealedCount >= messages.beats.length) return;
-    const nextBeat = revealedCount;
-    trackGraceBeatRevealed(nextBeat);
-    setRevealedCount(nextBeat + 1);
-    // Persisted so a refresh resumes the argument where the reader left it.
-    dispatch({ type: "REVEAL_GRACE_BEAT", count: nextBeat + 1 });
-    setActiveIndex(nextBeat);
-    // Scroll to the newly revealed beat after a short delay for the animation
-    setTimeout(() => {
-      beatRefs[nextBeat]?.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 100);
-  }, [beatRefs, revealedCount, messages.beats.length, dispatch]);
 
   function handleContinue() {
     dispatch({ type: "SHOW_INVITATION" });
   }
 
-  const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];  // more slots than beats, harmless
+  const setSectionRef = (index: number) => (el: HTMLElement | null) => {
+    sectionRefs.current[index] = el;
+  };
 
-  if (showAnswer) {
-    return (
-      /* flex-1 without min-h-dvh. The shell is already min-h-dvh and adds 12px
-         of its own top padding, so a child claiming a full viewport on top of
-         that made this frame 849px in an 837 viewport — 12px of scroll on a
-         screen whose entire content is two centred lines. */
-      <div className="relative flex flex-1 flex-col">
-        {/* Gold blooming from centre, where the verdict's red drained out of
-            the same spot one tap ago. Stronger than the argument's ambient
-            wash below, because this frame is the moment the colour of the
-            flow changes. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none fixed inset-0 z-0"
-          style={{
-            background:
-              "radial-gradient(ellipse at 50% 50%, rgba(212,168,67,0.15) 0%, transparent 62%)",
-          }}
-        />
+  /** Opacity and transform only, so a revealing section never changes the
+      height of the page under the reader's thumb. */
+  const revealClass = (index: number) =>
+    `transition-[opacity,transform] duration-700 ease-[var(--ease-out-strong)] motion-reduce:transition-none ${
+      shown[index] ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
+    }`;
 
+  const [problem, payment, payer, response] = messages.beats;
+
+  return (
+    <div className="relative flex flex-1 flex-col">
+      {/* Ambient wash, fixed so it does not travel with the scroll. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0 opacity-70"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 40%, rgba(212,168,67,0.08) 0%, transparent 70%)",
+          filter: "blur(40px)",
+        }}
+      />
+
+      <div className="relative z-10 mx-auto w-full max-w-lg px-5 sm:px-6">
         {/*
-         * One control, covering the screen, exactly as the verdict's beats do —
-         * the reader has just tapped through all five of them, and this is the
-         * next gesture in the same sequence. A real <button> so it is reachable by Tab and
-         * activatable by space; nothing about it looks like one.
+         * 1 · The announcement.
          *
-         * Its accessible name is the answer, which is what activating it means:
-         * carry on into why.
+         * A full viewport of it, alone. The verdict's door asked "Is there any
+         * hope?" and this is the reply — same colour, one step larger, because
+         * the reply should not be quieter than the question. Both strings are
+         * committed vocabulary and go in verbatim.
+         *
+         * "But God…" (Ephesians 2:4) sits above rather than below, and that is
+         * doctrinal rather than visual: alone and at this size, "Someone paid
+         * your fine" stops naming a topic and declares something to this reader
+         * — before repentance is named at all, four movements down. The verse
+         * frames it as the scriptural turn rather than a personal guarantee.
+         *
+         * The shell is min-h-dvh and adds 12px of its own top padding, so a
+         * child claiming a full viewport on top of that scrolls by exactly that
+         * much. Hence the subtraction.
          */}
-        <button
-          type="button"
-          onClick={() => {
-            setShowAnswer(false);
-            /*
-             * Passing this frame is recorded, and it has to be.
-             *
-             * revealedCount seeds at Math.max(1, graceBeatsRevealed), so the
-             * first tap-continue dispatches count 2 and beat 0 is never
-             * written. graceBeatsRevealed therefore stayed 0 for a reader who
-             * had passed this frame and read the first rung — and this screen's
-             * entire first-visit signal is `graceBeatsRevealed === 0`. Any back
-             * and forward before the second rung replayed this frame and
-             * re-fired trackGraceRevealed and trackGraceBeatRevealed(0), which
-             * is the inflation that signal exists to prevent.
-             *
-             * The reducer's guard is monotonic, so dispatching it again is a
-             * no-op.
-             */
-            dispatch({ type: "REVEAL_GRACE_BEAT", count: 1 });
-          }}
-          className="relative z-10 flex flex-1 cursor-pointer flex-col items-center justify-center px-7 outline-none focus-visible:outline focus-visible:outline-1 focus-visible:-outline-offset-[6px] focus-visible:outline-[#D4A843]/70"
-        >
+        {/* `relative` is load-bearing: the scroll cue below is absolutely
+            positioned, and without a containing block here it resolved against
+            the page wrapper and landed 3,367px down — at the foot of the whole
+            argument, where a cue to start scrolling is worse than none. */}
+        <section className="relative flex min-h-[calc(100dvh-0.75rem)] flex-col items-center justify-center text-center">
           <m.span
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: EASE_OUT_STRONG }}
-            className="flex flex-col items-center gap-4 text-center"
+            className="flex flex-col items-center gap-4"
           >
-            {/* Ephesians 2:4. The hinge of the whole flow, and here the frame
-                around the claim under it rather than a heading competing with
-                it. Verbatim — the vocabulary map holds this one unchanged. */}
             <span className="font-mono text-[10px] uppercase tracking-[3px] text-[#D4A843]/60 sm:text-xs">
               {messages.beatsHeading}
             </span>
@@ -292,271 +297,159 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
               {messages.label}
             </span>
           </m.span>
-        </button>
 
-        <p className="pointer-events-none absolute inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] z-10 text-center font-mono text-[9px] uppercase tracking-[2.4px] text-white/30 sm:text-[11px]">
-          {messages.tapContinue}
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    /* No min-h-dvh: the shell already carries it and adds 12px of its own top
-       padding, so claiming a full viewport on top of that put every grace
-       screen 12px into scroll. flex-1 fills what is actually left. */
-    <div className="relative flex flex-1 flex-col">
-      {/* Warm radial glow */}
-      <div
-        className="pointer-events-none fixed inset-0 z-0 opacity-70"
-        style={{
-          background:
-            "radial-gradient(ellipse at 50% 40%, rgba(212,168,67,0.08) 0%, transparent 70%)",
-          filter: "blur(40px)",
-        }}
-      />
-
-      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-10 text-center sm:px-6 sm:py-14">
-        <div className="max-w-lg w-full">
-          {/* Label */}
-          <m.div
+          {/* A chevron rather than a word: the gesture is universal, and a
+              label here would be new copy in both locales for something the
+              shape already says. Decorative, so the argument below is what a
+              screen reader meets next. */}
+          <m.span
+            aria-hidden="true"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="mb-4 flex items-center justify-center gap-2"
+            transition={{ duration: 0.8, delay: 1.1 }}
+            className="absolute bottom-[calc(3.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] flex flex-col items-center gap-2"
           >
-            <span className="h-px w-6 bg-[#D4A843]/40" />
-            <span className="font-mono text-[9px] uppercase tracking-[3px] text-[#D4A843]/70">
-              {messages.label}
-            </span>
-            <span className="h-px w-6 bg-[#D4A843]/40" />
-          </m.div>
+            <span className="h-8 w-px bg-gradient-to-b from-transparent to-[#D4A843]/40" />
+            {/* Two borders on a rotated square. An SVG would need a title to
+                satisfy the a11y lint, and titling a decoration is worse than
+                not having one — this has no accessible surface at all. */}
+            <span className="size-[7px] rotate-45 border-r border-b border-[#D4A843]/55" />
+          </m.span>
+        </section>
 
-          {/*
-           * No heading here any more.
-           *
-           * "But God…" was a 30px gold h2 at the top of this screen. The answer
-           * frame one tap earlier now shows the same two strings at 33px, so
-           * keeping both meant the reader met them twice, in swapped order,
-           * within one gesture — the eyebrow restating the conclusion above an
-           * argument, which is the exact fault the answer frame exists to fix,
-           * doubled instead of removed.
-           *
-           * The eyebrow above stays. An eyebrow captioning the screen the
-           * reader just tapped through is orientation, not repetition, and it
-           * is what a reader who re-enters grace from the decision — and so
-           * never sees the answer frame — has to tell them where they are.
-           *
-           * Ephesians 2:4 is not lost: it carries the answer frame, which is a
-           * louder place for the hinge than a subheading was.
-           */}
+        {/*
+         * 2 · Movement I — the problem, in the Law's colour.
+         *
+         * Still red, because it is still the Law: a just judge, a penalty, and
+         * no ability to pay. METHOD.md is explicit that this step cannot be cut
+         * — without the courtroom, "someone pays" has no venue and no legal
+         * force — and it is what gives the panel below it something to resolve.
+         */}
+        <section
+          ref={setSectionRef(0)}
+          data-reveal="0"
+          className={`py-[18vh] ${revealClass(0)}`}
+        >
+          <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-red-400/70">
+            {problem?.label}
+          </p>
+          <h2 className="mt-4 text-[25px] font-semibold leading-[1.22] tracking-[-0.024em] text-white/95 sm:text-[30px]">
+            {problem?.headline}
+          </h2>
+          <p className="mt-4 border-l border-red-500/30 pl-4 text-[14px] leading-relaxed text-white/55 sm:text-[15px]">
+            {problem?.subtitle}
+          </p>
+        </section>
 
-          {/*
-           * The chain.
-           *
-           * Every rung is on screen from the first frame — dim, a single line,
-           * destination readable. Only one body is open at a time, so the 1,316px
-           * measured on the five-beat wall this replaces
-           * becomes one screen, and the reader knows the three
-           * things the wall never told them: where they are, how much is left,
-           * and what it is building to.
-           *
-           * This is deliberately the opposite of the verdict's mechanic. The
-           * Law works by surprise, so it withholds what is coming. Grace works
-           * by clarity: someone who can see the argument is four short steps
-           * and where it ends is more willing to walk it, not less.
-           *
-           * The whole argument opens as one document for a reader who has
-           * already been to the decision and come back. It does NOT open on
-           * the last tap of a first walk, and that is a correction: it used
-           * to, and the tap that revealed rung IV expanded the three rungs
-           * above it in the same frame. Measured on a 390px viewport, the page
-           * went from 844px to 1221px — half a viewport of new content — while
-           * a smooth scroll to rung IV was already in flight, so the target
-           * moved under the animation. The reader's own beat lurched.
-           *
-           * The document view survives where it costs nothing: a returning
-           * reader gets it in their first painted frame, so there is no shift
-           * to feel. On a first walk every earlier rung is still one tap away,
-           * which is the same argument available without the avalanche.
-           *
-           * No aria-live any more, and its absence is the point. Every beat is
-           * now in the DOM from mount rather than appearing on tap, so there
-           * is no arrival to announce — a screen reader gets the whole
-           * argument as ordinary content, which is the better reading of it.
-           * The collapse is visual only.
-           */}
-          <div className="mt-10 text-left">
-            {messages.beats.map((beat, i) => {
-              const isOpen = returning || i === activeIndex;
-              const isReached = i < revealedCount;
-              // The hinge. Beat 0 is still Law — a judge, a sentence — and the
-              // argument turns at 1, where someone pays. The colour turns with
-              // it. Cutting the old first beat moved this from index 2 to 1.
-              const isGold = i >= 1;
-
-              return (
-                <div
-                  key={i}
-                  ref={beatRefs[i]}
-                  className="border-t border-white/[0.04] first:border-t-0"
-                >
-                  <button
-                    type="button"
-                    onClick={isReached ? () => setActiveIndex(i) : undefined}
-                    disabled={!isReached}
-                    className="flex w-full items-center gap-3 py-3.5 text-left disabled:cursor-default"
-                  >
-                    <span
-                      className={`font-mono text-[9px] tracking-[2.5px] ${
-                        isReached ? "text-[#D4A843]/70" : "text-white/20"
-                      }`}
-                    >
-                      {ROMAN[i] ?? String(i + 1)}
-                    </span>
-                    <span
-                      className={`flex-1 font-mono tracking-[0.3px] transition-colors duration-300 ${
-                        isOpen
-                          ? "text-[10px] text-white/25"
-                          : isReached
-                            ? "text-[11.5px] text-white/55 md:text-[13px]"
-                            : "text-[11.5px] text-white/25 md:text-[13px]"
-                      }`}
-                    >
-                      {beat.label}
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      className={`size-[5px] shrink-0 rounded-full transition-colors duration-300 ${
-                        isOpen
-                          ? isGold
-                            ? "bg-[#D4A843]"
-                            : "bg-white/75"
-                          : isReached
-                            ? isGold
-                              ? "bg-[#D4A843]/55"
-                              : "bg-white/40"
-                            : "bg-white/12"
-                      }`}
-                    />
-                  </button>
-
-                  {/* The body. Collapsed by max-height rather than unmounted,
-                      so the argument is always readable by a screen reader and
-                      only the eye is spared. motion-reduce cuts the height
-                      animation: MotionConfig reducedMotion="user" governs
-                      framer's own animations and this is a CSS transition. */}
-                  <div
-                    className={`overflow-hidden transition-[max-height,opacity,padding] duration-[450ms] ease-[var(--ease-out-strong)] motion-reduce:transition-none ${
-                      isOpen ? "max-h-[420px] pb-5 opacity-100" : "max-h-0 opacity-0"
-                    }`}
-                  >
-                    <p
-                      className={`pl-7 text-lg font-semibold leading-snug sm:text-xl md:text-[22px] ${
-                        isGold ? "text-[#D4A843]" : "text-white/95"
-                      }`}
-                    >
-                      {beat.headline}
-                    </p>
-                    <p className="mt-2 pl-7 text-[13px] leading-relaxed text-white/60 sm:text-sm md:text-[15px]">
-                      {beat.subtitle}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
+        {/*
+         * 3 · The turn.
+         *
+         * Full-bleed, and the only place in grace where the flow's two colours
+         * meet in one element. The reader scrolls out of the Law's red and the
+         * page resolves to gold underneath the beat where someone pays — the
+         * hinge of the analogy given the width of the screen.
+         *
+         * `mx-[calc(50%-50vw)]` is this codebase's breakout idiom: a margin,
+         * not a transform, because a transform here would collide with anything
+         * framer animates on the same element.
+         */}
+        <section
+          ref={setSectionRef(1)}
+          data-reveal="1"
+          className={`mx-[calc(50%-50vw)] flex min-h-[82dvh] flex-col justify-center overflow-hidden px-5 py-[12vh] sm:px-6 ${revealClass(1)}`}
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(239,68,68,0.07) 0%, rgba(212,168,67,0.10) 52%, transparent 100%)",
+          }}
+        >
+          <div className="mx-auto w-full max-w-lg">
+            <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
+              {payment?.label}
+            </p>
+            <h2
+              className="mt-4 text-[27px] font-semibold leading-[1.2] tracking-[-0.026em] text-[#D4A843] sm:text-[34px]"
+              style={{ textShadow: "0 0 60px rgba(212,168,67,0.22)" }}
+            >
+              {payment?.headline}
+            </h2>
+            <p className="mt-4 border-l border-[#D4A843]/30 pl-4 text-[14px] leading-relaxed text-white/60 sm:text-[15px]">
+              {payment?.subtitle}
+            </p>
           </div>
+        </section>
 
-          {/* Tap to continue pill — fades out when the last beat is revealed */}
-          <AnimatePresence>
-            {revealedCount > 0 && !allBeatsRevealed && pillReady && (
-              <m.div
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, transition: { duration: 0.15, delay: 0 } }}
-                transition={{ duration: 0.4 }}
-                className="mt-6 flex justify-center"
-              >
-                <Button variant="gold" size="sm" mist onClick={handleTapContinue}>
-                  <span className="font-mono text-[10px] uppercase tracking-[2.5px]">
-                    {messages.tapContinue}
-                  </span>
-                  <ButtonArrow direction="down" />
-                </Button>
-              </m.div>
-            )}
-          </AnimatePresence>
+        {/* 4 · Movement III — the payer, named. */}
+        <section
+          ref={setSectionRef(2)}
+          data-reveal="2"
+          className={`py-[16vh] ${revealClass(2)}`}
+        >
+          <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
+            {payer?.label}
+          </p>
+          <h2 className="mt-4 text-[25px] font-semibold leading-[1.22] tracking-[-0.024em] text-[#D4A843] sm:text-[30px]">
+            {payer?.headline}
+          </h2>
+          <p className="mt-4 border-l border-[#D4A843]/30 pl-4 text-[14px] leading-relaxed text-white/60 sm:text-[15px]">
+            {payer?.subtitle}
+          </p>
+        </section>
 
-          {/* Scripture + Continue — after all beats */}
-          <AnimatePresence>
-            {allBeatsRevealed && (
-              <m.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.45, delay: 0.1 }}
-              >
-                <m.blockquote
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.25 }}
-                  className="mt-8 border-l border-[#D4A843]/30 pl-4 text-left"
-                >
-                  <p className="text-[15px] italic leading-[1.8] text-white/60 sm:text-base">
-                    &ldquo;{messages.scripture}&rdquo;
-                  </p>
-                  <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-[#D4A843]/70">
-                    {messages.scriptureRef}
-                  </p>
-                </m.blockquote>
+        {/* 5 · Movement IV — the response. The imperative, and it arrives last
+            by design: the indicative has had four screens to land first. */}
+        <section
+          ref={setSectionRef(3)}
+          data-reveal="3"
+          className={`py-[16vh] ${revealClass(3)}`}
+        >
+          <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
+            {response?.label}
+          </p>
+          <h2 className="mt-4 text-[25px] font-semibold leading-[1.22] tracking-[-0.024em] text-[#D4A843] sm:text-[30px]">
+            {response?.headline}
+          </h2>
+          <p className="mt-4 border-l border-[#D4A843]/30 pl-4 text-[14px] leading-relaxed text-white/60 sm:text-[15px]">
+            {response?.subtitle}
+          </p>
+        </section>
 
-                {/* These delays nest: this button's clock runs inside the
-                    wrapper's own fade, so 1.2 + 0.8 put the one control that
-                    ends this screen at two full seconds after the last tap,
-                    invisible for the first 1.2 of them. It read as broken. Now
-                    it lands at 0.55 and settles by 1.0 — behind the rung that
-                    is still opening, which is the beat it should follow, and
-                    not a second behind that. */}
-                <m.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.45, delay: 0.55 }}
-                  className="mt-10"
-                >
-                  <Button variant="gold" mist onClick={handleContinue}>
-                    {messages.continueLabel}
-                    <ButtonArrow />
-                  </Button>
-                </m.div>
-              </m.div>
-            )}
-          </AnimatePresence>
+        {/* 6 · The promise, then the way on. */}
+        <section
+          ref={setSectionRef(4)}
+          data-reveal="4"
+          className={revealClass(4)}
+        >
+          <blockquote className="border-l border-[#D4A843]/30 pl-4">
+            <p className="text-[15px] italic leading-[1.8] text-white/60 sm:text-base">
+              &ldquo;{messages.scripture}&rdquo;
+            </p>
+            <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-[#D4A843]/70">
+              {messages.scriptureRef}
+            </p>
+          </blockquote>
+        </section>
+
+        <section
+          ref={setSectionRef(5)}
+          data-reveal="5"
+          className={`flex flex-col items-center pt-14 pb-[calc(5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] ${revealClass(5)}`}
+        >
+          <Button variant="gold" mist onClick={handleContinue}>
+            {messages.continueLabel}
+            <ButtonArrow />
+          </Button>
 
           {/* Quiet walk-back — re-reading the verdict, not reopening it. Walks
               one history entry back rather than dispatching directly, so the
-              browser stack and the reducer stay in agreement: the shell's
-              popstate handler is the single place a backward move is turned
-              into an action. */}
-          {/* Last in, deliberately. It had no entrance at all, so the one
-              control on this screen that matters least was the first thing on
-              it — present at frame 0 while the label, the heading, the first
-              beat and the continue button were all still arriving. It now
-              trails the continue button, and comes in slowly. A returning
-              reader has seen the screen, so it need not make them wait. */}
-          <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: returning ? 0.4 : 2.6 }}
-            className="mt-8 flex justify-center"
+              browser stack and the reducer stay in agreement. */}
+          <button
+            type="button"
+            onClick={onBack}
+            className="mt-8 inline-flex min-h-[32px] items-center text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
           >
-            <button
-              type="button"
-              onClick={onBack}
-              className="inline-flex min-h-[32px] items-center text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
-            >
-              {messages.rereadVerdict}
-            </button>
-          </m.div>
-        </div>
+            {messages.rereadVerdict}
+          </button>
+        </section>
       </div>
     </div>
   );
