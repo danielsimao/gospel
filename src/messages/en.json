@@ -67,7 +67,9 @@
         "yes": "You said you were a good person. Your own answers say otherwise.",
         "mostly": "You said you were pretty much a good person. “Pretty much” was doing a great deal of work.",
         "no": "You said you were not a good person. This is what you were agreeing to."
-      }
+      },
+      "advanceHintTouch": "Tap to continue",
+      "advanceHintPointer": "Click anywhere, or press space"
     }
   },
   "questions": [
@@ -133,32 +135,45 @@
     "scripture": "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.",
     "scriptureRef": "John 3:16",
     "rereadVerdict": "Re-read the verdict",
-    "continueLabel": "Continue",
+    "continueLabel": "So what now?",
     "label": "Someone paid your fine",
     "beatsHeading": "But God…",
     "beats": [
       {
-        "headline": "You're guilty. The fine is eternal.",
-        "subtitle": "You've broken God's Law — not once, but repeatedly. And the penalty for sin is not a fine you can pay. It's death."
-      },
-      {
+        "label": "Justice demands death",
         "headline": "Imagine standing before a just Judge. You can't pay. Justice demands death.",
         "subtitle": "A good judge can't let a guilty criminal walk free. And God is the ultimate good Judge. Your guilt must be answered for."
       },
       {
+        "label": "Someone pays the fine in full",
         "headline": "But someone steps into the courtroom and pays your fine in full.",
         "subtitle": "Every penny. The judge can now legally dismiss your case — not because he's overlooking justice, but because justice has been satisfied."
       },
       {
+        "label": "That someone is Jesus Christ",
         "headline": "Jesus Christ — God in flesh — lived the life you couldn't, died the death you deserved, and rose.",
         "subtitle": "Two thousand years ago, the Creator entered His creation. He lived perfectly, took your punishment on the cross, and three days later conquered death itself."
       },
       {
+        "label": "Repent and trust",
         "headline": "Repent — turn from your sin. Trust in Christ alone. God will forgive you and grant you eternal life.",
         "subtitle": "This isn't about a prayer or being religious. It's about turning from sin and placing your trust in the One who paid it all."
       }
     ],
-    "tapContinue": "Tap to continue"
+    "tapContinue": "Tap to continue",
+    "record": {
+      "eyebrow": "The record",
+      "count": "Count",
+      "charge": "Charge",
+      "plea": "Plea",
+      "admitted": "Admitted",
+      "contested": "Contested",
+      "finding": "Finding",
+      "guilty": "Guilty on all counts",
+      "ability": "Your ability to pay",
+      "none": "None",
+      "paid": "Paid in full"
+    }
   },
   "invitation": {
     "eyebrow": "The decision",

@@ -42,6 +42,12 @@ This app follows Living Waters / Way of the Master. Its spine is **Law to the
 proud, grace to the humble** — which is why judgment copy is red and grace copy
 is gold.
 
+The full reference is `docs/METHOD.md`: the presentation in order, which pieces
+are load-bearing, and the gaps currently open. Read it when a finding turns on
+whether something the method needs has been removed — this checklist catches
+copy that says the wrong thing, that document catches copy that stopped saying
+a necessary thing.
+
 - **No decisionism.** Nothing may promise that a prayer, a tap or a button
   saves. Commitment copy stays conditional and points to Christ, never to the
   act of deciding.

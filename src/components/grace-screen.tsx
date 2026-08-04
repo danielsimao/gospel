@@ -1,15 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback, createRef } from "react";
-import { m, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { m } from "framer-motion";
 import { useGameDispatch, useGameState } from "@/components/game-provider";
 import { Button, ButtonArrow } from "@/components/ui/button";
+import { GraceRecord } from "@/components/grace-record";
+import { buildRecord } from "@/lib/confession";
 import { trackGraceViewed } from "@/lib/analytics";
 import {
   trackGraceRevealed,
   trackGraceBeatRevealed,
 } from "@/lib/eternity-analytics";
 import { EASE_OUT_STRONG } from "@/lib/motion";
+import { useIsomorphicLayoutEffect } from "@/lib/use-isomorphic-layout-effect";
 
 interface GraceScreenProps {
   messages: {
@@ -18,30 +21,175 @@ interface GraceScreenProps {
     continueLabel: string;
     label: string;
     beatsHeading: string;
-    beats: Array<{ headline: string; subtitle: string }>;
-    tapContinue: string;
+    /** Four movements of the courtroom analogy, in Comfort's load-bearing
+        order. `label` names the movement; the headline states it; the subtitle
+        argues it. See docs/METHOD.md § "Grace — the courtroom analogy". */
+    beats: Array<{ label: string; headline: string; subtitle: string }>;
+    /* `grace.tapContinue` is deliberately absent. It said "Tap to continue",
+       which is the wrong instruction for a page that scrolls, and the cue below
+       the announcement is a chevron rather than a word. The key still exists in
+       both locales — orphaning a string is cheaper to undo than deleting one,
+       and the owner's PT pass is open. */
     rereadVerdict: string;
+    record: React.ComponentProps<typeof GraceRecord>["messages"];
   };
+  /** The six charge nouns, keyed by commandment. Passed in rather than read
+      from the whole message tree: the record needs this one map and nothing
+      else, and it is the same map the verdict's confession sentence uses. */
+  verdictLabels: Record<string, string>;
   /** Walks back one history entry, so the browser stack and the reducer agree. */
   onBack: () => void;
 }
 
-export function GraceScreen({ messages, onBack }: GraceScreenProps) {
+/*
+ * Grace, as one scroll.
+ *
+ * It used to be five taps: an answer frame the reader tapped away, then a
+ * four-rung accordion advanced one rung at a time, then Continue. The verdict
+ * before it costs five more, so a reader crossed ten gates between the sixth
+ * commandment and the decision, and every gate is a place to leave.
+ *
+ * The mechanic was also arguing against itself. This file's own comment said
+ * the chain was "deliberately the opposite of the verdict's mechanic — the Law
+ * works by surprise, grace works by clarity" — and then hid three of its four
+ * beats behind taps. Withholding is the Law's instrument. Borrowed here it made
+ * the argument impossible to see as an argument: one rung open, three greyed
+ * labels, and no way to feel the case accumulate.
+ *
+ * The courtroom analogy is delivered out loud as continuous speech, and it
+ * persuades by accumulation. So it is delivered that way here. One tap remains
+ * in grace, and it is the one that leaves for the decision.
+ *
+ * ── The shape, and why gold sits where it does ──────────────────────────────
+ *
+ * docs/METHOD.md holds two rules that pull against each other. Gold "arrives
+ * once, and its arrival is the event"; and grace must answer the verdict door's
+ * question — "Is there any hope?" — immediately, "rather than three beats
+ * later". A scroll could satisfy either: open quietly and spend gold on a
+ * full-bleed turn later, or open at full volume.
+ *
+ * It opens at full volume. The door asks a question and the first frame is the
+ * answer, in gold, alone — which is also the indicative-before-imperative rule,
+ * since the announcement lands before repentance is named in movement IV. The
+ * turn later is therefore not a second arrival: it is the proof landing. Red
+ * recalls the courtroom in movement I, and the full-bleed panel resolves it
+ * back to gold on the beat where someone pays.
+ *
+ * No new copy. Every string is the one that was already there, in the order it
+ * was already in — the four beats map one-to-one onto the four movements.
+ */
+
+/** The announcement, four movements, the scripture, the reader's record, the
+    way on. Only the four movements carry beat analytics; see BEAT_SECTIONS. */
+const REVEAL_SECTIONS = 7;
+const BEAT_SECTIONS = 4;
+
+/**
+ * How far up the viewport a section must come before it counts as read.
+ *
+ * A section is marked when its top passes 90% of the viewport height — early
+ * enough that it is never still fading while the reader is looking straight at
+ * it, late enough that a fast scroll does not mark the whole page at once.
+ */
+const SEED_THRESHOLD = 0.9;
+
+export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProps) {
   const dispatch = useGameDispatch();
   const state = useGameState();
-  // Re-read: once the invitation has been reached, coming back here replays
-  // nothing — every beat is already open.
-  const returning = state.invitationReached;
   const startTime = useRef(0);
 
   /*
-   * Whether this is the reader's first arrival, captured before SHOW_GRACE
-   * lands. Back and forward are a single gesture here, so this screen unmounts
-   * and remounts routinely — every analytics event has to be once-per-session
-   * rather than once-per-mount, or the metrics inflate with every glance
-   * backwards.
+   * No `returning` branch anywhere in this file, and its absence is the point.
+   * The accordion needed one: a reader coming back from the decision had to be
+   * given every rung open, or they would have met a collapsed chain they had
+   * already walked. A scroll is the same document on the first visit and the
+   * fifth, so there is nothing to restore and no second layout to keep in sync.
    */
-  const firstVisitRef = useRef(!state.graceReached);
+
+  /*
+   * Whether this is the reader's first arrival. Back and forward are a single
+   * gesture here, so this screen unmounts and remounts routinely — every
+   * analytics event has to be once-per-session rather than once-per-mount, or
+   * the metrics inflate with every glance backwards.
+   *
+   * graceReached cannot answer it: SHOW_GRACE sets it and is dispatched by the
+   * verdict's own door tap, so it is already true by the time this component
+   * first renders.
+   *
+   * graceBeatsRevealed is the honest signal — persisted, starts at 0, and only
+   * moves when the reader actually reaches a movement. It is more honest now
+   * than it was: nothing dispatches it on arrival any more, so it stays 0 until
+   * the reader scrolls off the announcement and into the argument.
+   */
+  const firstVisitRef = useRef(
+    state.graceBeatsRevealed === 0 && !state.invitationReached,
+  );
+
+  const maxScrollDepth = useRef(0);
+
+  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+  const reportedRef = useRef<Set<number>>(new Set());
+
+  /*
+   * Every section starts visible and only the off-screen ones are hidden, in a
+   * layout effect, before paint.
+   *
+   * The obvious way round — start hidden, reveal on intersection — breaks twice.
+   * Server-rendered HTML would carry the whole argument at opacity 0, so a
+   * reader without JS gets a blank screen where the gospel should be; and the
+   * sections already on screen at mount would flash out and back in. Seeding
+   * from a measurement costs one synchronous re-render and avoids both.
+   */
+  const [shown, setShown] = useState<boolean[]>(() =>
+    new Array(REVEAL_SECTIONS).fill(true),
+  );
+
+  useIsomorphicLayoutEffect(() => {
+    // No observer, no reveal: everything stays visible rather than staying
+    // hidden. The argument is the point; the animation is not.
+    if (typeof IntersectionObserver === "undefined") return;
+
+    const els = sectionRefs.current;
+    setShown(
+      els.map((el) =>
+        el ? el.getBoundingClientRect().top < window.innerHeight * SEED_THRESHOLD : true,
+      ),
+    );
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const index = Number((entry.target as HTMLElement).dataset.reveal);
+          if (Number.isNaN(index)) continue;
+
+          /*
+           * Reaching a movement is what "revealing a beat" now means. The old
+           * screen could only know this from a tap; a scroll knows it better,
+           * because the reader had to bring the words into view to trigger it.
+           *
+           * The reducer's guard is monotonic, so a reader scrolling back up and
+           * down again re-dispatches harmlessly — but trackGraceBeatRevealed is
+           * not idempotent, hence the set.
+           */
+          if (index < BEAT_SECTIONS && !reportedRef.current.has(index)) {
+            reportedRef.current.add(index);
+            trackGraceBeatRevealed(index);
+            dispatch({ type: "REVEAL_GRACE_BEAT", count: index + 1 });
+          }
+
+          setShown((prev) =>
+            prev[index] ? prev : prev.map((v, j) => (j === index ? true : v)),
+          );
+          observer.unobserve(entry.target);
+        }
+      },
+      { rootMargin: `0px 0px -${Math.round((1 - SEED_THRESHOLD) * 100)}% 0px` },
+    );
+
+    for (const el of els) if (el) observer.observe(el);
+    return () => observer.disconnect();
+  }, [dispatch]);
 
   // Idempotent: the verdict's bridge is what dispatches SHOW_GRACE, and the
   // reducer refuses it from any phase but the verdict. Kept so the screen still
@@ -49,26 +197,15 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
   useEffect(() => {
     dispatch({ type: "SHOW_GRACE" });
   }, [dispatch]);
-  const maxScrollDepth = useRef(0);
 
-  // Beat 1 is reserved in the layout from mount to avoid a content shift
-  // when it fades in. Subsequent beats are revealed by user tap, which
-  // intentionally shifts the page.
-  //
-  // Seeded from the persisted count so a refresh mid-argument does not throw
-  // away beats the reader already opened. graceReached cannot serve here: it
-  // is true from the moment grace is entered, so seeding from it would hand a
-  // first-time reader all eight at once and destroy the reveal.
-  const [revealedCount, setRevealedCount] = useState(
-    returning ? messages.beats.length : Math.max(1, state.graceBeatsRevealed),
-  );
-  // The spotlight beat. Follows the newest reveal, but tapping any earlier
-  // beat moves it back — re-reading the argument is supported, not punished.
-  const [activeIndex, setActiveIndex] = useState(0);
-  const allBeatsRevealed = revealedCount >= messages.beats.length;
-  const [beatRefs] = useState(() => messages.beats.map(() => createRef<HTMLDivElement>()));
-
-  // Track scroll depth + time
+  /*
+   * Scroll depth, which finally measures something.
+   *
+   * This screen never scrolled — every beat was a swap inside one viewport — so
+   * the depth handed to trackGraceViewed was structurally 0 for every reader.
+   * The whole argument is now below the fold by construction, so the number
+   * reports how much of it was actually travelled.
+   */
   useEffect(() => {
     startTime.current = Date.now();
 
@@ -84,52 +221,41 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
     const wasFirstVisit = firstVisitRef.current;
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      // Only the first visit is measured. This fires on unmount, and with real
-      // routes a back press to re-read the verdict unmounts the screen — so
-      // reporting every departure would bury the genuine dwell time under a
-      // pile of two-second re-reads.
+      // Only the first visit is measured. This fires on unmount, and a back
+      // press to re-read the verdict unmounts the screen — so reporting every
+      // departure would bury the genuine dwell time under short re-reads.
       if (wasFirstVisit) trackGraceViewed(Date.now() - start, maxDepth.current);
     };
   }, []);
 
-  // Track grace phase entry. Beat 1 is already present in the layout
-  // (see useState above) — its visual fade-in is delayed via motion
-  // transition so the title animates first without causing a layout shift.
-  //
-  // Guarded on graceReached, not invitationReached: re-entering grace before
-  // ever reaching the decision is now one back press away, and the old guard
-  // counted every one of those as a fresh reveal.
   useEffect(() => {
     if (!firstVisitRef.current) return;
     trackGraceRevealed();
-    trackGraceBeatRevealed(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- fire once per mount
   }, []);
-
-  const handleTapContinue = useCallback(() => {
-    if (revealedCount >= messages.beats.length) return;
-    const nextBeat = revealedCount;
-    trackGraceBeatRevealed(nextBeat);
-    setRevealedCount(nextBeat + 1);
-    // Persisted so a refresh resumes the argument where the reader left it.
-    dispatch({ type: "REVEAL_GRACE_BEAT", count: nextBeat + 1 });
-    setActiveIndex(nextBeat);
-    // Scroll to the newly revealed beat after a short delay for the animation
-    setTimeout(() => {
-      beatRefs[nextBeat]?.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 100);
-  }, [beatRefs, revealedCount, messages.beats.length, dispatch]);
 
   function handleContinue() {
     dispatch({ type: "SHOW_INVITATION" });
   }
 
-  const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];  // more slots than beats, harmless
+  const setSectionRef = (index: number) => (el: HTMLElement | null) => {
+    sectionRefs.current[index] = el;
+  };
+
+  /** Opacity and transform only, so a revealing section never changes the
+      height of the page under the reader's thumb. */
+  const revealClass = (index: number) =>
+    `transition-[opacity,transform] duration-700 ease-[var(--ease-out-strong)] motion-reduce:transition-none ${
+      shown[index] ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
+    }`;
+
+  const [problem, payment, payer, response] = messages.beats;
 
   return (
-    <div className="relative flex flex-1 flex-col min-h-dvh">
-      {/* Warm radial glow */}
+    <div className="relative flex flex-1 flex-col">
+      {/* Ambient wash, fixed so it does not travel with the scroll. */}
       <div
+        aria-hidden="true"
         className="pointer-events-none fixed inset-0 z-0 opacity-70"
         style={{
           background:
@@ -138,176 +264,227 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
         }}
       />
 
-      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-20 text-center sm:px-6 sm:py-24">
-        <div className="max-w-lg w-full">
-          {/* Label */}
-          <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="mb-4 flex items-center justify-center gap-2"
+      <div className="relative z-10 mx-auto w-full max-w-lg px-5 sm:px-6">
+        {/*
+         * 1 · The announcement.
+         *
+         * A full viewport of it, alone. The verdict's door asked "Is there any
+         * hope?" and this is the reply — same colour, one step larger, because
+         * the reply should not be quieter than the question. Both strings are
+         * committed vocabulary and go in verbatim.
+         *
+         * "But God…" (Ephesians 2:4) sits above rather than below, and that is
+         * doctrinal rather than visual: alone and at this size, "Someone paid
+         * your fine" stops naming a topic and declares something to this reader
+         * — before repentance is named at all, four movements down. The verse
+         * frames it as the scriptural turn rather than a personal guarantee.
+         *
+         * The shell is min-h-dvh and adds 12px of its own top padding, so a
+         * child claiming a full viewport on top of that scrolls by exactly that
+         * much. Hence the subtraction.
+         */}
+        {/* `relative` is load-bearing: the scroll cue below is absolutely
+            positioned, and without a containing block here it resolved against
+            the page wrapper and landed 3,367px down — at the foot of the whole
+            argument, where a cue to start scrolling is worse than none. */}
+        <section className="relative flex min-h-[calc(100dvh-0.75rem)] flex-col items-center justify-center text-center">
+          <m.span
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: EASE_OUT_STRONG }}
+            className="flex flex-col items-center gap-4"
           >
-            <span className="h-px w-6 bg-[#D4A843]/40" />
-            <span className="font-mono text-[9px] uppercase tracking-[3px] text-[#D4A843]/70">
+            <span className="font-mono text-[10px] uppercase tracking-[3px] text-[#D4A843]/60 sm:text-xs">
+              {messages.beatsHeading}
+            </span>
+            <span
+              className="text-[33px] font-semibold leading-[1.24] tracking-[-0.025em] text-[#D4A843] sm:text-[46px] lg:text-[56px]"
+              style={{ textShadow: "0 0 70px rgba(212,168,67,0.32)" }}
+            >
               {messages.label}
             </span>
-            <span className="h-px w-6 bg-[#D4A843]/40" />
-          </m.div>
+          </m.span>
 
-          {/* Beats heading */}
-          <m.h2
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.5, ease: EASE_OUT_STRONG }}
-            className="text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl md:text-5xl"
-            style={{ textShadow: "0 0 60px rgba(212,168,67,0.2)" }}
+          {/* A chevron rather than a word: the gesture is universal, and a
+              label here would be new copy in both locales for something the
+              shape already says. Decorative, so the argument below is what a
+              screen reader meets next. */}
+          <m.span
+            aria-hidden="true"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 1.1 }}
+            className="absolute bottom-[calc(3.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] flex flex-col items-center gap-2"
           >
-            {messages.beatsHeading}
-          </m.h2>
+            <span className="h-8 w-px bg-gradient-to-b from-transparent to-[#D4A843]/40" />
+            {/* Two borders on a rotated square. An SVG would need a title to
+                satisfy the a11y lint, and titling a decoration is worse than
+                not having one — this has no accessible surface at all. */}
+            <span className="size-[7px] rotate-45 border-r border-b border-[#D4A843]/55" />
+          </m.span>
+        </section>
 
-          {/* Beats */}
-          {/* aria-live: beats are revealed by taps — announce each arrival
-              to screen readers instead of silently growing the page. */}
-          <div aria-live="polite" className="mt-10 text-left">
-            {messages.beats.map((beat, i) => {
-              const isRevealed = i < revealedCount;
-              // Once every beat is revealed the spotlight lifts entirely —
-              // the whole argument reads as one document before Continue.
-              const isActive = allBeatsRevealed || i === activeIndex;
-              const isGold = i >= 2;
+        {/*
+         * 2 · Movement I — the problem, in the Law's colour.
+         *
+         * Still red, because it is still the Law: a just judge, a penalty, and
+         * no ability to pay. METHOD.md is explicit that this step cannot be cut
+         * — without the courtroom, "someone pays" has no venue and no legal
+         * force — and it is what gives the panel below it something to resolve.
+         */}
+        <section
+          ref={setSectionRef(0)}
+          data-reveal="0"
+          className={`py-[18vh] ${revealClass(0)}`}
+        >
+          <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-red-400/70">
+            {problem?.label}
+          </p>
+          <h2 className="mt-4 text-[25px] font-semibold leading-[1.22] tracking-[-0.024em] text-white/95 sm:text-[30px]">
+            {problem?.headline}
+          </h2>
+          <p className="mt-4 border-l border-red-500/30 pl-4 text-[14px] leading-relaxed text-white/55 sm:text-[15px]">
+            {problem?.subtitle}
+          </p>
+        </section>
 
-              if (!isRevealed) return null;
-
-              return (
-                <m.div
-                  key={i}
-                  ref={beatRefs[i]}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{
-                    // Rest state stays readable (this is the gospel argument,
-                    // not decoration) while the active beat still leads.
-                    opacity: isActive ? 1 : 0.6,
-                    y: 0,
-                  }}
-                  transition={{ duration: 0.5, ease: "easeOut", delay: i === 0 && !returning ? 1.5 : 0 }}
-                  onClick={allBeatsRevealed ? undefined : () => setActiveIndex(i)}
-                  role={allBeatsRevealed ? undefined : "button"}
-                  tabIndex={allBeatsRevealed ? undefined : 0}
-                  onKeyDown={
-                    allBeatsRevealed
-                      ? undefined
-                      : (e) => {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            setActiveIndex(i);
-                          }
-                        }
-                  }
-                  className={`border-t border-white/[0.04] py-4 first:border-t-0 first:pt-0 ${
-                    allBeatsRevealed ? "" : "cursor-pointer"
-                  }`}
-                >
-                  <p className="mb-2 font-mono text-[9px] uppercase tracking-[2.5px] text-[#D4A843]/70">
-                    {ROMAN[i] ?? String(i + 1)}
-                  </p>
-                  <p
-                    className={`text-lg font-semibold leading-snug sm:text-xl ${
-                      isGold ? "text-[#D4A843]" : "text-white/95"
-                    }`}
-                  >
-                    {beat.headline}
-                  </p>
-                  <p className="mt-2 text-[13px] leading-relaxed text-white/60 sm:text-sm">
-                    {beat.subtitle}
-                  </p>
-                </m.div>
-              );
-            })}
+        {/*
+         * 3 · The turn.
+         *
+         * Full-bleed, and the only place in grace where the flow's two colours
+         * meet in one element. The reader scrolls out of the Law's red and the
+         * page resolves to gold underneath the beat where someone pays — the
+         * hinge of the analogy given the width of the screen.
+         *
+         * `mx-[calc(50%-50vw)]` is this codebase's breakout idiom: a margin,
+         * not a transform, because a transform here would collide with anything
+         * framer animates on the same element.
+         */}
+        <section
+          ref={setSectionRef(1)}
+          data-reveal="1"
+          className={`mx-[calc(50%-50vw)] flex min-h-[82dvh] flex-col justify-center overflow-hidden px-5 py-[12vh] sm:px-6 ${revealClass(1)}`}
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(239,68,68,0.07) 0%, rgba(212,168,67,0.10) 52%, transparent 100%)",
+          }}
+        >
+          <div className="mx-auto w-full max-w-lg">
+            <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
+              {payment?.label}
+            </p>
+            <h2
+              className="mt-4 text-[27px] font-semibold leading-[1.2] tracking-[-0.026em] text-[#D4A843] sm:text-[34px]"
+              style={{ textShadow: "0 0 60px rgba(212,168,67,0.22)" }}
+            >
+              {payment?.headline}
+            </h2>
+            <p className="mt-4 border-l border-[#D4A843]/30 pl-4 text-[14px] leading-relaxed text-white/60 sm:text-[15px]">
+              {payment?.subtitle}
+            </p>
           </div>
+        </section>
 
-          {/* Tap to continue pill — fades out when the last beat is revealed */}
-          <AnimatePresence>
-            {revealedCount > 0 && !allBeatsRevealed && (
-              <m.div
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, transition: { duration: 0.15, delay: 0 } }}
-                transition={{ duration: 0.4, delay: 2.2 }}
-                className="mt-6 flex justify-center"
-              >
-                <Button variant="gold" size="sm" mist onClick={handleTapContinue}>
-                  <span className="font-mono text-[10px] uppercase tracking-[2.5px]">
-                    {messages.tapContinue}
-                  </span>
-                  <ButtonArrow direction="down" />
-                </Button>
-              </m.div>
-            )}
-          </AnimatePresence>
+        {/* 4 · Movement III — the payer, named. */}
+        <section
+          ref={setSectionRef(2)}
+          data-reveal="2"
+          className={`py-[16vh] ${revealClass(2)}`}
+        >
+          <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
+            {payer?.label}
+          </p>
+          <h2 className="mt-4 text-[25px] font-semibold leading-[1.22] tracking-[-0.024em] text-[#D4A843] sm:text-[30px]">
+            {payer?.headline}
+          </h2>
+          <p className="mt-4 border-l border-[#D4A843]/30 pl-4 text-[14px] leading-relaxed text-white/60 sm:text-[15px]">
+            {payer?.subtitle}
+          </p>
+        </section>
 
-          {/* Scripture + Continue — after all beats */}
-          <AnimatePresence>
-            {allBeatsRevealed && (
-              <m.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-              >
-                <m.blockquote
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.6 }}
-                  className="mt-8 border-l border-[#D4A843]/30 pl-4 text-left"
-                >
-                  <p className="text-[15px] italic leading-[1.8] text-white/60 sm:text-base">
-                    &ldquo;{messages.scripture}&rdquo;
-                  </p>
-                  <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-[#D4A843]/70">
-                    {messages.scriptureRef}
-                  </p>
-                </m.blockquote>
+        {/* 5 · Movement IV — the response. The imperative, and it arrives last
+            by design: the indicative has had four screens to land first. */}
+        <section
+          ref={setSectionRef(3)}
+          data-reveal="3"
+          className={`py-[16vh] ${revealClass(3)}`}
+        >
+          <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
+            {response?.label}
+          </p>
+          <h2 className="mt-4 text-[25px] font-semibold leading-[1.22] tracking-[-0.024em] text-[#D4A843] sm:text-[30px]">
+            {response?.headline}
+          </h2>
+          <p className="mt-4 border-l border-[#D4A843]/30 pl-4 text-[14px] leading-relaxed text-white/60 sm:text-[15px]">
+            {response?.subtitle}
+          </p>
+        </section>
 
-                <m.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.8, delay: 1.2 }}
-                  className="mt-10"
-                >
-                  <Button variant="gold" mist onClick={handleContinue}>
-                    {messages.continueLabel}
-                    <ButtonArrow />
-                  </Button>
-                </m.div>
-              </m.div>
-            )}
-          </AnimatePresence>
+        {/* 6 · The promise. */}
+        <section
+          ref={setSectionRef(4)}
+          data-reveal="4"
+          className={revealClass(4)}
+        >
+          <blockquote className="border-l border-[#D4A843]/30 pl-4">
+            <p className="text-[15px] italic leading-[1.8] text-white/60 sm:text-base">
+              &ldquo;{messages.scripture}&rdquo;
+            </p>
+            <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-[#D4A843]/70">
+              {messages.scriptureRef}
+            </p>
+          </blockquote>
+        </section>
+
+        {/*
+         * 7 · The record, last — after the argument and before the choice.
+         *
+         * The four movements say what happened in general: a judge, a penalty,
+         * someone who paid. This says it about the reader, out of their own six
+         * answers, and it is deliberately the last thing before the decision
+         * rather than the first thing on the screen. Opening grace with a charge
+         * sheet would restate the Law at the moment the flow is supposed to
+         * announce; ending with one lands the general truth on the particular
+         * reader while they still have the question in front of them.
+         *
+         * It carries no animation of its own. The section reveal above is the
+         * only entrance — the version of this that arrived with the accordion
+         * wrapped it in a framer fade with its own delay, which inside a
+         * revealing section would run two entrances over one element.
+         */}
+        <section
+          ref={setSectionRef(5)}
+          data-reveal="5"
+          className={`pt-14 ${revealClass(5)}`}
+        >
+          <GraceRecord
+            rows={buildRecord(state.answers, verdictLabels)}
+            messages={messages.record}
+          />
+        </section>
+
+        {/* 8 · The way on. */}
+        <section
+          ref={setSectionRef(6)}
+          data-reveal="6"
+          className={`flex flex-col items-center pt-14 pb-[calc(5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] ${revealClass(6)}`}
+        >
+          <Button variant="gold" mist onClick={handleContinue}>
+            {messages.continueLabel}
+            <ButtonArrow />
+          </Button>
 
           {/* Quiet walk-back — re-reading the verdict, not reopening it. Walks
               one history entry back rather than dispatching directly, so the
-              browser stack and the reducer stay in agreement: the shell's
-              popstate handler is the single place a backward move is turned
-              into an action. */}
-          {/* Last in, deliberately. It had no entrance at all, so the one
-              control on this screen that matters least was the first thing on
-              it — present at frame 0 while the label, the heading, the first
-              beat and the continue button were all still arriving. It now
-              trails the continue button, and comes in slowly. A returning
-              reader has seen the screen, so it need not make them wait. */}
-          <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: returning ? 0.4 : 2.6 }}
-            className="mt-8 flex justify-center"
+              browser stack and the reducer stay in agreement. */}
+          <button
+            type="button"
+            onClick={onBack}
+            className="mt-8 inline-flex min-h-[32px] items-center text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
           >
-            <button
-              type="button"
-              onClick={onBack}
-              className="inline-flex min-h-[32px] items-center text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
-            >
-              {messages.rereadVerdict}
-            </button>
-          </m.div>
-        </div>
+            {messages.rereadVerdict}
+          </button>
+        </section>
       </div>
     </div>
   );

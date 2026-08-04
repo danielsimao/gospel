@@ -133,7 +133,7 @@ export interface JourneyMessages {
     /** Shown by the reading band once all seven days are read. */
     descComplete: string;
   };
-  share: { label: string; description: string };
+  share: { label: string; descActive: string; descUpcoming: string };
   retakeLabel: string;
 }
 
@@ -233,6 +233,11 @@ export interface TestMessages {
     useOxfordComma?: boolean;
     noneLabel: string;
     selfRatingLabel: string;
+    /** Two words for one instruction, because a thumb and a pointer are given
+        different ones — a pointer has nothing to aim at on a screen whose
+        target is the screen. Both are shown by breakpoint, not by sniffing. */
+    advanceHintTouch: string;
+    advanceHintPointer: string;
     /** One line per answer. A Record, so adding a SelfRating fails the build
         rather than silently rendering nothing at the verdict. */
     selfRatingMirror: Record<SelfRating, string>;
@@ -276,9 +281,33 @@ export interface Messages {
     continueLabel: string;
     label: string;
     beatsHeading: string;
-    beats: Array<{ headline: string; subtitle: string }>;
+    /** `label` is the rung: the one line that stays on screen while another
+        beat is open, so the whole argument's shape is always readable. It is a
+        compression of its own headline, never a separate claim. */
+    beats: Array<{ label: string; headline: string; subtitle: string }>;
     tapContinue: string;
     rereadVerdict: string;
+    /* The court record shown after the argument. Chrome only — every charge in
+       it comes from `verdictLabels`, so the six nouns are not restated here and
+       cannot drift from the confession sentence that uses the same set. */
+    record: {
+      eyebrow: string;
+      /** Column headings. Visually hidden: the record reads as a document, but
+          it is tabular data and a screen reader is owed the structure. */
+      count: string;
+      charge: string;
+      plea: string;
+      /** The two pleas, in the reader's own voice — what they did with each
+          count, never what the court concluded about it. */
+      admitted: string;
+      contested: string;
+      /** The finding, which does not depend on the pleas. */
+      finding: string;
+      guilty: string;
+      ability: string;
+      none: string;
+      paid: string;
+    };
   };
   invitation: {
     eyebrow: string;
@@ -287,7 +316,7 @@ export interface Messages {
     rereadGrace: string;
     committedEncouragement: string;
     thinkingEncouragement: string;
-    dismissedEncouragement?: string;
+    dismissedEncouragement: string;
     responses: Record<InvitationResponse, string>;
     learnMoreLabel: string;
   };
@@ -299,6 +328,14 @@ export interface Messages {
    */
   home: HomeMessages;
   share: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
-  nextSteps?: { cta: string; dismissedReturn: string };
+  /** Required for the same reason as readingPlan: it is the committed
+      reader's only route on, and next-steps' own page throws without it. The
+      optional marker bought nothing but an English fallback rendered over a
+      Portuguese button. */
+  nextSteps: { cta: string; dismissedReturn: string };
+  /** Required because reading-plan's own page throws when it is absent, and an
+      optional marker here left the two contracts disagreeing about the same
+      key. Only the heading is modelled; the plan's page owns the rest. */
+  readingPlan: { heading: string };
   meta: { title: string; description: string };
 }

@@ -1,14 +1,12 @@
 "use client";
 
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { m } from "framer-motion";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
-import { Button, ButtonArrow } from "@/components/ui/button";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { trackVerdictReached } from "@/lib/analytics";
 import { splitConfession, type ConfessionTone } from "@/lib/confession";
 import { EASE_OUT_STRONG } from "@/lib/motion";
-import { VerdictEmblem } from "@/components/emblems";
 import type { TestMessages } from "@/lib/types";
 
 interface VerdictScreenProps {
@@ -16,12 +14,41 @@ interface VerdictScreenProps {
   testMessages: TestMessages;
 }
 
-/**
- * When the gold CTA becomes real. Everything else on this screen is present
- * from mount and revealed by motion delay — only the button needs a gate,
- * because a button at opacity 0 is an invisible click target.
+/*
+ * The sentence, delivered one beat at a time.
+ *
+ * The screen this replaces was eight centred blocks in a column — 889px of
+ * content in an 844px viewport, so the way out sat below the fold. GUILTY and
+ * the live count were the same colour, weight and frame, so two heroes fought;
+ * and the confession, the one sentence built from what this reader just said,
+ * was 16px between them.
+ *
+ * Stacking them differently would have fixed the hierarchy. It could not fix
+ * the thing this screen is actually for: nothing can be withheld on a page that
+ * shows its own ending. The reader could see the gold button while still
+ * reading the charge, so there was nothing to wait for and no reason to want
+ * the next screen.
+ *
+ * So the beats replace each other, and the door does not exist until the last
+ * one. Four devices, in order of how much work they do:
+ *
+ *   1. The exit is withheld for four beats.
+ *   2. The count is the only thing that does not resolve — it keeps moving
+ *      while the reader is held.
+ *   3. Gold arrives exactly once, on ground the red has drained out of. The
+ *      reader has seen nothing but red for ninety seconds.
+ *   4. The last words are a question, alone on a screen.
+ *
+ * Advanced by tap, not by timer. A timed sequence that removes content the
+ * reader is still reading needs a pause control to satisfy WCAG 2.2.2, and the
+ * control undercuts the effect it exists to protect. Tap costs nothing and is
+ * better rhetoric besides: the reader turns each page of their own sentence,
+ * which makes the final tap onto grace a decision rather than an arrival.
  */
-const BRIDGE_DELAY_MS = 1200;
+const BEATS = ["charge", "confession", "count", "claim", "door"] as const;
+type Beat = (typeof BEATS)[number];
+
+const LAST_BEAT = BEATS.length - 1;
 
 /*
  * One class per tone, as a total map rather than a ternary. The distinction is
@@ -29,11 +56,32 @@ const BRIDGE_DELAY_MS = 1200;
  * same force as a confessed one states something the reader did not say. A
  * ternary made every tone that was not "admitted" render as a denial, so adding
  * a fourth would have been silent — this way it fails the build.
+ *
+ * Three levels, and the plain run is the quietest of them — see CONFESSION_PLAIN.
+ * The order that matters is admitted > denied > plain: the reader owns the first,
+ * the second is recorded rather than dismissed, and the third is grammar.
  */
 const TONE_CLASS: Record<Exclude<ConfessionTone, "plain">, string> = {
   admitted: "text-red-400",
-  denied: "text-white/55",
+  denied: "text-white/75",
 };
+
+/*
+ * The connective tissue — "You are", "— by your own admission" — set below both
+ * name tones rather than above them.
+ *
+ * It used to inherit the paragraph at white/90 while denied names sat at
+ * white/55. At 16px in the old layout that was invisible. At 29-46px it is not:
+ * a reader who evaded all six got a screen where "You are" and "by your
+ * evasions" were the loudest things on it and the six names had receded to the
+ * dimmest, which reads as though nothing was found. Evasions are recorded, not
+ * dismissed, and the sentence has to say so at every mix of answers — including
+ * the two where one tone is absent entirely.
+ *
+ * white/55 measures ~5.6:1 on #060404, so the scaffolding stays legible; it is
+ * simply no longer the thing the eye lands on.
+ */
+const CONFESSION_PLAIN = "text-white/55";
 
 export function VerdictScreen({
   messages,
@@ -45,7 +93,61 @@ export function VerdictScreen({
   // Grace is only reachable through the full verdict, so graceReached
   // exactly means "verdict fully seen" — re-entry replays nothing.
   const returning = state.graceReached;
-  const [showBridge, setShowBridge] = useState(returning);
+
+  // Seeded to the end for a reader coming back from grace, though showAll
+  // below means they see the document rather than any single beat — this now
+  // only feeds isLastBeat and the pager, both of which the document hides.
+  const [beatIndex, setBeatIndex] = useState(returning ? LAST_BEAT : 0);
+  const beat: Beat = BEATS[beatIndex] ?? "door";
+  const isLastBeat = beatIndex >= LAST_BEAT;
+
+  /*
+   * Re-entry shows the whole verdict at once, not the beat it ended on.
+   *
+   * "Re-read the verdict" walks one history entry back from grace, which
+   * remounts this screen with graceReached already true — so it opened on the
+   * last beat, and the last beat is a gold question with no verdict on it. A
+   * link that promises to re-read the verdict was showing none of it.
+   *
+   * The sequence is for the first hearing. Someone who has heard it and came
+   * back deliberately wants the record, so they get it as a document: the
+   * charge, the confession, the count and their own claim in one column, with
+   * the way on at the bottom. Grace already resolves the same way once its
+   * chain is complete, and for the same reason.
+   */
+  const showAll = returning;
+
+  const advance = useCallback(() => {
+    setBeatIndex((i) => Math.min(i + 1, LAST_BEAT));
+  }, []);
+
+  /*
+   * Focus follows the beat, and there is no live region.
+   *
+   * aria-live was and remains wrong here: the count's text node changes
+   * ~2x/second, so a polite region containing it announces a new number
+   * forever. Moving focus to the beat instead puts a screen reader's cursor on
+   * the new content without announcing anything on a timer, and leaves the
+   * number readable by navigation exactly as it is today.
+   *
+   * Skipped on mount so arriving at the verdict does not steal focus from
+   * wherever the reader left it.
+   */
+  const beatRef = useRef<HTMLDivElement>(null);
+  const doorRef = useRef<HTMLButtonElement>(null);
+  const firstRenderRef = useRef(true);
+  useEffect(() => {
+    const isMount = firstRenderRef.current;
+    firstRenderRef.current = false;
+    // Both guards are the mount, reached two ways: beat 0 for a first arrival,
+    // and the last beat for a reader coming back from grace.
+    if (isMount || beatIndex === 0) return;
+    // On the last beat the stage is empty — the question lives inside the
+    // control — so focus goes to the control, which is also the only thing left
+    // to activate.
+    if (beatIndex >= LAST_BEAT) doorRef.current?.focus();
+    else beatRef.current?.focus();
+  }, [beatIndex]);
 
   const confession = splitConfession(state.answers, testMessages);
 
@@ -90,11 +192,6 @@ export function VerdictScreen({
       trackVerdictReached(totalHonest, totalJustify, durationMs);
     }
 
-    // Re-read: the CTA is live from mount, no timer to run.
-    if (returning) return;
-
-    const t = setTimeout(() => setShowBridge(true), BRIDGE_DELAY_MS);
-    return () => clearTimeout(t);
   }, [state.answers, durationMs, returning]);
 
   // Forward moves are a dispatch. The shell watches the phase and stamps the
@@ -103,218 +200,280 @@ export function VerdictScreen({
     dispatch({ type: "SHOW_GRACE" });
   }
 
-  // Stage delays in ms → seconds, collapsed to 0 on re-read. The whole
-  // sequence lands in 1.2s (was 2.9s) and every beat enters with its own
-  // gesture: stamp, rise, rise, land-from-above, rise.
-  const at = (ms: number) => (returning ? 0 : ms / 1000);
 
   return (
-    <div className="relative flex flex-1 flex-col items-center justify-center px-4 py-16 sm:px-6">
-      {/* Judgment pressing down from above. Grace has a warm wash from centre
-          and the invitation has a two-point crossroads gradient; the verdict
-          was the only screen in the flow on bare black. No blur filter here
-          (unlike grace): the gradient already fades out at 58%, and blurring
-          a fixed full-viewport layer costs a composited pass for nothing. */}
+    <div className="relative flex flex-1 flex-col items-center justify-center px-7 pt-14 pb-[calc(5.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] sm:px-16 lg:px-28">
+      {/*
+       * The wash drains on the last beat, so the door arrives on ground that is
+       * no longer red — everything since the landing screen has been.
+       *
+       * On the document it is drained from the start, because isLastBeat is
+       * true from mount there. Correct rather than accidental: a re-reader is
+       * past the pressure the wash carries, and the record is not the sentence
+       * being passed a second time.
+       */}
       <div
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-0"
+        className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-1000 ease-[var(--ease-out-strong)] motion-reduce:transition-none"
         style={{
+          opacity: isLastBeat ? 0 : 1,
           background:
-            "radial-gradient(ellipse at 50% 0%, rgba(239,68,68,0.13) 0%, transparent 58%)",
+            "radial-gradient(ellipse at 50% 50%, rgba(239,68,68,0.12) 0%, transparent 62%)",
         }}
       />
 
-      {/* No aria-live here, and this is load-bearing. The old screen needed it
-          because the confession, count, and CTA arrived on setTimeout — with
-          nothing announced, a screen reader never heard them. Now the whole
-          verdict is in the DOM from mount, so it reads as ordinary content.
-          Keeping aria-live would be actively harmful: the counter's text node
-          changes ~2×/second, and a polite live region containing it would
-          announce a new number forever. */}
-      <div className="relative z-10 flex w-full max-w-md flex-col items-center text-center">
-        {/* The scales + the house eyebrow. At the old size-6/60% the emblem
-            was invisible — paying for a graphic and not getting one. The
-            hairline-label-hairline row is the pattern grace and the
-            invitation both use; the verdict was the odd one out. */}
-        <m.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <VerdictEmblem
-            className="mx-auto mb-3.5 size-10 text-red-400/70"
-            strokeWidth={1.4}
-            aria-hidden
-          />
-          <div className="flex items-center justify-center gap-2">
-            <span aria-hidden="true" className="h-px w-6 bg-red-500/40" />
-            <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
-              {testMessages.verdict.prelude}
-            </span>
-            <span aria-hidden="true" className="h-px w-6 bg-red-500/40" />
-          </div>
-        </m.div>
-
-        {/* GUILTY — stamped verdict block. Entrance lands from above
-            (1.15 → 1, composite-only) instead of growing in: a stamp hit,
-            not a bloom. Double hairlines frame it as an official record. */}
-        <m.div
-          initial={{ opacity: 0, scale: 1.15 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.55, delay: at(200), ease: EASE_OUT_STRONG }}
-          className="mt-4 w-full max-w-sm border-y-2 border-red-500/30 py-4 sm:py-5"
-        >
-          <p
-            className="text-5xl font-black uppercase tracking-[0.15em] text-red-500 sm:text-6xl md:text-7xl"
-            style={{
-              textShadow:
-                "0 0 80px rgba(239,68,68,0.35), 0 0 160px rgba(239,68,68,0.12), 0 4px 40px rgba(0,0,0,0.8)",
-            }}
-          >
-            {messages.title.replace(/\.$/, "")}
-          </p>
-        </m.div>
-
-        {/* The authority. Previously the screen asserted guilt in the app's
-            own voice (a subtitle since deleted) and the law screen cited no
-            law. James 2:10 is the exact argument the six questions build — one
-            point failed, guilty of all — and it rhymes with the heading above
-            it in both languages. Red border, not the house gold: this is the
-            law side of the flow. */}
-        <m.blockquote
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: at(520), ease: EASE_OUT_STRONG }}
-          className="mt-6 w-full max-w-sm border-l border-red-500/30 pl-4 text-left"
-        >
-          <p className="text-sm italic leading-[1.8] text-white/60 sm:text-[15px]">
-            &ldquo;{testMessages.verdict.scripture}&rdquo;
-          </p>
-          {/* red-400/75 is the AA floor for small text on #060404 (≈4.6:1) —
-              the same value the existing chips and prelude already use.
-              red-400/70 measures 4.1:1 and fails 1.4.3. Do not dim it. */}
-          <p className="mt-2 font-mono text-[10px] uppercase tracking-[2px] text-red-400/75">
-            {testMessages.verdict.scriptureRef}
-          </p>
-        </m.blockquote>
-
-        {/* Dynamic confession prose — the personalised centre of the screen,
-            and the only white text mass on a screen that is otherwise all red.
-            The commandment labels are the payload, so they carry colour — but
-            NOT the same colour. Admitted runs go red because the reader owns
-            them; denied runs recede. Painting both red would state the evaded
-            commandments with the same force as the confessed ones, which is
-            exactly what "by your evasions" exists to deny.
-
-            Three levels, deliberately: red owns, white/85 narrates, white/55
-            recedes. A dashed underline on the denied run was tried and cut —
-            once the run wraps, the dashes form a band that outshouts the red
-            and reads as a spell-check error. The word "evasions" already does
-            that work. */}
-        <m.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: at(700), ease: EASE_OUT_STRONG }}
-          className="mt-6 max-w-sm text-base leading-relaxed text-white/85 sm:text-lg"
-        >
-          {confession.map((segment, i) => {
-            if (segment.tone === "plain") {
-              return <Fragment key={i}>{segment.text}</Fragment>;
-            }
-            return (
-              <span key={i} className={TONE_CLASS[segment.tone]}>
-                {segment.text}
-              </span>
-            );
-          })}
-        </m.p>
-
+      {/*
+       * One control for the whole sequence, including the last beat.
+       *
+       * It is a real <button> and not a click handler on a div — that is what
+       * makes this reachable by Tab, activatable by space or enter, and
+       * announced as an action. Nothing about it looks like a button; the
+       * element is doing accessibility work, not visual work.
+       *
+       * It covers the screen because on touch the target is the screen, and
+       * because a pointer on a desktop has nothing else to aim at. The last
+       * beat used to be the exception — a gold pill you had to hit, after four
+       * beats that advanced from anywhere — which is two interaction models in
+       * one screen, and put the only piece of chrome in the sequence at the one
+       * moment that should be nothing but the question.
+       *
+       * So the question moved inside the control. On the last beat the button's
+       * accessible name is the question itself, which is exactly what activating
+       * it means; before that there is nothing to read and it carries a label.
+       */}
+      {!showAll && (
+      <button
+        type="button"
+        ref={doorRef}
+        onClick={isLastBeat ? handleBridgeClick : advance}
+        aria-label={isLastBeat ? undefined : testMessages.nextLabel}
+        /* The focus ring is the screen edge because the control is the screen —
+           that is honest rather than decorative. Thin and inset, though: at 2px
+           full-bleed it read as a border the design had grown, not as a
+           transient indicator. #D4A843 at 70% measures ~4.4:1 on #060404, past
+           the 3:1 that 1.4.11 asks of a focus indicator. */
+        className="absolute inset-0 z-20 flex cursor-pointer items-center justify-center px-7 outline-none focus-visible:outline focus-visible:outline-1 focus-visible:-outline-offset-[6px] focus-visible:outline-[#D4A843]/70"
+      >
         {/*
-         * The reader's own claim, quoted back.
-         *
-         * Only when they made one — someone who reached the test without
-         * passing the question (an older saved session, a private window where
-         * the write failed) simply does not meet this beat. It is testimony, so
-         * there is nothing to infer when it is absent.
-         *
-         * The "no" variant agrees and then points at the detail; it must not
-         * congratulate. An earlier draft read "you were right — and you are the
-         * first person here with nothing left to defend", which flatters the
-         * reader for the answer, quietly makes "no" the clever tap, and is
-         * affirmation where this screen's whole job is the diagnosis.
+         * The one gold thing in the flow, and now the gold is the words rather
+         * than a border around them. GUILTY and the count are both set with a
+         * coloured glow of their own colour; this is the same treatment, which
+         * makes the change of colour the whole event. The pill was diluting it.
          */}
-        {state.selfRating && (
-          <m.blockquote
+        {isLastBeat && (
+          <m.span
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: at(790), ease: EASE_OUT_STRONG }}
-            className="mt-6 w-full max-w-sm border-l border-red-500/25 pl-4 text-left"
+            transition={{ duration: 0.7, ease: EASE_OUT_STRONG }}
+            className="flex flex-col items-center gap-5"
           >
-            <p className="font-mono text-[9px] uppercase tracking-[2.5px] text-red-400/70">
-              {testMessages.verdict.selfRatingLabel}
-            </p>
-            <p className="mt-2 text-[14px] leading-relaxed text-white/70 sm:text-[15px]">
-              {testMessages.verdict.selfRatingMirror[state.selfRating]}
-            </p>
-          </m.blockquote>
+            <span
+              className="text-[29px] font-medium leading-[1.3] tracking-[-0.02em] text-[#D4A843] sm:text-[40px] lg:text-[46px]"
+              style={{ textShadow: "0 0 70px rgba(212,168,67,0.35)" }}
+            >
+              {testMessages.verdict.bridgeButton}
+            </span>
+            {/* Down, not forward. Grace is underneath this, and the old button
+                carried the same direction on its arrow. */}
+            <span aria-hidden="true" className="text-2xl text-[#D4A843]/60 sm:text-3xl">
+              &darr;
+            </span>
+          </m.span>
+        )}
+      </button>
+      )}
+
+      <div
+        ref={beatRef}
+        tabIndex={-1}
+        key={beat}
+        className={`relative z-10 flex w-full max-w-md flex-col items-center text-center outline-none sm:max-w-2xl lg:max-w-4xl ${
+          showAll ? "gap-14 py-6 sm:gap-16" : ""
+        }`}
+      >
+        {(showAll || beat === "charge") && (
+          <m.p
+            initial={{ opacity: 0, scale: 1.12 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.55, ease: EASE_OUT_STRONG }}
+            className="text-[62px] font-black uppercase leading-none tracking-[0.1em] text-red-500 sm:text-[112px] lg:text-[150px]"
+            style={{ textShadow: "0 0 90px rgba(239,68,68,0.4)" }}
+          >
+            {messages.title.replace(/\.$/, "")}
+          </m.p>
         )}
 
-        {/* No evidence list here. The old chips were the test HUD's markup
-            verbatim, and promoting them to a full record would have restated
-            the confession sentence above — which already names every
-            commandment and how it was answered — while adding ~270px that
-            pushed the CTA off a 390×844 viewport. The confession IS the
-            record, in better prose. */}
-
-        {/* The count, live. A number whose entire meaning is "time is
-            passing" cannot be a static fade-in, and because it never stops
-            the reader is never parked in front of a finished screen. Framed
-            in the same border-y-2 as GUILTY so the word and the number read
-            as siblings instead of one dominating. Lands from above. */}
-        <m.div
-          initial={{ opacity: 0, y: -14, scale: 1.06 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.62, delay: at(880), ease: EASE_OUT_STRONG }}
-          className="mt-8 w-full max-w-sm border-y-2 border-red-500/25 py-5"
-        >
-          {/* The component's own minWidth: 7ch stays — at these sizes it is
-              ≈200-250px inside a 384px column, and it is what stops the
-              centred number shifting as digits are added. The span also
-              paints a literal "0" for one frame before the first rAF tick;
-              that frame happens at opacity 0 behind this block's 880ms
-              delay, so it is never visible. Do not shorten that delay below
-              ~100ms without re-checking. */}
-          <DeathCounter
-            baseMs={counterBaseMs}
-            className="font-mono text-5xl font-extrabold tabular-nums text-red-500 sm:text-6xl"
-            style={{ textShadow: "0 0 60px rgba(239,68,68,0.28)" }}
-          />
-          <p className="mt-2.5 text-xs italic leading-relaxed text-white/60 sm:text-[13px]">
-            {testMessages.verdict.deathLineTemplate}
-          </p>
-          <p className="mt-2 text-xs leading-relaxed text-red-400/85 sm:text-[13px]">
-            {testMessages.verdict.deathLineImplication}
-          </p>
-        </m.div>
-
-        {/* Bridge — the one gold thing on a red screen. */}
-        <m.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: at(1200), ease: EASE_OUT_STRONG }}
-          className="mt-9"
-        >
-          <Button
-            variant="gold"
-            mist={showBridge}
-            onClick={handleBridgeClick}
-            disabled={!showBridge}
+        {/*
+         * The payload, alone on a screen. It was 16px between two larger red
+         * objects; here nothing competes with it, so it does not have to shout
+         * to win — 29px on a phone, and capped by measure rather than grown to
+         * fill a desktop. Centred text past ~60 characters a line stops being
+         * readable, and this is the sentence that has to land.
+         */}
+        {(showAll || beat === "confession") && (
+          <m.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: EASE_OUT_STRONG }}
+            className={`text-[29px] font-medium leading-[1.26] tracking-[-0.02em] sm:text-[42px] sm:leading-[1.24] lg:text-[46px] ${CONFESSION_PLAIN}`}
           >
-            {testMessages.verdict.bridgeButton}
-            <ButtonArrow direction="down" />
-          </Button>
-        </m.div>
+            {confession.map((segment, i) => {
+              if (segment.tone === "plain") {
+                return <Fragment key={i}>{segment.text}</Fragment>;
+              }
+              return (
+                <span key={i} className={TONE_CLASS[segment.tone]}>
+                  {segment.text}
+                </span>
+              );
+            })}
+          </m.p>
+        )}
+
+        {/*
+         * The one thing that does not resolve. Under tap-advance it holds for
+         * as long as the reader looks at it, which is strictly better than the
+         * old 2.5s window: the number climbs while they sit with it.
+         */}
+        {(showAll || beat === "count") && (
+          <m.div
+            initial={{ opacity: 0, y: -14, scale: 1.06 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.6, ease: EASE_OUT_STRONG }}
+            className="flex flex-col items-center"
+          >
+            <DeathCounter
+              baseMs={counterBaseMs}
+              className="font-mono text-[76px] font-extrabold leading-none tabular-nums text-red-500 sm:text-[128px] lg:text-[150px]"
+              style={{ textShadow: "0 0 70px rgba(239,68,68,0.3)" }}
+            />
+            <p className="mt-4 text-sm italic leading-relaxed text-white/60 sm:text-[19px] lg:text-xl">
+              {testMessages.verdict.deathLineTemplate}
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-red-400/85 sm:text-[19px] lg:text-xl">
+              {testMessages.verdict.deathLineImplication}
+            </p>
+          </m.div>
+        )}
+
+        {/*
+         * Their own claim, answered — and the law that answers it. Only when
+         * they made a claim: someone who reached the test without passing the
+         * question has nothing to quote back, and this is testimony, so there
+         * is nothing to infer when it is absent. James 2:10 carries the beat
+         * alone in that case, which is the argument the six questions build.
+         */}
+        {(showAll || beat === "claim") && (
+          <m.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: EASE_OUT_STRONG }}
+            className="flex flex-col items-center"
+          >
+            {state.selfRating && (
+              <p className="text-[21px] leading-[1.4] text-white/80 sm:text-[30px] lg:text-[34px]">
+                {testMessages.verdict.selfRatingMirror[state.selfRating]}
+              </p>
+            )}
+            <p
+              className={`${state.selfRating ? "mt-8 sm:mt-10" : ""} max-w-xl text-[15px] italic leading-[1.8] text-white/55 sm:text-lg`}
+            >
+              &ldquo;{testMessages.verdict.scripture}&rdquo;
+            </p>
+            {/* red-400/75 is the AA floor for text this size on #060404
+                (≈4.6:1). red-400/70 measures 4.1:1 and fails 1.4.3. */}
+            <p className="mt-3 font-mono text-[10px] uppercase tracking-[2px] text-red-400/75 sm:text-xs">
+              {testMessages.verdict.scriptureRef}
+            </p>
+          </m.div>
+        )}
+
+        {/* The way on, for the document. The sequence carries its door inside
+            the full-screen control, which does not exist here — so a re-reader
+            would have had the whole verdict and no way forward. Same words,
+            same gold, as an ordinary button because on this version it is one
+            element among several rather than the only thing on screen. */}
+        {showAll && (
+          <button
+            type="button"
+            onClick={handleBridgeClick}
+            className="inline-flex flex-col items-center gap-4 rounded-lg px-4 py-2 outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[#D4A843]/70"
+          >
+            <span
+              className="text-[26px] font-medium leading-[1.3] tracking-[-0.02em] text-[#D4A843] sm:text-[34px]"
+              style={{ textShadow: "0 0 60px rgba(212,168,67,0.3)" }}
+            >
+              {testMessages.verdict.bridgeButton}
+            </span>
+            <span aria-hidden="true" className="text-2xl text-[#D4A843]/60">
+              &darr;
+            </span>
+          </button>
+        )}
       </div>
+
+      {/* Where the reader is, and the first signal that the colour of the flow
+          has changed: the last dot is gold, and it turns a beat before the
+          button appears. */}
+      {/* Both of these sit at the bottom edge, which on a first visit belongs
+          to the fixed consent banner and on an iPhone to the home indicator.
+          --consent-h is published by the banner; both terms resolve to 0 for a
+          returning reader on a device without one. */}
+      {!showAll && (
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-[calc(1.75rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] z-10 flex justify-center gap-2"
+      >
+        {BEATS.map((name, i) => (
+          <span
+            key={name}
+            className={`h-[5px] w-[5px] rounded-full transition-colors duration-300 ${
+              i === beatIndex
+                ? isLastBeat
+                  ? "bg-[#D4A843]"
+                  : "bg-red-500"
+                : "bg-white/15"
+            }`}
+          />
+        ))}
+      </div>
+      )}
+
+      {/*
+       * The affordance, on every beat including the last, and worded for the
+       * device: a thumb taps, a pointer has nothing to aim at.
+       *
+       * On every beat of the sequence, and on none of the document.
+       *
+       * The last beat used to go without, on the reasoning that the beats
+       * before it teach the interaction. That had a hole in it, because a
+       * reader could arrive at that beat cold.
+       *
+       * It is gone entirely when showAll is set, and that is not symmetry: the
+       * document has no full-screen control, so "tap to continue" and "press
+       * space" would both name something that is not there. An affordance
+       * pointing at a control that does not exist is worse than no affordance,
+       * and the pager above already draws the same line.
+       *
+       * Persistent rather than revealed after an idle timer. A prompt that
+       * appears once the reader stops moving says "you are doing it wrong" or
+       * "hurry up", and this is the one screen in the app built to be sat with:
+       * the count beat exists so that a number climbs while nothing happens.
+       * Nudging there would break the thing the sequence is for. At 9px and 30%
+       * opacity a permanent label costs the last frame almost nothing, and it
+       * cannot arrive at the wrong moment because it never arrives.
+       */}
+      {!showAll && (
+      <p className="absolute inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] z-10 text-center font-mono text-[9px] uppercase tracking-[2.4px] text-white/30 sm:text-[11px]">
+        {/* Keyed on the pointer, not the width. At sm: a tablet is 768 wide and
+            touch, so it was being told to click anywhere or press space — the
+            wrong instrument, on the device most likely to be held in two hands
+            for something this long. pointer-coarse is the input, which is what
+            the sentence is actually about. */}
+        <span className="pointer-fine:hidden">{testMessages.verdict.advanceHintTouch}</span>
+        <span className="hidden pointer-fine:inline">{testMessages.verdict.advanceHintPointer}</span>
+      </p>
+      )}
     </div>
   );
 }

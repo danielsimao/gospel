@@ -129,7 +129,31 @@ export function Landing({ messages, locale }: LandingProps) {
       // the two read as one movement rather than two screens swapping.
       exit={{ opacity: 0, y: -12 }}
       transition={{ duration: 0.3, ease: EASE_OUT_STRONG }}
-      className="flex flex-1 flex-col items-center justify-center px-6 text-center"
+      /*
+       * The same column the questions use, at the same offset.
+       *
+       * This screen used to be the only one in the flow that centred itself,
+       * horizontally and vertically. The six questions range left inside a
+       * narrow centred column at `pt-[24vh] sm:pt-[36vh]` (question-card), and
+       * arriving from a centred landing moved the heading on the handoff — the
+       * reader's own question and the first commandment are the same beat, and
+       * they sat in different places.
+       *
+       * Matching the offsets shares the structure: the eyebrow, the heading
+       * below it at `mt-5`, and the column width are the same on both sides of
+       * the handoff. Measured, the heading still lands 37px lower once the
+       * test begins — the progress bar is in the flow above it and only exists
+       * after the first question. That gap is the bar's own height, so closing
+       * it would mean a constant here that breaks the moment the bar changes;
+       * under the crossfade the two screens already share, it does not read as
+       * movement.
+       *
+       * The bottom inset is the consent banner's, in the idiom of
+       * question-card — top-anchored content only reaches it on a short
+       * landscape viewport, and there it can be scrolled clear rather than
+       * sitting under the banner.
+       */
+      className="mx-auto flex w-full max-w-[23rem] flex-1 flex-col px-6 pt-[24vh] pb-[calc(2rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] sm:max-w-[27rem] sm:pt-[36vh] [@media(max-height:500px)]:pt-[12vh]"
     >
       {/* Docket label */}
       <m.div
@@ -142,7 +166,9 @@ export function Landing({ messages, locale }: LandingProps) {
         <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
           {messages.label}
         </span>
-        <span className="h-px w-6 bg-red-500/40" />
+        {/* The closing rule went with the centring. A pair of rules brackets a
+            label and reads as a centred device; ranged left, the second one
+            hangs off the end of a two-letter word. */}
       </m.div>
 
       {/*
@@ -154,8 +180,13 @@ export function Landing({ messages, locale }: LandingProps) {
        * states now overlap, stacked absolutely so neither pushes the other.
        *
        * And the box itself snapped those 98px in a single frame, which threw
-       * every line below it — the heading jumped 49px because this column is
-       * vertically centred. Framer's `layout` and `mode="popLayout"` both fix
+       * every line below it — the heading jumped 49px back when this column
+       * was vertically centred, so half of any height change was taken out of
+       * the space above. The column is top-anchored now and the heading no
+       * longer moves, but the box still animates its own height: the two
+       * states are absolutely stacked, so without it the outgoing state is
+       * clipped the instant the incoming one is measured.
+       * Framer's `layout` and `mode="popLayout"` both fix
        * that, and both need layout projection from `domMax`; this app loads
        * `domAnimation` on purpose and the upgrade costs ~10kb for one screen.
        * So the height is measured and handed to a CSS transition instead —
@@ -176,8 +207,8 @@ export function Landing({ messages, locale }: LandingProps) {
       {/*
        * Absolute children have no height of their own, so before the first
        * measurement this box collapsed to zero and then jumped to its real
-       * height — 0.036 CLS on this route, in a column that is vertically
-       * centred, so everything above it moved 120px as well.
+       * height — 0.036 CLS on this route, and while the column was still
+       * vertically centred everything above it moved 120px as well.
        *
        * A min-height per breakpoint would have been magic numbers that rot the
        * moment the copy changes. Instead the first render leaves the active
@@ -209,22 +240,42 @@ export function Landing({ messages, locale }: LandingProps) {
               // are legible through each other.
               opacity: { duration: 0.22, delay: 0.06, ease: EASE_OUT_STRONG },
             }}
-            className={`flex flex-col items-center ${
+            className={`flex flex-col ${
               boxHeight === null ? "" : "absolute inset-x-0 top-0"
             }`}
           >
-            <h1 className="mt-5 max-w-md text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+            {/* One step up from a commandment's 28px, and otherwise set the
+                same way — this is the question the six are asked to answer,
+                not a bigger species of thing. */}
+            <h1 className="mt-5 text-[30px] font-bold leading-[1.16] tracking-[-0.028em] sm:text-[34px]">
               {messages.title}
             </h1>
-            <p className="mt-4 max-w-sm text-xs italic text-white/60 sm:text-sm">
-              {messages.subtitle}
-            </p>
+
             <SelfRating
               messages={messages.selfRating}
               onSelect={handleSelect}
               ariaLabel={messages.title}
-              className="mt-10"
+              layout="stack"
+              className="mt-8"
             />
+
+            {/*
+             * "God's Law. Six questions. One verdict." — what the reader is
+             * agreeing to, not part of the question.
+             *
+             * It used to sit between the question and the three answers, which
+             * put the terms of the test in the one gap the reader crosses to
+             * answer it. Below the answers it is read on the way in and
+             * available on the way back, and the question meets its answers
+             * directly.
+             *
+             * The italic went with the move: in this app italic is scripture
+             * and aside, and a hairline in judgment red says the same thing
+             * about where this sentence comes from without borrowing a voice.
+             */}
+            <p className="mt-8 border-l border-red-500/30 pl-3 text-[12px] leading-relaxed text-white/50">
+              {messages.subtitle}
+            </p>
           </m.div>
         ) : (
           <m.div
@@ -245,25 +296,27 @@ export function Landing({ messages, locale }: LandingProps) {
               // are legible through each other.
               opacity: { duration: 0.22, delay: 0.06, ease: EASE_OUT_STRONG },
             }}
-            className={`flex flex-col items-center ${
+            className={`flex flex-col ${
               boxHeight === null ? "" : "absolute inset-x-0 top-0"
             }`}
           >
             {/* The claim, echoed. Not a heading for the page so much as the
                 reader's own sentence handed back to them. */}
-            <h1 className="mt-5 max-w-md text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+            <h1 className="mt-5 text-[30px] font-bold leading-[1.16] tracking-[-0.028em] sm:text-[34px]">
               {messages.reply[rating].heading}
             </h1>
 
             {/* Where that particular answer is weakest. Three answers, three
                 different presses — see the reply Record in types. */}
-            <p className="mt-5 max-w-sm text-[15px] leading-relaxed text-white/65 sm:text-base">
+            <p className="mt-5 text-[15px] leading-relaxed text-white/65 sm:text-base">
               {messages.reply[rating].body}
             </p>
 
             {/* One label for all three answers. Different CTAs per answer would
-                make three answers into three products. */}
-            <div className="mt-10">
+                make three answers into three products.
+                `self-start` so the button is its own width in a column that no
+                longer centres its children. */}
+            <div className="mt-10 self-start">
               <Button variant="red" mist onClick={handleBegin}>
                 {messages.cta}
                 <ButtonArrow />
@@ -273,7 +326,7 @@ export function Landing({ messages, locale }: LandingProps) {
             <button
               type="button"
               onClick={handleChange}
-              className="mt-5 text-[11px] text-white/55 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
+              className="mt-5 self-start text-[11px] text-white/55 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
             >
               {messages.changeAnswer}
             </button>
