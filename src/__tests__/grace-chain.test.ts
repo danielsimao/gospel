@@ -81,6 +81,30 @@ describe("the funnel still reports", () => {
     expect(code).toMatch(/reportedRef\.current\.add\(index\)/);
   });
 
+  it("reveals every section the page actually renders", () => {
+    // REVEAL_SECTIONS sizes the `shown` array. A section whose index sits past
+    // the end of it is never brought back after the first measurement hides it,
+    // so it stays at opacity 0 for the whole visit — silently, with no error and
+    // no failing assertion anywhere else. The record was added between the
+    // scripture and the way on and this count had to move with it.
+    const revealSections = Number(code.match(/const REVEAL_SECTIONS = (\d+)/)?.[1]);
+    const expected = Array.from({ length: revealSections }, (_, i) => i);
+    const indicesOf = (pattern: RegExp) =>
+      (code.match(pattern) ?? [])
+        .map((m) => Number(m.match(/\d+/)![0]))
+        .sort((a, b) => a - b);
+
+    // The refs are what the observer actually walks — it indexes
+    // sectionRefs.current by position, so a gap here leaves a slot nothing ever
+    // fills and that section stays at opacity 0 for the whole visit.
+    expect(indicesOf(/setSectionRef\((\d+)\)/g)).toEqual(expected);
+    // data-reveal drives nothing at runtime; it exists so a section can be
+    // identified in the inspector. Pinned anyway, because an attribute that has
+    // drifted from its ref is worse than no attribute — it misleads the next
+    // person debugging exactly the failure above.
+    expect(indicesOf(/data-reveal="(\d+)"/g)).toEqual(expected);
+  });
+
   it("covers every beat the copy carries", () => {
     // BEAT_SECTIONS gates which sections report. If it drifts below the number
     // of beats, the last movements go dark in the funnel and nothing else fails.
