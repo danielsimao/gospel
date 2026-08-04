@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { m } from "framer-motion";
 import { useGameDispatch, useGameState } from "@/components/game-provider";
 import { Button, ButtonArrow } from "@/components/ui/button";
+import { GraceRecord } from "@/components/grace-record";
+import { buildRecord } from "@/lib/confession";
 import { trackGraceViewed } from "@/lib/analytics";
 import {
   trackGraceRevealed,
@@ -29,7 +31,12 @@ interface GraceScreenProps {
        both locales — orphaning a string is cheaper to undo than deleting one,
        and the owner's PT pass is open. */
     rereadVerdict: string;
+    record: React.ComponentProps<typeof GraceRecord>["messages"];
   };
+  /** The six charge nouns, keyed by commandment. Passed in rather than read
+      from the whole message tree: the record needs this one map and nothing
+      else, and it is the same map the verdict's confession sentence uses. */
+  verdictLabels: Record<string, string>;
   /** Walks back one history entry, so the browser stack and the reducer agree. */
   onBack: () => void;
 }
@@ -72,9 +79,9 @@ interface GraceScreenProps {
  * was already in — the four beats map one-to-one onto the four movements.
  */
 
-/** The announcement, four movements, the scripture, the way on. Only the four
-    movements carry beat analytics; see BEAT_SECTIONS. */
-const REVEAL_SECTIONS = 6;
+/** The announcement, four movements, the scripture, the reader's record, the
+    way on. Only the four movements carry beat analytics; see BEAT_SECTIONS. */
+const REVEAL_SECTIONS = 7;
 const BEAT_SECTIONS = 4;
 
 /**
@@ -86,7 +93,7 @@ const BEAT_SECTIONS = 4;
  */
 const SEED_THRESHOLD = 0.9;
 
-export function GraceScreen({ messages, onBack }: GraceScreenProps) {
+export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProps) {
   const dispatch = useGameDispatch();
   const state = useGameState();
   const startTime = useRef(0);
@@ -413,7 +420,7 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
           </p>
         </section>
 
-        {/* 6 · The promise, then the way on. */}
+        {/* 6 · The promise. */}
         <section
           ref={setSectionRef(4)}
           data-reveal="4"
@@ -429,10 +436,38 @@ export function GraceScreen({ messages, onBack }: GraceScreenProps) {
           </blockquote>
         </section>
 
+        {/*
+         * 7 · The record, last — after the argument and before the choice.
+         *
+         * The four movements say what happened in general: a judge, a penalty,
+         * someone who paid. This says it about the reader, out of their own six
+         * answers, and it is deliberately the last thing before the decision
+         * rather than the first thing on the screen. Opening grace with a charge
+         * sheet would restate the Law at the moment the flow is supposed to
+         * announce; ending with one lands the general truth on the particular
+         * reader while they still have the question in front of them.
+         *
+         * It carries no animation of its own. The section reveal above is the
+         * only entrance — the version of this that arrived with the accordion
+         * wrapped it in a framer fade with its own delay, which inside a
+         * revealing section would run two entrances over one element.
+         */}
         <section
           ref={setSectionRef(5)}
           data-reveal="5"
-          className={`flex flex-col items-center pt-14 pb-[calc(5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] ${revealClass(5)}`}
+          className={`pt-14 ${revealClass(5)}`}
+        >
+          <GraceRecord
+            rows={buildRecord(state.answers, verdictLabels)}
+            messages={messages.record}
+          />
+        </section>
+
+        {/* 8 · The way on. */}
+        <section
+          ref={setSectionRef(6)}
+          data-reveal="6"
+          className={`flex flex-col items-center pt-14 pb-[calc(5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] ${revealClass(6)}`}
         >
           <Button variant="gold" mist onClick={handleContinue}>
             {messages.continueLabel}

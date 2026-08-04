@@ -158,7 +158,20 @@
         "subtitle": "This isn't about a prayer or being religious. It's about turning from sin and placing your trust in the One who paid it all."
       }
     ],
-    "tapContinue": "Tap to continue"
+    "tapContinue": "Tap to continue",
+    "record": {
+      "eyebrow": "The record",
+      "count": "Count",
+      "charge": "Charge",
+      "plea": "Plea",
+      "admitted": "Admitted",
+      "contested": "Contested",
+      "finding": "Finding",
+      "guilty": "Guilty on all counts",
+      "ability": "Your ability to pay",
+      "none": "None",
+      "paid": "Paid in full"
+    }
   },
   "invitation": {
     "eyebrow": "The decision",

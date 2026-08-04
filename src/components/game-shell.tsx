@@ -353,6 +353,7 @@ export function GameShell({ messages, locale }: GameShellProps) {
             {state.phase === "grace" && (
               <GraceScreen
                 messages={messages.grace}
+                verdictLabels={messages.test.verdictLabels}
                 onBack={() => {
                   viaLinkRef.current = true;
                   window.history.back();
