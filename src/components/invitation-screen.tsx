@@ -17,8 +17,6 @@ import type { Locale } from "@/lib/i18n";
 interface InvitationScreenProps {
   messages: Messages;
   locale: Locale;
-  /** Walks back one history entry, so the browser stack and the reducer agree. */
-  onBack: () => void;
 }
 
 /*
@@ -32,7 +30,7 @@ interface InvitationScreenProps {
  */
 const COMMITTED_HOLD_MS = 2000;
 
-export function InvitationScreen({ messages, locale, onBack }: InvitationScreenProps) {
+export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
   const { invitation } = messages;
   const state = useGameState();
   const dispatch = useGameDispatch();
@@ -140,29 +138,33 @@ export function InvitationScreen({ messages, locale, onBack }: InvitationScreenP
         <div className="w-full max-w-lg lg:max-w-2xl">
           {!invitationResponse && (
             <>
-              {/* The eyebrow, and the way back beside it. A way back is only
-                  useful before the choice; under the options it arrived after
-                  the reader had already made one. It stays styled as a text link rather than as a
-                  button — a fourth control would compete with the three that
-                  are the point — but it is here because the method requires
-                  that leaving be possible and be visible, not because anyone
-                  needs help finding the back gesture. */}
+              {/*
+               * The eyebrow, alone.
+               *
+               * A "re-read grace" link used to sit beside it, justified as the
+               * method's requirement that leaving be possible and visible. That
+               * justification does not hold: leaving IS visible here, as the
+               * third response — "Not for me" — which is a button on this
+               * screen. Re-reading is not declining, so the link was carrying an
+               * argument that belongs to something else.
+               *
+               * What it actually did was offer retreat at the moment of
+               * commitment, on the one screen whose entire design is a single
+               * choice. Back still works — the shell's history is indexed and
+               * direction-aware, so the browser gesture people already use is
+               * the affordance — and grace itself ends with a walk-back to the
+               * verdict, so the reader has just been shown that going back
+               * exists, one screen earlier.
+               */}
               <m.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.7 }}
-                className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2"
+                className="flex items-center justify-center"
               >
                 <span className="font-mono text-[9.5px] uppercase tracking-[3px] text-[#D4A843]/70">
                   {invitation.eyebrow}
                 </span>
-                <button
-                  type="button"
-                  onClick={onBack}
-                  className="inline-flex min-h-[32px] items-center text-[11px] text-white/50 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
-                >
-                  {invitation.rereadGrace}
-                </button>
               </m.div>
 
               {/* The question, at the size the two screens before it set. The

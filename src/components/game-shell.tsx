@@ -326,7 +326,27 @@ export function GameShell({ messages, locale }: GameShellProps) {
             key={state.phase}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, transition: { duration: 0.09, ease: "linear" } }}
+            /*
+             * The exit is deliberately faster than the entrance, and that gap is
+             * the point rather than a stylistic flourish.
+             *
+             * `mode="wait"` holds the incoming phase until the outgoing one has
+             * finished leaving, so the exit duration is dead time in which the
+             * next screen DOES NOT EXIST. Measured on verdict → grace at
+             * 390×844: with a 0.2s exit the document stayed one viewport tall
+             * and wheel input moved nothing until ~190ms, when grace finally
+             * mounted. A swipe takes roughly 150–300ms, so the reader's first
+             * gesture landed entirely inside that window and produced nothing —
+             * "I tried to scroll and it ignored me".
+             *
+             * CPU throttling at 4× and 6× barely moved those numbers, which is
+             * what identified it: this is a wall-clock animation, not work.
+             *
+             * Grace is where it bites, because grace is the only screen in the
+             * flow taller than one viewport — everywhere else there is nothing
+             * to scroll, so nobody could feel it.
+             */
             transition={{ duration: 0.2, ease: EASE_OUT_STRONG }}
             className="flex flex-1 flex-col"
           >
@@ -361,15 +381,11 @@ export function GameShell({ messages, locale }: GameShellProps) {
               />
             )}
 
+            {/* No onBack: the decision screen carries no walk-back link. The
+                browser gesture still works, and grace — one screen earlier —
+                ends with its own. */}
             {state.phase === "invitation" && (
-              <InvitationScreen
-                messages={messages}
-                locale={locale}
-                onBack={() => {
-                  viaLinkRef.current = true;
-                  window.history.back();
-                }}
-              />
+              <InvitationScreen messages={messages} locale={locale} />
             )}
           </m.div>
         </AnimatePresence>
