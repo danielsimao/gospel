@@ -57,13 +57,45 @@ describe("the scroll cue", () => {
      * would be a lie on a page whose primary gesture is scrolling.
      */
     expect(cue).toMatch(/onClick=\{handleActivate\}/);
+  });
+
+  it("advances by a section, not by a fixed distance", () => {
+    /*
+     * Grace's movements are 832, 509, 692, 529, 506, 104, 440 and 248px tall —
+     * no fixed hop lands well against that. A 0.9-viewport version was measured
+     * leaving the announcement still occupying the top of the screen with two
+     * movements' text in view at once, which is the opposite of the
+     * one-beat-at-a-time reading the argument is built for.
+     *
+     * Centred, not top-aligned: every movement is shorter than the viewport and
+     * carries 135–241px of its own padding, so aligning tops parks a screenful
+     * of padding with the words below it.
+     */
+    expect(cue).toMatch(/querySelectorAll\("section"\)/);
+    expect(cue).toMatch(/scrollIntoView\(\{\s*block:\s*"center"/);
+  });
+
+  it("does not mistake the section the reader is already on for the next one", () => {
+    // The shell pads the flow by 12px, so the current section reports a top of
+    // 12. A `top > 0` test matched it and re-centred the announcement instead of
+    // advancing — the half-viewport threshold is what makes "next" mean next.
+    expect(cue).toMatch(/top > window\.innerHeight \/ 2/);
+  });
+
+  it("still reaches the way out of a document with no sections", () => {
+    // The verdict's re-read document is built from divs and overflows by only
+    // 244px; one viewport of scroll clamps at the end, which is exactly enough
+    // to bring its forward control into view.
     expect(cue).toMatch(/window\.scrollBy/);
   });
 
   it("scrolls instantly for a reader who asked for less motion", () => {
     // The bob is stopped in CSS; the scroll it performs has to be stopped here.
     expect(cue).toMatch(/prefers-reduced-motion: reduce/);
-    expect(cue).toMatch(/behavior:\s*reduced\s*\?\s*"auto"\s*:\s*"smooth"/);
+    expect(cue).toMatch(/reduced\s*\?\s*\("auto" as const\)\s*:\s*\("smooth" as const\)/);
+    // …and that choice has to reach BOTH paths, the section hop and the fallback.
+    expect(cue).toMatch(/scrollIntoView\(\{[^}]*behavior\s*\}\)/);
+    expect(cue).toMatch(/scrollBy\(\{[^}]*behavior\s*\}\)/);
   });
 
   it("is decorative, and never takes focus", () => {
