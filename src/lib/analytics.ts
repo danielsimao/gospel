@@ -1,4 +1,4 @@
-import { capture as safeCapture, getDistinctId } from "@/lib/posthog";
+import { capture as safeCapture, getDistinctId, POSTHOG_HOST, POSTHOG_KEY } from "@/lib/posthog";
 
 export function trackTestBack(from: string, to: string, via: "link" | "browser") {
   safeCapture("test_back", { from, to, via });
@@ -90,8 +90,8 @@ export function trackGameAbandoned(
 
   try {
     if (typeof navigator !== "undefined" && navigator.sendBeacon) {
-      const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com";
-      const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+      const posthogHost = POSTHOG_HOST;
+      const posthogKey = POSTHOG_KEY;
       if (posthogKey) {
         navigator.sendBeacon(
           `${posthogHost}/capture/`,

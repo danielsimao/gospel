@@ -5,7 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { LazyMotion, MotionConfig, domAnimation } from "framer-motion";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getConsent } from "@/lib/consent";
-import { initPostHog } from "@/lib/posthog";
+import { initPostHog, POSTHOG_KEY } from "@/lib/posthog";
 
 function PostHogPageviewTracker() {
   const pathname = usePathname();
@@ -14,7 +14,7 @@ function PostHogPageviewTracker() {
   const search = searchParams.toString();
 
   useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_POSTHOG_KEY || typeof window === "undefined" || getConsent() !== "granted") {
+    if (!POSTHOG_KEY || typeof window === "undefined" || getConsent() !== "granted") {
       return;
     }
 

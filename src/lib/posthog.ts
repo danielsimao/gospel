@@ -8,13 +8,39 @@ import type { PostHog } from "posthog-js";
  */
 const INTERNAL_FLAG_KEY = "gospel:internal";
 
+/**
+ * The project token, under either of the two names it can arrive as.
+ *
+ * The PostHog Vercel integration provisions one variable per framework and the
+ * Next.js one it writes is `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN`. This app was
+ * built against `NEXT_PUBLIC_POSTHOG_KEY`, so on a project configured purely by
+ * the integration the key is absent, the guard below short-circuits, and
+ * analytics are silently off — no error, no missing-config warning, just no
+ * events. That is exactly what happened moving to a new Vercel account.
+ *
+ * Read here rather than copying the value into a second variable on Vercel: a
+ * hand-copied token is not the one the integration rotates, so it goes stale
+ * eventually and fails the same silent way.
+ *
+ * Both names are written out in full because Next inlines `NEXT_PUBLIC_*` by
+ * matching the literal text at build time — `process.env[name]` would compile to
+ * undefined. The legacy name wins when both exist, so an environment that sets it
+ * deliberately keeps working.
+ */
+export const POSTHOG_KEY =
+  process.env.NEXT_PUBLIC_POSTHOG_KEY ??
+  process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN;
+
+export const POSTHOG_HOST =
+  process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com";
+
 let client: PostHog | null = null;
 let loading: Promise<PostHog | null> | null = null;
 
 /*
  * Production only, and this is not a nicety.
  *
- * Every branch preview Vercel builds carries the same NEXT_PUBLIC_POSTHOG_KEY
+ * Every branch preview Vercel builds carries the same project token
  * as production, so walking a flow on a preview to check a design wrote real
  * events into the real project — indistinguishable from a reader's, because
  * nothing marked them. Over a day of testing that is most of the dataset.
@@ -35,7 +61,7 @@ function isAnalyticsEnvironment(): boolean {
 export function initPostHog(): Promise<PostHog | null> {
   if (
     typeof window === "undefined" ||
-    !process.env.NEXT_PUBLIC_POSTHOG_KEY ||
+    !POSTHOG_KEY ||
     !isAnalyticsEnvironment()
   ) {
     return Promise.resolve(null);
@@ -45,8 +71,8 @@ export function initPostHog(): Promise<PostHog | null> {
 
   loading = import("posthog-js")
     .then(({ default: posthog }) => {
-      posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
-        api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",
+      posthog.init(POSTHOG_KEY as string, {
+        api_host: POSTHOG_HOST,
         person_profiles: "identified_only",
         capture_pageview: false,
         capture_pageleave: true,
