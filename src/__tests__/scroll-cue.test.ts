@@ -48,10 +48,41 @@ describe("the scroll cue", () => {
     expect(rule).not.toMatch(/display:\s*none|visibility:\s*hidden|opacity:\s*0/);
   });
 
-  it("is decorative, so it names nothing to a screen reader", () => {
-    // The argument itself is what follows in reading order; a screen reader does
-    // not need to be told to scroll. Also why no WCAG target-size rule applies.
+  it("answers a tap as well as a scroll", () => {
+    /*
+     * A chevron under a headline looks like a control, and readers tapped it and
+     * got nothing — two ways to read one shape, only one of which worked. It now
+     * honours both, which serves the reader who reaches for the wrong gesture
+     * better than a label would: a word only helps whoever reads it, and "tap"
+     * would be a lie on a page whose primary gesture is scrolling.
+     */
+    expect(cue).toMatch(/onClick=\{handleActivate\}/);
+    expect(cue).toMatch(/window\.scrollBy/);
+  });
+
+  it("scrolls instantly for a reader who asked for less motion", () => {
+    // The bob is stopped in CSS; the scroll it performs has to be stopped here.
+    expect(cue).toMatch(/prefers-reduced-motion: reduce/);
+    expect(cue).toMatch(/behavior:\s*reduced\s*\?\s*"auto"\s*:\s*"smooth"/);
+  });
+
+  it("is decorative, and never takes focus", () => {
+    /*
+     * The argument itself follows in reading order, so a screen reader needs no
+     * instruction to scroll — and naming this would add a string in two locales
+     * for a gesture neither keyboard nor screen-reader users make.
+     *
+     * But `tabIndex={-1}` alone is not enough: clicking a <button> focuses it,
+     * and a FOCUSED aria-hidden element makes the browser refuse the hiding
+     * ("Blocked aria-hidden on an element because its descendant retained
+     * focus"), putting an unnamed button into the accessibility tree — exactly
+     * what aria-hidden was chosen to prevent. Both halves are load-bearing:
+     * preventDefault stops the focus on pointer devices, blur covers touch.
+     */
     expect(cue).toMatch(/aria-hidden="true"/);
+    expect(cue).toMatch(/tabIndex=\{-1\}/);
+    expect(cue).toMatch(/onMouseDown=\{\(event\) => event\.preventDefault\(\)\}/);
+    expect(cue).toMatch(/\.blur\(\)/);
   });
 });
 
