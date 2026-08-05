@@ -1556,9 +1556,9 @@
       },
       "undecided": {
         "eyebrow": "The verdict stands",
-        "heading": "You've seen the verdict. What will you do with it?",
-        "cta": "Return to where you left off",
-        "whatHappened": "You stood trial {when}. The verdict was guilty, and the fine is still unpaid."
+        "heading": "You took the test. You haven't answered it.",
+        "cta": "Back to the test",
+        "whatHappened": "You stood trial {when}, and left before the decision."
       },
       "committed": {
         "heading": "If you've repented and trusted in Christ, God has forgiven you — not because you earned it, but because of what Christ did.",

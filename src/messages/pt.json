@@ -168,7 +168,7 @@
       "plea": "Declaração",
       "admitted": "Confessado",
       "contested": "Contestado",
-      "finding": "Decisão",
+      "finding": "Sentença",
       "guilty": "Culpado em todas as acusações",
       "ability": "A tua capacidade de pagar",
       "none": "Nenhuma",
@@ -469,7 +469,7 @@
           },
           {
             "question": "Ser sincero ou religioso torna alguém suficientemente bom?",
-            "answer": "A sinceridade não anula a culpa — um devedor sincero continua a dever a dívida. A Escritura diz que todas as nossas justiças são como trapo imundo diante de um Deus santo. A religião dá lustro ao exterior; o problema do tribunal continua por resolver. O que Deus exige é arrependimento e confiança Naquele que pagou a multa, não um registo maior de esforço religioso."
+            "answer": "A sinceridade não anula a culpa — um devedor sincero continua a dever a dívida. A Escritura diz que todas as nossas justiças são como trapo imundo diante de um Deus santo. A religião dá lustro ao exterior; o problema do tribunal continua por resolver. O que Deus exige é arrependimento e confiança Naquele que pagou a dívida, não um registo maior de esforço religioso."
           },
           {
             "question": "Se ninguém é bom, que esperança há?",
@@ -623,14 +623,14 @@
           },
           {
             "heading": "O tribunal",
-            "body": "Imagina que estás perante um juiz, culpado de um crime grave. A multa é enorme — muito mais do que alguma vez poderias pagar. A justiça exige pagamento. Estás prestes a ser condenado.\n\nMas então alguém entra no tribunal, abre a carteira e paga a tua multa na totalidade. Cada cêntimo. O juiz pode agora legalmente arquivar o teu caso — não porque está a ignorar a justiça, mas porque a justiça foi satisfeita. A multa foi paga.\n\nFoi isto que aconteceu na cruz.",
+            "body": "Imagina que estás perante um juiz, culpado de um crime grave. A dívida é enorme — muito mais do que alguma vez poderias pagar. A justiça exige pagamento. Estás prestes a ser condenado.\n\nMas então alguém entra no tribunal, abre a carteira e paga a tua dívida na totalidade. Cada cêntimo. O juiz pode agora legalmente arquivar o teu caso — não porque está a ignorar a justiça, mas porque a justiça foi satisfeita. A dívida foi paga.\n\nFoi isto que aconteceu na cruz.",
             "scripture": "Mas ele foi ferido por causa das nossas transgressões, e moído por causa das nossas iniquidades; o castigo que nos traz a paz estava sobre ele, e pelas suas pisaduras fomos sarados.",
             "scriptureRef": "Isaías 53:5",
             "quiz": {
               "question": "Na analogia do tribunal, porque é que o juiz pode legalmente deixar-te ir?",
               "options": [
                 "Porque decidiu ignorar os teus crimes",
-                "Porque alguém pagou a tua multa na totalidade",
+                "Porque alguém pagou a tua dívida na totalidade",
                 "Porque prometeste ser melhor"
               ],
               "correct": 1,
@@ -663,7 +663,7 @@
         "faq": [
           {
             "question": "Porque é que Jesus teve de morrer em vez de Deus simplesmente perdoar o pecado?",
-            "answer": "Porque um perdão que ignora a justiça não é misericórdia, é corrupção — um bom juiz não pode deixar passar o crime, por mais amoroso que seja. Deus é perfeitamente justo e perfeitamente amoroso ao mesmo tempo, por isso a dívida que o pecado gera tinha de ser paga, não fingida. Na cruz, Cristo pagou essa multa na totalidade, para que Deus pudesse arquivar o caso legalmente, e não a fingir que não via."
+            "answer": "Porque um perdão que ignora a justiça não é misericórdia, é corrupção — um bom juiz não pode deixar passar o crime, por mais amoroso que seja. Deus é perfeitamente justo e perfeitamente amoroso ao mesmo tempo, por isso a dívida que o pecado gera tinha de ser paga, não fingida. Na cruz, Cristo pagou essa dívida na totalidade, para que Deus pudesse arquivar o caso legalmente, e não a fingir que não via."
           },
           {
             "question": "O que aconteceu realmente a Jesus na cruz?",
@@ -698,8 +698,8 @@
             }
           },
           {
-            "heading": "A multa tem de ser paga",
-            "body": "Então porque é que Deus não passa simplesmente uma borracha por cima? Porque perdão que ignora a justiça não é bondade — é corrupção. Se um juiz arquivasse crimes provados com um encolher de ombros, ninguém lhe chamaria misericordioso. O pecado tem uma pena real, e a Bíblia di-la sem rodeios: o salário do pecado é a morte.\n\nAgora imagina o tribunal. És culpado. A multa é astronómica — mais do que ganharias em dez vidas. Não tens nada. E então alguém se adianta e diz: 'Eu pago. Tudo.' Com a multa paga, o juiz pode deixar-te ir — legalmente, justamente, com a lei plenamente satisfeita.\n\nÉ esta a única forma que o perdão pode ter para ti. A tua multa não encolhe com o tempo, com lágrimas ou com bom comportamento. Ou a pagas tu — e o pagamento é a morte — ou alguém a paga no teu lugar.",
+            "heading": "A dívida tem de ser paga",
+            "body": "Então porque é que Deus não passa simplesmente uma borracha por cima? Porque perdão que ignora a justiça não é bondade — é corrupção. Se um juiz arquivasse crimes provados com um encolher de ombros, ninguém lhe chamaria misericordioso. O pecado tem uma pena real, e a Bíblia di-la sem rodeios: o salário do pecado é a morte.\n\nAgora imagina o tribunal. És culpado. A dívida é astronómica — mais do que ganharias em dez vidas. Não tens nada. E então alguém se adianta e diz: 'Eu pago. Tudo.' Com a dívida paga, o juiz pode deixar-te ir — legalmente, justamente, com a lei plenamente satisfeita.\n\nÉ esta a única forma que o perdão pode ter para ti. A tua dívida não encolhe com o tempo, com lágrimas ou com bom comportamento. Ou a pagas tu — e o pagamento é a morte — ou alguém a paga no teu lugar.",
             "scripture": "Porque o salário do pecado é a morte, mas o dom gratuito de Deus é a vida eterna, por Cristo Jesus nosso Senhor.",
             "scriptureRef": "Romanos 6:23",
             "quiz": {
@@ -710,12 +710,12 @@
                 "Porque os teus pecados são grandes demais para perdoar"
               ],
               "correct": 1,
-              "reveal": "Um juiz que deixa passar crimes provados não é misericordioso — é corrupto. A justiça de Deus exige que a multa seja paga. O perdão teve de encontrar forma de a pagar, não de a ignorar."
+              "reveal": "Um juiz que deixa passar crimes provados não é misericordioso — é corrupto. A justiça de Deus exige que a dívida seja paga. O perdão teve de encontrar forma de a pagar, não de a ignorar."
             }
           },
           {
             "heading": "O que aconteceu na cruz",
-            "body": "Alguém se adiantou mesmo. Numa cruz fora de Jerusalém, Jesus Cristo padeceu uma vez pelos pecados — 'o justo pelos injustos.' Não estava a pagar a multa d'Ele; nunca pecou. Estava a pagar a tua.\n\nSe já leste porque é que a cruz tinha de acontecer, sabes que não foi uma tragédia que fugiu ao controlo. Foi um pagamento, planeado e com preço marcado. A justiça de Deus exigia a morte pelo pecado, e o Filho de Deus pôs-se no teu lugar no banco dos réus e recebeu Ele mesmo a sentença — para te levar a Deus.\n\nIsso significa que o pagamento pelos teus pecados não é uma hipótese. Existe, está completo, e nada se lhe pode acrescentar. A pergunta que fica já não é 'como poderia eu pagar?' — nunca poderias. É: 'como recebo o que Ele pagou?'",
+            "body": "Alguém se adiantou mesmo. Numa cruz fora de Jerusalém, Jesus Cristo padeceu uma vez pelos pecados — 'o justo pelos injustos.' Não estava a pagar a dívida d'Ele; nunca pecou. Estava a pagar a tua.\n\nSe já leste porque é que a cruz tinha de acontecer, sabes que não foi uma tragédia que fugiu ao controlo. Foi um pagamento, planeado e com preço marcado. A justiça de Deus exigia a morte pelo pecado, e o Filho de Deus pôs-se no teu lugar no banco dos réus e recebeu Ele mesmo a sentença — para te levar a Deus.\n\nIsso significa que o pagamento pelos teus pecados não é uma hipótese. Existe, está completo, e nada se lhe pode acrescentar. A pergunta que fica já não é 'como poderia eu pagar?' — nunca poderias. É: 'como recebo o que Ele pagou?'",
             "scripture": "Porque também Cristo padeceu uma vez pelos pecados, o justo pelos injustos, para levar-nos a Deus; mortificado, na verdade, na carne, mas vivificado pelo Espírito;",
             "scriptureRef": "1 Pedro 3:18",
             "quiz": {
@@ -726,7 +726,7 @@
                 "Para mostrar que o sofrimento é inevitável"
               ],
               "correct": 1,
-              "reveal": "A substituição é o coração da cruz: o Sem Pecado recebeu a sentença dos culpados. A tua multa foi paga na totalidade por outro — e é só por isso que o perdão é possível."
+              "reveal": "A substituição é o coração da cruz: o Sem Pecado recebeu a sentença dos culpados. A tua dívida foi paga na totalidade por outro — e é só por isso que o perdão é possível."
             }
           },
           {
@@ -1077,7 +1077,7 @@
           },
           {
             "heading": "Cristo pagou; podes passar da morte para a vida",
-            "body": "Eis porque a porta não tem de ser aterradora. Jesus disse com clareza: 'quem ouve a minha palavra e crê naquele que me enviou tem a vida eterna e não entrará em condenação, mas passou da morte para a vida.' Não passará — já passou, para quem esta descrição se aplica.\n\nCristo não se limitou a ensinar sobre a morte; pagou a multa que o pecado exigia, para que os culpados pudessem ser libertados legalmente, com a justiça satisfeita. Isto não é uma recompensa pelo bom comportamento — é um resgate para os culpados que deixam de defender a sua própria causa e passam a confiar na defesa dEle. Quem se arrepende do pecado e confia em Cristo já não está à espera de saber o que há atrás da porta. Já sabe, e não é juízo.\n\nNinguém tem a garantia do amanhã para tomar essa decisão mais tarde. A porta é real, e para ti ainda está aberta — hoje.",
+            "body": "Eis porque a porta não tem de ser aterradora. Jesus disse com clareza: 'quem ouve a minha palavra e crê naquele que me enviou tem a vida eterna e não entrará em condenação, mas passou da morte para a vida.' Não passará — já passou, para quem esta descrição se aplica.\n\nCristo não se limitou a ensinar sobre a morte; pagou a dívida que o pecado exigia, para que os culpados pudessem ser libertados legalmente, com a justiça satisfeita. Isto não é uma recompensa pelo bom comportamento — é um resgate para os culpados que deixam de defender a sua própria causa e passam a confiar na defesa dEle. Quem se arrepende do pecado e confia em Cristo já não está à espera de saber o que há atrás da porta. Já sabe, e não é juízo.\n\nNinguém tem a garantia do amanhã para tomar essa decisão mais tarde. A porta é real, e para ti ainda está aberta — hoje.",
             "scripture": "Na verdade, na verdade vos digo que quem ouve a minha palavra, e crê naquele que me enviou, tem a vida eterna, e não entrará em condenação, mas passou da morte para a vida.",
             "scriptureRef": "João 5:24",
             "quiz": {
@@ -1267,7 +1267,7 @@
         "slug": "how-can-i-be-saved",
         "title": "Como Posso Ser Salvo?",
         "subtitle": "Não é uma oração para recitar. É um veredicto a enfrentar — e uma Pessoa em quem confiar.",
-        "metaDescription": "Como posso ser salvo? Vê o que a Bíblia diz: não é uma oração para recitar, mas arrependimento e fé naquele que pagou a tua multa.",
+        "metaDescription": "Como posso ser salvo? Vê o que a Bíblia diz: não é uma oração para recitar, mas arrependimento e fé naquele que pagou a tua dívida.",
         "sections": [
           {
             "heading": "A pergunta que não podia esperar",
@@ -1298,8 +1298,8 @@
             }
           },
           {
-            "heading": "Ele pagou a multa",
-            "body": "Aqui a resposta deixa de ser sobre ti. Paulo não diz que Cristo morreu por pessoas que já se tinham corrigido. Diz que Deus prova o Seu amor para connosco em que Cristo morreu por nós, sendo nós ainda pecadores. Ainda culpados. Ainda sob a acusação. Foi nesse momento que Ele pagou.\n\nPensa nisto como um tribunal, não como um sentimento: a multa que a Lei exigia era real, e alguém tinha de a pagar antes de os culpados poderem sair livres, legalmente. Cristo pagou-a — não foi uma brecha na lei, nem um tecnicismo, mas uma substituição. A dívida não desapareceu. Foi paga na íntegra, por Ele, no teu lugar, antes de teres feito o que quer que fosse para a merecer.",
+            "heading": "Ele pagou a dívida",
+            "body": "Aqui a resposta deixa de ser sobre ti. Paulo não diz que Cristo morreu por pessoas que já se tinham corrigido. Diz que Deus prova o Seu amor para connosco em que Cristo morreu por nós, sendo nós ainda pecadores. Ainda culpados. Ainda sob a acusação. Foi nesse momento que Ele pagou.\n\nPensa nisto como um tribunal, não como um sentimento: a dívida que a Lei exigia era real, e alguém tinha de a pagar antes de os culpados poderem sair livres, legalmente. Cristo pagou-a — não foi uma brecha na lei, nem um tecnicismo, mas uma substituição. A dívida não desapareceu. Foi paga na íntegra, por Ele, no teu lugar, antes de teres feito o que quer que fosse para a merecer.",
             "scripture": "Mas Deus prova o seu amor para conosco, em que Cristo morreu por nós, sendo nós ainda pecadores.",
             "scriptureRef": "Romanos 5:8"
           },
@@ -1322,7 +1322,7 @@
                 "Viver uma vida maioritariamente boa"
               ],
               "correct": 1,
-              "reveal": "O ladrão na cruz não tinha fórmula nenhuma para recitar — apenas arrependimento e confiança em Cristo, e Jesus recebeu-o. Não é a fórmula de uma oração que salva; é confiar na Pessoa que pagou a multa."
+              "reveal": "O ladrão na cruz não tinha fórmula nenhuma para recitar — apenas arrependimento e confiança em Cristo, e Jesus recebeu-o. Não é a fórmula de uma oração que salva; é confiar na Pessoa que pagou a dívida."
             }
           }
         ],
@@ -1556,9 +1556,9 @@
       },
       "undecided": {
         "eyebrow": "O veredicto mantém-se",
-        "heading": "Viste o veredicto. O que vais fazer com ele?",
-        "cta": "Volta onde ficaste",
-        "whatHappened": "Estiveste em julgamento {when}. O veredicto foi culpado, e a dívida continua por pagar."
+        "heading": "Fizeste o teste. Ainda não lhe respondeste.",
+        "cta": "Voltar ao teste",
+        "whatHappened": "Estiveste em julgamento {when}, e saíste antes da decisão."
       },
       "committed": {
         "heading": "Se te arrependeste e confiaste em Cristo, Deus perdoou-te — não porque o mereceste, mas por causa do que Cristo fez.",

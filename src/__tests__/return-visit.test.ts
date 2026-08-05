@@ -11,12 +11,16 @@ import {
 /**
  * What the homepage tells a reader who dropped out and came back.
  *
- * Every test here is `it.fails`: each one describes a defect found by walking
- * the five drop points at 390×844 on a production build, and each one is
- * expected to fail until that defect is fixed. When a fix lands, `it.fails`
- * itself starts failing — which is the point. The suite stays green today and
- * cannot quietly forget these once someone does the work; the fixer is forced
- * to promote the test to a plain `it`.
+ * These began as five `it.fails` — one per defect found by walking the five drop
+ * points at 390×844 on a production build — so the suite stayed green while the
+ * defects stood, and each guard turned red the moment its defect was fixed,
+ * forcing promotion to a plain `it`. That is what happened: three were fixed in
+ * copy and promoted, and the mechanism worked exactly as intended, including on
+ * one I had not expected to clear.
+ *
+ * ONE remains `it.fails`, and it is the one no wording can fix: a reader four
+ * questions in is still indistinguishable from a stranger, because the journey
+ * record is not written until the sixth answer. That needs a data change.
  *
  * The resume machinery is NOT what is broken. It restores correctly from every
  * phase, the 30-minute window is right, and the silent restore is right. What
@@ -41,11 +45,13 @@ vi.mock("@/lib/client-storage", () => ({ emitStorageChange: vi.fn() }));
 const ROOT = join(import.meta.dirname, "..", "..");
 const read = (...p: string[]) => readFileSync(join(ROOT, ...p), "utf8");
 const en = JSON.parse(read("src", "messages", "en.json"));
+const pt = JSON.parse(read("src", "messages", "pt.json"));
 const shell = read("src", "components", "game-shell.tsx")
   .replace(/\/\*[\s\S]*?\*\//g, "")
   .replace(/\/\/.*$/gm, "");
 
 const undecided = en.home.journeyStages.undecided;
+const ptUndecided = pt.home.journeyStages.undecided;
 
 beforeEach(() => {
   storage.clear();
@@ -53,7 +59,7 @@ beforeEach(() => {
 });
 
 describe("the homepage does not claim more than the reader did", () => {
-  it.fails("does not say the verdict was seen by someone who only answered the questions", () => {
+  it("does not say the verdict was seen by someone who only answered the questions", () => {
     /*
      * Reproduced: answer question six, close the tab before tapping "See
      * verdict", return to the homepage. It reads "You've seen the verdict. What
@@ -71,15 +77,20 @@ describe("the homepage does not claim more than the reader did", () => {
      * left back to a stranger everywhere. The likelier fix is the copy claiming
      * only what the flag proves.
      */
-    const gatedOnAnswerCount = /state\.answers\.length\s*>=\s*TOTAL_QUESTIONS\s*\)\s*markTestCompleted/.test(shell);
-    const copyClaimsTheVerdictWasSeen = /seen the verdict/i.test(undecided.heading);
+    // FIXED by copy, not by moving the flag: the heading now claims only that
+    // the test was taken, which the sixth answer does prove.
+    expect(undecided.heading, "heading claims the verdict was seen").not.toMatch(
+      /seen the verdict/i,
+    );
     expect(
-      gatedOnAnswerCount && copyClaimsTheVerdictWasSeen,
-      "the flag is set by the sixth answer, but the copy claims the verdict was seen",
-    ).toBe(false);
+      undecided.whatHappened,
+      "whatHappened states the outcome, spoiling it for a reader who has not reached the verdict",
+    ).not.toMatch(/verdict was guilty/i);
+    // The trigger is deliberately unchanged — see above for why moving it is worse.
+    expect(shell).toMatch(/state\.answers\.length\s*>=\s*TOTAL_QUESTIONS\s*\)\s*markTestCompleted/);
   });
 
-  it.fails("does not tell a reader who reached grace that the fine is still unpaid", () => {
+  it("does not tell a reader who reached grace that the fine is still unpaid", () => {
     /*
      * Reproduced: drop while in grace, return to the homepage. Stage is
      * `undecided`, so the copy reads "the fine is still unpaid" — to a reader
@@ -92,17 +103,29 @@ describe("the homepage does not claim more than the reader did", () => {
      *
      * Method, not tone: this is the homepage taking back the announcement.
      */
+    /*
+     * FIXED from the copy side only, and that is the whole available fix today.
+     * `deriveStage` still cannot tell the two readers apart — nothing permanent
+     * records that grace was reached — so the one stage they share must not
+     * assert anything that is false for either of them.
+     */
     markTestCompleted();
     const afterVerdictOnly = deriveStage(readJourney());
-
-    // The best record the app can write today for someone who read all of grace
-    // and left without answering — identical, because nothing records grace.
     const afterReadingGrace = deriveStage(readJourney());
-
     expect(
-      afterVerdictOnly === afterReadingGrace && /still unpaid/i.test(undecided.whatHappened),
-      "grace-reached and verdict-only derive the same stage, and that stage says the fine is unpaid",
-    ).toBe(false);
+      afterVerdictOnly,
+      "if the stage can now distinguish grace, this test is understating what is possible",
+    ).toBe(afterReadingGrace);
+
+    // So the shared copy stays silent about the debt's state.
+    for (const [locale, copy] of [
+      ["en", undecided],
+      ["pt", ptUndecided],
+    ] as const) {
+      expect(copy.whatHappened, `${locale} contradicts grace`).not.toMatch(
+        /still unpaid|continua por pagar/i,
+      );
+    }
   });
 
   it.fails("does not treat a reader with a test in progress as a first-time visitor", () => {
@@ -124,7 +147,7 @@ describe("the homepage does not claim more than the reader did", () => {
 });
 
 describe("the homepage's offer matches what it can deliver", () => {
-  it.fails("does not promise a return it cannot keep once the session has expired", () => {
+  it("does not promise a return it cannot keep once the session has expired", () => {
     /*
      * Reproduced: age a mid-grace session past the 30-minute resume window, then
      * follow the undecided CTA. It says "Return to where you left off" and lands
@@ -137,10 +160,17 @@ describe("the homepage's offer matches what it can deliver", () => {
      * `home.journey.retakeLabel` ("Take the test again") already exists, so one
      * possible fix needs no new copy at all.
      */
-    expect(
-      /return to where you left off/i.test(undecided.cta),
-      "the CTA promises a resume that the resume window may already have discarded",
-    ).toBe(false);
+    // FIXED: the CTA now states the destination rather than promising a resume,
+    // so it is true whether the session survived the window or not.
+    for (const [locale, copy] of [
+      ["en", undecided],
+      ["pt", ptUndecided],
+    ] as const) {
+      expect(copy.cta, `${locale} CTA promises a resume it may not deliver`).not.toMatch(
+        /where you left off|onde ficaste/i,
+      );
+      expect(copy.cta.length, `${locale} CTA is empty`).toBeGreaterThan(0);
+    }
   });
 });
 
