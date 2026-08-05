@@ -21,6 +21,7 @@ function code(source: string): string {
 
 const shell = code(read("src", "components", "game-shell.tsx"));
 const invitation = code(read("src", "components", "invitation-screen.tsx"));
+const verdict = code(read("src", "components", "verdict-screen.tsx"));
 
 describe("the phase hand-off does not swallow the first gesture", () => {
   it("leaves faster than it arrives", () => {
@@ -61,6 +62,34 @@ describe("the phase hand-off does not swallow the first gesture", () => {
       shell.match(/exit=\{\{\s*opacity:\s*0,\s*transition:\s*\{\s*duration:\s*([\d.]+)/)?.[1],
     );
     expect(exitDuration).toBeGreaterThanOrEqual(0.05);
+  });
+});
+
+describe("a screen does not change what it is while it is leaving", () => {
+  it("reads graceReached once, at mount, not on every render", () => {
+    /*
+     * `showAll` — the verdict's re-read layout — is derived from graceReached.
+     * Tapping the door dispatches SHOW_GRACE, which sets that flag true WHILE
+     * this screen is still playing its exit. Read live, the departing verdict
+     * re-rendered into document mode: measured at 390×844, one frame after the
+     * tap the whole record (GUILTY, the confession, the death count, the claim)
+     * slammed over the door and stayed ~115ms until grace mounted, with the
+     * document growing 844 → 1088 underneath it.
+     *
+     * The value cannot legitimately change mid-life — "did this reader arrive
+     * having already seen grace" is settled on arrival — and the shell keys each
+     * phase, so walking back remounts this component and asks again then.
+     */
+    expect(verdict).toMatch(/const \[returning\] = useState\(state\.graceReached\)/);
+    // The live read is what caused it; it must not come back in either form.
+    expect(verdict).not.toMatch(/const returning = state\.graceReached/);
+  });
+
+  it("still gives a returning reader the whole document", () => {
+    // The fix must not turn the re-read back into a single gold question, which
+    // is the bug showAll exists to solve.
+    expect(verdict).toMatch(/const showAll = returning/);
+    expect(verdict).toMatch(/useState\(returning \? LAST_BEAT : 0\)/);
   });
 });
 

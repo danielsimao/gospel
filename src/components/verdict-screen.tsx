@@ -91,9 +91,25 @@ export function VerdictScreen({
   const state = useGameState();
   const dispatch = useGameDispatch();
   const hasTracked = useRef(false);
-  // Grace is only reachable through the full verdict, so graceReached
-  // exactly means "verdict fully seen" — re-entry replays nothing.
-  const returning = state.graceReached;
+  /*
+   * Grace is only reachable through the full verdict, so graceReached exactly
+   * means "verdict fully seen" — re-entry replays nothing.
+   *
+   * Read ONCE, at mount, and that is load-bearing rather than a micro-optimisation.
+   * Tapping the door dispatches SHOW_GRACE, which sets graceReached true — and
+   * while this screen is still playing its exit. Read live, the flag flipped
+   * mid-exit and re-rendered the departing verdict in document mode: measured at
+   * 390×844, one frame after the tap the whole record — GUILTY, the confession,
+   * the death count, the claim — slammed onto the screen over the door and stayed
+   * for ~115ms until grace mounted, with the document growing 844 → 1088 under it.
+   * The screen was showing its own re-read layout on the way out.
+   *
+   * A mount-time read is also simply the truth: "did this reader arrive here
+   * having already seen grace" cannot change while they are looking at it. The
+   * shell keys each phase, so walking back from grace remounts this component and
+   * the question is asked again then, which is the only moment it can differ.
+   */
+  const [returning] = useState(state.graceReached);
 
   // Seeded to the end for a reader coming back from grace, though showAll
   // below means they see the document rather than any single beat — this now
