@@ -288,8 +288,27 @@ export function GameShell({ messages, locale }: GameShellProps) {
     }
   }, [state.invitationResponse]);
 
+  /*
+   * `overflow-x-clip` on <main> below, never `overflow-x-hidden` — this is a
+   * touch-scroll bug, not a style preference.
+   *
+   * `overflow: hidden` on ONE axis makes the other axis compute to `auto`, so
+   * hidden turned this element into a scroll container. It then held 12px of
+   * internal overflow (the `pt-3` below), and on touch the compositor spent the
+   * reader's first swipe scrolling MAIN by those 12px instead of chaining to the
+   * document: measured on grace at 390×844 with touch emulation,
+   * main.scrollTop 12 / window.scrollY 0, on a 3,871px page. "I cannot scroll."
+   *
+   * `clip` clips exactly the same overflow without ever becoming a scroll
+   * container, so the gesture reaches the page. The full-bleed turn section in
+   * grace (`mx-[calc(50%-50vw)]`) still needs the clipping, which is why this is
+   * not simply removed.
+   *
+   * A wheel never reproduced it — desktop scrolling chains straight to the
+   * document — so every measurement taken with a mouse looked correct.
+   */
   return (
-    <main className="relative min-h-dvh overflow-x-hidden bg-[#060404] flex flex-col">
+    <main className="relative min-h-dvh overflow-x-clip bg-[#060404] flex flex-col">
       {/* Radial vignette */}
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
 

@@ -18,6 +18,7 @@ const strip = (s: string) =>
   s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
 
 const cue = strip(read("src", "components", "shared", "scroll-cue.tsx"));
+const shell = strip(read("src", "components", "game-shell.tsx"));
 const grace = strip(read("src", "components", "grace-screen.tsx"));
 const verdict = strip(read("src", "components", "verdict-screen.tsx"));
 const css = read("src", "app", "globals.css");
@@ -115,6 +116,28 @@ describe("the scroll cue", () => {
     expect(cue).toMatch(/tabIndex=\{-1\}/);
     expect(cue).toMatch(/onMouseDown=\{\(event\) => event\.preventDefault\(\)\}/);
     expect(cue).toMatch(/\.blur\(\)/);
+  });
+});
+
+describe("the flow's shell does not eat a touch gesture", () => {
+  it("clips horizontally without becoming a scroll container", () => {
+    /*
+     * `overflow: hidden` on ONE axis makes the other compute to `auto`, which
+     * turned <main> into a scroll container holding 12px of internal overflow
+     * (its own `pt-3`). On touch the compositor spent the reader's first swipe
+     * scrolling MAIN by those 12px instead of chaining to the document: measured
+     * on grace at 390×844 with touch emulation, main.scrollTop 12 /
+     * window.scrollY 0, on a 3,871px page. The page could not be scrolled.
+     *
+     * `clip` clips the same overflow and never scrolls, so the gesture reaches
+     * the page. It cannot simply be dropped — grace's full-bleed turn
+     * (`mx-[calc(50%-50vw)]`) relies on the clipping.
+     *
+     * A wheel chains straight to the document and never reproduced this, which
+     * is why it survived every desktop measurement.
+     */
+    expect(shell).toMatch(/<main className="[^"]*overflow-x-clip/);
+    expect(shell).not.toMatch(/<main className="[^"]*overflow-x-hidden/);
   });
 });
 
