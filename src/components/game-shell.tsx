@@ -288,8 +288,27 @@ export function GameShell({ messages, locale }: GameShellProps) {
     }
   }, [state.invitationResponse]);
 
+  /*
+   * `overflow-x-clip` on <main> below, never `overflow-x-hidden` — this is a
+   * touch-scroll bug, not a style preference.
+   *
+   * `overflow: hidden` on ONE axis makes the other axis compute to `auto`, so
+   * hidden turned this element into a scroll container. It then held 12px of
+   * internal overflow (the `pt-3` below), and on touch the compositor spent the
+   * reader's first swipe scrolling MAIN by those 12px instead of chaining to the
+   * document: measured on grace at 390×844 with touch emulation,
+   * main.scrollTop 12 / window.scrollY 0, on a 3,871px page. "I cannot scroll."
+   *
+   * `clip` clips exactly the same overflow without ever becoming a scroll
+   * container, so the gesture reaches the page. The full-bleed turn section in
+   * grace (`mx-[calc(50%-50vw)]`) still needs the clipping, which is why this is
+   * not simply removed.
+   *
+   * A wheel never reproduced it — desktop scrolling chains straight to the
+   * document — so every measurement taken with a mouse looked correct.
+   */
   return (
-    <main className="relative min-h-dvh overflow-x-hidden bg-[#060404] flex flex-col">
+    <main className="relative min-h-dvh overflow-x-clip bg-[#060404] flex flex-col">
       {/* Radial vignette */}
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
 
@@ -326,7 +345,27 @@ export function GameShell({ messages, locale }: GameShellProps) {
             key={state.phase}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, transition: { duration: 0.09, ease: "linear" } }}
+            /*
+             * The exit is deliberately faster than the entrance, and that gap is
+             * the point rather than a stylistic flourish.
+             *
+             * `mode="wait"` holds the incoming phase until the outgoing one has
+             * finished leaving, so the exit duration is dead time in which the
+             * next screen DOES NOT EXIST. Measured on verdict → grace at
+             * 390×844: with a 0.2s exit the document stayed one viewport tall
+             * and wheel input moved nothing until ~190ms, when grace finally
+             * mounted. A swipe takes roughly 150–300ms, so the reader's first
+             * gesture landed entirely inside that window and produced nothing —
+             * "I tried to scroll and it ignored me".
+             *
+             * CPU throttling at 4× and 6× barely moved those numbers, which is
+             * what identified it: this is a wall-clock animation, not work.
+             *
+             * Grace is where it bites, because grace is the only screen in the
+             * flow taller than one viewport — everywhere else there is nothing
+             * to scroll, so nobody could feel it.
+             */
             transition={{ duration: 0.2, ease: EASE_OUT_STRONG }}
             className="flex flex-1 flex-col"
           >
@@ -361,15 +400,11 @@ export function GameShell({ messages, locale }: GameShellProps) {
               />
             )}
 
+            {/* No onBack: the decision screen carries no walk-back link. The
+                browser gesture still works, and grace — one screen earlier —
+                ends with its own. */}
             {state.phase === "invitation" && (
-              <InvitationScreen
-                messages={messages}
-                locale={locale}
-                onBack={() => {
-                  viaLinkRef.current = true;
-                  window.history.back();
-                }}
-              />
+              <InvitationScreen messages={messages} locale={locale} />
             )}
           </m.div>
         </AnimatePresence>

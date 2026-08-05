@@ -147,6 +147,14 @@
   to { transform: translateX(-50%); }
 }
 
+/* "There is more below this." Small travel on purpose: enough to be caught in
+   peripheral vision, not enough to compete with the gold headline it sits under.
+   See components/shared/scroll-cue.tsx. */
+@keyframes scroll-cue {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
 @keyframes pulse-ring {
   0% { r: 4; opacity: 0.9; }
   100% { r: 24; opacity: 0; }
@@ -190,6 +198,14 @@
   [data-slot="button"]::before {
     animation: none !important;
     opacity: 1;
+  }
+  /* Stops moving, stays visible — the crawl's precedent below. The motion is
+     what makes this cue work, but a reader who asked for less of it still has to
+     know the page continues, and hiding it would leave grace looking like it
+     ends at the announcement. */
+  [data-slot="scroll-cue"] {
+    animation: none !important;
+    transform: none;
   }
   /* The crawl runs for the whole visit, which makes it the least acceptable
      motion on the page to leave running. Parked at the start rather than
