@@ -18,6 +18,7 @@ const strip = (s: string) =>
   s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
 
 const cue = strip(read("src", "components", "shared", "scroll-cue.tsx"));
+const advance = strip(read("src", "lib", "advance-section.ts"));
 const shell = strip(read("src", "components", "game-shell.tsx"));
 const grace = strip(read("src", "components", "grace-screen.tsx"));
 const verdict = strip(read("src", "components", "verdict-screen.tsx"));
@@ -60,6 +61,14 @@ describe("the scroll cue", () => {
     expect(cue).toMatch(/onClick=\{handleActivate\}/);
   });
 
+  it("delegates the hop, so the shape and the tap surface cannot disagree", () => {
+    // Grace's full-screen tap surface performs the identical move. Two copies of
+    // "what counts as the next section" is how they start sending a tap and a
+    // chevron to different places.
+    expect(cue).toMatch(/advanceSection\(\)/);
+    expect(cue).not.toMatch(/scrollIntoView|scrollBy/);
+  });
+
   it("advances by a section, not by a fixed distance", () => {
     /*
      * Grace's movements are 832, 509, 692, 529, 506, 104, 440 and 248px tall —
@@ -72,31 +81,31 @@ describe("the scroll cue", () => {
      * carries 135–241px of its own padding, so aligning tops parks a screenful
      * of padding with the words below it.
      */
-    expect(cue).toMatch(/querySelectorAll\("section"\)/);
-    expect(cue).toMatch(/scrollIntoView\(\{\s*block:\s*"center"/);
+    expect(advance).toMatch(/querySelectorAll\("section"\)/);
+    expect(advance).toMatch(/scrollIntoView\(\{\s*block:\s*"center"/);
   });
 
   it("does not mistake the section the reader is already on for the next one", () => {
     // The shell pads the flow by 12px, so the current section reports a top of
     // 12. A `top > 0` test matched it and re-centred the announcement instead of
     // advancing — the half-viewport threshold is what makes "next" mean next.
-    expect(cue).toMatch(/top > window\.innerHeight \/ 2/);
+    expect(advance).toMatch(/top > window\.innerHeight \/ 2/);
   });
 
   it("still reaches the way out of a document with no sections", () => {
     // The verdict's re-read document is built from divs and overflows by only
     // 244px; one viewport of scroll clamps at the end, which is exactly enough
     // to bring its forward control into view.
-    expect(cue).toMatch(/window\.scrollBy/);
+    expect(advance).toMatch(/window\.scrollBy/);
   });
 
   it("scrolls instantly for a reader who asked for less motion", () => {
     // The bob is stopped in CSS; the scroll it performs has to be stopped here.
-    expect(cue).toMatch(/prefers-reduced-motion: reduce/);
-    expect(cue).toMatch(/reduced\s*\?\s*\("auto" as const\)\s*:\s*\("smooth" as const\)/);
+    expect(advance).toMatch(/prefers-reduced-motion: reduce/);
+    expect(advance).toMatch(/reduced\s*\?\s*\("auto" as const\)\s*:\s*\("smooth" as const\)/);
     // …and that choice has to reach BOTH paths, the section hop and the fallback.
-    expect(cue).toMatch(/scrollIntoView\(\{[^}]*behavior\s*\}\)/);
-    expect(cue).toMatch(/scrollBy\(\{[^}]*behavior\s*\}\)/);
+    expect(advance).toMatch(/scrollIntoView\(\{[^}]*behavior\s*\}\)/);
+    expect(advance).toMatch(/scrollBy\(\{[^}]*behavior\s*\}\)/);
   });
 
   it("is decorative, and never takes focus", () => {
@@ -116,6 +125,86 @@ describe("the scroll cue", () => {
     expect(cue).toMatch(/tabIndex=\{-1\}/);
     expect(cue).toMatch(/onMouseDown=\{\(event\) => event\.preventDefault\(\)\}/);
     expect(cue).toMatch(/\.blur\(\)/);
+  });
+});
+
+describe("grace carries the verdict's gesture across the seam", () => {
+  /*
+   * A reader arrives at grace having tapped five times — the verdict is a
+   * full-screen button and every beat advances from anywhere on it. Grace then
+   * changed the contract silently: a tester tapped the middle of the
+   * announcement, got nothing, and was stranded on the screen whose job is to
+   * answer the question the screen before it just asked.
+   */
+  it("makes the whole screen a tap target", () => {
+    expect(grace).toMatch(/data-slot="grace-tap-surface"/);
+    expect(grace).toMatch(/className="fixed inset-0 z-30/);
+    expect(grace).toMatch(/advanceSection\(containerRef\.current\)/);
+  });
+
+  it("retires the surface at the last section, where the real choice is", () => {
+    /*
+     * An invisible control over the Continue button and the walk-back link is
+     * the one place this trade stops being worth it. The signal is `shown`,
+     * already set by the reveal observer — a second mechanism watching the same
+     * thing is how the two get to disagree.
+     */
+    expect(grace).toMatch(/const reachedTheWayOut = shown\[REVEAL_SECTIONS - 1\]/);
+    expect(grace).toMatch(/\{!reachedTheWayOut && \(/);
+  });
+
+  it("ignores a press that travelled, so a flick is not a tap", () => {
+    /*
+     * Browsers suppress the click that ends a scroll drag, but a short flick
+     * that barely moves the page still delivers one — and with the viewport as
+     * the control that jumps a section the reader did not ask for, mid-gesture.
+     */
+    expect(grace).toMatch(/onPointerDown=\{handleSurfaceDown\}/);
+    expect(grace).toMatch(/onPointerUp=\{handleSurfaceUp\}/);
+    expect(grace).toMatch(/travelled > TAP_SLOP\) return/);
+  });
+
+  it("keeps the surface out of the accessibility tree, and out of tab order", () => {
+    // Space and PageDown already do the right thing on a document that scrolls,
+    // and everything the surface reaches is next in reading order anyway. Both
+    // halves of the focus dance are load-bearing — see scroll-cue.tsx.
+    const slot = grace.indexOf('data-slot="grace-tap-surface"');
+    expect(slot, "no tap surface to check").toBeGreaterThan(-1);
+    const surface = grace.slice(grace.lastIndexOf("<button", slot), grace.indexOf("/>", slot));
+    expect(surface).toMatch(/aria-hidden="true"/);
+    expect(surface).toMatch(/tabIndex=\{-1\}/);
+    expect(grace).toMatch(/onMouseDown=\{\(event\) => event\.preventDefault\(\)\}/);
+    expect(grace).toMatch(/currentTarget\.blur\(\)/);
+  });
+
+  it("keeps the cue alive for as long as there is more below", () => {
+    /*
+     * The cue used to live inside the announcement and end with it, so the
+     * affordance vanished exactly when the reader still had five movements to
+     * travel. Fixed to the viewport, it retires with the surface.
+     */
+    expect(grace).toMatch(/pointer-events-none fixed inset-x-0 bottom-\[calc\([^\]]*--consent-h/);
+    expect(grace).not.toMatch(/absolute bottom-\[calc\([^\]]*--consent-h[^\]]*\]"\s*>\s*<ScrollCue/);
+  });
+
+  it("reports the tap, because the surface costs something", () => {
+    // Text selection on this screen is the price. `grace_tap_advance` is how we
+    // find out whether anything was bought with it.
+    expect(grace).toMatch(/trackGraceTapAdvance\(\)/);
+  });
+
+  it("scopes the hop to grace's own sections", () => {
+    /*
+     * The consent banner is a <section> — deliberately, so its text belongs to a
+     * landmark — fixed to the bottom of the viewport and LAST in document order.
+     * On the final section it is the only thing matching "starts in the lower
+     * half of the screen", and scrollIntoView on a fixed element does nothing:
+     * the tap silently fails. Guarded twice, because the verdict's cue passes no
+     * root and met the same banner.
+     */
+    expect(advance).toMatch(/\(root \?\? document\)\.querySelectorAll/);
+    expect(advance).toMatch(/getComputedStyle\(section\)\.position !== "fixed"/);
+    expect(grace).toMatch(/ref=\{containerRef\}/);
   });
 });
 

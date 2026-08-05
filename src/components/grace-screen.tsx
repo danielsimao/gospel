@@ -11,7 +11,9 @@ import { trackGraceViewed } from "@/lib/analytics";
 import {
   trackGraceRevealed,
   trackGraceBeatRevealed,
+  trackGraceTapAdvance,
 } from "@/lib/eternity-analytics";
+import { advanceSection } from "@/lib/advance-section";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import { useIsomorphicLayoutEffect } from "@/lib/use-isomorphic-layout-effect";
 
@@ -58,8 +60,31 @@ interface GraceScreenProps {
  * labels, and no way to feel the case accumulate.
  *
  * The courtroom analogy is delivered out loud as continuous speech, and it
- * persuades by accumulation. So it is delivered that way here. One tap remains
- * in grace, and it is the one that leaves for the decision.
+ * persuades by accumulation. So it is delivered that way here: nothing is
+ * withheld, and no gate stands between one movement and the next.
+ *
+ * ── Tapping, which is not a gate ────────────────────────────────────────────
+ *
+ * A reader arrives here having tapped five times — the verdict is a full-screen
+ * button and every beat advances from anywhere on it. Grace then changed the
+ * contract without saying so, and a tester duly tapped the middle of the
+ * announcement, got nothing, and was stranded on the one screen in the flow
+ * whose job is to answer a question the screen before it just asked.
+ *
+ * So the gesture carries over: the whole screen is a tap target that moves the
+ * page on by one section. It is deliberately NOT the accordion coming back.
+ * Every word is in the DOM from the first paint, a scroll reaches all of it,
+ * and the tap only moves the viewport — it withholds nothing, which is the
+ * distinction that matters here. Withholding is the Law's instrument.
+ *
+ * The surface retires at the last section, where the Continue button and the
+ * walk-back link live: an invisible control over a real choice is the one place
+ * this trade stops being worth it.
+ *
+ * Cost, stated plainly: text cannot be selected on this screen while the
+ * surface is up. There is nothing to copy and no link to reach in the argument,
+ * so it is paid willingly — and `grace_tap_advance` reports whether anything
+ * was bought with it.
  *
  * ── The shape, and why gold sits where it does ──────────────────────────────
  *
@@ -239,6 +264,49 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
     dispatch({ type: "SHOW_INVITATION" });
   }
 
+  /*
+   * A tap is a press that did not travel.
+   *
+   * Browsers already suppress the click that ends a scroll drag, but a short
+   * flick that barely moves the page is close enough to a tap that the click
+   * survives — and on a screen where the whole viewport is the control, that
+   * would jump the reader a section they did not ask for, mid-gesture. Ten
+   * pixels is the same slop a native tap allows.
+   */
+  const pressRef = useRef<{ x: number; y: number } | null>(null);
+  const TAP_SLOP = 10;
+
+  /** Scopes the section hop to grace's own sections — see lib/advance-section
+      for what an unscoped query matches instead. */
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  function handleSurfaceDown(event: React.PointerEvent<HTMLButtonElement>) {
+    pressRef.current = { x: event.clientX, y: event.clientY };
+  }
+
+  function handleSurfaceUp(event: React.PointerEvent<HTMLButtonElement>) {
+    const start = pressRef.current;
+    pressRef.current = null;
+    if (!start) return;
+    const travelled = Math.hypot(event.clientX - start.x, event.clientY - start.y);
+    if (travelled > TAP_SLOP) return;
+
+    /*
+     * Blur for the same reason the cue does it: clicking a <button> focuses it,
+     * and a focused aria-hidden element makes the browser refuse the hiding and
+     * put an unnamed control into the accessibility tree.
+     */
+    event.currentTarget.blur();
+    if (advanceSection(containerRef.current)) trackGraceTapAdvance();
+  }
+
+  /*
+   * The way-out section having been reached is the signal to retire the tap
+   * surface — and `shown` already carries it, set by the same observer that
+   * reveals the section. No second mechanism, and no scroll listener.
+   */
+  const reachedTheWayOut = shown[REVEAL_SECTIONS - 1];
+
   const setSectionRef = (index: number) => (el: HTMLElement | null) => {
     sectionRefs.current[index] = el;
   };
@@ -265,7 +333,7 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
         }}
       />
 
-      <div className="relative z-10 mx-auto w-full max-w-lg px-5 sm:px-6">
+      <div ref={containerRef} className="relative z-10 mx-auto w-full max-w-lg px-5 sm:px-6">
         {/*
          * 1 · The announcement.
          *
@@ -284,11 +352,7 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
          * child claiming a full viewport on top of that scrolls by exactly that
          * much. Hence the subtraction.
          */}
-        {/* `relative` is load-bearing: the scroll cue below is absolutely
-            positioned, and without a containing block here it resolved against
-            the page wrapper and landed 3,367px down — at the foot of the whole
-            argument, where a cue to start scrolling is worse than none. */}
-        <section className="relative flex min-h-[calc(100dvh-0.75rem)] flex-col items-center justify-center text-center">
+        <section className="flex min-h-[calc(100dvh-0.75rem)] flex-col items-center justify-center text-center">
           <m.span
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -306,32 +370,6 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
             </span>
           </m.span>
 
-          {/*
-           * A chevron rather than a word: the gesture is universal, and a label
-           * here would be new copy in both locales for something the shape
-           * already says.
-           *
-           * It moves, and that is the load-bearing part. Measured at 390×844:
-           * this section is 832px inside an 844px viewport and the next one
-           * begins at exactly 844 — nothing intrudes, by one pixel of layout.
-           * That is a false bottom, and the only thing arguing against it was a
-           * static 10px mark. Making the next section peek instead would mean
-           * cutting the announcement by roughly a quarter (its own 18vh of top
-           * padding puts its first words 152px below the fold, and the reveal
-           * seeding at 0.9 would hide them anyway), and the announcement
-           * standing alone in a full viewport is the point of it.
-           *
-           * So the cue carries the whole job, and motion is what makes a cue
-           * work. See components/shared/scroll-cue.tsx.
-           */}
-          <m.span
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.1 }}
-            className="absolute bottom-[calc(3.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))]"
-          >
-            <ScrollCue />
-          </m.span>
         </section>
 
         {/*
@@ -496,6 +534,65 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
           </button>
         </section>
       </div>
+
+      {/*
+       * The tap surface, and the cue that names it.
+       *
+       * Two elements rather than one because a <button> cannot contain a
+       * <button>: the surface takes the taps, and the cue — the codebase's
+       * pointer-events-none wrapper idiom, as on the verdict document — sits
+       * above it and stays the visible affordance.
+       *
+       * Both retire together at the last section. The cue used to live inside
+       * the announcement and end with it, which meant the affordance vanished
+       * exactly when the reader had five more movements to travel; it is fixed
+       * to the viewport now, so it keeps saying "there is more below" for as
+       * long as that is true.
+       *
+       * z-30 puts the surface over the argument and under the consent banner's
+       * z-50 — the banner's own buttons must stay reachable.
+       */}
+      {!reachedTheWayOut && (
+        <>
+          <button
+            type="button"
+            /* Hidden from assistive tech and out of tab order together, for the
+               reason scroll-cue.tsx sets out: everything this reaches is already
+               next in reading order, and space/PageDown already do the right
+               thing on a document that scrolls. It is a shortcut for a thumb,
+               never the only route. */
+            aria-hidden="true"
+            tabIndex={-1}
+            data-slot="grace-tap-surface"
+            onPointerDown={handleSurfaceDown}
+            onPointerUp={handleSurfaceUp}
+            onMouseDown={(event) => event.preventDefault()}
+            className="fixed inset-0 z-30 cursor-pointer bg-transparent"
+          />
+          <m.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 1.1 }}
+            className="pointer-events-none fixed inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] z-40 flex justify-center"
+          >
+            {/* A scrim, because the cue no longer sits on an empty screen. On
+                the announcement it had a viewport to itself; travelling with the
+                reader it lands on body text — measured over the John 3:16
+                blockquote — and gold-on-italic at this size is noise for both.
+                Radial rather than a full-width band: it separates the chevron
+                without dimming a stripe of the argument. */}
+            <span
+              className="flex items-center justify-center px-8 py-4"
+              style={{
+                background:
+                  "radial-gradient(ellipse at center, rgba(6,4,4,0.92) 0%, rgba(6,4,4,0.6) 45%, transparent 72%)",
+              }}
+            >
+              <ScrollCue />
+            </span>
+          </m.span>
+        </>
+      )}
     </div>
   );
 }
