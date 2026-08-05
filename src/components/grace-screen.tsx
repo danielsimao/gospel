@@ -5,6 +5,7 @@ import { m } from "framer-motion";
 import { useGameDispatch, useGameState } from "@/components/game-provider";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { GraceRecord } from "@/components/grace-record";
+import { ScrollCue } from "@/components/shared/scroll-cue";
 import { buildRecord } from "@/lib/confession";
 import { trackGraceViewed } from "@/lib/analytics";
 import {
@@ -305,22 +306,31 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
             </span>
           </m.span>
 
-          {/* A chevron rather than a word: the gesture is universal, and a
-              label here would be new copy in both locales for something the
-              shape already says. Decorative, so the argument below is what a
-              screen reader meets next. */}
+          {/*
+           * A chevron rather than a word: the gesture is universal, and a label
+           * here would be new copy in both locales for something the shape
+           * already says.
+           *
+           * It moves, and that is the load-bearing part. Measured at 390×844:
+           * this section is 832px inside an 844px viewport and the next one
+           * begins at exactly 844 — nothing intrudes, by one pixel of layout.
+           * That is a false bottom, and the only thing arguing against it was a
+           * static 10px mark. Making the next section peek instead would mean
+           * cutting the announcement by roughly a quarter (its own 18vh of top
+           * padding puts its first words 152px below the fold, and the reveal
+           * seeding at 0.9 would hide them anyway), and the announcement
+           * standing alone in a full viewport is the point of it.
+           *
+           * So the cue carries the whole job, and motion is what makes a cue
+           * work. See components/shared/scroll-cue.tsx.
+           */}
           <m.span
-            aria-hidden="true"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 1.1 }}
-            className="absolute bottom-[calc(3.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] flex flex-col items-center gap-2"
+            className="absolute bottom-[calc(3.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))]"
           >
-            <span className="h-8 w-px bg-gradient-to-b from-transparent to-[#D4A843]/40" />
-            {/* Two borders on a rotated square. An SVG would need a title to
-                satisfy the a11y lint, and titling a decoration is worse than
-                not having one — this has no accessible surface at all. */}
-            <span className="size-[7px] rotate-45 border-r border-b border-[#D4A843]/55" />
+            <ScrollCue />
           </m.span>
         </section>
 

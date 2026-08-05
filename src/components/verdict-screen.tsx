@@ -6,6 +6,7 @@ import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { trackVerdictReached } from "@/lib/analytics";
 import { splitConfession, type ConfessionTone } from "@/lib/confession";
+import { ScrollCue } from "@/components/shared/scroll-cue";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { TestMessages } from "@/lib/types";
 
@@ -116,6 +117,29 @@ export function VerdictScreen({
    * chain is complete, and for the same reason.
    */
   const showAll = returning;
+
+  /*
+   * The re-read document overflows, and its only way forward is at the bottom.
+   *
+   * Measured at 390×844: the document is 1088px and the "Is there any hope?"
+   * button sits at y=878 — 34px below the fold, invisible. The full-screen
+   * control does not exist in this mode (deliberately: see the affordance note
+   * below), so a reader who clicked expecting the sequence's behaviour got
+   * nothing at all, with no cue that scrolling was required. That is a dead end,
+   * not a design.
+   *
+   * A cue fixes it, but only while it is true. Once the reader has scrolled it
+   * would be pointing at a control they can already see, so it retires after the
+   * first movement. `once: true` on the listener, and it never runs at all in
+   * the sequence, where nothing scrolls.
+   */
+  const [hasScrolled, setHasScrolled] = useState(false);
+  useEffect(() => {
+    if (!showAll) return;
+    const onScroll = () => setHasScrolled(true);
+    window.addEventListener("scroll", onScroll, { passive: true, once: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [showAll]);
 
   const advance = useCallback(() => {
     setBeatIndex((i) => Math.min(i + 1, LAST_BEAT));
@@ -273,11 +297,22 @@ export function VerdictScreen({
             >
               {testMessages.verdict.bridgeButton}
             </span>
-            {/* Down, not forward. Grace is underneath this, and the old button
-                carried the same direction on its arrow. */}
-            <span aria-hidden="true" className="text-2xl text-[#D4A843]/60 sm:text-3xl">
-              &darr;
-            </span>
+            {/*
+             * No arrow here, and its absence is the decision.
+             *
+             * A down arrow used to sit under this line, reasoned as "down, not
+             * forward — grace is underneath this". True of the narrative, wrong
+             * about the instrument: on this beat the whole screen is a button
+             * and the gesture is a TAP, while an arrow pointing down is the
+             * page's own vocabulary for "scroll". The persistent affordance
+             * below already says click-or-space, so the arrow was the only
+             * thing on screen contradicting it, and readers reported trying to
+             * scroll here and getting nothing.
+             *
+             * The arrow survives in the showAll document below, where it is
+             * finally telling the truth: there the forward control really is
+             * further down the page, and scrolling really is required.
+             */}
           </m.span>
         )}
       </button>
@@ -405,12 +440,23 @@ export function VerdictScreen({
             >
               {testMessages.verdict.bridgeButton}
             </span>
+            {/* Kept here, unlike the sequence's. On the document the arrow is
+                telling the truth: this control really is further down the page. */}
             <span aria-hidden="true" className="text-2xl text-[#D4A843]/60">
               &darr;
             </span>
           </button>
         )}
       </div>
+
+      {/* Fixed to the viewport, not the document: the button it points at is
+          below the fold, so a cue positioned in the document would be below the
+          fold with it. Retires on the first scroll — see hasScrolled above. */}
+      {showAll && !hasScrolled && (
+        <div className="pointer-events-none fixed inset-x-0 bottom-[calc(1.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] z-20 flex justify-center">
+          <ScrollCue />
+        </div>
+      )}
 
       {/* Where the reader is, and the first signal that the colour of the flow
           has changed: the last dot is gold, and it turns a beat before the
