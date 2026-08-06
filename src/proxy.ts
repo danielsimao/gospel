@@ -60,7 +60,15 @@ export default function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Everything except Next internals, API routes, and files with extensions
-  // (icons, sitemap.xml, robots.txt, manifest.webmanifest, images, …)
-  matcher: ["/((?!_next|api|.*\\..*).*)"],
+  // Everything except Next internals, API routes, printed short links, and
+  // files with extensions (icons, sitemap.xml, robots.txt, manifest.webmanifest,
+  // images, …)
+  //
+  // `go/` carries the trailing slash deliberately. A bare `go` in the lookahead
+  // is a prefix match, so it would also exempt /gospel and anything else
+  // beginning with those two letters — and the exemption is invisible until a
+  // route by that name exists. The short links are locale-less by design: the
+  // handler picks the locale from accept-language, so a scan that came through
+  // here first would spend a redirect reaching /en/go/… before resolving.
+  matcher: ["/((?!_next|api|go/|.*\\..*).*)"],
 };

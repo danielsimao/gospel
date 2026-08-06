@@ -57,7 +57,22 @@ export default async function CardsPage({ params }: Props) {
 
   const { cards, question } = await getCardsData(locale);
 
-  const testUrl = `${CARD_URL_BASE}/${locale}/test?utm_source=tract&utm_medium=print&utm_campaign=street-card`;
+  /*
+   * A code, not a page.
+   *
+   * These cards used to carry `/{locale}/test?utm_source=tract&utm_medium=print
+   * &utm_campaign=street-card` — a destination and a campaign name printed on
+   * paper, unchangeable. `/go/card` resolves both at request time, so a card in
+   * someone's wallet follows the site if the test ever moves or the campaign is
+   * renamed. Cards already printed keep working: the old URL is a real page.
+   *
+   * Two things fall out of it. The locale comes off the URL, so a card handed to
+   * an English speaker in Portugal opens in English rather than whatever locale
+   * the sheet happened to be printed from. And the URL is far shorter, which
+   * makes a coarser QR — fewer modules at the same size, so it scans from
+   * further away and survives worse printing.
+   */
+  const testUrl = `${CARD_URL_BASE}/go/card`;
   // Build-time QR (SVG string) — the page stays fully static.
   const qrSvg = await QRCode.toString(testUrl, {
     type: "svg",
@@ -108,7 +123,9 @@ export default async function CardsPage({ params }: Props) {
             </div>
             <div
               className="h-[26mm] w-[26mm] shrink-0 self-center rounded-sm bg-white p-[1.5mm]"
-              // Build-time-generated QR for this locale's test URL — safe.
+              // Build-time-generated QR for the /go/card short link — safe, and
+              // the same code on every locale's sheet now that the destination
+              // resolves the locale itself.
               dangerouslySetInnerHTML={{ __html: qrSvg }}
             />
           </div>
