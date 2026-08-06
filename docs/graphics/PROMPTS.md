@@ -1,159 +1,142 @@
 # Image prompts
 
-Every raster asset on this site is generated, and every one of them was
-generated from a prompt in this file. Two rules follow from that:
+Every raster asset on this site is generated, and every one was generated from
+a prompt in this file. Two rules follow:
 
 - **Add the prompt here before the image lands in `public/`.** An asset whose
-  prompt is lost cannot be regenerated at a different size, in a different
-  crop, or with one constraint changed — and the next person will write a worse
-  prompt from scratch rather than editing a good one.
+  prompt is lost cannot be regenerated at another size, in another crop, or
+  with one constraint changed — and the next person writes a worse prompt from
+  scratch rather than editing a good one.
 - **The treatment is not in the prompt.** Everything here is a raw generation.
-  Desaturating, contrast-crushing, encoding to AVIF/WebP and damping to 8–16%
-  opacity happens in code, and is recorded beside the asset that uses it.
+  Desaturating, contrast-crushing, AVIF/WebP encoding and damping to 8-16%
+  opacity happens in code, recorded beside the asset that uses it.
+
+## How to run them
+
+**One prompt, one fresh chat.** Not a style preference — it is what makes them
+work:
+
+- More than one at a time and the model drops constraints.
+- Pasted into a chat that already holds an image, the model reads the prompt as
+  an *edit request* and refuses for want of a source. Every block opens with
+  **"Generate a new image."** — keep that line.
+
+Each block is **self-contained**: colours, composition, exclusions and style are
+all inside it, because a prompt pasted alone is all the model ever sees. Never
+strip the "do not include" list — it is what keeps gavels, scales and stock
+crosses out.
+
+Ask for the largest resolution available, PNG. Send results raw — no cropping,
+no colour correction, no format conversion.
 
 Two assets predate this file and are already in the flow: the courtroom shaft
 (grace's turn panel, `public/courtroom.avif`) and the paper texture (the record
-card, `public/paper.avif`). Their prompts are in the session that made them;
-regenerate from #4's shape if either is ever needed again.
-
----
-
-Six prompts. **One prompt, one fresh chat** — and that is not a style
-preference, it is what makes them work:
-
-- Pasting more than one at a time makes the model drop constraints.
-- Pasting into a chat that already holds an image makes it read the prompt as
-  an *edit request*, and it refuses for want of a source. Every block below
-  therefore opens with **"Generate a new image."** — keep that line.
-
-Ask for the largest resolution available, PNG.
-
-**Reject and regenerate if you see any of:** people, faces, hands, lettering or
-numerals of any kind, a gavel, scales of justice, a blindfolded figure, a cross
-as a decorative motif, warm brown "biblical" colour, lens flare, or a visible
-border/frame around the image.
-
-Everything below is destined for a **near-black page** (`#060404`) and will be
-desaturated, contrast-crushed and dropped to 8–16% opacity. So: **send it darker
-and more contrasted than looks right on its own.** Gold, where it appears, is
-`#D4A843`.
-
-Two of these (1 and 2) are things I would otherwise draw in code. Generated as
-images they will be *atmospheric rather than exact* — an image model cannot
-count, so the tally strokes and the dot field will not have a countable number
-of marks. That is fine for a background texture and fatal for anything that
-claims to be a real count, so these will be used as texture only.
+card, `public/paper.avif`).
 
 ---
 
 ## 1 · A parede de talhos — the tally wall
 
-**Where it goes:** behind the score band on the homepage, at ~10% opacity, red
-strokes only. The single gold stroke is added in code on top, so the count can
-be honest.
+**Where it goes:** behind the score band on the homepage at ~10% opacity, red-tinted in code. The single gold stroke is drawn in code on top, so the count stays honest.
 
-> **Generate a new image.**
+> Generate a new image.
 >
-> A photograph of hundreds of thin white chalk tally marks scratched onto a
-> near-black wall, in groups of five with the fifth struck diagonally across the
-> other four. The marks are hand-made and slightly uneven, arranged in rough
-> horizontal rows filling the entire frame edge to edge. Near-black background,
-> almost monochrome, extremely high contrast, the marks dim rather than bright.
-> No text, no numerals, no people, no border. Square composition, evenly dense
-> across the whole image with no obvious centre. Photographic, not illustration.
+> A photograph of hundreds of thin chalk tally marks scratched onto a near-black wall, in groups of five with the fifth struck diagonally across the other four. The marks are hand-made and slightly uneven, arranged in rough horizontal rows that fill the entire frame edge to edge.
+>
+> Colour: the background is near-black, #060404. The marks are dim pale grey, never bright white, at roughly 30% brightness. Fully desaturated — no colour cast of any kind, no warm or blue tint.
+>
+> Composition: square, evenly dense across the whole image, no obvious centre, no vignette, no darker corners, no border or frame.
+>
+> Do not include: any text, any numerals, any people, hands, faces, gavels, scales of justice, crosses, or lens flare.
+>
+> Style: photographic, high contrast, not illustration. Send it darker and more contrasted than looks right — it will be used as a faint background texture.
 
 ---
 
 ## 2 · A multidão — the field of many
 
-**Where it goes:** behind the questions band, or as the score band's alternative
-backdrop. The one gold point is added in code.
+**Where it goes:** behind the questions band, or as the score band's alternative backdrop. The one gold point is drawn in code.
 
-> **Generate a new image.**
+> Generate a new image.
 >
-> A photograph of thousands of tiny dim points of light scattered evenly across
-> a near-black field, like a distant crowd seen at night from far above, or dust
-> caught in a dark room. The points vary slightly in size and brightness but
-> none dominates. Almost monochrome, extremely high contrast, no bright areas.
-> No text, no people, no shapes, no constellations, no border. Square
-> composition, evenly distributed edge to edge with no visible centre or
-> gradient. Photographic, not illustration.
+> A photograph of thousands of tiny dim points of light scattered evenly across a dark field, like a vast distant crowd seen at night from far above, or fine dust caught in a dark room. The points vary slightly in size and brightness but none dominates.
+>
+> Colour: the background is near-black, #060404. The points are dim pale grey at varying low brightness, never white, never glowing. Fully desaturated — no colour cast, no blue or warm tint.
+>
+> Composition: square, evenly distributed edge to edge, no visible centre, no gradient, no vignette, no darker corners, no border or frame.
+>
+> Do not include: any text, any numerals, any people, hands, faces, recognisable shapes, constellations, gavels, scales, crosses, or lens flare.
+>
+> Style: photographic, high contrast, not illustration. Send it darker and more contrasted than looks right — it will be used as a faint background texture.
 
 ---
 
 ## 3 · A impressão digital — the fingerprint
 
-**Where it goes:** the verdict's OG/share image, and the tract backs. Testimony,
-identity, the record — the reader's own confession made into a mark.
+**Where it goes:** the verdict's OG/share image, and the tract backs. Testimony, identity, the record.
 
-> **Generate a new image.**
+> Generate a new image.
 >
-> A single fingerprint pressed in fine metallic gold ink onto a near-black
-> surface, centered in the frame, slightly imperfect at the edges as a real ink
-> print would be. The ridge lines are thin, precise and clearly separated, with
-> some ink pooling where the finger pressed hardest. Almost monochrome — only
-> the gold carries any colour. No hands, no fingers visible, no text, no border,
-> nothing else in the frame. High contrast, photographic macro, not
-> illustration. Square composition.
+> A single fingerprint pressed in fine metallic gold ink onto a near-black surface, centred in the frame, slightly imperfect at the edges as a real ink print would be. The ridge lines are thin, precise and clearly separated, with a little ink pooling where the finger pressed hardest.
+>
+> Colour: the background is near-black, #060404. The fingerprint is metallic gold, #D4A843 — the only colour in the image. Everything else is fully desaturated.
+>
+> Composition: square, the print centred and occupying roughly half the frame, with empty dark space around it. No vignette, no border or frame.
+>
+> Do not include: any text, any numerals, hands, fingers, arms, people, faces, ink pads, paper edges, gavels, scales, crosses, or lens flare.
+>
+> Style: photographic macro, high contrast, not illustration.
 
 ---
 
 ## 4 · A pedra da Lei — the stone of the Law
 
-**Where it goes:** behind the questions band at low opacity — the six questions
-literally sitting on stone. Sibling of the paper texture already made for the
-record.
+**Where it goes:** behind the questions band at low opacity — the six questions sitting on stone. Sibling of the paper texture already in the record card.
 
-> **Generate a new image.**
+> Generate a new image.
 >
-> A macro photograph of a dark grey stone surface with one long thin crack
-> running diagonally across it, lit by a single raking light from the upper left
-> so only the grain and the crack catch dim highlights. Near-black overall,
-> matte, cold. No moss, no writing, no carvings, no chisel marks, no visible
-> edge of a slab. The surface fills the frame edge to edge evenly. High
-> contrast, photographic, not illustration. Square composition, seamless enough
-> to tile.
+> A macro photograph of a dark grey stone surface with one long thin crack running diagonally across it, lit by a single raking light from the upper left so that only the grain and the crack catch dim highlights.
+>
+> Colour: near-black overall, #060404 in the shadows, with the lit grain reaching no brighter than mid grey. Fully desaturated — matte and cold, no warm or brown tone, no moss green.
+>
+> Composition: square, the surface filling the frame edge to edge evenly, seamless enough to tile, no visible slab edge or outline, no vignette, no darker corners, no border or frame.
+>
+> Do not include: any text, any numerals, carvings, chisel marks, engraved letters, tablets, people, hands, gavels, scales, crosses, or lens flare.
+>
+> Style: photographic, high contrast, not illustration. Send it darker and more contrasted than looks right — it will be used as a faint background texture.
 
 ---
 
 ## 5 · O trigo e o joio — wheat and chaff
 
-**Where it goes:** the reading-plan band, or a share image for the decision.
-Matthew 3:12 — the one image in this set that is scriptural rather than
-architectural, and the only one with any warmth in it.
+**Where it goes:** the reading-plan band, or a share image for the decision. Matthew 3:12 — the only one in the set with any warmth.
 
-> **Generate a new image.**
+> Generate a new image.
 >
-> A macro photograph of a few dry wheat stalks lying on a near-black surface,
-> lit by a single low raking light from one side so the grain heads catch pale
-> highlights and everything else falls into shadow. Desaturated almost to
-> monochrome, only the faintest warm tone in the wheat. No hands, no field, no
-> sky, no text, no border. The stalks occupy the lower third; the upper two
-> thirds are empty darkness. High contrast, photographic, not illustration.
-> Wide 1.91:1 composition.
+> A macro photograph of a few dry wheat stalks lying on a dark surface, lit by a single low raking light from one side so the grain heads catch pale highlights and everything else falls into shadow.
+>
+> Colour: the background is near-black, #060404. Almost fully desaturated, with only the faintest warm tone left in the wheat itself — closer to grey than to gold. Nothing in the frame is bright.
+>
+> Composition: wide 1.91:1, the stalks lying across the lower third, the upper two thirds empty darkness with nothing in them. No vignette, no border or frame.
+>
+> Do not include: any text, any numerals, hands, people, faces, fields, skies, horizons, barns, sickles, gavels, scales, crosses, or lens flare.
+>
+> Style: photographic, high contrast, not illustration.
 
 ---
 
 ## 6 · A porta — the door
 
-**Where it goes:** the decision screen's share image, or the `next-steps` hub.
-John 10:9. Only image in the set that carries any hope in its shape.
+**Where it goes:** the decision screen's share image, or the next-steps hub. John 10:9 — the only shape in the set that carries hope.
 
-> **Generate a new image.**
+> Generate a new image.
 >
-> A photograph of a tall narrow gap in a dark stone wall, with pale daylight
-> coming through it from the far side, seen straight on in an otherwise
-> near-black interior. The gap is the only light in the frame. The stone is
-> plain and unornamented. Almost monochrome, extremely high contrast, no visible
-> door, no hinges, no handle, no people, no text, no border. Vertical 9:16
-> composition, with the light occupying a narrow vertical band and everything
-> else empty darkness. Photographic, not illustration.
-
----
-
-## When they come back
-
-Send them over as they are — raw, full resolution, no cropping or colour
-correction. Treatment (desaturate, crush, AVIF/WebP encode, opacity, damping
-veils) happens on my side, the same way the courtroom shaft and the paper
-texture were handled.
+> A photograph of a tall narrow gap in a dark stone wall with pale daylight coming through it from the far side, seen straight on from within an otherwise near-black interior. The gap is the only light in the frame.
+>
+> Colour: the walls and floor are near-black, #060404. The light through the gap is pale and cool, near-white but not blown out. Fully desaturated — no warm glow, no golden hour, no colour cast.
+>
+> Composition: vertical 9:16, the lit gap a narrow vertical band roughly one sixth of the frame's width, everything else empty darkness. No vignette, no border or frame.
+>
+> Do not include: any text, any numerals, any actual door, hinges, handles, frames, steps, people, hands, faces, gavels, scales, crosses, or lens flare.
+>
+> Style: photographic, high contrast, not illustration.
