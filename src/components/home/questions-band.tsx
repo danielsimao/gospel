@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BandHeader } from "@/components/next-steps/band-header";
+import { BandSpine } from "@/components/home/band-spine";
 import { TopicEmblem } from "@/components/emblems";
 import { HOME_QUESTION_SLUGS, HOME_QUESTIONS_MOBILE } from "@/lib/home-questions";
 import type { Locale } from "@/lib/i18n";
@@ -42,8 +42,8 @@ export function QuestionsBand({ locale, label, allLabel, topics }: QuestionsBand
   if (questions.length === 0) return null;
 
   return (
-    <div className="mt-12 w-full max-w-md text-left sm:max-w-2xl">
-      <BandHeader label={label} tone="dim" />
+    <div className="mt-14 w-full max-w-md text-left sm:max-w-2xl">
+      <BandSpine label={label} />
       {/* Two columns from sm: at one column the six chips are a 350px stack
           that dwarfs the plan and the blog below them. */}
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -72,9 +72,12 @@ export function QuestionsBand({ locale, label, allLabel, topics }: QuestionsBand
           </Link>
         ))}
       </div>
+      {/* Centred with the header above it. The chips keep their left edge —
+          a list of questions wants one — but a lone link hard left under a
+          centred rule is the two dialects arguing inside one band. */}
       <Link
         href={`/${locale}/learn`}
-        className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[1.6px] text-[#D4A843]/80 transition-colors hover:text-[#D4A843]"
+        className="mx-auto mt-4 block w-fit font-mono text-[10px] uppercase tracking-[1.6px] text-[#D4A843]/80 transition-colors hover:text-[#D4A843]"
       >
         {allLabel}{" "}
         &rarr;

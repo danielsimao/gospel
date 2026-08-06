@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BandHeader } from "@/components/next-steps/band-header";
+import { BandSpine } from "@/components/home/band-spine";
 import type { Locale } from "@/lib/i18n";
 
 export interface ReadingDay {
@@ -62,8 +62,8 @@ export function ReadingBand({
   const day = finished ? null : days[Math.min(completed, days.length - 1)];
 
   return (
-    <div className="mt-12 w-full max-w-md text-left sm:max-w-2xl">
-      <BandHeader label={label} tone="dim" />
+    <div className="mt-14 w-full max-w-md text-left sm:max-w-2xl">
+      <BandSpine label={label} />
       <div className="border-y border-white/[0.06]">
         <Link
           href={`/${locale}/reading-plan`}

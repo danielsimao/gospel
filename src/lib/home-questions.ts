@@ -25,4 +25,4 @@ export const HOME_QUESTION_SLUGS = [
 ] as const;
 
 /** How many survive on a phone. The rest are CSS-hidden, not omitted. */
-export const HOME_QUESTIONS_MOBILE = 4;
+export const HOME_QUESTIONS_MOBILE = 3;

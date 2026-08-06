@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { BandHeader } from "@/components/next-steps/band-header";
+import { BandSpine } from "@/components/home/band-spine";
 import { estimateTestTakerCount } from "@/lib/test-stats";
 import type { Locale } from "@/lib/i18n";
 
@@ -130,8 +130,8 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
   }, [target, locale]);
 
   return (
-    <div ref={rootRef} className="mt-12 w-full max-w-md text-left sm:max-w-2xl">
-      <BandHeader label={messages.eyebrow} tone="dim" />
+    <div ref={rootRef} className="mt-14 w-full max-w-md text-left sm:max-w-2xl">
+      <BandSpine label={messages.eyebrow} />
 
       {/* Open, not boxed: this is a beat of the page, not a widget. */}
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 py-6 sm:gap-6 sm:py-8">

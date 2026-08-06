@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { LatestPostCard } from "@/components/home/latest-post-card";
+import { ClosingVerse } from "@/components/home/closing-verse";
 import { PassedBand } from "@/components/home/passed-band";
 import { QuestionsBand } from "@/components/home/questions-band";
 import { ReadingBand, type ReadingDay } from "@/components/home/reading-band";
@@ -61,6 +62,8 @@ interface HomeShellProps {
       resolved on the server, because the key that can read it must never
       travel to a browser. */
   testTakerCount: number | null;
+  /** John 3:16, closing the page — the grace screen's own strings. */
+  closingVerse: { scripture: string; scriptureRef: string };
   latestPost?: {
     slug: string;
     title: string;
@@ -204,6 +207,7 @@ export function HomeShell({
   allTopicsLabel,
   allPostsLabel,
   testTakerCount,
+  closingVerse,
   latestPost,
 }: HomeShellProps) {
   const journey = useJourney(topicSlugs);
@@ -724,6 +728,16 @@ export function HomeShell({
               post={latestPost}
             />
           )}
+
+          {/* Last, and last on purpose: gold, unclickable, the same verse that
+              ends the flow. It fills the slot the blog card used to close on —
+              the page's problem was ending on a widget, not lacking one. If
+              the blog is ever switched back on it appears ABOVE this, so the
+              page still ends on the verse. */}
+          <ClosingVerse
+            scripture={closingVerse.scripture}
+            scriptureRef={closingVerse.scriptureRef}
+          />
 
         </div>
       </section>
