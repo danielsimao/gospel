@@ -40,6 +40,17 @@ interface GraceScreenProps {
       from the whole message tree: the record needs this one map and nothing
       else, and it is the same map the verdict's confession sentence uses. */
   verdictLabels: Record<string, string>;
+  /**
+   * The verdict's advance hint, verbatim, in both its forms.
+   *
+   * `grace.tapContinue` stays orphaned: it exists, it says "Toca para
+   * continuar", and it is touch-only wording on a screen a desktop reader also
+   * meets. The verdict already solved that with a pair of strings and a
+   * pointer-fine swap, and using ITS pair rather than adding a third phrasing
+   * means the sentence at the seam is the one the reader has already followed
+   * five times — which is the entire point of showing it here.
+   */
+  advanceHint: { touch: string; pointer: string };
   /** Walks back one history entry, so the browser stack and the reducer agree. */
   onBack: () => void;
 }
@@ -133,7 +144,7 @@ const BEAT_SECTIONS = 4;
  */
 const SEED_THRESHOLD = 0.9;
 
-export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProps) {
+export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: GraceScreenProps) {
   const dispatch = useGameDispatch();
   const state = useGameState();
   const startTime = useRef(0);
@@ -200,6 +211,16 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
    * can set it.
    */
   const [reachedWayOut, setReachedWayOut] = useState(false);
+
+  /*
+   * Whether the reader has moved yet, which is what the hint is waiting on.
+   *
+   * The capability stays for the whole visit; the sentence teaching it does
+   * not. A reader who has advanced once knows how, and a line of type repeated
+   * over six screens of the gospel is noise laid over the argument. This is the
+   * asymmetry that matters: retire the hint, never the gesture.
+   */
+  const [hasMoved, setHasMoved] = useState(false);
 
   useIsomorphicLayoutEffect(() => {
     // No observer, no reveal: everything stays visible rather than staying
@@ -271,6 +292,9 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
     startTime.current = Date.now();
 
     function handleScroll() {
+      // 40px rather than any movement: a rubber-band bounce at the top of an
+      // iOS page fires this without the reader having gone anywhere.
+      if (window.scrollY > 40) setHasMoved(true);
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
       const maxScroll = scrollHeight - clientHeight;
       const depth = maxScroll > 0 ? Math.round((scrollTop / maxScroll) * 100) : 0;
@@ -374,6 +398,7 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
     );
     if (!target) return;
     lastTargetRef.current = { section: target, at: Date.now() };
+    setHasMoved(true);
     trackGraceTapAdvance();
   }
 
@@ -654,13 +679,30 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
                 Radial rather than a full-width band: it separates the chevron
                 without dimming a stripe of the argument. */}
             <span
-              className="flex items-center justify-center px-8 py-4"
+              className="flex flex-col items-center justify-center gap-2 px-8 py-4"
               style={{
                 background:
                   "radial-gradient(ellipse at center, rgba(6,4,4,0.92) 0%, rgba(6,4,4,0.6) 45%, transparent 72%)",
               }}
             >
               <ScrollCue />
+              {/*
+               * The verdict's sentence, verbatim, and keyed on the pointer
+               * rather than the width for the reason set out there: a tablet is
+               * 768 wide and touch, so a width query tells the device most
+               * likely to be held in two hands to press space.
+               *
+               * It says tap and the page also scrolls. That is incomplete
+               * rather than untrue, and scrolling is the instinct nobody has to
+               * be told about — the reader who needs a sentence here is the one
+               * who arrived having tapped five times and found nothing.
+               */}
+              {!hasMoved && (
+                <span className="text-center font-mono text-[9px] uppercase tracking-[2.4px] text-white/30 sm:text-[11px]">
+                  <span className="pointer-fine:hidden">{advanceHint.touch}</span>
+                  <span className="hidden pointer-fine:inline">{advanceHint.pointer}</span>
+                </span>
+              )}
             </span>
           </m.span>
         </>

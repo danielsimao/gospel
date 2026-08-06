@@ -268,6 +268,44 @@ describe("grace carries the verdict's gesture across the seam", () => {
     }
   });
 
+  it("names the gesture in the words the reader already followed", () => {
+    /*
+     * The seam is the defect: five taps on the verdict, then a screen that
+     * changed the contract silently. Repeating the verdict's OWN sentence says
+     * "same rules here" better than any new phrasing could — and reusing its
+     * two strings rather than adding a third means they cannot drift.
+     *
+     * `grace.tapContinue` stays orphaned: it is touch-only wording, and the
+     * verdict already solved that with a pair keyed on the pointer.
+     */
+    expect(grace).toMatch(/advanceHint: \{ touch: string; pointer: string \}/);
+    expect(grace).toMatch(/\{advanceHint\.touch\}/);
+    expect(grace).toMatch(/\{advanceHint\.pointer\}/);
+    expect(shell).toMatch(/advanceHintTouch/);
+    expect(shell).toMatch(/advanceHintPointer/);
+    // Keyed on the pointer, not the width: a tablet is 768 wide and touch.
+    expect(grace).toMatch(/pointer-fine:hidden/);
+    expect(grace, "grace invented a third phrasing").not.toMatch(/tapContinue\}/);
+  });
+
+  it("retires the hint after the reader moves, and only the hint", () => {
+    /*
+     * The capability stays for the whole visit; the sentence teaching it does
+     * not. Retire the gesture instead and the screen becomes a mode change —
+     * same page, different rules, triggered by something the reader did earlier
+     * and will not remember doing.
+     */
+    expect(grace).toMatch(/\{!hasMoved && \(/);
+    // Both routes count as moving, and one regex matching either lets the
+    // other be deleted: a tap that advances…
+    expect(grace).toMatch(/setHasMoved\(true\);\s*\n\s*trackGraceTapAdvance\(\)/);
+    // A rubber-band bounce at the top of an iOS page is not moving.
+    expect(grace).toMatch(/window\.scrollY > 40\) setHasMoved\(true\)/);
+    // The surface itself is NOT gated on hasMoved — only on the way out.
+    expect(grace).toMatch(/\{!reachedWayOut && \(/);
+    expect(grace).not.toMatch(/!hasMoved && !reachedWayOut|!reachedWayOut && !hasMoved/);
+  });
+
   it("reports the tap, because the surface costs something", () => {
     // Text selection on this screen is the price. `grace_tap_advance` is how we
     // find out whether anything was bought with it.

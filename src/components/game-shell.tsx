@@ -393,6 +393,13 @@ export function GameShell({ messages, locale }: GameShellProps) {
               <GraceScreen
                 messages={messages.grace}
                 verdictLabels={messages.test.verdictLabels}
+                /* The verdict's own hint strings, not a copy of them: the seam
+                   should read as the same sentence the reader just followed five
+                   times, and two keys saying the same thing drift. */
+                advanceHint={{
+                  touch: messages.test.verdict.advanceHintTouch,
+                  pointer: messages.test.verdict.advanceHintPointer,
+                }}
                 onBack={() => {
                   viaLinkRef.current = true;
                   window.history.back();
