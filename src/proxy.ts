@@ -17,6 +17,24 @@ export default function proxy(request: NextRequest) {
 
   const segments = pathname.split("/");
   const firstSegment = segments[1] ?? "";
+
+  /*
+   * A miscased short link, normalised for the same reason the locale segment
+   * below is: capitalisation arrives on its own, from mail clients and phone
+   * keyboards, on a URL somebody typed off a sticker.
+   *
+   * The matcher exempts `go/` case-sensitively, so `/GO/card` is not exempt —
+   * it lands here, and without this it would be treated as a locale-less deep
+   * link and sent to `/en/GO/card`, which is a 404 with a printed code on it.
+   * 308, like the locale casing: the canonical casing of a code does not
+   * change, only what it resolves to.
+   */
+  if (firstSegment.toLowerCase() === "go" && firstSegment !== "go") {
+    segments[1] = "go";
+    const lowered = request.nextUrl.clone();
+    lowered.pathname = segments.join("/");
+    return NextResponse.redirect(lowered, 308);
+  }
   const localePrefix = SUPPORTED_LOCALES.find(
     (locale) => firstSegment.toLowerCase() === locale,
   );
@@ -60,7 +78,15 @@ export default function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Everything except Next internals, API routes, and files with extensions
-  // (icons, sitemap.xml, robots.txt, manifest.webmanifest, images, …)
-  matcher: ["/((?!_next|api|.*\\..*).*)"],
+  // Everything except Next internals, API routes, printed short links, and
+  // files with extensions (icons, sitemap.xml, robots.txt, manifest.webmanifest,
+  // images, …)
+  //
+  // `go/` carries the trailing slash deliberately. A bare `go` in the lookahead
+  // is a prefix match, so it would also exempt /gospel and anything else
+  // beginning with those two letters — and the exemption is invisible until a
+  // route by that name exists. The short links are locale-less by design: the
+  // handler picks the locale from accept-language, so a scan that came through
+  // here first would spend a redirect reaching /en/go/… before resolving.
+  matcher: ["/((?!_next|api|go/|.*\\..*).*)"],
 };
