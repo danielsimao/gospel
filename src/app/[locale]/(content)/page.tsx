@@ -4,6 +4,7 @@ import { HomeShell } from "@/components/home-shell";
 import { StructuredData } from "@/components/structured-data";
 import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
 import { getPublishedPosts, getPostContent, getPostLocales } from "@/content/blog/posts";
+import { BLOG_ENABLED } from "@/lib/flags";
 import type { HomeMessages } from "@/lib/types";
 import type { Metadata } from "next";
 
@@ -107,7 +108,10 @@ export default async function HomePage({ params }: Props) {
     description: data.meta.description,
   });
 
-  const posts = getPublishedPosts();
+  /* The homepage's latest-post card is one of the blog's three entrances, and
+     it goes quiet with the other two. The posts themselves stay live and
+     indexed — see lib/flags.ts. */
+  const posts = BLOG_ENABLED ? getPublishedPosts() : [];
   const latest = posts[0] ?? null;
   const latestContent = latest
     ? (getPostContent(latest, locale as Locale) ?? getPostContent(latest, "en"))

@@ -40,9 +40,11 @@ interface FooterProps {
   /** The mortality facts. Empty on any locale that has none, which renders
       nothing and leaves the footer its plain hairline. */
   facts?: string[];
+  /** `BLOG_ENABLED`, resolved on the server — see lib/flags.ts. */
+  blogEnabled: boolean;
 }
 
-export function Footer({ messages, learnTopics, locale, facts = [] }: FooterProps) {
+export function Footer({ messages, learnTopics, locale, facts = [], blogEnabled }: FooterProps) {
   const hasCrawl = facts.length > 0;
   return (
     /* The top rule is the crawl's when there is one: the footer has always
@@ -89,13 +91,19 @@ export function Footer({ messages, learnTopics, locale, facts = [] }: FooterProp
               >
                 {messages.aboutLink}
               </Link>
-              <Link
-                href={`/${locale}/blog`}
-                prefetch={false}
-                className="text-sm text-white/70 transition-colors hover:text-white/80"
-              >
-                {messages.blogLink}
-              </Link>
+              {/* The footer used to be the reason the header could not hide
+                  this — one screen below, it offered what the header withheld.
+                  Both are gated by the same build-time flag now, so they still
+                  agree. See lib/flags.ts. */}
+              {blogEnabled && (
+                <Link
+                  href={`/${locale}/blog`}
+                  prefetch={false}
+                  className="text-sm text-white/70 transition-colors hover:text-white/80"
+                >
+                  {messages.blogLink}
+                </Link>
+              )}
             </nav>
           </div>
 

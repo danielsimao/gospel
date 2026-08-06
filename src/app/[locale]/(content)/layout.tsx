@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Footer } from "@/components/shared/footer";
 import { TopBar } from "@/components/shared/top-bar";
 import { isValidLocale, type Locale } from "@/lib/i18n";
+import { BLOG_ENABLED } from "@/lib/flags";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -26,6 +27,7 @@ export default async function ContentLayout({ params, children }: Props) {
         locale={locale as Locale}
         learnLabel={data.learn?.label ?? "Learn"}
         blogLabel={data.blog?.label ?? "Blog"}
+        blogEnabled={BLOG_ENABLED}
         messages={data.topBar}
       />
       {children}
@@ -35,6 +37,7 @@ export default async function ContentLayout({ params, children }: Props) {
           learnTopics={learnTopics}
           locale={locale as Locale}
           facts={data.home?.facts ?? []}
+          blogEnabled={BLOG_ENABLED}
         />
       )}
     </>

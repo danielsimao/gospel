@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Footer } from "@/components/shared/footer";
+import { BLOG_ENABLED } from "@/lib/flags";
 import en from "@/messages/en.json";
 
 // Rendered inside the [locale] layout for any unmatched path (via the
@@ -57,6 +58,7 @@ export default function NotFound() {
       }))}
       locale="en"
       facts={en.home.facts}
+      blogEnabled={BLOG_ENABLED}
     />
     </>
   );

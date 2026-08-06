@@ -18,6 +18,9 @@ interface TopBarProps {
   locale: Locale;
   learnLabel: string;
   blogLabel: string;
+  /** `BLOG_ENABLED`, resolved on the server. See the note below on why this is
+      not the stage gating that was deleted from here. */
+  blogEnabled: boolean;
   messages: TopBarMessages;
 }
 
@@ -52,8 +55,15 @@ interface TopBarProps {
  * Still a client component, but only for the click tracking — the markup no
  * longer depends on anything the browser knows, so it renders identically on
  * the server and never changes after hydration.
+ *
+ * `blogEnabled` is not that gating returning. It is a build-time flag, the same
+ * for every reader on every device, resolved on the server and passed in — so
+ * the nav is still one stable arrangement to learn, and still renders the same
+ * before and after hydration. The three defects above were all consequences of
+ * varying by reader, and none of them apply to a surface that is simply not
+ * part of the site this month. See lib/flags.ts.
  */
-export function TopBar({ locale, learnLabel, blogLabel, messages }: TopBarProps) {
+export function TopBar({ locale, learnLabel, blogLabel, blogEnabled, messages }: TopBarProps) {
   return (
     <header className="print-hide relative z-10 flex items-center justify-between px-4 pt-4 sm:px-6 sm:pt-5">
       {/*
@@ -98,13 +108,15 @@ export function TopBar({ locale, learnLabel, blogLabel, messages }: TopBarProps)
         >
           {learnLabel}
         </Link>
-        <Link
-          href={`/${locale}/blog`}
-          onClick={() => trackTopBarBlogClicked()}
-          className="text-white/60 transition-colors hover:text-white/70"
-        >
-          {blogLabel}
-        </Link>
+        {blogEnabled && (
+          <Link
+            href={`/${locale}/blog`}
+            onClick={() => trackTopBarBlogClicked()}
+            className="text-white/60 transition-colors hover:text-white/70"
+          >
+            {blogLabel}
+          </Link>
+        )}
       </nav>
     </header>
   );
