@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { readFileSync } from "node:fs";
+import sitemapRoute from "@/app/sitemap";
+import robotsRoute from "@/app/robots";
+import { getPublishedPosts } from "@/content/blog/posts";
+import { SITE_URL } from "@/lib/seo";
 import { join } from "node:path";
 
 /**
@@ -104,16 +108,53 @@ describe("the entrances are gated, all three of them", () => {
 });
 
 describe("the posts stay standing", () => {
-  it("keeps /blog and every post in the sitemap", () => {
+  /*
+   * These are the posts that are actually indexed in Google today. Named rather
+   * than counted: "at least four rows exist" passes while a different four are
+   * published, and the whole reason for keeping the blog alive is THESE URLs
+   * keeping their ranking.
+   */
+  const INDEXED_SLUGS = [
+    "the-final-whistle",
+    "the-headline-jesus-was-handed",
+    "humanitys-last-exam",
+    "dont-die-movement",
+  ];
+
+  it("still publishes every post that is indexed", () => {
+    const published = getPublishedPosts().map((post) => post.slug);
+    for (const slug of INDEXED_SLUGS) {
+      expect(published, `${slug} is no longer published`).toContain(slug);
+    }
+  });
+
+  it("keeps /blog and every indexed post in the sitemap it actually emits", async () => {
     /*
-     * Four posts are indexed. Dropping them from the sitemap forfeits that for
-     * nothing — an unlinked page costs no maintenance — and coming back would
-     * mean waiting on a re-crawl. If the flag ever reaches this file, someone
-     * has confused "stop writing" with "delete the archive".
+     * Runs the sitemap rather than reading it. The source-level version of this
+     * passed while a post was unpublished or dropped from the registry — the
+     * URL-building expression was still there, just iterating over less.
+     *
+     * Dropping these forfeits four indexed pages for nothing (an unlinked page
+     * costs no maintenance) and coming back means waiting on a re-crawl.
      */
-    expect(sitemap).toMatch(/getLocaleUrl\(locale, "\/blog"\)/);
-    expect(sitemap).toMatch(/getLocaleUrl\(locale, `\/blog\/\$\{post\.slug\}`\)/);
-    expect(sitemap).not.toMatch(/BLOG_ENABLED/);
+    const urls = (await sitemapRoute()).map((entry) => entry.url);
+    for (const locale of ["en", "pt"]) {
+      expect(urls, `/${locale}/blog is missing`).toContain(
+        `${SITE_URL}/${locale}/blog`,
+      );
+    }
+    for (const slug of INDEXED_SLUGS) {
+      expect(
+        urls.some((url) => url.endsWith(`/blog/${slug}`)),
+        `${slug} is missing from the sitemap`,
+      ).toBe(true);
+    }
+  });
+
+  it("does not let a hidden post move the homepage's date", () => {
+    // The homepage no longer carries the latest post, so publishing one must not
+    // report the homepage as changed — that is a crawl budget spent on a lie.
+    expect(sitemap).toMatch(/BLOG_ENABLED\s*\?\s*newest\(posts\.map/);
   });
 
   it("keeps the routes rendering, and indexable", () => {
@@ -123,5 +164,22 @@ describe("the posts stay standing", () => {
     expect(blogPost).not.toMatch(/BLOG_ENABLED/);
     expect(blogIndex).not.toMatch(/index:\s*false/);
     expect(blogPost).not.toMatch(/index:\s*false/);
+  });
+
+  it("is not disallowed in robots.txt", () => {
+    /*
+     * The noindex checks above only see two files. A crawler barred here never
+     * fetches the pages at all, which removes them just as thoroughly and from
+     * somewhere neither file mentions.
+     */
+    const rules = robotsRoute().rules;
+    const all = Array.isArray(rules) ? rules : [rules];
+    for (const rule of all) {
+      const disallow = rule.disallow;
+      const entries = disallow === undefined ? [] : Array.isArray(disallow) ? disallow : [disallow];
+      for (const entry of entries) {
+        expect(entry, "robots.txt disallows the blog").not.toMatch(/^\/?(blog|\*)/);
+      }
+    }
   });
 });

@@ -3,6 +3,7 @@ import sitemap from "@/app/sitemap";
 import { SITE_URL } from "@/lib/seo";
 import { TOPIC_DATES } from "@/lib/topic-dates";
 import { getPublishedPosts, getPostDateModified } from "@/content/blog/posts";
+import { BLOG_ENABLED } from "@/lib/flags";
 
 const entries = await sitemap();
 const byUrl = new Map(entries.map((entry) => [entry.url, entry]));
@@ -38,10 +39,17 @@ describe("sitemap", () => {
     const newestPost = getPublishedPosts()
       .map(getPostDateModified)
       .reduce((latest, date) => (date > latest ? date : latest));
-    const newestContent = newestPost > newestTopic ? newestPost : newestTopic;
+    /*
+     * "The content they carry" is the whole point of this assertion, and what
+     * the homepage carries now depends on BLOG_ENABLED: with the blog's
+     * entrances hidden there is no latest-post card, so publishing a post must
+     * not report the homepage as changed. The posts keep their own rows either
+     * way — hidden is not unpublished.
+     */
+    const newestHomepage = BLOG_ENABLED && newestPost > newestTopic ? newestPost : newestTopic;
 
     for (const locale of ["en", "pt"]) {
-      expect(byUrl.get(`${SITE_URL}/${locale}`)?.lastModified).toEqual(new Date(newestContent));
+      expect(byUrl.get(`${SITE_URL}/${locale}`)?.lastModified).toEqual(new Date(newestHomepage));
       expect(byUrl.get(`${SITE_URL}/${locale}/learn`)?.lastModified).toEqual(
         new Date(newestTopic),
       );
