@@ -1521,9 +1521,9 @@
     },
     "passedBand": {
       "eyebrow": "A contagem até agora",
-      "tookWithCount": "{n} pessoas já fizeram este teste. Todas chumbaram.",
-      "took": "Toda a gente que fez este teste chumbou.",
-      "passed": "1 passou.",
+      "failedCaption": "chumbaram",
+      "passedCaption": "passou",
+      "failedFallback": "Todos",
       "whoCta": "Descobre quem",
       "testCta": "Faz o teste — vê como te sais"
     },

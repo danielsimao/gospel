@@ -230,6 +230,21 @@ export function VerdictScreen({
         (a) => a.answer === "justify",
       ).length;
       trackVerdictReached(totalHonest, totalJustify, durationMs);
+
+      /*
+       * The anonymous twin, for the homepage's score band. The consented event
+       * above misses every reader who declined the banner, so the band's
+       * denominator would be wrong by exactly the decline rate. sendBeacon
+       * because the answer is never read and must never delay the verdict;
+       * guarded by the same once-per-mount ref as the event beside it, and by
+       * the route itself outside production. A reader without sendBeacon is a
+       * missed count, not an error — the number is a floor by design.
+       */
+      try {
+        navigator.sendBeacon?.("/api/verdict-count");
+      } catch {
+        // Counting is never worth breaking the verdict for.
+      }
     }
 
   }, [state.answers, durationMs, returning]);

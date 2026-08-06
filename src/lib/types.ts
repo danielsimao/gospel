@@ -192,13 +192,13 @@ export interface HomeMessages {
   /** What a tap costs: question count and rough duration. */
   testPreview: string;
   blogCard: { eyebrow: string };
-  /** "N took the test, 1 passed" — the score band. `took` is the same sentence
-      with no number, for when the live count is unavailable. */
+  /** The face-off band: N failed against the 1 who passed. `failedFallback`
+      is the red side's value when no count is available ("Todos"). */
   passedBand: {
     eyebrow: string;
-    tookWithCount: string;
-    took: string;
-    passed: string;
+    failedCaption: string;
+    passedCaption: string;
+    failedFallback: string;
     whoCta: string;
     testCta: string;
   };

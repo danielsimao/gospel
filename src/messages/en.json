@@ -1521,9 +1521,9 @@
     },
     "passedBand": {
       "eyebrow": "The score so far",
-      "tookWithCount": "{n} people have taken this test. Every one of them failed.",
-      "took": "Everyone who has ever taken this test has failed it.",
-      "passed": "1 passed.",
+      "failedCaption": "failed",
+      "passedCaption": "passed",
+      "failedFallback": "All",
       "whoCta": "Find out who",
       "testCta": "Take the test — see how you do"
     },

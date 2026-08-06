@@ -59,25 +59,82 @@ describe("the band and its doors", () => {
     expect(slugs).toContain("who-is-jesus");
   });
 
-  it("sets the one who passed in gold", () => {
-    // Red is judgment, gold is grace — the palette is the argument. The line
-    // naming the exception must be the gold thing, and the largest.
-    const passed = band.slice(band.indexOf("{messages.passed}") - 400, band.indexOf("{messages.passed}"));
-    expect(passed).toMatch(/#D4A843/);
-    expect(passed).toMatch(/text-\[27px\]/);
+  it("sets both sides at the same size, in the palette's two colours", () => {
+    /*
+     * The values carry the asymmetry — thousands in red against a gold 1 at
+     * the SAME type size is what makes the ratio the argument. Two different
+     * sizes would be the design deciding the winner instead of the numbers.
+     */
+    const sizes = band.match(/text-\[clamp\(2\.1rem,9vw,3\.4rem\)\]/g) ?? [];
+    expect(sizes.length, "the two sides are not the same size").toBe(2);
+    expect(band).toMatch(/text-red-400 tabular-nums/);
+    expect(band).toMatch(/text-\[#D4A843\] tabular-nums/);
+  });
+
+  it("gold arrives after the count stops, and never before", () => {
+    // The pause before gold is the site's own grammar: the Law finishes first.
+    expect(band).toMatch(/setTimeout\(\(\) => setPassVisible\(true\), 350\)/);
+    expect(band).toMatch(/passVisible \? "translate-y-0 opacity-100"/);
   });
 
   it("reads whole without the number", () => {
-    // The count is a garnish. Both locales carry a count-less sentence, and
-    // the component chooses it rather than printing "null people".
-    expect(band).toMatch(/formatted === null\s*\?\s*messages\.took/);
+    // No count means the red side says "Todos" — todos chumbaram, 1 passou —
+    // and the count-up is skipped rather than climbing to nothing.
+    expect(band).toMatch(/count === null\s*\?\s*messages\.failedFallback/);
+    expect(band).toMatch(/count === null \|\| reduced \|\| typeof IntersectionObserver === "undefined"/);
     for (const [locale, home] of [
       ["en", en.home],
       ["pt", pt.home],
     ] as const) {
-      expect(home.passedBand.took, `${locale} has no count-less line`).not.toContain("{n}");
-      expect(home.passedBand.tookWithCount, `${locale} lost its placeholder`).toContain("{n}");
+      expect(home.passedBand.failedFallback, `${locale} lost the fallback value`).toBeTruthy();
+      expect(home.passedBand.failedCaption, `${locale} lost the red caption`).toBeTruthy();
     }
+  });
+});
+
+describe("the anonymous counter", () => {
+  const route = strip(read("src", "app", "api", "verdict-count", "route.ts"));
+  const verdict = strip(read("src", "components", "verdict-screen.tsx"));
+
+  it("counts without anyone in the event", () => {
+    // The same contract as the QR scan counter: one identity for every
+    // verdict ever, no person, no geo, no IP. A counter with nobody in it
+    // needs nobody's consent — which is the whole reason it exists.
+    expect(route).toMatch(/distinct_id: "verdict-anon"/);
+    expect(route).toMatch(/\$process_person_profile: false/);
+    expect(route).toMatch(/\$geoip_disable: true/);
+    expect(route).toMatch(/\$ip: "0\.0\.0\.0"/);
+  });
+
+  it("answers before it counts, and only in production", () => {
+    expect(route).toMatch(/after\(\(\) => recordVerdict/);
+    expect(route).toMatch(/VERCEL_ENV === "production"/);
+    // POST, so a crawler prefetching links cannot inflate the score.
+    expect(route).toMatch(/export async function POST/);
+    expect(route).not.toMatch(/export async function GET/);
+  });
+
+  it("fires from the verdict exactly where the consented event fires", () => {
+    /*
+     * Same effect, same once-per-mount guard, same !returning gate — the two
+     * counters must agree about what a verdict is, or the greatest() in the
+     * fetch compares different things.
+     */
+    const effect = verdict.slice(
+      verdict.indexOf("if (!hasTracked.current && !returning)"),
+      verdict.indexOf("}, [state.answers"),
+    );
+    expect(effect.length, "could not isolate the tracking effect").toBeGreaterThan(0);
+    expect(effect).toMatch(/trackVerdictReached/);
+    expect(effect).toMatch(/sendBeacon\?\.\("\/api\/verdict-count"\)/);
+  });
+
+  it("is read back as the greater of the two counts", () => {
+    // Consented history is bigger early; the anonymous counter overtakes and
+    // stays ahead. Either alone is wrong in a different direction.
+    expect(stats).toMatch(/greatest\(/);
+    expect(stats).toMatch(/verdict_reached_anon/);
+    expect(stats).toMatch(/count\(distinct if\(event = 'verdict_reached', distinct_id, null\)\)/);
   });
 });
 
