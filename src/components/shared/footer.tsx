@@ -55,9 +55,17 @@ export function Footer({ messages, learnTopics, locale, facts = [], blogEnabled 
     >
       <FactCrawl facts={facts} />
       <FactList facts={facts} />
-      <div className="mx-auto max-w-2xl px-6 py-12 sm:px-8 sm:py-14">
+      <div className="mx-auto max-w-2xl px-6 py-10 sm:px-8 sm:py-12">
         {/* 3-column grid — stacks on mobile */}
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-10">
+        {/* Two columns on a phone, not one.
+              Stacked, the three columns were 457px of the footer's 792 —
+              measured at 390x844 — and the reader had to scroll a screenful of
+              links to reach the legal row. Side by side they are 354px, at the
+              cost of two link titles wrapping to a second line, which is what
+              footer columns do everywhere. Grow sits alone on the second row;
+              three into two does not divide, and a half-width last row reads as
+              a column rather than a mistake. */}
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 sm:gap-10">
           {/* Explore */}
           <div>
             <h2
@@ -119,9 +127,13 @@ export function Footer({ messages, learnTopics, locale, facts = [], blogEnabled 
                 three unlabelled <nav>s made the landmarks indistinguishable, and
                 pointing at the heading invents no copy for either locale. */}
             <nav aria-labelledby="footer-learn" className="flex flex-col gap-2.5">
-              {/* First few only — 14 stacked links dwarfed the other columns
-                  (and made the mobile footer a scroll wall). Hub links them all. */}
-              {learnTopics.slice(0, 5).map((topic) => (
+              {/* Three, not five, and originally fourteen. Measured at 390x844
+                  the footer stood 884px — 1.05 viewports, and 44% of a homepage
+                  whose own content is 1111px. This column was the tallest thing
+                  in it at 190px. The hub links all fourteen; a footer that
+                  reprints the sitemap is a wall the reader has to scroll past to
+                  reach the legal row. */}
+              {learnTopics.slice(0, 3).map((topic) => (
                 <Link
                   key={topic.slug}
                   href={`/${locale}/learn/${topic.slug}`}
@@ -189,7 +201,7 @@ export function Footer({ messages, learnTopics, locale, facts = [], blogEnabled 
         </div>
 
         {/* Divider */}
-        <div className="mt-10 h-px bg-white/[0.08]" />
+        <div className="mt-8 h-px bg-white/[0.08]" />
 
         {/* Legal row */}
         <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
@@ -220,7 +232,7 @@ export function Footer({ messages, learnTopics, locale, facts = [], blogEnabled 
         </div>
 
         {/* Scripture */}
-        <p className="mt-6 text-center text-xs italic leading-relaxed text-white/60">
+        <p className="mt-5 text-center text-xs italic leading-relaxed text-white/60">
           &ldquo;{messages.scripture}&rdquo;
         </p>
         <p className="mt-2 text-center font-mono text-[10px] uppercase tracking-widest text-[#D4A843]/70">
@@ -228,7 +240,7 @@ export function Footer({ messages, learnTopics, locale, facts = [], blogEnabled 
         </p>
 
         {/* Bottom row */}
-        <div className="mt-6 flex items-center justify-between">
+        <div className="mt-5 flex items-center justify-between">
           <span className="font-mono text-[11px] text-white/60">ifyoudiedtoday.com</span>
           <div className="flex items-center gap-2.5 font-mono text-[11px]">
             <FooterLocaleSwitch locale={locale} />
