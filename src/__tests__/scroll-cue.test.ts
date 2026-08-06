@@ -182,12 +182,48 @@ describe("grace carries the verdict's gesture across the seam", () => {
     expect(grace).toMatch(/advanceSection\(containerRef\.current\)/);
   });
 
-  it("retires the surface at the last section, where the real choice is", () => {
+  it("retires the surface off the control it must not cover", () => {
     /*
-     * An invisible control over the Continue button and the walk-back link is
-     * the one place this trade stops being worth it.
+     * This used to hang off the reveal observer firing for the last section, and
+     * that threshold is wrong twice over. It fires when the section has merely
+     * entered the bottom 10% of the screen, so the tap died while the reader was
+     * still on the scripture — one screen early, which is the seam defect this
+     * surface exists to fix, in miniature. Moving it later would be worse: any
+     * moment where the surface is up while the Continue button is on screen is a
+     * moment where tapping the button advances the page instead.
+     *
+     * Observing the control itself is what makes the two impossible to get out
+     * of step, whatever section heights or thresholds become later.
      */
     expect(grace).toMatch(/\{observerActive && !reachedWayOut && \(/);
+    expect(grace).toMatch(/wayOnObserver = new IntersectionObserver/);
+    expect(grace).toMatch(/wayOnObserver\.observe\(wayOnRef\.current\)/);
+    expect(grace).toMatch(/<div ref=\{wayOnRef\}/);
+    expect(grace).toMatch(/wayOnObserver\.disconnect\(\)/);
+    // …and NOT off a section index in the reveal observer, which is where it was.
+    expect(grace, "the surface retires on a section threshold again").not.toMatch(
+      /index === REVEAL_SECTIONS - 1\) setReachedWayOut/,
+    );
+    // The ref must be on the element holding the forward control, not elsewhere.
+    const wayOn = grace.slice(grace.indexOf("<div ref={wayOnRef}"));
+    expect(wayOn.slice(0, 400)).toContain("handleContinue");
+  });
+
+  it("does not re-report movements the reader already reached", () => {
+    /*
+     * `reportedRef` started empty on every mount, and back/forward are a single
+     * gesture here that remounts this screen routinely — so a reader glancing
+     * back at the verdict and returning re-reported every movement they had
+     * already passed. The reducer's monotonic guard rejected the regressive
+     * state, which is why nobody noticed: the STATE stayed right while the
+     * EVENTS duplicated, and the events are what the funnel is built from.
+     */
+    expect(grace).toMatch(
+      /new Set\(Array\.from\(\{ length: state\.graceBeatsRevealed \}/,
+    );
+    expect(grace, "the report set starts empty again").not.toMatch(
+      /reportedRef = useRef<Set<number>>\(new Set\(\)\)/,
+    );
   });
 
   it("does not outlive the mechanism that retires it", () => {
@@ -243,7 +279,10 @@ describe("grace carries the verdict's gesture across the seam", () => {
     expect(grace, "the way-out signal is derived from `shown` again").not.toMatch(
       /reachedWayOut = shown\[/,
     );
-    expect(grace).toMatch(/if \(index === REVEAL_SECTIONS - 1\) setReachedWayOut\(true\)/);
+    // Set by a measurement, never derived: the observer watching the forward
+    // control is the only thing that may raise it. (Where it lives is pinned by
+    // "retires the surface off the control it must not cover" above.)
+    expect(grace).toMatch(/if \(entry\.isIntersecting\) setReachedWayOut\(true\)/);
   });
 
   it("ignores a press that travelled, so a flick is not a tap", () => {

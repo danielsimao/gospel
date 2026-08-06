@@ -190,7 +190,23 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
   const maxScrollDepth = useRef(0);
 
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
-  const reportedRef = useRef<Set<number>>(new Set());
+  /*
+   * Which movements have already been reported — seeded from what the session
+   * remembers, not started empty.
+   *
+   * Empty on every mount was a real overcount: back and forward are a single
+   * gesture here and remount this screen routinely, so a reader glancing back
+   * at the verdict and returning re-reported every movement they had already
+   * passed. The reducer's guard is monotonic and rejected the regressive state,
+   * which is exactly why nobody noticed — the STATE was right while the events
+   * were duplicated, and the events are what the funnel is built from.
+   *
+   * `graceBeatsRevealed` is persisted and counts movements reached, so indices
+   * below it have been reported by definition.
+   */
+  const reportedRef = useRef<Set<number>>(
+    new Set(Array.from({ length: state.graceBeatsRevealed }, (_, i) => i)),
+  );
 
   /*
    * Every section starts visible and only the off-screen ones are hidden, in a
@@ -285,7 +301,6 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
           const index = Number((entry.target as HTMLElement).dataset.reveal);
           if (Number.isNaN(index)) continue;
 
-          if (index === REVEAL_SECTIONS - 1) setReachedWayOut(true);
 
           setShown((prev) =>
             prev[index] ? prev : prev.map((v, j) => (j === index ? true : v)),
@@ -314,6 +329,30 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
      * overcount: a fast flick can skip a band this thin. That is the right
      * direction for a number the owner will judge printed campaigns by.
      */
+    /*
+     * The surface retires when the control it must not cover appears.
+     *
+     * This used to hang off the reveal observer firing for the last section,
+     * and that threshold is the wrong one twice over. It fires when the section
+     * has merely entered the bottom 10% of the screen — so the tap died while
+     * the reader was still on the scripture, one screen early, which is the
+     * seam defect this whole surface exists to fix, in miniature. And moving it
+     * later would be worse: any moment where the surface is up while the
+     * Continue button is on screen is a moment where tapping the button
+     * advances the page instead.
+     *
+     * Observing the control itself makes the two impossible to get out of step,
+     * whatever the section heights or thresholds become later. It appears; the
+     * surface goes.
+     */
+    const wayOnObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) if (entry.isIntersecting) setReachedWayOut(true);
+      },
+      { threshold: 0 },
+    );
+    if (wayOnRef.current) wayOnObserver.observe(wayOnRef.current);
+
     const readObserver = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -338,6 +377,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
     return () => {
       observer.disconnect();
       readObserver.disconnect();
+      wayOnObserver.disconnect();
     };
   }, [dispatch]);
 
@@ -407,6 +447,10 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
   /** Scopes the section hop to grace's own sections — see lib/advance-section
       for what an unscoped query matches instead. */
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  /** The forward control, watched so the tap surface retires exactly when it
+      appears — see the observer that uses it. */
+  const wayOnRef = useRef<HTMLDivElement | null>(null);
 
   function handleSurfaceDown(event: React.PointerEvent<HTMLButtonElement>) {
     /*
@@ -730,7 +774,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
             messages={messages.record}
           />
 
-          <div className="mt-12 flex flex-col items-center">
+          <div ref={wayOnRef} className="mt-12 flex flex-col items-center">
             <Button variant="gold" mist onClick={handleContinue}>
               {messages.continueLabel}
               <ButtonArrow />
