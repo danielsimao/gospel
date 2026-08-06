@@ -486,7 +486,26 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         }}
       />
 
-      <div ref={containerRef} className="relative z-10 mx-auto w-full max-w-lg px-5 sm:px-6">
+      {/*
+       * The strip along the bottom that the cue owns, reserved by every section
+       * so centred text can never be laid under it.
+       *
+       * Measured at 390x844: the cue box sits at 605-730 and the record
+       * section's last line reached 602 — three pixels of clearance, which is
+       * coincidence rather than design. It fails outright with the consent
+       * banner up, which lifts the cue by --consent-h to about 545 and puts
+       * roughly 69px of that section's text behind it — and the banner is
+       * showing for exactly the readers seeing this for the first time.
+       *
+       * 9rem covers the cue's own box plus its 3.5rem offset; --consent-h moves
+       * with the banner. Sections centre their content in what is left, so the
+       * axis being centred is the readable area rather than the raw viewport.
+       */}
+      <div
+        ref={containerRef}
+        className="relative z-10 mx-auto w-full max-w-lg px-5 sm:px-6"
+        style={{ "--grace-cue-band": "calc(9rem + var(--consent-h, 0px))" } as React.CSSProperties}
+      >
         {/*
          * 1 · The announcement.
          *
@@ -505,7 +524,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
          * child claiming a full viewport on top of that scrolls by exactly that
          * much. Hence the subtraction.
          */}
-        <section className="flex min-h-[calc(100svh-0.75rem)] flex-col items-center justify-center text-center">
+        <section className="flex min-h-[calc(100svh-0.75rem)] flex-col items-center justify-center pb-[calc(8vh+var(--grace-cue-band))] text-center">
           <m.span
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -536,7 +555,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(0)}
           data-reveal="0"
-          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(0)}`}
+          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] ${revealClass(0)}`}
         >
           <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-red-400/70">
             {problem?.label}
@@ -564,7 +583,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(1)}
           data-reveal="1"
-          className={`mx-[calc(50%-50vw)] flex min-h-[calc(100svh-0.75rem)] flex-col justify-center overflow-hidden px-5 py-[8vh] sm:px-6 ${revealClass(1)}`}
+          className={`mx-[calc(50%-50vw)] flex min-h-[calc(100svh-0.75rem)] flex-col justify-center overflow-hidden px-5 pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] sm:px-6 ${revealClass(1)}`}
           style={{
             background:
               "linear-gradient(to bottom, rgba(239,68,68,0.07) 0%, rgba(212,168,67,0.10) 52%, transparent 100%)",
@@ -590,7 +609,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(2)}
           data-reveal="2"
-          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(2)}`}
+          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] ${revealClass(2)}`}
         >
           <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
             {payer?.label}
@@ -608,7 +627,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(3)}
           data-reveal="3"
-          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(3)}`}
+          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] ${revealClass(3)}`}
         >
           <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
             {response?.label}
@@ -625,7 +644,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(4)}
           data-reveal="4"
-          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(4)}`}
+          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] ${revealClass(4)}`}
         >
           <blockquote className="border-l border-[#D4A843]/30 pl-4">
             <p className="text-[15px] italic leading-[1.8] text-white/60 sm:text-base">
@@ -656,7 +675,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(5)}
           data-reveal="5"
-          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(5)}`}
+          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] ${revealClass(5)}`}
         >
           <GraceRecord
             rows={buildRecord(state.answers, verdictLabels)}

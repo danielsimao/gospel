@@ -101,6 +101,16 @@ const ALIGNED_SLOP = 24;
 
   if (next) {
     /*
+     * Aligned to its TOP, not centred.
+     *
+     * Centring was right when every section was shorter than the screen: it put
+     * the words in the middle and balanced their padding. Now that each section
+     * claims a viewport, centring one that grows past it — a long movement, a
+     * large system font, a narrow phone — pushes its top off the screen and cuts
+     * the heading off. Aligning the top degrades the other way: the tail sits
+     * below the fold and the reader scrolls, which is the thing they can always
+     * do.
+     *
      * Move by a SECTION, not by a viewport.
      *
      * A flat 0.9-viewport hop was the first version and it was wrong, because
@@ -114,7 +124,7 @@ const ALIGNED_SLOP = 24;
      * the viewport, and each carries 135-241px of its own padding, so aligning
      * tops would park a screenful of empty padding while the words sat below.
      */
-    next.scrollIntoView({ block: "center", behavior });
+    next.scrollIntoView({ block: "start", behavior });
     return next;
   }
 

@@ -82,7 +82,14 @@ describe("the scroll cue", () => {
      * of padding with the words below it.
      */
     expect(advance).toMatch(/querySelectorAll\("section"\)/);
-    expect(advance).toMatch(/scrollIntoView\(\{\s*block:\s*"center"/);
+    /*
+     * Aligned to the TOP, not centred. Centring suited sections shorter than the
+     * screen. Now each claims a viewport, and centring one that outgrows it — a
+     * long movement, a large system font, a narrow phone — pushes its heading
+     * off the top. Top alignment degrades the other way: the tail falls below
+     * the fold and the reader scrolls, which they can always do.
+     */
+    expect(advance).toMatch(/scrollIntoView\(\{\s*block:\s*"start"/);
   });
 
   it("advances to the next boundary, not the next half-screen", () => {
@@ -349,6 +356,29 @@ describe("grace carries the verdict's gesture across the seam", () => {
      */
     expect(grace).toMatch(/pointer-events-none fixed inset-x-0 bottom-\[calc\([^\]]*--consent-h/);
     expect(grace).not.toMatch(/absolute bottom-\[calc\([^\]]*--consent-h[^\]]*\]"\s*>\s*<ScrollCue/);
+  });
+
+  it("keeps its text out of the strip the cue sits in", () => {
+    /*
+     * The tap aligns the section BOX; nothing in that calculation knows the cue
+     * exists. Measured at 390x844: the cue box occupies 605-730 and the record
+     * section's last line reached 602 — three pixels, which is coincidence, not
+     * clearance. With the consent banner up the cue lifts by --consent-h to
+     * about 545 and roughly 69px of that section's text sits behind it, for
+     * exactly the readers meeting the page for the first time.
+     *
+     * So every section reserves the band, and centres its content in what is
+     * left: the axis being centred is the readable area, not the raw viewport.
+     */
+    const grace2 = grace;
+    expect(grace2).toMatch(/--grace-cue-band/);
+    expect(grace2).toMatch(/calc\(9rem \+ var\(--consent-h, 0px\)\)/);
+    const sections = grace2.match(/<section\b[\s\S]*?>/g) ?? [];
+    for (const [i, section] of sections.entries()) {
+      expect(section, `section ${i} lays text under the cue`).toMatch(
+        /pb-\[calc\(8vh\+var\(--grace-cue-band\)\)\]|pb-\[calc\(8vh\+env\(safe-area-inset-bottom\)/,
+      );
+    }
   });
 
   it("gives every section a screen of its own", () => {
