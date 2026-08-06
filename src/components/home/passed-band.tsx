@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { BandSpine } from "@/components/home/band-spine";
+import { BandTexture } from "@/components/home/band-texture";
 import { estimateTestTakerCount } from "@/lib/test-stats";
 import type { Locale } from "@/lib/i18n";
 
@@ -130,7 +131,9 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
   }, [target, locale]);
 
   return (
-    <div ref={rootRef} className="mt-14 w-full max-w-md text-left sm:max-w-2xl">
+    <div ref={rootRef} className="relative mt-14 w-full max-w-md text-left sm:max-w-2xl">
+      <BandTexture texture="tally" />
+      <div className="relative">
       <BandSpine label={messages.eyebrow} />
 
       {/* Open, not boxed: this is a beat of the page, not a widget. */}
@@ -206,6 +209,7 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
         >
           {messages.testCta}
         </Link>
+      </div>
       </div>
     </div>
   );

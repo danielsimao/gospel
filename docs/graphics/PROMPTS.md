@@ -41,6 +41,8 @@ card, `public/paper.avif`).
 
 ## 1 · A parede de talhos — the tally wall
 
+**Ships as:** `public/graphics/tally.avif` + `.webp` — score band, 16% opacity
+
 **Where it goes:** behind the score band on the homepage at ~10% opacity, red-tinted in code. The single gold stroke is drawn in code on top, so the count stays honest.
 
 **▼ COPY FROM HERE ▼**
@@ -63,6 +65,8 @@ Style: photographic, high contrast, not illustration. Send it darker and more co
 ---
 
 ## 2 · A multidão — the field of many
+
+**Ships as:** `public/graphics/dots.avif` + `.webp` — questions band, 12% opacity
 
 **Where it goes:** behind the questions band, or as the score band's alternative backdrop. The one gold point is drawn in code.
 
@@ -87,6 +91,8 @@ Style: photographic, high contrast, not illustration. Send it darker and more co
 
 ## 3 · A impressão digital — the fingerprint
 
+**Ships as:** `docs/graphics/assets/fingerprint.avif` — print only (tract backs); not served
+
 **Where it goes:** the verdict's OG/share image, and the tract backs. Testimony, identity, the record.
 
 **▼ COPY FROM HERE ▼**
@@ -109,6 +115,8 @@ Style: photographic macro, high contrast, not illustration.
 ---
 
 ## 4 · A pedra da Lei — the stone of the Law
+
+**Ships as:** `docs/graphics/assets/stone.avif` — print only (tract backs, card surfaces); not served
 
 **Where it goes:** behind the questions band at low opacity — the six questions sitting on stone. Sibling of the paper texture already in the record card.
 
@@ -133,6 +141,8 @@ Style: photographic, high contrast, not illustration. Send it darker and more co
 
 ## 5 · O trigo e o joio — wheat and chaff
 
+**Ships as:** not generated — dropped as the weakest idea in the set
+
 **Where it goes:** the reading-plan band, or a share image for the decision. Matthew 3:12 — the only one in the set with any warmth.
 
 **▼ COPY FROM HERE ▼**
@@ -155,6 +165,8 @@ Style: photographic, high contrast, not illustration.
 ---
 
 ## 6 · A porta — the door
+
+**Ships as:** `public/graphics/door.jpg` — the /test Open Graph plate
 
 **Where it goes:** the decision screen's share image, or the next-steps hub. John 10:9 — the only shape in the set that carries hope.
 

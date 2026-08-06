@@ -25,6 +25,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     path: "/test",
     title: messages.test.metaTitle,
     description: messages.test.metaDescription,
+    /* /test now has its own card — the door plate beside this file. Without
+       this, buildPageMetadata would also attach the generic homepage image and
+       the more specific one loses. */
+    hasOwnOgImage: true,
   });
 }
 

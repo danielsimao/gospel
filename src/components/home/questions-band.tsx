@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BandSpine } from "@/components/home/band-spine";
+import { BandTexture } from "@/components/home/band-texture";
 import { TopicEmblem } from "@/components/emblems";
 import { HOME_QUESTION_SLUGS, HOME_QUESTIONS_MOBILE } from "@/lib/home-questions";
 import type { Locale } from "@/lib/i18n";
@@ -42,7 +43,9 @@ export function QuestionsBand({ locale, label, allLabel, topics }: QuestionsBand
   if (questions.length === 0) return null;
 
   return (
-    <div className="mt-14 w-full max-w-md text-left sm:max-w-2xl">
+    <div className="relative mt-14 w-full max-w-md text-left sm:max-w-2xl">
+      <BandTexture texture="dots" />
+      <div className="relative">
       <BandSpine label={label} />
       {/* Two columns from sm: at one column the six chips are a 350px stack
           that dwarfs the plan and the blog below them. */}
@@ -82,6 +85,7 @@ export function QuestionsBand({ locale, label, allLabel, topics }: QuestionsBand
         {allLabel}{" "}
         &rarr;
       </Link>
+      </div>
     </div>
   );
 }
