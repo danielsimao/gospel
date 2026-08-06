@@ -1,5 +1,7 @@
 "use client";
 
+import { advanceSection } from "@/lib/advance-section";
+
 /**
  * "There is more below this" — and it answers a tap, not only a scroll.
  *
@@ -40,6 +42,12 @@ export function ScrollCue({ className = "" }: { className?: string }) {
   function handleActivate(event: React.MouseEvent<HTMLButtonElement>) {
     if (typeof window === "undefined") return;
     /*
+     * The hop itself lives in lib/advance-section, because grace's tap surface
+     * performs the identical move from an invisible control covering the whole
+     * screen. Two copies of "what counts as the next section" is how the shape
+     * and the control start disagreeing about where a tap goes.
+     */
+    /*
      * Clicking a <button> focuses it, and `tabIndex={-1}` does not stop that —
      * it only removes the element from tab order. A FOCUSED aria-hidden element
      * makes the browser refuse the hiding outright ("Blocked aria-hidden on an
@@ -51,48 +59,7 @@ export function ScrollCue({ className = "" }: { className?: string }) {
      * this blur covers touch, where the focus arrives by a different route.
      */
     event.currentTarget.blur();
-    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    const behavior = reduced ? ("auto" as const) : ("smooth" as const);
-
-    /*
-     * Move by a SECTION, not by a viewport.
-     *
-     * A flat 0.9-viewport hop was the first version and it was wrong, because
-     * grace's movements are 832, 509, 692, 529, 506, 104, 440 and 248px tall —
-     * no fixed distance can land well against that. Measured: one tap put the
-     * announcement still occupying the top of the screen AND two movements'
-     * text in view at once, which is the opposite of the one-beat-at-a-time
-     * reading this argument is built for.
-     *
-     * Centred rather than aligned to the top: every movement is shorter than the
-     * viewport, and each carries 135-241px of its own padding, so aligning tops
-     * would park a screenful of empty padding while the words sat below. Centring
-     * puts the movement itself in front of the reader and balances its padding
-     * either side, whatever its height.
-     */
-    /*
-     * "Starts in the lower half of the screen" is the test for what is next.
-     *
-     * `top > 0` is not, and that was the first version's bug: the shell pads the
-     * flow by 12px, so the section the reader is ALREADY looking at reports a
-     * top of 12 and matched — one tap re-centred the announcement instead of
-     * advancing past it.
-     */
-    const next = [...document.querySelectorAll("section")].find(
-      (section) => section.getBoundingClientRect().top > window.innerHeight / 2,
-    );
-    if (next) {
-      next.scrollIntoView({ block: "center", behavior });
-      return;
-    }
-
-    /*
-     * No sections below — the verdict's re-read document, which is built from
-     * divs and overflows by only 244px. One viewport of scroll clamps at the end
-     * of the document there, which is exactly enough to bring its forward
-     * control into view.
-     */
-    window.scrollBy({ top: window.innerHeight * 0.9, behavior });
+    advanceSection();
   }
 
   return (
