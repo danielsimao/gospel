@@ -139,18 +139,36 @@ describe("grace carries the verdict's gesture across the seam", () => {
   it("makes the whole screen a tap target", () => {
     expect(grace).toMatch(/data-slot="grace-tap-surface"/);
     expect(grace).toMatch(/className="fixed inset-0 z-30/);
-    expect(grace).toMatch(/advanceSection\(containerRef\.current\)/);
+    expect(grace).toMatch(/advanceSection\(\s*containerRef\.current,/);
   });
 
   it("retires the surface at the last section, where the real choice is", () => {
     /*
      * An invisible control over the Continue button and the walk-back link is
-     * the one place this trade stops being worth it. The signal is `shown`,
-     * already set by the reveal observer — a second mechanism watching the same
-     * thing is how the two get to disagree.
+     * the one place this trade stops being worth it.
      */
-    expect(grace).toMatch(/const reachedTheWayOut = shown\[REVEAL_SECTIONS - 1\]/);
-    expect(grace).toMatch(/\{!reachedTheWayOut && \(/);
+    expect(grace).toMatch(/\{!reachedWayOut && \(/);
+  });
+
+  it("does not inherit 'has arrived' from the everything-visible fallback", () => {
+    /*
+     * `shown` starts all-true so a reader without JS or without an
+     * IntersectionObserver gets the whole argument rather than a blank screen.
+     * Deriving "has reached the way out" from it inherits that default
+     * backwards: in an observer-less environment every value stays true, the
+     * reader is treated as having arrived before starting, and the tap surface
+     * and cue never render — the affordance missing in exactly the environment
+     * the fallback exists to protect.
+     *
+     * So it is its own state, starting false, and only a measurement can set it.
+     */
+    expect(grace).toMatch(/useState\(false\)/);
+    expect(grace, "the way-out signal is derived from `shown` again").not.toMatch(
+      /reachedWayOut = shown\[/,
+    );
+    expect(grace).toMatch(/if \(index === REVEAL_SECTIONS - 1\) setReachedWayOut\(true\)/);
+    // …and a viewport tall enough to hold the whole page at mount still counts.
+    expect(grace).toMatch(/if \(seeded\[REVEAL_SECTIONS - 1\]\) setReachedWayOut\(true\)/);
   });
 
   it("ignores a press that travelled, so a flick is not a tap", () => {
@@ -162,6 +180,46 @@ describe("grace carries the verdict's gesture across the seam", () => {
     expect(grace).toMatch(/onPointerDown=\{handleSurfaceDown\}/);
     expect(grace).toMatch(/onPointerUp=\{handleSurfaceUp\}/);
     expect(grace).toMatch(/travelled > TAP_SLOP\) return/);
+  });
+
+  it("only lets the pointer that went down be the one that lifts", () => {
+    /*
+     * Without an id, a second finger's pointerdown overwrites the first's start
+     * point and whichever contact lifts first is measured against the wrong
+     * origin — a two-finger gesture advances the page. A cancelled press (the
+     * browser taking over for a scroll) must clear its own start point too, or
+     * it survives to be measured against some later, unrelated pointerup.
+     */
+    expect(grace).toMatch(/pointerId: event\.pointerId/);
+    expect(grace).toMatch(/start\.pointerId !== event\.pointerId\) return/);
+    expect(grace).toMatch(/onPointerCancel=\{handleSurfaceCancel\}/);
+    expect(grace).toMatch(/pressRef\.current\?\.pointerId === event\.pointerId/);
+  });
+
+  it("does not advance on a right-click or a secondary contact", () => {
+    // A right-click fires the same pointerdown/pointerup pair, and would move
+    // the page out from under the context menu it just opened.
+    expect(grace).toMatch(/!event\.isPrimary \|\| event\.button !== 0\) return/);
+  });
+
+  it("makes a second tap mid-scroll advance rather than re-target", () => {
+    /*
+     * A smooth scroll takes a few hundred ms, and for most of it the
+     * destination's top is still below half the viewport — so it still answers
+     * "what is next" and a second tap re-targets the section already being
+     * travelled to. The reader taps twice, moves once, and the event fires
+     * twice.
+     */
+    expect(grace).toMatch(/lastTargetRef/);
+    expect(grace).toMatch(/Date\.now\(\) - previous\.at < SCROLL_SETTLE_MS/);
+    expect(advance).toMatch(/skipPast\?: HTMLElement/);
+    expect(advance).toMatch(/candidates\.slice\(after \+ 1\)/);
+  });
+
+  it("counts a tap only when it actually moved the reader", () => {
+    // advanceSection returns null at the end of the document; counting that as
+    // an advance inflates the one number the surface is being judged on.
+    expect(grace).toMatch(/if \(!target\) return;/);
   });
 
   it("keeps the surface out of the accessibility tree, and out of tab order", () => {

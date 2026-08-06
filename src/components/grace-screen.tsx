@@ -184,17 +184,36 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
     new Array(REVEAL_SECTIONS).fill(true),
   );
 
+  /*
+   * Whether the reader has reached the way out — tracked separately from
+   * `shown`, and that separation is load-bearing.
+   *
+   * `shown` starts all-true so a reader without JS, or without an
+   * IntersectionObserver, gets the whole argument rather than a blank screen.
+   * Deriving "has reached the end" from it inherits that default backwards: the
+   * observer-less fallback would mean the reader is treated as having arrived
+   * before they have started, and the tap surface and its cue would never
+   * render at all — the affordance silently absent in exactly the environment
+   * the fallback exists to protect.
+   *
+   * So this starts false and only the observer, or a mount-time measurement,
+   * can set it.
+   */
+  const [reachedWayOut, setReachedWayOut] = useState(false);
+
   useIsomorphicLayoutEffect(() => {
     // No observer, no reveal: everything stays visible rather than staying
     // hidden. The argument is the point; the animation is not.
     if (typeof IntersectionObserver === "undefined") return;
 
     const els = sectionRefs.current;
-    setShown(
-      els.map((el) =>
-        el ? el.getBoundingClientRect().top < window.innerHeight * SEED_THRESHOLD : true,
-      ),
+    const seeded = els.map((el) =>
+      el ? el.getBoundingClientRect().top < window.innerHeight * SEED_THRESHOLD : true,
     );
+    setShown(seeded);
+    // A viewport tall enough to hold the way out at mount: there is nothing to
+    // advance to, so the surface should never appear in the first place.
+    if (seeded[REVEAL_SECTIONS - 1]) setReachedWayOut(true);
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -217,6 +236,8 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
             trackGraceBeatRevealed(index);
             dispatch({ type: "REVEAL_GRACE_BEAT", count: index + 1 });
           }
+
+          if (index === REVEAL_SECTIONS - 1) setReachedWayOut(true);
 
           setShown((prev) =>
             prev[index] ? prev : prev.map((v, j) => (j === index ? true : v)),
@@ -287,21 +308,54 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
    * would jump the reader a section they did not ask for, mid-gesture. Ten
    * pixels is the same slop a native tap allows.
    */
-  const pressRef = useRef<{ x: number; y: number } | null>(null);
+  const pressRef = useRef<{ x: number; y: number; pointerId: number } | null>(null);
   const TAP_SLOP = 10;
+
+  /**
+   * The section the last tap sent the reader to, and when.
+   *
+   * A smooth scroll takes a few hundred milliseconds, and for most of it the
+   * destination's top is still below half the viewport — so it still answers
+   * "what is the next section", and a second tap mid-animation re-targets the
+   * section already being travelled to. The reader taps twice and moves once,
+   * while `grace_tap_advance` counts two.
+   *
+   * Within the window, the last destination is skipped, so a double tap moves
+   * two movements. Outside it, the reader has arrived and it is the current
+   * section — which the half-viewport test already excludes.
+   */
+  const lastTargetRef = useRef<{ section: HTMLElement; at: number } | null>(null);
+  const SCROLL_SETTLE_MS = 800;
 
   /** Scopes the section hop to grace's own sections — see lib/advance-section
       for what an unscoped query matches instead. */
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   function handleSurfaceDown(event: React.PointerEvent<HTMLButtonElement>) {
-    pressRef.current = { x: event.clientX, y: event.clientY };
+    /*
+     * Primary contact, primary button, nothing else.
+     *
+     * Without the button test a right-click advances the page while the context
+     * menu opens on top of it. Without `isPrimary`, a second finger during a
+     * two-finger gesture overwrites the first one's start point, and whichever
+     * contact lifts first is measured against the wrong origin.
+     */
+    if (!event.isPrimary || event.button !== 0) return;
+    pressRef.current = { x: event.clientX, y: event.clientY, pointerId: event.pointerId };
+  }
+
+  /** A press that was cancelled — the browser taking over for a scroll or a
+      system gesture — is not a tap, and its start point must not survive to be
+      measured against some later pointerup. */
+  function handleSurfaceCancel(event: React.PointerEvent<HTMLButtonElement>) {
+    if (pressRef.current?.pointerId === event.pointerId) pressRef.current = null;
   }
 
   function handleSurfaceUp(event: React.PointerEvent<HTMLButtonElement>) {
     const start = pressRef.current;
+    // Matched by id: the pointer that went down is the only one that can lift.
+    if (!start || start.pointerId !== event.pointerId) return;
     pressRef.current = null;
-    if (!start) return;
     const travelled = Math.hypot(event.clientX - start.x, event.clientY - start.y);
     if (travelled > TAP_SLOP) return;
 
@@ -311,15 +365,18 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
      * put an unnamed control into the accessibility tree.
      */
     event.currentTarget.blur();
-    if (advanceSection(containerRef.current)) trackGraceTapAdvance();
+
+    const previous = lastTargetRef.current;
+    const stillScrolling = previous && Date.now() - previous.at < SCROLL_SETTLE_MS;
+    const target = advanceSection(
+      containerRef.current,
+      stillScrolling ? previous.section : undefined,
+    );
+    if (!target) return;
+    lastTargetRef.current = { section: target, at: Date.now() };
+    trackGraceTapAdvance();
   }
 
-  /*
-   * The way-out section having been reached is the signal to retire the tap
-   * surface — and `shown` already carries it, set by the same observer that
-   * reveals the section. No second mechanism, and no scroll listener.
-   */
-  const reachedTheWayOut = shown[REVEAL_SECTIONS - 1];
 
   const setSectionRef = (index: number) => (el: HTMLElement | null) => {
     sectionRefs.current[index] = el;
@@ -566,7 +623,7 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
        * z-30 puts the surface over the argument and under the consent banner's
        * z-50 — the banner's own buttons must stay reachable.
        */}
-      {!reachedTheWayOut && (
+      {!reachedWayOut && (
         <>
           <button
             type="button"
@@ -580,6 +637,7 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
             data-slot="grace-tap-surface"
             onPointerDown={handleSurfaceDown}
             onPointerUp={handleSurfaceUp}
+            onPointerCancel={handleSurfaceCancel}
             onMouseDown={(event) => event.preventDefault()}
             className="fixed inset-0 z-30 cursor-pointer bg-transparent"
           />

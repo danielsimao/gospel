@@ -31,7 +31,10 @@ function isContentSection(section: HTMLElement): boolean {
  * @param root Where to look for sections. Grace passes its own container; the
  *   verdict document has no sections of its own and passes nothing.
  */
-export function advanceSection(root?: ParentNode | null): HTMLElement | null {
+export function advanceSection(
+  root?: ParentNode | null,
+  skipPast?: HTMLElement,
+): HTMLElement | null {
   if (typeof window === "undefined") return null;
 
   const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
@@ -45,7 +48,19 @@ export function advanceSection(root?: ParentNode | null): HTMLElement | null {
    * of 12 and matched — one tap re-centred the announcement instead of
    * advancing past it.
    */
-  const next = [...(root ?? document).querySelectorAll("section")].find(
+  /*
+   * `skipPast` is the destination of a scroll still in flight.
+   *
+   * A smooth scroll takes a few hundred milliseconds, and for most of that the
+   * destination's top is still below half the viewport — so it still answers
+   * "what is next", and a second tap mid-animation re-targets the section
+   * already being travelled to. Skipping it makes a double tap move two
+   * sections, which is what tapping twice means.
+   */
+  const candidates = [...(root ?? document).querySelectorAll("section")];
+  const after = skipPast ? candidates.indexOf(skipPast) : -1;
+
+  const next = candidates.slice(after + 1).find(
     (section) =>
       isContentSection(section as HTMLElement) &&
       section.getBoundingClientRect().top > window.innerHeight / 2,
