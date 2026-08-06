@@ -331,19 +331,12 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
       const depth = maxScroll > 0 ? Math.round((scrollTop / maxScroll) * 100) : 0;
       if (depth > maxScrollDepth.current) maxScrollDepth.current = depth;
     }
-    // Whatever ended the scroll — the smooth animation arriving, or the reader
-    // taking over and dragging somewhere else — the remembered target is spent.
-    function handleScrollEnd() {
-      lastTargetRef.current = null;
-    }
     window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("scrollend", handleScrollEnd);
     const start = startTime.current;
     const maxDepth = maxScrollDepth;
     const wasFirstVisit = firstVisitRef.current;
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("scrollend", handleScrollEnd);
       // Only the first visit is measured. This fires on unmount, and a back
       // press to re-read the verdict unmounts the screen — so reporting every
       // departure would bury the genuine dwell time under short re-reads.
@@ -373,54 +366,12 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
   const pressRef = useRef<{ x: number; y: number; pointerId: number } | null>(null);
   const TAP_SLOP = 10;
 
-  /**
-   * The section the last tap sent the reader to, and when.
-   *
-   * A smooth scroll takes a few hundred milliseconds, and for most of it the
-   * destination's top is still below half the viewport — so it still answers
-   * "what is the next section", and a second tap mid-animation re-targets the
-   * section already being travelled to. The reader taps twice and moves once,
-   * while `grace_tap_advance` counts two.
-   *
-   * Within the window, the last destination is skipped, so a double tap moves
-   * two movements. Outside it, the reader has arrived and it is the current
-   * section — which the half-viewport test already excludes.
-   */
-  const lastTargetRef = useRef<{ section: HTMLElement; at: number } | null>(null);
-  /*
-   * The fallback deadline, not the mechanism.
-   *
-   * `scrollend` is what actually says a scroll has finished — programmatic or
-   * dragged — and it clears the remembered target below. The timer covers the
-   * browsers that do not fire it. A deadline alone was wrong in both
-   * directions: a smooth scroll still running at 801ms re-targeted the section
-   * it was already travelling to, and a reader who scrolled back up inside the
-   * window had their next tap skip a movement.
-   */
-  const SCROLL_SETTLE_MS = 800;
 
   /** Scopes the section hop to grace's own sections — see lib/advance-section
       for what an unscoped query matches instead. */
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   function handleSurfaceDown(event: React.PointerEvent<HTMLButtonElement>) {
-    /*
-     * Stop whatever is still moving, before anything else.
-     *
-     * A tap starts a smooth scroll of a few hundred milliseconds, and a reader
-     * who reaches to drag inside that window is fighting an animation that
-     * wins: measured at 390x844, taking over 120ms in put the page at 15px and
-     * the animation hauled it back to 126 and held it there. That is the
-     * flicker — pull, snap back, and only once the animation finishes does the
-     * page answer the finger.
-     *
-     * Assigning the current position with the default (non-smooth) behaviour
-     * cancels a running scroll animation. The reader's gesture then starts from
-     * where they can see, and a tap that follows still advances, because the
-     * press below is recorded either way.
-     */
-    window.scrollTo(window.scrollX, window.scrollY);
-
     /*
      * Primary contact, primary button, nothing else.
      *
@@ -492,14 +443,8 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
      */
     event.currentTarget.blur();
 
-    const previous = lastTargetRef.current;
-    const stillScrolling = previous && Date.now() - previous.at < SCROLL_SETTLE_MS;
-    const target = advanceSection(
-      containerRef.current,
-      stillScrolling ? previous.section : undefined,
-    );
+    const target = advanceSection(containerRef.current);
     if (!target) return;
-    lastTargetRef.current = { section: target, at: Date.now() };
     setHasMoved(true);
     trackGraceTapAdvance();
   }

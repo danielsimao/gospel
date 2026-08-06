@@ -99,13 +99,28 @@ describe("the scroll cue", () => {
     expect(advance).toMatch(/window\.scrollBy/);
   });
 
-  it("scrolls instantly for a reader who asked for less motion", () => {
-    // The bob is stopped in CSS; the scroll it performs has to be stopped here.
-    expect(advance).toMatch(/prefers-reduced-motion: reduce/);
-    expect(advance).toMatch(/reduced\s*\?\s*\("auto" as const\)\s*:\s*\("smooth" as const\)/);
-    // …and that choice has to reach BOTH paths, the section hop and the fallback.
-    expect(advance).toMatch(/scrollIntoView\(\{[^}]*behavior\s*\}\)/);
-    expect(advance).toMatch(/scrollBy\(\{[^}]*behavior\s*\}\)/);
+  it("lands immediately, for everyone", () => {
+    /*
+     * A smooth scroll is an animation the reader cannot cleanly interrupt. Tap,
+     * then reach to drag inside those few hundred milliseconds, and the
+     * animation wins: measured at 390x844, taking over 120ms in put the page at
+     * 15px and it was hauled back to 126 and held. Cancelling on the press got
+     * the common case to zero, but the race is structural — every fix bets
+     * against frames already committed to the compositor.
+     *
+     * Nothing is lost. The verdict, which the reader has just tapped through
+     * five times, never travels the viewport: it replaces content in place with
+     * opacity 0->1 and y 10->0. Grace's sections carry the same reveal, so a tap
+     * lands and the section fades in exactly as a verdict beat does — measured
+     * after the change, opacity 0.48, 0.78, 0.90, 0.97, 1.00 over ~540ms while
+     * the position never moved again. The glide was the odd one out, not the
+     * animation.
+     *
+     * This also removes the reduced-motion branch: instant IS the reduced-motion
+     * behaviour, so there is no longer a version of this that moves.
+     */
+    expect(advance).toMatch(/const behavior = "auto" as const/);
+    expect(advance, "the smooth scroll is back").not.toMatch(/"smooth"/);
   });
 
   it("is decorative, and never takes focus", () => {
@@ -139,7 +154,7 @@ describe("grace carries the verdict's gesture across the seam", () => {
   it("makes the whole screen a tap target", () => {
     expect(grace).toMatch(/data-slot="grace-tap-surface"/);
     expect(grace).toMatch(/className="fixed inset-0 z-30/);
-    expect(grace).toMatch(/advanceSection\(\s*containerRef\.current,/);
+    expect(grace).toMatch(/advanceSection\(containerRef\.current\)/);
   });
 
   it("retires the surface at the last section, where the real choice is", () => {
@@ -233,13 +248,10 @@ describe("grace carries the verdict's gesture across the seam", () => {
      * And once a press has plainly travelled it is a scroll, not a tap, so the
      * capture is released and the browser owns the gesture.
      */
-    expect(grace).toMatch(/window\.scrollTo\(window\.scrollX, window\.scrollY\)/);
-    // First thing in the handler: after the primary-button guard it would not
-    // run for the very presses most likely to interrupt.
-    const down = grace.slice(grace.indexOf("function handleSurfaceDown"));
-    expect(down.indexOf("window.scrollTo(window.scrollX, window.scrollY)")).toBeLessThan(
-      down.indexOf("event.isPrimary"),
-    );
+    // The press used to have to cancel a running animation. There is no
+    // animation now, so the cancel is gone with it — a tap lands, and a drag
+    // that follows starts from where the reader can see.
+    expect(grace).not.toMatch(/window\.scrollTo\(window\.scrollX, window\.scrollY\)/);
     expect(grace).toMatch(/onPointerMove=\{handleSurfaceMove\}/);
     expect(grace).toMatch(/releasePointerCapture\(event\.pointerId\)/);
   });
@@ -274,28 +286,22 @@ describe("grace carries the verdict's gesture across the seam", () => {
     expect(grace).toMatch(/setPointerCapture\(event\.pointerId\)/);
   });
 
-  it("makes a second tap mid-scroll advance rather than re-target", () => {
+  it("needs no bookkeeping to know what the next section is", () => {
     /*
-     * A smooth scroll takes a few hundred ms, and for most of it the
-     * destination's top is still below half the viewport — so it still answers
-     * "what is next" and a second tap re-targets the section already being
-     * travelled to. The reader taps twice, moves once, and the event fires
-     * twice.
+     * While the hop was animated, its destination spent most of the animation
+     * still below half the viewport — so it still answered "what is next", and
+     * a second tap re-aimed at the section already being travelled to. That
+     * needed a remembered target, a settle deadline and a scrollend listener to
+     * correct, and each was its own source of wrongness.
+     *
+     * Landing immediately, the section a tap arrives at is at the top of the
+     * screen and no longer a candidate. The next tap finds the next one. All of
+     * it goes, and this test exists so none of it comes back without the
+     * animation that justified it.
      */
-    expect(grace).toMatch(/lastTargetRef/);
-    expect(grace).toMatch(/Date\.now\(\) - previous\.at < SCROLL_SETTLE_MS/);
-    /*
-     * The deadline is the fallback, not the mechanism. Alone it was wrong in
-     * both directions: a smooth scroll still running at 801ms re-targeted the
-     * section it was already travelling to, and a reader who dragged back up
-     * inside the window had their next tap skip a movement. `scrollend` fires
-     * for both endings, so it is what actually clears the memory.
-     */
-    expect(grace).toMatch(/addEventListener\("scrollend", handleScrollEnd\)/);
-    expect(grace).toMatch(/removeEventListener\("scrollend", handleScrollEnd\)/);
-    expect(grace).toMatch(/function handleScrollEnd\(\) \{\s*lastTargetRef\.current = null;/);
-    expect(advance).toMatch(/skipPast\?: HTMLElement/);
-    expect(advance).toMatch(/candidates\.slice\(after \+ 1\)/);
+    expect(grace).not.toMatch(/lastTargetRef|SCROLL_SETTLE_MS|scrollend/);
+    expect(advance).not.toMatch(/skipPast/);
+    expect(grace).toMatch(/const target = advanceSection\(containerRef\.current\);/);
   });
 
   it("counts a tap only when it actually moved the reader", () => {

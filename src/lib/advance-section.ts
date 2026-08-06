@@ -31,14 +31,29 @@ function isContentSection(section: HTMLElement): boolean {
  * @param root Where to look for sections. Grace passes its own container; the
  *   verdict document has no sections of its own and passes nothing.
  */
-export function advanceSection(
-  root?: ParentNode | null,
-  skipPast?: HTMLElement,
-): HTMLElement | null {
+export function advanceSection(root?: ParentNode | null): HTMLElement | null {
   if (typeof window === "undefined") return null;
 
-  const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-  const behavior = reduced ? ("auto" as const) : ("smooth" as const);
+  /*
+   * Instant, always — and this is the fix for a whole class of bug rather than
+   * a taste.
+   *
+   * A smooth scroll is an animation the reader cannot cleanly interrupt. Tap,
+   * then reach to drag inside those few hundred milliseconds, and the animation
+   * wins: measured at 390x844, taking over 120ms in put the page at 15px and it
+   * was hauled back to 126 and held. Cancelling on the press got the common
+   * case to zero, but the race is structural — every fix is a bet against
+   * frames already committed to the compositor.
+   *
+   * Nothing is lost by removing it. The verdict, which the reader has just
+   * tapped through five times, never travels the viewport at all: it replaces
+   * its content in place with opacity 0->1 and y 10->0 over 0.55-0.7s. Grace's
+   * sections carry the same reveal — translate-y-3/opacity-0 to
+   * translate-y-0/opacity-100, 700ms, the same easing token — so a tap that
+   * jumps lands on a section that then fades in exactly as a verdict beat does.
+   * The glide was the odd one out, not the animation.
+   */
+  const behavior = "auto" as const;
 
   /*
    * "Starts in the lower half of the screen" is the test for what is next.
@@ -49,18 +64,16 @@ export function advanceSection(
    * advancing past it.
    */
   /*
-   * `skipPast` is the destination of a scroll still in flight.
-   *
-   * A smooth scroll takes a few hundred milliseconds, and for most of that the
-   * destination's top is still below half the viewport — so it still answers
-   * "what is next", and a second tap mid-animation re-targets the section
-   * already being travelled to. Skipping it makes a double tap move two
-   * sections, which is what tapping twice means.
+   * No in-flight destination to reason about, which is the second thing the
+   * instant hop bought. While the scroll was animated, its target spent most of
+   * the animation still below half the viewport — so it still answered "what is
+   * next", and a second tap re-aimed at the section already being travelled to.
+   * That needed a remembered target, a settle deadline and a scrollend listener
+   * to correct. Landing immediately, the section a tap arrives at is at the top
+   * of the screen and no longer a candidate, so the next tap finds the next one
+   * with no bookkeeping at all.
    */
-  const candidates = [...(root ?? document).querySelectorAll("section")];
-  const after = skipPast ? candidates.indexOf(skipPast) : -1;
-
-  const next = candidates.slice(after + 1).find(
+  const next = [...(root ?? document).querySelectorAll("section")].find(
     (section) =>
       isContentSection(section as HTMLElement) &&
       section.getBoundingClientRect().top > window.innerHeight / 2,
