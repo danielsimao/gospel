@@ -192,6 +192,16 @@ export interface HomeMessages {
   /** What a tap costs: question count and rough duration. */
   testPreview: string;
   blogCard: { eyebrow: string };
+  /** "N took the test, 1 passed" — the score band. `took` is the same sentence
+      with no number, for when the live count is unavailable. */
+  passedBand: {
+    eyebrow: string;
+    tookWithCount: string;
+    took: string;
+    passed: string;
+    whoCta: string;
+    testCta: string;
+  };
   /** Header for the band of learn topics shown as their own questions. */
   questionsLabel: string;
   facts: string[];

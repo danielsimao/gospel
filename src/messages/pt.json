@@ -1519,6 +1519,14 @@
     "blogCard": {
       "eyebrow": "Do blog"
     },
+    "passedBand": {
+      "eyebrow": "A contagem até agora",
+      "tookWithCount": "{n} pessoas já fizeram este teste. Todas chumbaram.",
+      "took": "Toda a gente que fez este teste chumbou.",
+      "passed": "1 passou.",
+      "whoCta": "Descobre quem",
+      "testCta": "Faz o teste — vê como te sais"
+    },
     "facts": [
       "56 milhões de pessoas morrem em todo o mundo todos os anos.",
       "As doenças cardíacas matam 17,9 milhões de pessoas por ano.",

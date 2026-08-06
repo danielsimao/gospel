@@ -62,7 +62,17 @@ export function GraceRecord({ rows, messages }: GraceRecordProps) {
         {messages.eyebrow}
       </figcaption>
 
-      <div className="rounded-md border border-white/[0.13] bg-white/[0.015] p-4 sm:p-5">
+      <div className="relative overflow-hidden rounded-md border border-white/[0.13] bg-white/[0.015] p-4 sm:p-5">
+        {/* EXPERIMENT — paper texture under the charge sheet. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 opacity-[0.07]"
+          style={{
+            backgroundImage: "url(/paper.avif)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
         {/*
          * A real table, not a grid of divs. This is tabular data — count,
          * charge, plea — and the document look is styling on top of that, not a
@@ -70,7 +80,7 @@ export function GraceRecord({ rows, messages }: GraceRecordProps) {
          * are visually hidden because the record's own layout says what each
          * column is to anyone who can see it.
          */}
-        <table className="w-full border-collapse text-left">
+        <table className="relative w-full border-collapse text-left">
           <thead className="sr-only">
             <tr>
               <th scope="col">{messages.count}</th>
@@ -112,7 +122,7 @@ export function GraceRecord({ rows, messages }: GraceRecordProps) {
           </tbody>
         </table>
 
-        <dl className="mt-3 border-t border-white/[0.16] pt-3 font-mono text-[9.5px] uppercase tracking-[1.2px]">
+        <dl className="relative mt-3 border-t border-white/[0.16] pt-3 font-mono text-[9.5px] uppercase tracking-[1.2px]">
           <div className="flex items-baseline justify-between">
             <dt className="text-white/40">{messages.finding}</dt>
             <dd className="m-0 text-[11px] tracking-[1px] text-red-400/90">{messages.guilty}</dd>

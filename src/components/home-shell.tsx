@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { DeathCounter } from "@/components/eternity/death-counter";
 import { LatestPostCard } from "@/components/home/latest-post-card";
+import { PassedBand } from "@/components/home/passed-band";
 import { QuestionsBand } from "@/components/home/questions-band";
 import { ReadingBand, type ReadingDay } from "@/components/home/reading-band";
 import { StageSpine } from "@/components/home/stage-spine";
@@ -56,6 +57,10 @@ interface HomeShellProps {
   /** Reused from the learn hub and the blog index rather than restated here. */
   allTopicsLabel: string;
   allPostsLabel: string;
+  /** Distinct readers who reached the verdict, or null when unavailable —
+      resolved on the server, because the key that can read it must never
+      travel to a browser. */
+  testTakerCount: number | null;
   latestPost?: {
     slug: string;
     title: string;
@@ -198,6 +203,7 @@ export function HomeShell({
   readingLabels,
   allTopicsLabel,
   allPostsLabel,
+  testTakerCount,
   latestPost,
 }: HomeShellProps) {
   const journey = useJourney(topicSlugs);
@@ -689,6 +695,11 @@ export function HomeShell({
            * blog as its newest headline. Rendered once here rather than inside
            * each stage branch, so they cannot drift between them.
            */}
+          {/* First of the bands, because it is the strongest hook on the
+              page: a score that ends "1 passed" leaves a question, and the
+              question has a door. */}
+          <PassedBand locale={locale} messages={home.passedBand} count={testTakerCount} />
+
           <QuestionsBand
             locale={locale}
             label={home.questionsLabel}

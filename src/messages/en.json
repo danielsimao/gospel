@@ -1519,6 +1519,14 @@
     "blogCard": {
       "eyebrow": "From the blog"
     },
+    "passedBand": {
+      "eyebrow": "The score so far",
+      "tookWithCount": "{n} people have taken this test. Every one of them failed.",
+      "took": "Everyone who has ever taken this test has failed it.",
+      "passed": "1 passed.",
+      "whoCta": "Find out who",
+      "testCta": "Take the test — see how you do"
+    },
     "facts": [
       "56 million people die worldwide every year.",
       "Heart disease kills 17.9 million people every year.",
