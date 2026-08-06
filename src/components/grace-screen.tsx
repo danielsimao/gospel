@@ -222,19 +222,50 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
    */
   const [hasMoved, setHasMoved] = useState(false);
 
+  /*
+   * Whether the observer that retires the tap surface actually exists.
+   *
+   * This is the correction to a fix that overshot. Deriving "has reached the
+   * way out" from `shown` meant an observer-less reader counted as arrived
+   * before starting, and the surface never appeared; giving it its own state
+   * starting false fixed that and created the opposite, worse bug — with no
+   * observer, nothing can ever set it true, so a `fixed inset-0` button sits
+   * over the Continue button and the walk-back link for the whole visit and
+   * the flow has no exit.
+   *
+   * A shortcut whose retirement depends on a mechanism must not outlive the
+   * mechanism. No observer, no surface: the argument still scrolls, the cue is
+   * still there, and every control still answers a click.
+   */
+  const [observerActive, setObserverActive] = useState(false);
+
   useIsomorphicLayoutEffect(() => {
     // No observer, no reveal: everything stays visible rather than staying
     // hidden. The argument is the point; the animation is not.
     if (typeof IntersectionObserver === "undefined") return;
 
+    setObserverActive(true);
+
     const els = sectionRefs.current;
-    const seeded = els.map((el) =>
-      el ? el.getBoundingClientRect().top < window.innerHeight * SEED_THRESHOLD : true,
+    setShown(
+      els.map((el) =>
+        el ? el.getBoundingClientRect().top < window.innerHeight * SEED_THRESHOLD : true,
+      ),
     );
-    setShown(seeded);
-    // A viewport tall enough to hold the way out at mount: there is nothing to
-    // advance to, so the surface should never appear in the first place.
-    if (seeded[REVEAL_SECTIONS - 1]) setReachedWayOut(true);
+
+    /*
+     * Nothing seeds `reachedWayOut` — only the observer sets it, and that is
+     * deliberate.
+     *
+     * A mount-time measurement was here, for a viewport tall enough to hold the
+     * way out at first paint. It cannot happen: every section claims a full
+     * viewport, so the last one is always seven screens down. What it CAN do is
+     * fire wrongly. This effect runs before the shell's phase-change scroll
+     * reaches the top, so a reader returning by back or forward while the page
+     * is still scrolled deep measures the way out as already in view — and
+     * `reachedWayOut` is monotonic, so the surface would be gone for the whole
+     * re-read.
+     */
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -300,12 +331,19 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
       const depth = maxScroll > 0 ? Math.round((scrollTop / maxScroll) * 100) : 0;
       if (depth > maxScrollDepth.current) maxScrollDepth.current = depth;
     }
+    // Whatever ended the scroll — the smooth animation arriving, or the reader
+    // taking over and dragging somewhere else — the remembered target is spent.
+    function handleScrollEnd() {
+      lastTargetRef.current = null;
+    }
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scrollend", handleScrollEnd);
     const start = startTime.current;
     const maxDepth = maxScrollDepth;
     const wasFirstVisit = firstVisitRef.current;
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scrollend", handleScrollEnd);
       // Only the first visit is measured. This fires on unmount, and a back
       // press to re-read the verdict unmounts the screen — so reporting every
       // departure would bury the genuine dwell time under short re-reads.
@@ -349,6 +387,16 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
    * section — which the half-viewport test already excludes.
    */
   const lastTargetRef = useRef<{ section: HTMLElement; at: number } | null>(null);
+  /*
+   * The fallback deadline, not the mechanism.
+   *
+   * `scrollend` is what actually says a scroll has finished — programmatic or
+   * dragged — and it clears the remembered target below. The timer covers the
+   * browsers that do not fire it. A deadline alone was wrong in both
+   * directions: a smooth scroll still running at 801ms re-targeted the section
+   * it was already travelling to, and a reader who scrolled back up inside the
+   * window had their next tap skip a movement.
+   */
   const SCROLL_SETTLE_MS = 800;
 
   /** Scopes the section hop to grace's own sections — see lib/advance-section
@@ -366,6 +414,19 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
      */
     if (!event.isPrimary || event.button !== 0) return;
     pressRef.current = { x: event.clientX, y: event.clientY, pointerId: event.pointerId };
+    /*
+     * Capture, so the release comes back here wherever the finger ends up.
+     *
+     * Without it a primary press that lifts outside the element leaves its
+     * origin behind — and a mouse always reuses pointerId 1, so the very next
+     * right-click's release matched that stale press by id and advanced the
+     * page from a button we had deliberately ignored on the way down.
+     */
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      // Capture is a belt to the braces below, not a requirement.
+    }
   }
 
   /** A press that was cancelled — the browser taking over for a scroll or a
@@ -376,6 +437,9 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
   }
 
   function handleSurfaceUp(event: React.PointerEvent<HTMLButtonElement>) {
+    // The same test as the press. A secondary button's release must not be
+    // measured against a primary press that is still on record.
+    if (!event.isPrimary || event.button !== 0) return;
     const start = pressRef.current;
     // Matched by id: the pointer that went down is the only one that can lift.
     if (!start || start.pointerId !== event.pointerId) return;
@@ -648,7 +712,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
        * z-30 puts the surface over the argument and under the consent banner's
        * z-50 — the banner's own buttons must stay reachable.
        */}
-      {!reachedWayOut && (
+      {observerActive && !reachedWayOut && (
         <>
           <button
             type="button"

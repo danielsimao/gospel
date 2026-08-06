@@ -147,7 +147,44 @@ describe("grace carries the verdict's gesture across the seam", () => {
      * An invisible control over the Continue button and the walk-back link is
      * the one place this trade stops being worth it.
      */
-    expect(grace).toMatch(/\{!reachedWayOut && \(/);
+    expect(grace).toMatch(/\{observerActive && !reachedWayOut && \(/);
+  });
+
+  it("does not outlive the mechanism that retires it", () => {
+    /*
+     * The correction to a fix that overshot. Deriving "has arrived" from
+     * `shown` meant an observer-less reader counted as arrived before starting
+     * and never got the surface; its own state starting false fixed that and
+     * created the opposite, worse bug — nothing can set it true without an
+     * observer, so a `fixed inset-0` button sits over the Continue button and
+     * the walk-back link for the whole visit and the flow has no exit.
+     *
+     * No observer, no surface. The argument still scrolls and every control
+     * still answers a click.
+     */
+    expect(grace).toMatch(/\{observerActive && !reachedWayOut && \(/);
+    expect(grace).toMatch(/setObserverActive\(true\)/);
+    // Set inside the effect, after the bail-out — not unconditionally.
+    const effect = grace.slice(grace.indexOf("useIsomorphicLayoutEffect"));
+    const bail = effect.indexOf('if (typeof IntersectionObserver === "undefined") return;');
+    expect(bail, "the observer bail-out is gone").toBeGreaterThan(-1);
+    expect(effect.indexOf("setObserverActive(true)")).toBeGreaterThan(bail);
+  });
+
+  it("never guesses that the way out has been reached", () => {
+    /*
+     * A mount-time seed was here for a viewport tall enough to hold the way out
+     * at first paint. With every section a full viewport that cannot happen —
+     * but it CAN fire wrongly: the layout effect runs before the shell's
+     * phase-change scroll reaches the top, so a reader returning by back or
+     * forward while still scrolled deep measured the way out as already in
+     * view. `reachedWayOut` is monotonic, so the surface vanished for the whole
+     * re-read.
+     */
+    expect(grace, "the mount seed is back").not.toMatch(/seeded\[REVEAL_SECTIONS - 1\]/);
+    // Only the observer may set it.
+    const setters = grace.match(/setReachedWayOut\(true\)/g) ?? [];
+    expect(setters.length, "something other than the observer sets it").toBe(1);
   });
 
   it("does not inherit 'has arrived' from the everything-visible fallback", () => {
@@ -167,8 +204,6 @@ describe("grace carries the verdict's gesture across the seam", () => {
       /reachedWayOut = shown\[/,
     );
     expect(grace).toMatch(/if \(index === REVEAL_SECTIONS - 1\) setReachedWayOut\(true\)/);
-    // …and a viewport tall enough to hold the whole page at mount still counts.
-    expect(grace).toMatch(/if \(seeded\[REVEAL_SECTIONS - 1\]\) setReachedWayOut\(true\)/);
   });
 
   it("ignores a press that travelled, so a flick is not a tap", () => {
@@ -197,9 +232,19 @@ describe("grace carries the verdict's gesture across the seam", () => {
   });
 
   it("does not advance on a right-click or a secondary contact", () => {
-    // A right-click fires the same pointerdown/pointerup pair, and would move
-    // the page out from under the context menu it just opened.
-    expect(grace).toMatch(/!event\.isPrimary \|\| event\.button !== 0\) return/);
+    /*
+     * A right-click fires the same pointerdown/pointerup pair, and would move
+     * the page out from under the context menu it just opened.
+     *
+     * Guarded at BOTH ends, and the release is the half that is easy to miss:
+     * a mouse always reuses pointerId 1, so a primary press that lifted
+     * somewhere else stayed on record and the next right-click's release
+     * matched it by id and advanced. Capture is what stops the press escaping
+     * in the first place.
+     */
+    const guards = grace.match(/!event\.isPrimary \|\| event\.button !== 0\) return/g) ?? [];
+    expect(guards.length, "only one end of the press is guarded").toBe(2);
+    expect(grace).toMatch(/setPointerCapture\(event\.pointerId\)/);
   });
 
   it("makes a second tap mid-scroll advance rather than re-target", () => {
@@ -212,6 +257,16 @@ describe("grace carries the verdict's gesture across the seam", () => {
      */
     expect(grace).toMatch(/lastTargetRef/);
     expect(grace).toMatch(/Date\.now\(\) - previous\.at < SCROLL_SETTLE_MS/);
+    /*
+     * The deadline is the fallback, not the mechanism. Alone it was wrong in
+     * both directions: a smooth scroll still running at 801ms re-targeted the
+     * section it was already travelling to, and a reader who dragged back up
+     * inside the window had their next tap skip a movement. `scrollend` fires
+     * for both endings, so it is what actually clears the memory.
+     */
+    expect(grace).toMatch(/addEventListener\("scrollend", handleScrollEnd\)/);
+    expect(grace).toMatch(/removeEventListener\("scrollend", handleScrollEnd\)/);
+    expect(grace).toMatch(/function handleScrollEnd\(\) \{\s*lastTargetRef\.current = null;/);
     expect(advance).toMatch(/skipPast\?: HTMLElement/);
     expect(advance).toMatch(/candidates\.slice\(after \+ 1\)/);
   });
@@ -301,8 +356,9 @@ describe("grace carries the verdict's gesture across the seam", () => {
     expect(grace).toMatch(/setHasMoved\(true\);\s*\n\s*trackGraceTapAdvance\(\)/);
     // A rubber-band bounce at the top of an iOS page is not moving.
     expect(grace).toMatch(/window\.scrollY > 40\) setHasMoved\(true\)/);
-    // The surface itself is NOT gated on hasMoved — only on the way out.
-    expect(grace).toMatch(/\{!reachedWayOut && \(/);
+    // The surface itself is NOT gated on hasMoved — only on the way out, and
+    // on the observer that can retire it.
+    expect(grace).toMatch(/\{observerActive && !reachedWayOut && \(/);
     expect(grace).not.toMatch(/!hasMoved && !reachedWayOut|!reachedWayOut && !hasMoved/);
   });
 
