@@ -140,9 +140,10 @@ interface GraceScreenProps {
  * was already in — the four beats map one-to-one onto the four movements.
  */
 
-/** The announcement, four movements, the scripture, the reader's record, the
-    way on. Only the four movements carry beat analytics; see BEAT_SECTIONS. */
-const REVEAL_SECTIONS = 7;
+/** The announcement, four movements, the scripture, and the record with the way
+    on beneath it. Only the four movements carry beat analytics; see
+    BEAT_SECTIONS. */
+const REVEAL_SECTIONS = 6;
 const BEAT_SECTIONS = 4;
 
 /**
@@ -284,21 +285,6 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
           const index = Number((entry.target as HTMLElement).dataset.reveal);
           if (Number.isNaN(index)) continue;
 
-          /*
-           * Reaching a movement is what "revealing a beat" now means. The old
-           * screen could only know this from a tap; a scroll knows it better,
-           * because the reader had to bring the words into view to trigger it.
-           *
-           * The reducer's guard is monotonic, so a reader scrolling back up and
-           * down again re-dispatches harmlessly — but trackGraceBeatRevealed is
-           * not idempotent, hence the set.
-           */
-          if (index < BEAT_SECTIONS && !reportedRef.current.has(index)) {
-            reportedRef.current.add(index);
-            trackGraceBeatRevealed(index);
-            dispatch({ type: "REVEAL_GRACE_BEAT", count: index + 1 });
-          }
-
           if (index === REVEAL_SECTIONS - 1) setReachedWayOut(true);
 
           setShown((prev) =>
@@ -310,8 +296,49 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
       { rootMargin: `0px 0px -${Math.round((1 - SEED_THRESHOLD) * 100)}% 0px` },
     );
 
+    /*
+     * A beat is read when it is the thing on the screen, not when it peeks.
+     *
+     * Both jobs used to run off the observer above, whose threshold is
+     * deliberately early: a section is revealed once its top passes 90% of the
+     * viewport, so it is never still fading while the reader looks straight at
+     * it. Early is right for opacity and wrong for a funnel — it counts a
+     * movement as read from a sliver at the bottom edge. Measured at 390x844,
+     * arriving at one section put the next one's top at 838 against a 760
+     * threshold: 78px from marking a beat nobody had reached, and about 28px on
+     * a bar-collapsed viewport.
+     *
+     * This root is the top 5% of the screen, so a section reports only once it
+     * has actually come to the top — which is what the tap does, and what a
+     * scroll does on the way past. The trade is an undercount rather than an
+     * overcount: a fast flick can skip a band this thin. That is the right
+     * direction for a number the owner will judge printed campaigns by.
+     */
+    const readObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const index = Number((entry.target as HTMLElement).dataset.reveal);
+          if (Number.isNaN(index)) continue;
+          if (index >= BEAT_SECTIONS || reportedRef.current.has(index)) continue;
+
+          /* The reducer's guard is monotonic, so a reader scrolling back up and
+             down again re-dispatches harmlessly — but trackGraceBeatRevealed is
+             not idempotent, hence the set. */
+          reportedRef.current.add(index);
+          trackGraceBeatRevealed(index);
+          dispatch({ type: "REVEAL_GRACE_BEAT", count: index + 1 });
+        }
+      },
+      { rootMargin: "0px 0px -95% 0px" },
+    );
+
     for (const el of els) if (el) observer.observe(el);
-    return () => observer.disconnect();
+    for (const el of els.slice(0, BEAT_SECTIONS)) if (el) readObserver.observe(el);
+    return () => {
+      observer.disconnect();
+      readObserver.disconnect();
+    };
   }, [dispatch]);
 
   // Idempotent: the verdict's bridge is what dispatches SHOW_GRACE, and the
@@ -657,7 +684,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         </section>
 
         {/*
-         * 7 · The record, last — after the argument and before the choice.
+         * 7 · The record, and the way on, on one screen.
          *
          * The four movements say what happened in general: a judge, a penalty,
          * someone who paid. This says it about the reader, out of their own six
@@ -667,43 +694,59 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
          * announce; ending with one lands the general truth on the particular
          * reader while they still have the question in front of them.
          *
-         * It carries no animation of its own. The section reveal above is the
-         * only entrance — the version of this that arrived with the accordion
-         * wrapped it in a framer fade with its own delay, which inside a
-         * revealing section would run two entrances over one element.
+         * The forward control used to have a screen to itself, and measurement
+         * is what ended that: 112px of content in an 832px section, 87% empty,
+         * holding "E agora?" and a re-read link. That is not weight given to the
+         * decision, it is a gesture charged for nothing — the same argument that
+         * deleted the accordion, since every gate is a place to leave. Merged,
+         * the reader's own charge sheet is the thing the button acts on, and the
+         * question the button asks is the one the record raises. Combined
+         * content measures 496px against ~675px of usable height.
+         *
+         * The record carries no animation of its own. The section reveal is the
+         * only entrance — the version that arrived with the accordion wrapped it
+         * in a framer fade with its own delay, which inside a revealing section
+         * would run two entrances over one element.
+         */}
+        {/*
+         * The one section that does NOT reserve the cue's band, and reserves the
+         * consent banner instead.
+         *
+         * Reaching this section is what retires the cue and the tap surface, so
+         * by the time it is aligned there is nothing at the bottom of the screen
+         * to hide behind — and holding 144px back for it made the merged section
+         * 881px against an 844 viewport, which no longer fits at all. What DOES
+         * still sit at the bottom is the consent banner, and it covers the one
+         * control this screen exists for: measured at 320x568, the button's own
+         * centre point belonged to the banner rather than the button.
          */}
         <section
           ref={setSectionRef(5)}
           data-reveal="5"
-          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] ${revealClass(5)}`}
+          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center pt-[8vh] pb-[calc(8vh+env(safe-area-inset-bottom)+var(--consent-h,0px))] ${revealClass(5)}`}
         >
           <GraceRecord
             rows={buildRecord(state.answers, verdictLabels)}
             messages={messages.record}
           />
-        </section>
 
-        {/* 8 · The way on. */}
-        <section
-          ref={setSectionRef(6)}
-          data-reveal="6"
-          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center items-center pt-[8vh] pb-[calc(8vh+env(safe-area-inset-bottom)+var(--consent-h,0px))] ${revealClass(6)}`}
-        >
-          <Button variant="gold" mist onClick={handleContinue}>
-            {messages.continueLabel}
-            <ButtonArrow />
-          </Button>
+          <div className="mt-12 flex flex-col items-center">
+            <Button variant="gold" mist onClick={handleContinue}>
+              {messages.continueLabel}
+              <ButtonArrow />
+            </Button>
 
-          {/* Quiet walk-back — re-reading the verdict, not reopening it. Walks
-              one history entry back rather than dispatching directly, so the
-              browser stack and the reducer stay in agreement. */}
-          <button
-            type="button"
-            onClick={onBack}
-            className="mt-8 inline-flex min-h-[32px] items-center text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
-          >
-            {messages.rereadVerdict}
-          </button>
+            {/* Quiet walk-back — re-reading the verdict, not reopening it. Walks
+                one history entry back rather than dispatching directly, so the
+                browser stack and the reducer stay in agreement. */}
+            <button
+              type="button"
+              onClick={onBack}
+              className="mt-8 inline-flex min-h-[32px] items-center text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
+            >
+              {messages.rereadVerdict}
+            </button>
+          </div>
         </section>
       </div>
 

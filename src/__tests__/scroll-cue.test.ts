@@ -455,6 +455,57 @@ describe("grace carries the verdict's gesture across the seam", () => {
     expect(grace).not.toMatch(/!hasMoved && !reachedWayOut|!reachedWayOut && !hasMoved/);
   });
 
+  it("puts the way on under the record, not on a screen of its own", () => {
+    /*
+     * The forward control had a viewport to itself: 112px of content in an 832px
+     * section, 87% empty, holding "E agora?" and a re-read link. That is not
+     * weight given to the decision, it is a gesture charged for nothing — the
+     * argument that deleted the accordion, since every gate is a place to leave.
+     *
+     * Merged, the reader's own charge sheet is the thing the button acts on.
+     * Combined content measures 496px against ~675px of usable height.
+     */
+    const sections = grace.match(/<section\b[\s\S]*?<\/section>/g) ?? [];
+    const withRecord = sections.filter((sec) => sec.includes("<GraceRecord"));
+    expect(withRecord.length, "the record moved or was duplicated").toBe(1);
+    expect(withRecord[0], "the way on is not with the record").toContain("handleContinue");
+    expect(withRecord[0], "the walk-back link is not with the record").toContain("onBack");
+    // …and nothing is left holding only a button.
+    const buttonOnly = sections.filter(
+      (sec) => sec.includes("handleContinue") && !sec.includes("<GraceRecord"),
+    );
+    expect(buttonOnly.length, "a screen still holds only the forward control").toBe(0);
+  });
+
+  it("counts a beat as read when it is the thing on the screen", () => {
+    /*
+     * Both jobs used to run off one observer, whose threshold is deliberately
+     * early — a section reveals once its top passes 90% of the viewport, so it
+     * is never still fading while the reader looks at it. Early is right for
+     * opacity and wrong for a funnel: it counted a movement as read from a
+     * sliver at the bottom edge. Measured at 390x844, arriving at one section
+     * put the next one's top at 838 against a 760 threshold — 78px from marking
+     * a beat nobody had reached, and about 28px on a bar-collapsed viewport.
+     *
+     * The reporting root is now the top 5% of the screen. The trade is an
+     * undercount rather than an overcount, which is the right direction for a
+     * number that will be used to judge printed campaigns.
+     */
+    expect(grace).toMatch(/readObserver = new IntersectionObserver/);
+    expect(grace).toMatch(/rootMargin: "0px 0px -95% 0px"/);
+    // The reveal observer must NOT be the one reporting beats any more.
+    const revealObserver = grace.slice(
+      grace.indexOf("const observer = new IntersectionObserver"),
+      grace.indexOf("const readObserver = new IntersectionObserver"),
+    );
+    expect(revealObserver.length, "could not isolate the reveal observer").toBeGreaterThan(0);
+    expect(revealObserver, "the reveal threshold still reports beats").not.toMatch(
+      /trackGraceBeatRevealed/,
+    );
+    // Both are torn down.
+    expect(grace).toMatch(/readObserver\.disconnect\(\)/);
+  });
+
   it("reports the tap, because the surface costs something", () => {
     // Text selection on this screen is the price. `grace_tap_advance` is how we
     // find out whether anything was bought with it.
