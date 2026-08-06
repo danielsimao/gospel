@@ -1,4 +1,12 @@
-type Texture = "tally" | "dots";
+/*
+ * Only what ships. "dots" was here and was removed: its meaning — many, one
+ * exception — belonged to the score band, and behind the questions it was
+ * decoration wearing the wrong argument. The asset is parked in
+ * docs/graphics/assets as a candidate for the /test landing; re-add the union
+ * member when a placement earns it, not before, because a member with no
+ * served file behind it is a 404 waiting for the next caller.
+ */
+type Texture = "tally";
 
 /**
  * How hard each texture is pushed, and why the two differ.
@@ -12,7 +20,6 @@ type Texture = "tally" | "dots";
  */
 const TEXTURE: Record<Texture, { opacity: string; alt: string }> = {
   tally: { opacity: "0.16", alt: "tally" },
-  dots: { opacity: "0.12", alt: "dots" },
 };
 
 /**

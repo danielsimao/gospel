@@ -21,8 +21,8 @@ const testOg = strip(read("src", "app", "[locale]", "(immersive)", "test", "open
 const prompts = read("docs", "graphics", "PROMPTS.md");
 
 describe("what is served, and what is not", () => {
-  it("ships both formats for every band texture", () => {
-    for (const name of ["tally", "dots"]) {
+  it("ships both formats for everything the pages reference", () => {
+    for (const name of ["tally", "paper", "fingerprint"]) {
       for (const ext of ["avif", "webp"]) {
         expect(
           existsSync(join(ROOT, "public", "graphics", `${name}.${ext}`)),
@@ -34,28 +34,36 @@ describe("what is served, and what is not", () => {
     expect(texture).toMatch(/\.webp/);
   });
 
-  it("keeps print-only assets out of public", () => {
+  it("keeps parked assets out of public", () => {
     /*
-     * The fingerprint and the stone are for tract backs and card surfaces —
-     * print, at full strength. Served they would be ~350 KB nobody ever
-     * downloads. Versioned beside their prompts instead.
+     * The stone is print-only; the dots are a candidate without an
+     * approved placement — their meaning belonged to the score band. Parked
+     * beside their prompts, not served: an unreferenced file in public/ is an
+     * invitation for the next caller to wire it without re-measuring.
      */
-    for (const name of ["fingerprint", "stone"]) {
+    for (const name of ["stone", "dots"]) {
       expect(
         existsSync(join(ROOT, "public", "graphics", `${name}.avif`)),
-        `${name} is being served but is print-only`,
+        `${name} is served but has no approved placement`,
       ).toBe(false);
       expect(
         existsSync(join(ROOT, "docs", "graphics", "assets", `${name}.avif`)),
         `${name} is not versioned`,
       ).toBe(true);
     }
+    // The courtroom shaft IS served — grace's turn panel carries it in a CSS
+    // url(), which a grep for .avif in JSX will not find. It broke once by
+    // being moved on the strength of exactly that bad grep.
+    expect(existsSync(join(ROOT, "public", "graphics", "courtroom.avif"))).toBe(true);
+    const grace = strip(read("src", "components", "grace-screen.tsx"));
+    expect(grace).toMatch(/url\(\/graphics\/courtroom\.avif\)/);
+    expect(existsSync(join(ROOT, "public", "paper.avif")), "paper should live under graphics/").toBe(false);
   });
 
   it("keeps the served set small", () => {
     // These sit behind content below the fold. A texture that costs more than
     // the page it decorates has stopped being a background.
-    const total = ["tally", "dots"].flatMap((n) => [`${n}.avif`, `${n}.webp`])
+    const total = ["tally", "paper", "fingerprint"].flatMap((n) => [`${n}.avif`, `${n}.webp`])
       .concat("door.jpg")
       .reduce((sum, f) => sum + kb("public", "graphics", f), 0);
     expect(total, `served graphics total ${total.toFixed(0)} KB`).toBeLessThan(500);
@@ -82,28 +90,37 @@ describe("the band textures stay backgrounds", () => {
     expect(texture).toMatch(/WebkitMaskImage: "radial-gradient/);
   });
 
-  it("holds each texture at the opacity it was measured at", () => {
+  it("holds each graphic at the opacity it was measured at", () => {
     /*
-     * Both were tested in place. The tally marks are bright strokes on black
-     * and survive dimming — 16% reads as a wall, 28% fights the caption. The
-     * dot field is denser and flatter, so 12% reads as many and 22% makes the
-     * chips look like they float.
+     * All tested in place, none guessed. The tally's bright strokes survive
+     * dimming — 16% reads as a wall, 28% fights the caption. On the record,
+     * the paper is 7% and the print 9%, because at 16% the print competed
+     * with the pleas it sits under.
      */
     expect(texture).toMatch(/tally: \{ opacity: "0\.16"/);
-    expect(texture).toMatch(/dots: \{ opacity: "0\.12"/);
+    const record = strip(read("src", "components", "grace-record.tsx"));
+    expect(record).toMatch(/opacity-\[0\.07\]/);
+    expect(record).toMatch(/opacity-\[0\.09\]/);
   });
 
-  it("is used by exactly the two bands it was measured against", () => {
+  it("appears exactly where its meaning is, and nowhere else", () => {
+    /*
+     * The owner's rule, learned the hard way: the dots sat behind the
+     * questions band because they looked good there, and their meaning —
+     * many, one exception — had nothing to do with a list of learn topics.
+     * Every placement now matches image to argument: tally marks behind a
+     * score, a fingerprint pressed into the reader's own charge sheet.
+     */
     const passed = strip(read("src", "components", "home", "passed-band.tsx"));
-    const questions = strip(read("src", "components", "home", "questions-band.tsx"));
     expect(passed).toMatch(/<BandTexture texture="tally"/);
-    expect(questions).toMatch(/<BandTexture texture="dots"/);
-    // Not sprayed across the rest of the page.
-    for (const name of ["reading-band", "closing-verse", "latest-post-card"]) {
+    const record = strip(read("src", "components", "grace-record.tsx"));
+    expect(record).toMatch(/fingerprint\.avif/);
+    expect(record).toMatch(/paper\.avif/);
+    for (const name of ["questions-band", "reading-band", "latest-post-card"]) {
       expect(
         strip(read("src", "components", "home", `${name}.tsx`)),
-        `${name} grew a texture nobody measured`,
-      ).not.toMatch(/BandTexture/);
+        `${name} grew a texture nobody approved`,
+      ).not.toMatch(/BandTexture|graphics\//);
     }
   });
 });
@@ -151,12 +168,14 @@ describe("every asset keeps its prompt", () => {
   it("documents the six, with copy markers", () => {
     // An asset whose prompt is lost cannot be regenerated at another size or
     // with one constraint changed.
-    expect(prompts.match(/COPY FROM HERE/g)?.length).toBe(6);
+    // Grows as assets do — the floor is the six originals plus the two that
+    // predated the file and had their prompts back-filled.
+    expect(prompts.match(/COPY FROM HERE/g)?.length).toBeGreaterThanOrEqual(8);
     expect(prompts.match(/Generate a new image\./g)?.length).toBeGreaterThanOrEqual(6);
   });
 
   it("names the assets that shipped", () => {
-    for (const name of ["tally", "dots", "fingerprint", "stone", "door"]) {
+    for (const name of ["tally", "dots", "fingerprint", "stone", "door", "paper", "courtroom"]) {
       expect(prompts.toLowerCase(), `${name} has no prompt on record`).toContain(name);
     }
   });

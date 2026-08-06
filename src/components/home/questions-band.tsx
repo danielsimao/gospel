@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { BandSpine } from "@/components/home/band-spine";
-import { BandTexture } from "@/components/home/band-texture";
 import { TopicEmblem } from "@/components/emblems";
 import { HOME_QUESTION_SLUGS, HOME_QUESTIONS_MOBILE } from "@/lib/home-questions";
 import type { Locale } from "@/lib/i18n";
@@ -44,7 +43,6 @@ export function QuestionsBand({ locale, label, allLabel, topics }: QuestionsBand
 
   return (
     <div className="relative mt-14 w-full max-w-md text-left sm:max-w-2xl">
-      <BandTexture texture="dots" />
       <div className="relative">
       <BandSpine label={label} />
       {/* Two columns from sm: at one column the six chips are a 350px stack

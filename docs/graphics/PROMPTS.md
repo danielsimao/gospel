@@ -33,10 +33,6 @@ whoever maintains this file, and pasting it confuses the model.
 Ask for the largest resolution available, PNG. Send results raw — no cropping,
 no colour correction, no format conversion.
 
-Two assets predate this file and are already in the flow: the courtroom shaft
-(grace's turn panel, `public/courtroom.avif`) and the paper texture (the record
-card, `public/paper.avif`).
-
 ---
 
 ## 1 · A parede de talhos — the tally wall
@@ -66,7 +62,7 @@ Style: photographic, high contrast, not illustration. Send it darker and more co
 
 ## 2 · A multidão — the field of many
 
-**Ships as:** `public/graphics/dots.avif` + `.webp` — questions band, 12% opacity
+**Ships as:** parked in `docs/graphics/assets/dots.avif` — removed from the questions band because its meaning (many, one exception) is the score band's argument, not a topic list's. Candidate for the /test landing; needs approval and a re-measure before serving.
 
 **Where it goes:** behind the questions band, or as the score band's alternative backdrop. The one gold point is drawn in code.
 
@@ -91,7 +87,7 @@ Style: photographic, high contrast, not illustration. Send it darker and more co
 
 ## 3 · A impressão digital — the fingerprint
 
-**Ships as:** `docs/graphics/assets/fingerprint.avif` — print only (tract backs); not served
+**Ships as:** `public/graphics/fingerprint.avif` + `.webp` — pressed under the reader's own charge sheet on the grace record at 9%, above the paper at 7%. Also print (tract backs).
 
 **Where it goes:** the verdict's OG/share image, and the tract backs. Testimony, identity, the record.
 
@@ -184,6 +180,48 @@ Composition: vertical 9:16, the lit gap a narrow vertical band roughly one sixth
 Do not include: any text, any numerals, any actual door, hinges, handles, frames, steps, people, hands, faces, gavels, scales, crosses, or lens flare.
 
 Style: photographic, high contrast, not illustration.
+```
+
+**▲ COPY TO HERE ▲**
+---
+
+## 7 · O papel — the paper texture
+
+**Ships as:** `public/graphics/paper.avif` + `.webp` — under the grace record at 7%, beneath the fingerprint. Predates this file; prompt recorded here so it can be regenerated.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A flat overhead scan of a sheet of old uncoated paper, evenly lit, with no
+shadows and no curl. Neutral grey, desaturated, faintly fibrous, with subtle
+tonal variation across the sheet and very slight age at the edges. No writing,
+no printing, no lines, no stamps, no folds, no tears, no coffee stains. Square
+composition, filling the frame edge to edge, seamless enough to tile. Plain,
+archival, unremarkable. Photographic, not illustration.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 8 · O feixe de luz — the courtroom shaft
+
+**Ships as:** `public/graphics/courtroom.avif` — grace's turn panel, behind "Mas alguém entra no tribunal", under two damping veils. Referenced from CSS `url()` in grace-screen, so a JSX grep will not find it.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of a single shaft of pale daylight falling through a tall unseen
+window onto a bare stone floor, in a large empty room. Near-black throughout,
+almost monochrome, with only the light itself bright. Deep shadow occupying
+most of the frame. Extremely high contrast, large simple shapes, very little
+detail. Vertical 9:16 composition. The upper two thirds are almost entirely
+dark and empty. No people, no furniture, no text, no visible window frame.
+Architectural, austere, quiet. Photographic, not illustration.
 ```
 
 **▲ COPY TO HERE ▲**

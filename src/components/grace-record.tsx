@@ -63,16 +63,40 @@ export function GraceRecord({ rows, messages }: GraceRecordProps) {
       </figcaption>
 
       <div className="relative overflow-hidden rounded-md border border-white/[0.13] bg-white/[0.015] p-4 sm:p-5">
-        {/* EXPERIMENT — paper texture under the charge sheet. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-[0.07]"
-          style={{
-            backgroundImage: "url(/paper.avif)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
+        {/*
+         * Two layers under the charges, and each means something.
+         *
+         * The paper is what makes the record read as issued rather than
+         * rendered — a document, not a styled div. The fingerprint is the
+         * reader pressed into their own record: identity, testimony, the mark
+         * a charge sheet carries. Both were measured in place; the print sits
+         * at 9% because at 16% it competed with the pleas it sits under.
+         *
+         * <picture> with AVIF + WebP, lazy — the record is many screens deep
+         * in the flow and nothing here may cost the reader a frame.
+         */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <picture>
+            <source srcSet="/graphics/paper.avif" type="image/avif" />
+            <img
+              src="/graphics/paper.webp"
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="size-full object-cover opacity-[0.07]"
+            />
+          </picture>
+          <picture>
+            <source srcSet="/graphics/fingerprint.avif" type="image/avif" />
+            <img
+              src="/graphics/fingerprint.webp"
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="absolute inset-0 m-auto h-[86%] w-auto opacity-[0.09]"
+            />
+          </picture>
+        </div>
         {/*
          * A real table, not a grid of divs. This is tabular data — count,
          * charge, plea — and the document look is styling on top of that, not a

@@ -695,7 +695,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
           className={`mx-[calc(50%-50vw)] flex min-h-[calc(100svh-0.75rem)] flex-col justify-center overflow-hidden px-5 pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] sm:px-6 ${revealClass(1)}`}
           style={{
             backgroundImage:
-              "linear-gradient(to bottom, rgba(239,68,68,0.07) 0%, rgba(212,168,67,0.10) 52%, transparent 100%), linear-gradient(to bottom, rgba(6,4,4,0.35) 0%, rgba(6,4,4,0.62) 100%), url(/courtroom.avif)",
+              "linear-gradient(to bottom, rgba(239,68,68,0.07) 0%, rgba(212,168,67,0.10) 52%, transparent 100%), linear-gradient(to bottom, rgba(6,4,4,0.35) 0%, rgba(6,4,4,0.62) 100%), url(/graphics/courtroom.avif)",
             backgroundSize: "cover, cover, cover",
             backgroundPosition: "center, center, center bottom",
           }}

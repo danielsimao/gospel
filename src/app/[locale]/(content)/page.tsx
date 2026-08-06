@@ -48,7 +48,6 @@ interface HomeData {
   readingLabels: { dayLabel: string; complete: string };
   allTopicsLabel: string;
   allPostsLabel: string;
-  closingVerse: { scripture: string; scriptureRef: string };
 }
 
 export function generateStaticParams() {
@@ -84,12 +83,6 @@ async function getHomeData(locale: Locale): Promise<HomeData> {
     },
     allTopicsLabel: data.learn.allTopicsLabel,
     allPostsLabel: data.blog.allPostsLabel,
-    /* The homepage's last word, reused verbatim from the grace screen rather
-       than written twice — see components/home/closing-verse. */
-    closingVerse: {
-      scripture: data.grace.scripture as string,
-      scriptureRef: data.grace.scriptureRef as string,
-    },
   };
 }
 
@@ -151,7 +144,6 @@ export default async function HomePage({ params }: Props) {
         allTopicsLabel={data.allTopicsLabel}
         allPostsLabel={data.allPostsLabel}
         testTakerCount={testTakerCount}
-        closingVerse={data.closingVerse}
         latestPost={latestPost}
       />
     </>
