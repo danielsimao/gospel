@@ -3,6 +3,7 @@ import { SUPPORTED_LOCALES } from "@/lib/i18n";
 import { getLocaleUrl, getLanguageAlternates } from "@/lib/seo";
 import { TOPIC_DATES } from "@/lib/topic-dates";
 import { getPublishedPosts, getPostLocales, getPostDateModified } from "@/content/blog/posts";
+import { BLOG_ENABLED } from "@/lib/flags";
 
 function newest(dates: string[]): Date | undefined {
   if (!dates.length) return undefined;
@@ -15,12 +16,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   const posts = getPublishedPosts();
-  const newestPostDate = newest(posts.map(getPostDateModified));
+  /* With the blog's entrances hidden the homepage no longer carries the latest
+     post, so a new post must not move the homepage's date. The posts keep their
+     own sitemap rows either way — hidden is not unpublished. */
+  const newestPostDate = BLOG_ENABLED
+    ? newest(posts.map(getPostDateModified))
+    : undefined;
   const newestTopicDate = newest(
     learnSlugs.map((slug) => TOPIC_DATES[slug]?.modified).filter((d): d is string => Boolean(d)),
   );
-  // The homepage carries the latest post and the topic list, so its date is
-  // honestly the newest of the two.
+  // The homepage carries the topic list, and the latest post when the blog's
+  // entrances are on, so its date is honestly the newest of what it shows.
   const newestContentDate = newest(
     [newestPostDate, newestTopicDate]
       .filter((d): d is Date => d !== undefined)
