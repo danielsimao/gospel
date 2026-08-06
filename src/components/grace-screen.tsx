@@ -86,6 +86,20 @@ interface GraceScreenProps {
  * so it is paid willingly — and `grace_tap_advance` reports whether anything
  * was bought with it.
  *
+ * ── One screen per section ──────────────────────────────────────────────────
+ *
+ * Every section claims a full viewport and centres its own content. That is a
+ * consequence of the tap, not a taste: the movements were 832, 509, 692, 529,
+ * 506, 104, 440 and 248px tall, so a tap that centred the next one left the
+ * tail of the last still on screen and the head of the next already showing —
+ * two movements visible at once, out of a page whose whole argument is that
+ * each step follows from the one before it. Sized to the viewport, a tap lands
+ * on exactly one movement and the beat is the frame.
+ *
+ * It is also what the verdict does. Every beat there is one screen, and grace
+ * reading as a continuous scroll of ragged blocks was the seam showing from the
+ * other side.
+ *
  * ── The shape, and why gold sits where it does ──────────────────────────────
  *
  * docs/METHOD.md holds two rules that pull against each other. Gold "arrives
@@ -383,7 +397,7 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
         <section
           ref={setSectionRef(0)}
           data-reveal="0"
-          className={`py-[18vh] ${revealClass(0)}`}
+          className={`flex min-h-[calc(100dvh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(0)}`}
         >
           <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-red-400/70">
             {problem?.label}
@@ -411,7 +425,7 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
         <section
           ref={setSectionRef(1)}
           data-reveal="1"
-          className={`mx-[calc(50%-50vw)] flex min-h-[82dvh] flex-col justify-center overflow-hidden px-5 py-[12vh] sm:px-6 ${revealClass(1)}`}
+          className={`mx-[calc(50%-50vw)] flex min-h-[calc(100dvh-0.75rem)] flex-col justify-center overflow-hidden px-5 py-[8vh] sm:px-6 ${revealClass(1)}`}
           style={{
             background:
               "linear-gradient(to bottom, rgba(239,68,68,0.07) 0%, rgba(212,168,67,0.10) 52%, transparent 100%)",
@@ -437,7 +451,7 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
         <section
           ref={setSectionRef(2)}
           data-reveal="2"
-          className={`py-[16vh] ${revealClass(2)}`}
+          className={`flex min-h-[calc(100dvh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(2)}`}
         >
           <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
             {payer?.label}
@@ -455,7 +469,7 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
         <section
           ref={setSectionRef(3)}
           data-reveal="3"
-          className={`py-[16vh] ${revealClass(3)}`}
+          className={`flex min-h-[calc(100dvh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(3)}`}
         >
           <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
             {response?.label}
@@ -472,7 +486,7 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
         <section
           ref={setSectionRef(4)}
           data-reveal="4"
-          className={revealClass(4)}
+          className={`flex min-h-[calc(100dvh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(4)}`}
         >
           <blockquote className="border-l border-[#D4A843]/30 pl-4">
             <p className="text-[15px] italic leading-[1.8] text-white/60 sm:text-base">
@@ -503,7 +517,7 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
         <section
           ref={setSectionRef(5)}
           data-reveal="5"
-          className={`pt-14 ${revealClass(5)}`}
+          className={`flex min-h-[calc(100dvh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(5)}`}
         >
           <GraceRecord
             rows={buildRecord(state.answers, verdictLabels)}
@@ -515,7 +529,7 @@ export function GraceScreen({ messages, verdictLabels, onBack }: GraceScreenProp
         <section
           ref={setSectionRef(6)}
           data-reveal="6"
-          className={`flex flex-col items-center pt-14 pb-[calc(5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] ${revealClass(6)}`}
+          className={`flex min-h-[calc(100dvh-0.75rem)] flex-col justify-center items-center pt-[8vh] pb-[calc(8vh+env(safe-area-inset-bottom)+var(--consent-h,0px))] ${revealClass(6)}`}
         >
           <Button variant="gold" mist onClick={handleContinue}>
             {messages.continueLabel}

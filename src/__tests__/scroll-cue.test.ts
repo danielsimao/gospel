@@ -187,6 +187,29 @@ describe("grace carries the verdict's gesture across the seam", () => {
     expect(grace).not.toMatch(/absolute bottom-\[calc\([^\]]*--consent-h[^\]]*\]"\s*>\s*<ScrollCue/);
   });
 
+  it("gives every section a screen of its own", () => {
+    /*
+     * The movements were 832, 509, 692, 529, 506, 104, 440 and 248px tall, so a
+     * tap that centred the next one left the tail of the last on screen and the
+     * head of the next already showing — two movements at once, on a page whose
+     * argument is that each step follows from the one before it.
+     *
+     * Counted, not sampled: one short section is all it takes for a tap to land
+     * on two.
+     */
+    // The announcement carries no data-reveal, so the page renders one more
+    // section than REVEAL_SECTIONS counts. Derived rather than hard-coded: a
+    // movement added later must arrive sized like the rest.
+    const revealSections = Number(grace.match(/const REVEAL_SECTIONS = (\d+)/)?.[1]);
+    const sections = grace.match(/<section\b[\s\S]*?>/g) ?? [];
+    expect(sections.length, "grace lost its sections").toBe(revealSections + 1);
+    for (const [i, section] of sections.entries()) {
+      expect(section, `section ${i} does not claim a screen`).toMatch(
+        /min-h-\[calc\(100dvh-0\.75rem\)\]/,
+      );
+    }
+  });
+
   it("reports the tap, because the surface costs something", () => {
     // Text selection on this screen is the price. `grace_tap_advance` is how we
     // find out whether anything was bought with it.
