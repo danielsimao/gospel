@@ -200,6 +200,39 @@ describe("grace carries the verdict's gesture across the seam", () => {
     expect(grace).toMatch(/wayOnObserver\.observe\(wayOnRef\.current\)/);
     expect(grace).toMatch(/<div ref=\{wayOnRef\}/);
     expect(grace).toMatch(/wayOnObserver\.disconnect\(\)/);
+
+    /*
+     * The options are the test, not decoration. `threshold: 0` fires the moment
+     * any part of the control crosses the edge; `threshold: 1` would wait for
+     * all of it and leave the surface over a button the reader can already see,
+     * and a negative rootMargin would do the same by shrinking the root.
+     */
+    const wayOnObserver = grace.slice(
+      grace.indexOf("const wayOnObserver = new IntersectionObserver"),
+      grace.indexOf("if (wayOnRef.current) wayOnObserver.observe"),
+    );
+    expect(wayOnObserver.length, "could not isolate the observer").toBeGreaterThan(0);
+    expect(wayOnObserver).toMatch(/\{ threshold: 0 \}/);
+    expect(wayOnObserver, "a margin would shrink the root and retire it late").not.toMatch(
+      /rootMargin/,
+    );
+    expect(wayOnObserver).toMatch(/setReachedWayOut\(true\)/);
+
+    /*
+     * And the frame the observer cannot cover. IntersectionObserver callbacks
+     * are asynchronous, so the surface outlives the control's arrival by at
+     * least a frame — long enough for the second of two fast taps to land on it
+     * while the button is already on screen, where it falls through to a
+     * viewport of scrollBy and pulls the button away. The press reads the
+     * geometry itself.
+     */
+    expect(grace).toMatch(/const wayOn = wayOnRef\.current\?\.getBoundingClientRect\(\)/);
+    expect(grace).toMatch(/if \(wayOn && wayOn\.top < window\.innerHeight\)/);
+    const guard = grace.slice(grace.indexOf("const wayOn = wayOnRef.current?"));
+    expect(
+      guard.indexOf("setReachedWayOut(true)"),
+      "the synchronous guard does not retire the surface",
+    ).toBeLessThan(guard.indexOf("advanceSection("));
     // …and NOT off a section index in the reveal observer, which is where it was.
     expect(grace, "the surface retires on a section threshold again").not.toMatch(
       /index === REVEAL_SECTIONS - 1\) setReachedWayOut/,
@@ -218,9 +251,17 @@ describe("grace carries the verdict's gesture across the seam", () => {
      * state, which is why nobody noticed: the STATE stayed right while the
      * EVENTS duplicated, and the events are what the funnel is built from.
      */
-    expect(grace).toMatch(
-      /new Set\(Array\.from\(\{ length: state\.graceBeatsRevealed \}/,
-    );
+    expect(grace).toMatch(/state\.graceBeatsRevealed/);
+    /*
+     * Clamped, because the count comes out of storage and storage holds
+     * whatever was last written there. Raw as an array length it is a loaded
+     * gun: above BEAT_SECTIONS it silently suppresses real beat events, and
+     * Infinity or a large number from a corrupted session throws or allocates
+     * until the tab dies.
+     */
+    expect(grace).toMatch(/Math\.min\(/);
+    expect(grace).toMatch(/BEAT_SECTIONS,?\s*\)/);
+    expect(grace).toMatch(/Math\.trunc\(state\.graceBeatsRevealed\)/);
     expect(grace, "the report set starts empty again").not.toMatch(
       /reportedRef = useRef<Set<number>>\(new Set\(\)\)/,
     );
@@ -258,9 +299,17 @@ describe("grace carries the verdict's gesture across the seam", () => {
      * re-read.
      */
     expect(grace, "the mount seed is back").not.toMatch(/seeded\[REVEAL_SECTIONS - 1\]/);
-    // Only the observer may set it.
+    /*
+     * Exactly two setters, and both are measurements of where the control
+     * actually is: the observer, and the synchronous rect check in the press
+     * that covers the frame the observer's async callback cannot. A third would
+     * mean something is guessing again — a mount-time seed of this flag is what
+     * previously made the surface vanish for a whole re-read.
+     */
     const setters = grace.match(/setReachedWayOut\(true\)/g) ?? [];
-    expect(setters.length, "something other than the observer sets it").toBe(1);
+    expect(setters.length, "something other than a measurement sets it").toBe(2);
+    expect(grace).toMatch(/if \(entry\.isIntersecting\) setReachedWayOut\(true\)/);
+    expect(grace).toMatch(/wayOn\.top < window\.innerHeight\) \{\s*setReachedWayOut\(true\)/);
   });
 
   it("does not inherit 'has arrived' from the everything-visible fallback", () => {

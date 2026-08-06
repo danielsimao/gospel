@@ -205,7 +205,25 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
    * below it have been reported by definition.
    */
   const reportedRef = useRef<Set<number>>(
-    new Set(Array.from({ length: state.graceBeatsRevealed }, (_, i) => i)),
+    /*
+     * Clamped, because this count comes out of storage and storage holds
+     * whatever was last written there. Used raw as an array length it is a
+     * loaded gun: a value above BEAT_SECTIONS silently suppresses real beat
+     * events, and Infinity or a large number from a corrupted or hand-edited
+     * session throws or allocates until the tab dies. The only meaningful
+     * values are the four movement indices.
+     */
+    new Set(
+      Array.from(
+        {
+          length: Math.min(
+            Math.max(Math.trunc(state.graceBeatsRevealed) || 0, 0),
+            BEAT_SECTIONS,
+          ),
+        },
+        (_, i) => i,
+      ),
+    ),
   );
 
   /*
@@ -523,6 +541,26 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
      * put an unnamed control into the accessibility tree.
      */
     event.currentTarget.blur();
+
+    /*
+     * The control may already be on screen even though the observer has not
+     * said so yet — IntersectionObserver callbacks are asynchronous, so the
+     * surface outlives the control's arrival by at least a frame. A human
+     * cannot tap in that window after SEEING the button, but they do not have
+     * to: the tap that brings the control into view is followed by a second tap
+     * before the callback runs, and that one lands on the surface. With no
+     * section left to advance to it falls through to a viewport of scrollBy,
+     * which pulls the button away exactly as the reader reaches for it.
+     *
+     * So the geometry is read here, synchronously, at the moment of the press.
+     * The observer remains the primary signal; this is the frame it cannot
+     * cover.
+     */
+    const wayOn = wayOnRef.current?.getBoundingClientRect();
+    if (wayOn && wayOn.top < window.innerHeight) {
+      setReachedWayOut(true);
+      return;
+    }
 
     const target = advanceSection(containerRef.current);
     if (!target) return;
