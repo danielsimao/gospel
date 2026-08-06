@@ -1523,7 +1523,7 @@
       "eyebrow": "The score so far",
       "failedCaption": "failed",
       "passedCaption": "passed",
-      "failedFallback": "All",
+      "liveBadge": "live",
       "whoCta": "Find out who",
       "testCta": "Take the test — see how you do"
     },

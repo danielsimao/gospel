@@ -1523,7 +1523,7 @@
       "eyebrow": "A contagem até agora",
       "failedCaption": "chumbaram",
       "passedCaption": "passou",
-      "failedFallback": "Todos",
+      "liveBadge": "ao vivo",
       "whoCta": "Descobre quem",
       "testCta": "Faz o teste — vê como te sais"
     },

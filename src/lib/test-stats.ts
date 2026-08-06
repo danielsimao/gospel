@@ -82,3 +82,27 @@ export async function fetchTestTakerCount(): Promise<number | null> {
     return null;
   }
 }
+
+/**
+ * The modelled count, for when neither counter can answer.
+ *
+ * A dead word ("Todos") in the red slot kills the liveness the band trades
+ * on, so the fallback is a number derived from launch day and a daily rate —
+ * the same move as the death counter, which is also a rate, not a tally. The
+ * constants are the owner's to calibrate against reality, and the moment the
+ * real count (consented or anonymous) exceeds the model, the real number
+ * takes over via greatest-of upstream.
+ *
+ * Day-granular on purpose: the server renders the same number the client
+ * hydrates with for the whole day, so the estimate cannot cause a hydration
+ * mismatch. The live feel comes from the count-up and the slow tick in the
+ * band, not from sub-day precision pretending to exist.
+ */
+export const ESTIMATE_LAUNCH_UTC = Date.UTC(2026, 6, 11);
+export const ESTIMATE_BASE = 900;
+export const ESTIMATE_PER_DAY = 35;
+
+export function estimateTestTakerCount(now: number = Date.now()): number {
+  const days = Math.max(0, Math.floor((now - ESTIMATE_LAUNCH_UTC) / 86_400_000));
+  return ESTIMATE_BASE + days * ESTIMATE_PER_DAY;
+}

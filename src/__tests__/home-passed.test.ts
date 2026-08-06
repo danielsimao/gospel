@@ -1,7 +1,12 @@
 import { describe, it, expect, afterEach, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { fetchTestTakerCount } from "@/lib/test-stats";
+import {
+  fetchTestTakerCount,
+  estimateTestTakerCount,
+  ESTIMATE_BASE,
+  ESTIMATE_PER_DAY,
+} from "@/lib/test-stats";
 
 /**
  * "N took the test. 1 passed." — the homepage's score band.
@@ -77,18 +82,51 @@ describe("the band and its doors", () => {
     expect(band).toMatch(/passVisible \? "translate-y-0 opacity-100"/);
   });
 
-  it("reads whole without the number", () => {
-    // No count means the red side says "Todos" — todos chumbaram, 1 passou —
-    // and the count-up is skipped rather than climbing to nothing.
-    expect(band).toMatch(/count === null\s*\?\s*messages\.failedFallback/);
-    expect(band).toMatch(/count === null \|\| reduced \|\| typeof IntersectionObserver === "undefined"/);
+  it("always shows a number, and behaves live even without one", () => {
+    /*
+     * The owner's brief, verbatim: a dead word in the red slot kills the
+     * liveness the band trades on. With no real count the modelled estimate
+     * stands in — a rate, like the death counter — and the band still wears
+     * the pulse, counts up, and ticks while the reader lingers.
+     */
+    expect(band).toMatch(/count \?\? estimateTestTakerCount\(\)/);
+    expect(band, "the dead-word fallback is back").not.toMatch(/failedFallback|Todos/);
+    // The pulse point, which stops moving but stays visible under reduced motion.
+    expect(band).toMatch(/animate-pulse motion-reduce:animate-none/);
+    // The slow tick: content, not motion, so it survives reduced motion too.
+    expect(band).toMatch(/34_000 \+ Math\.random\(\) \* 26_000/);
+    expect(band).toMatch(/clearTimeout\(tickTimer\)/);
+    // Day-granular estimate + suppressed warning: hydration cannot disagree.
+    expect(band).toMatch(/suppressHydrationWarning/);
     for (const [locale, home] of [
       ["en", en.home],
       ["pt", pt.home],
     ] as const) {
-      expect(home.passedBand.failedFallback, `${locale} lost the fallback value`).toBeTruthy();
+      expect(home.passedBand.liveBadge, `${locale} lost the live badge`).toBeTruthy();
       expect(home.passedBand.failedCaption, `${locale} lost the red caption`).toBeTruthy();
     }
+  });
+
+  it("estimates deterministically, by the day", () => {
+    // Same day, different hour: the same number — that is what keeps server
+    // and client hydration in agreement. Different days grow by the rate.
+    const morning = Date.UTC(2026, 7, 6, 8);
+    const evening = Date.UTC(2026, 7, 6, 22);
+    const nextDay = Date.UTC(2026, 7, 7, 8);
+    expect(estimateTestTakerCount(morning)).toBe(estimateTestTakerCount(evening));
+    expect(estimateTestTakerCount(nextDay)).toBe(estimateTestTakerCount(morning) + ESTIMATE_PER_DAY);
+    // …and never negative, whatever the clock says.
+    expect(estimateTestTakerCount(0)).toBe(ESTIMATE_BASE);
+  });
+
+  it("dresses the doors as doors", () => {
+    // Two pills, unequal on purpose: the gold one is the band's reason to
+    // exist, the quiet one is for whoever hears the scoreline as a challenge.
+    // className follows href in the JSX, so the window looks forward.
+    const who = band.slice(band.indexOf("learn/who-is-jesus"), band.indexOf("learn/who-is-jesus") + 350);
+    expect(who).toMatch(/rounded-full border border-\[#D4A843\]/);
+    const test = band.slice(band.indexOf("/test`"), band.indexOf("/test`") + 350);
+    expect(test).toMatch(/rounded-full border border-white/);
   });
 });
 

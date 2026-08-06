@@ -3,25 +3,26 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { BandHeader } from "@/components/next-steps/band-header";
+import { estimateTestTakerCount } from "@/lib/test-stats";
 import type { Locale } from "@/lib/i18n";
 
 interface PassedBandProps {
   locale: Locale;
   messages: {
     eyebrow: string;
+    /** The pulsing badge over the red side — "ao vivo" / "live". */
+    liveBadge: string;
     /** Under the red number: "chumbaram" / "failed". */
     failedCaption: string;
     /** Under the gold 1: "passou" / "passed". */
     passedCaption: string;
-    /** The red side's value when no count is available — "Todos" / "All".
-        The sentence "todos chumbaram · 1 passou" needs no number to land. */
-    failedFallback: string;
     whoCta: string;
     testCta: string;
   };
-  /** Readers who reached the verdict, or null when unavailable. A floor
-      either way: consent-gating hides decliners from the historic count, and
-      the anonymous counter only reaches back to the day it shipped. */
+  /** Readers who reached the verdict, or null when neither counter can
+      answer — in which case the modelled estimate stands in. Both are floors:
+      consent-gating hides decliners, and the anonymous counter only reaches
+      back to the day it shipped. */
   count: number | null;
 }
 
@@ -37,49 +38,67 @@ interface PassedBandProps {
  * Both sides are set at the SAME type size, and that is the design. The
  * asymmetry is carried entirely by the values and the colours — thousands in
  * red against a single gold 1 — which is what makes the ratio the argument
- * rather than either number alone. Red fails, gold passes: the palette is the
- * legend, no labels needed beyond one word under each.
+ * rather than either number alone.
  *
- * The red side counts up when the band scrolls into view, and the gold side
- * arrives only after it stops — gold arriving late, after the Law has done
- * its work, is the site's own grammar. Reduced motion gets the final state.
- *
- * Two doors out, deliberately unequal: "Descobre quem" is the primary — the
- * reader this band hooks wants the answer — and the test is the quiet second,
- * for whoever hears the scoreline as a challenge.
+ * The red side is built to feel live, because a score nobody is keeping is
+ * just typography: it counts up when the band enters the viewport, wears the
+ * test page's own "ao vivo" pulse, and keeps ticking upward slowly while the
+ * reader lingers. When no real count is available the modelled estimate
+ * stands in (see lib/test-stats) — a rate, like the death counter, with the
+ * real number taking over as the counters accumulate. The gold side arrives
+ * only after the red stops climbing: gold arriving late, after the Law has
+ * finished, is the site's own grammar.
  */
 export function PassedBand({ locale, messages, count }: PassedBandProps) {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const countRef = useRef<HTMLSpanElement | null>(null);
   const [passVisible, setPassVisible] = useState(false);
 
-  const formatted =
-    count === null
-      ? messages.failedFallback
-      : new Intl.NumberFormat(locale === "pt" ? "pt-PT" : "en-US").format(count);
+  // Day-granular estimate, so server and client render the same number and
+  // hydration has nothing to disagree about.
+  const target = count ?? estimateTestTakerCount();
+  const formatter = new Intl.NumberFormat(locale === "pt" ? "pt-PT" : "en-US");
 
   /*
-   * The count-up, off the main React render path on purpose: sixty state
+   * Count-up and tick, off the React render path on purpose: sixty state
    * updates a second through setState would re-render the whole band per
    * frame for a number only one span cares about. The ref writes textContent
    * directly; React never knows the animation happened.
    */
   useEffect(() => {
     const root = rootRef.current;
-    const target = countRef.current;
-    if (!root || !target) return;
+    const el = countRef.current;
+    if (!root || !el) return;
+
+    let raf = 0;
+    let tickTimer: ReturnType<typeof setTimeout> | undefined;
+    let live = target;
+
+    /*
+     * The slow tick: +1 at an uneven 34–60s. Most readers never see one —
+     * the liveness they feel is the count-up and the pulse — but the reader
+     * who lingers sees the score move under them, which is the point. Jitter
+     * so two ticks never feel metronomic; the drift from the real count is at
+     * most a handful before the hourly revalidation corrects it.
+     */
+    const scheduleTick = () => {
+      tickTimer = setTimeout(() => {
+        live += 1;
+        el.textContent = formatter.format(live);
+        scheduleTick();
+      }, 34_000 + Math.random() * 26_000);
+    };
 
     const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    // No number to climb to, no observer, or no motion: the band simply is.
-    if (count === null || reduced || typeof IntersectionObserver === "undefined") {
-      target.textContent = formatted;
+    if (reduced || typeof IntersectionObserver === "undefined") {
+      // No entrance, but the score still lives: the tick is content, not motion.
+      el.textContent = formatter.format(target);
       setPassVisible(true);
-      return;
+      scheduleTick();
+      return () => clearTimeout(tickTimer);
     }
 
-    target.textContent = "0";
-    const formatter = new Intl.NumberFormat(locale === "pt" ? "pt-PT" : "en-US");
-    let raf = 0;
+    el.textContent = "0";
     const observer = new IntersectionObserver(
       (entries) => {
         if (!entries.some((entry) => entry.isIntersecting)) return;
@@ -90,10 +109,13 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
           const t = Math.min(1, (now - start) / DURATION);
           // ease-out quartic: fast early, settling late, like the house curve
           const eased = 1 - (1 - t) ** 4;
-          target.textContent = formatter.format(Math.round(eased * count));
+          el.textContent = formatter.format(Math.round(eased * target));
           if (t < 1) raf = requestAnimationFrame(tick);
-          // The pause before gold is the design: the Law finishes first.
-          else setTimeout(() => setPassVisible(true), 350);
+          else {
+            // The pause before gold is the design: the Law finishes first.
+            setTimeout(() => setPassVisible(true), 350);
+            scheduleTick();
+          }
         };
         raf = requestAnimationFrame(tick);
       },
@@ -103,22 +125,35 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
     return () => {
       observer.disconnect();
       cancelAnimationFrame(raf);
+      clearTimeout(tickTimer);
     };
-  }, [count, formatted, locale]);
+  }, [target, locale]);
 
   return (
     <div ref={rootRef} className="mt-12 w-full max-w-md text-left sm:max-w-2xl">
       <BandHeader label={messages.eyebrow} tone="dim" />
 
-      {/* Open, not boxed: this is a beat of the page, not a widget. The grid
-          centres both sides on the divider whatever the number's width. */}
+      {/* Open, not boxed: this is a beat of the page, not a widget. */}
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 py-6 sm:gap-6 sm:py-8">
         <div className="text-center">
+          {/* The test page's own liveness mark: a pulsing red point. It stops
+              pulsing under reduced motion and stays visible — the fact-crawl
+              precedent. */}
+          <span className="mb-2.5 flex items-center justify-center gap-1.5 font-mono text-[9px] uppercase tracking-[2px] text-red-400/70">
+            <span
+              aria-hidden="true"
+              className="size-1.5 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none"
+            />
+            {messages.liveBadge}
+          </span>
           <span
             ref={countRef}
+            // The estimate is day-granular so both sides of hydration agree,
+            // but a band mounted at midnight straddles the boundary.
+            suppressHydrationWarning
             className="font-mono text-[clamp(2.1rem,9vw,3.4rem)] leading-none tracking-tight text-red-400 tabular-nums"
           >
-            {formatted}
+            {formatter.format(target)}
           </span>
           <span className="mt-2.5 block font-mono text-[10px] uppercase tracking-[2.6px] text-red-400/60">
             {messages.failedCaption}
@@ -127,7 +162,7 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
 
         <div
           aria-hidden="true"
-          className="h-20 w-px bg-gradient-to-b from-transparent via-white/25 to-transparent sm:h-24"
+          className="h-24 w-px bg-gradient-to-b from-transparent via-white/25 to-transparent sm:h-28"
         />
 
         {/* Same size as the red side — the values carry the asymmetry. */}
@@ -136,6 +171,10 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
             passVisible ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
           }`}
         >
+          {/* Spacer mirroring the live badge, so both numerals share a baseline. */}
+          <span aria-hidden="true" className="mb-2.5 block font-mono text-[9px]">
+            &nbsp;
+          </span>
           <span
             className="font-mono text-[clamp(2.1rem,9vw,3.4rem)] leading-none tracking-tight text-[#D4A843] tabular-nums"
             style={{ textShadow: "0 0 70px rgba(212,168,67,0.4)" }}
@@ -148,16 +187,22 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+      {/* Two pills, deliberately unequal: the gold door is the one this band
+          exists for, the test is the quiet second for whoever hears the
+          scoreline as a challenge. Pills rather than bare links — the band is
+          open and centred, and two loose text links under two large numerals
+          read as footnotes rather than doors. */}
+      <div className="flex flex-wrap items-center justify-center gap-3">
         <Link
           href={`/${locale}/learn/who-is-jesus`}
-          className="font-mono text-[11px] uppercase tracking-[1.6px] text-[#D4A843]/90 transition-colors hover:text-[#D4A843]"
+          className="rounded-full border border-[#D4A843]/60 bg-[#D4A843]/[0.08] px-5 py-2.5 font-mono text-[11px] uppercase tracking-[1.6px] text-[#D4A843] transition-colors hover:border-[#D4A843]/90 hover:bg-[#D4A843]/[0.14]"
+          style={{ boxShadow: "0 0 40px rgba(212,168,67,0.12)" }}
         >
           {messages.whoCta} &rarr;
         </Link>
         <Link
           href={`/${locale}/test`}
-          className="text-[13px] text-white/50 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/70"
+          className="rounded-full border border-white/[0.13] px-5 py-2.5 text-[13px] text-white/60 transition-colors hover:border-white/25 hover:text-white/80"
         >
           {messages.testCta}
         </Link>
