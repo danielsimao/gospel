@@ -324,7 +324,12 @@ describe("grace carries the verdict's gesture across the seam", () => {
      *
      * So it is its own state, starting false, and only a measurement can set it.
      */
-    expect(grace).toMatch(/useState\(false\)/);
+    // Named, not any `useState(false)` in the file — `hasMoved` and
+    // `observerActive` both satisfy that, so initialising THIS one to true would
+    // remove the tap surface for every reader and still pass.
+    expect(grace).toMatch(
+      /const \[reachedWayOut, setReachedWayOut\] = useState\(false\)/,
+    );
     expect(grace, "the way-out signal is derived from `shown` again").not.toMatch(
       /reachedWayOut = shown\[/,
     );
