@@ -405,6 +405,23 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
 
   function handleSurfaceDown(event: React.PointerEvent<HTMLButtonElement>) {
     /*
+     * Stop whatever is still moving, before anything else.
+     *
+     * A tap starts a smooth scroll of a few hundred milliseconds, and a reader
+     * who reaches to drag inside that window is fighting an animation that
+     * wins: measured at 390x844, taking over 120ms in put the page at 15px and
+     * the animation hauled it back to 126 and held it there. That is the
+     * flicker — pull, snap back, and only once the animation finishes does the
+     * page answer the finger.
+     *
+     * Assigning the current position with the default (non-smooth) behaviour
+     * cancels a running scroll animation. The reader's gesture then starts from
+     * where they can see, and a tap that follows still advances, because the
+     * press below is recorded either way.
+     */
+    window.scrollTo(window.scrollX, window.scrollY);
+
+    /*
      * Primary contact, primary button, nothing else.
      *
      * Without the button test a right-click advances the page while the context
@@ -426,6 +443,27 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
       event.currentTarget.setPointerCapture(event.pointerId);
     } catch {
       // Capture is a belt to the braces below, not a requirement.
+    }
+  }
+
+  /**
+   * Once a press has travelled, it is a scroll and not a tap — so release the
+   * capture and let the browser own the gesture.
+   *
+   * Capture exists so a primary press cannot lift somewhere else and be left on
+   * record. It must not outlast the moment the reader is plainly dragging: held
+   * through a drag it keeps routing moves here while the page is trying to
+   * scroll under them.
+   */
+  function handleSurfaceMove(event: React.PointerEvent<HTMLButtonElement>) {
+    const start = pressRef.current;
+    if (!start || start.pointerId !== event.pointerId) return;
+    if (Math.hypot(event.clientX - start.x, event.clientY - start.y) <= TAP_SLOP) return;
+    pressRef.current = null;
+    try {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    } catch {
+      // Already released by the browser starting its own scroll.
     }
   }
 
@@ -725,6 +763,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
             tabIndex={-1}
             data-slot="grace-tap-surface"
             onPointerDown={handleSurfaceDown}
+            onPointerMove={handleSurfaceMove}
             onPointerUp={handleSurfaceUp}
             onPointerCancel={handleSurfaceCancel}
             onMouseDown={(event) => event.preventDefault()}

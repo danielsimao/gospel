@@ -217,6 +217,33 @@ describe("grace carries the verdict's gesture across the seam", () => {
     expect(grace).toMatch(/travelled > TAP_SLOP\) return/);
   });
 
+  it("gets out of the reader's way the moment they touch the screen", () => {
+    /*
+     * A tap starts a smooth scroll of a few hundred milliseconds, and a reader
+     * who reaches to drag inside that window was fighting an animation that
+     * won. Measured at 390x844: taking over 120ms in put the page at 15px and
+     * the animation hauled it back to 126 and held. Pull, snap back, and only
+     * when the animation finishes does the page answer the finger.
+     *
+     * A programmatic scroll aborts the running animation, so the press itself
+     * cancels it — before the drag, not during. With the finger down 80ms
+     * before it moves (faster than any human), the yank measures zero; only a
+     * synthetic same-tick drag still catches the last committed frames.
+     *
+     * And once a press has plainly travelled it is a scroll, not a tap, so the
+     * capture is released and the browser owns the gesture.
+     */
+    expect(grace).toMatch(/window\.scrollTo\(window\.scrollX, window\.scrollY\)/);
+    // First thing in the handler: after the primary-button guard it would not
+    // run for the very presses most likely to interrupt.
+    const down = grace.slice(grace.indexOf("function handleSurfaceDown"));
+    expect(down.indexOf("window.scrollTo(window.scrollX, window.scrollY)")).toBeLessThan(
+      down.indexOf("event.isPrimary"),
+    );
+    expect(grace).toMatch(/onPointerMove=\{handleSurfaceMove\}/);
+    expect(grace).toMatch(/releasePointerCapture\(event\.pointerId\)/);
+  });
+
   it("only lets the pointer that went down be the one that lifts", () => {
     /*
      * Without an id, a second finger's pointerdown overwrites the first's start
