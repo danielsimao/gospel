@@ -17,6 +17,24 @@ export default function proxy(request: NextRequest) {
 
   const segments = pathname.split("/");
   const firstSegment = segments[1] ?? "";
+
+  /*
+   * A miscased short link, normalised for the same reason the locale segment
+   * below is: capitalisation arrives on its own, from mail clients and phone
+   * keyboards, on a URL somebody typed off a sticker.
+   *
+   * The matcher exempts `go/` case-sensitively, so `/GO/card` is not exempt —
+   * it lands here, and without this it would be treated as a locale-less deep
+   * link and sent to `/en/GO/card`, which is a 404 with a printed code on it.
+   * 308, like the locale casing: the canonical casing of a code does not
+   * change, only what it resolves to.
+   */
+  if (firstSegment.toLowerCase() === "go" && firstSegment !== "go") {
+    segments[1] = "go";
+    const lowered = request.nextUrl.clone();
+    lowered.pathname = segments.join("/");
+    return NextResponse.redirect(lowered, 308);
+  }
   const localePrefix = SUPPORTED_LOCALES.find(
     (locale) => firstSegment.toLowerCase() === locale,
   );

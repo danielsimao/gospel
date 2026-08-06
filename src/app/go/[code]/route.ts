@@ -65,7 +65,7 @@ async function recordScan(code: string, link: GoLink, known: boolean) {
   if (!POSTHOG_KEY || process.env.VERCEL_ENV !== "production") return;
 
   try {
-    await fetch(`${POSTHOG_HOST}/capture/`, {
+    const response = await fetch(`${POSTHOG_HOST}/capture/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -83,8 +83,20 @@ async function recordScan(code: string, link: GoLink, known: boolean) {
         },
       }),
     });
-  } catch {
+    /*
+     * `fetch` only rejects on a transport failure, so a wrong token, a changed
+     * API, a rate limit or an ingestion outage all arrive as a perfectly
+     * resolved promise carrying a 4xx — and the counter would read zero scans
+     * while quietly being refused every one of them. A silent zero is worse
+     * than no counter at all: it is a number that looks like an answer.
+     */
+    if (!response.ok) {
+      console.warn(`[go] scan not recorded: PostHog answered ${response.status}`);
+    }
+  } catch (error) {
     // A counter is not worth a failed redirect, and this runs after the
-    // response has already gone out.
+    // response has already gone out — but it is still logged, for the same
+    // reason as above.
+    console.warn("[go] scan not recorded:", error);
   }
 }

@@ -184,6 +184,20 @@ describe("the route keeps the printed link re-pointable", () => {
     expect(route).toMatch(/\$ip: "0\.0\.0\.0"/);
   });
 
+  it("does not treat a refused capture as a recorded scan", () => {
+    /*
+     * `fetch` only rejects on a transport failure, so a wrong token, a changed
+     * API, a rate limit or an ingestion outage all arrive as a resolved promise
+     * carrying a 4xx. Swallowed, the counter reads zero scans while being
+     * refused every one of them — a number that looks like an answer.
+     */
+    expect(route).toMatch(/if \(!response\.ok\)/);
+    // Both halves log: the refused capture above, and the transport failure in
+    // the catch. One console.warn in the file satisfies neither on its own.
+    expect(route).toMatch(/if \(!response\.ok\) \{[^}]*console\.warn/);
+    expect(route).toMatch(/catch \(error\)[\s\S]{0,400}console\.warn/);
+  });
+
   it("keeps preview scans out of the street's numbers", () => {
     // Previews carry the production token; without this, walking a branch build
     // lands in the same funnel as a sticker on a wall.
@@ -211,6 +225,33 @@ describe("the proxy lets the short links through", () => {
     expect(pattern.test("/go/card"), "/go/card should skip the proxy").toBe(false);
     expect(pattern.test("/gospel"), "/gospel must still be proxied").toBe(true);
     expect(pattern.test("/test"), "/test must still be proxied").toBe(true);
+
+    /*
+     * The boundaries the exemption's correctness actually rests on. Each of
+     * these must still reach the proxy: `/go` with no code is not a short link
+     * and has no handler; `/GO/card` is not exempt because the matcher is
+     * case-sensitive, which is exactly why the proxy normalises it below; and
+     * an encoded slash is not a path separator, so it is not `/go/<code>`.
+     */
+    expect(pattern.test("/go"), "/go bare must still be proxied").toBe(true);
+    expect(pattern.test("/GO/card"), "/GO/card must reach the proxy to be lowercased").toBe(true);
+    expect(pattern.test("/go%2Fcard"), "an encoded slash is not a short link").toBe(true);
+  });
+
+  it("lowercases a miscased code rather than 404ing it", () => {
+    /*
+     * Capitalisation arrives on its own — mail clients and phone keyboards both
+     * do it to a typed URL — and the proxy already normalises a miscased locale
+     * segment for that exact reason. Without the same treatment `/GO/card` is
+     * read as a locale-less deep link and sent to `/en/GO/card`: a 404 with a
+     * printed code on it, and no way to fix the paper.
+     */
+    expect(proxy).toMatch(/firstSegment\.toLowerCase\(\) === "go" && firstSegment !== "go"/);
+    expect(proxy).toMatch(/segments\[1\] = "go"/);
+    // 308, like the locale casing one file over: the canonical casing of a code
+    // does not change, only what it resolves to.
+    const branch = proxy.slice(proxy.indexOf('=== "go"'));
+    expect(branch).toMatch(/NextResponse\.redirect\(lowered, 308\)/);
   });
 });
 
