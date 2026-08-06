@@ -151,7 +151,7 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
             // The estimate is day-granular so both sides of hydration agree,
             // but a band mounted at midnight straddles the boundary.
             suppressHydrationWarning
-            className="font-mono text-[clamp(2.1rem,9vw,3.4rem)] leading-none tracking-tight text-red-400 tabular-nums"
+            className="font-score text-[clamp(2.9rem,12vw,4.6rem)] font-bold leading-[0.85] tracking-[0.01em] text-red-400 tabular-nums"
           >
             {formatter.format(target)}
           </span>
@@ -176,7 +176,7 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
             &nbsp;
           </span>
           <span
-            className="font-mono text-[clamp(2.1rem,9vw,3.4rem)] leading-none tracking-tight text-[#D4A843] tabular-nums"
+            className="font-score text-[clamp(2.9rem,12vw,4.6rem)] font-bold leading-[0.85] tracking-[0.01em] text-[#D4A843] tabular-nums"
             style={{ textShadow: "0 0 70px rgba(212,168,67,0.4)" }}
           >
             1

@@ -1,3 +1,4 @@
+import { Big_Shoulders } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { notFound } from "next/navigation";
@@ -37,6 +38,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+/**
+ * The score band's numerals, and nothing else on the site.
+ *
+ * A display face earns entry in exactly one place: the homepage scoreline,
+ * where thousands-in-red against a gold 1 has to read as signage rather than
+ * as another line of interface mono. Big Shoulders is industrial condensed —
+ * unmistakably a different voice from the mono eyebrows around it, and narrow
+ * enough that six digits still fit a 320px phone.
+ *
+ * Self-hosted by next/font (never a font CDN in the critical path), and
+ * `display: "swap"` so a slow font never blocks the number: the fallback mono
+ * renders first and is replaced. Only a `variable`, so nothing inherits it by
+ * accident — the two numerals opt in through Tailwind's font-score utility.
+ */
+const bigShoulders = Big_Shoulders({
+  subsets: ["latin"],
+  weight: "700",
+  display: "swap",
+  variable: "--font-score-face",
+});
+
 export default async function LocaleLayout({ params, children }: Props) {
   const { locale } = await params;
   if (!isValidLocale(locale)) notFound();
@@ -53,7 +75,7 @@ export default async function LocaleLayout({ params, children }: Props) {
        it. Scoped to <html> itself, so it silences nothing below. */
     <html lang={locale} className="dark" suppressHydrationWarning>
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased bg-black text-white min-h-dvh`}
+        className={`${GeistSans.variable} ${GeistMono.variable} ${bigShoulders.variable} font-sans antialiased bg-black text-white min-h-dvh`}
       >
         {/* No-JS visitors get the actual argument, not just a verse — this
             may be someone's only contact with the gospel. Static, bilingual.

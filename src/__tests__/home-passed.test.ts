@@ -70,10 +70,23 @@ describe("the band and its doors", () => {
      * the SAME type size is what makes the ratio the argument. Two different
      * sizes would be the design deciding the winner instead of the numbers.
      */
-    const sizes = band.match(/text-\[clamp\(2\.1rem,9vw,3\.4rem\)\]/g) ?? [];
+    const sizes = band.match(/text-\[clamp\(2\.9rem,12vw,4\.6rem\)\]/g) ?? [];
     expect(sizes.length, "the two sides are not the same size").toBe(2);
     expect(band).toMatch(/text-red-400 tabular-nums/);
     expect(band).toMatch(/text-\[#D4A843\] tabular-nums/);
+
+    /*
+     * The display face, on the numerals and nowhere else. A score has to read
+     * as signage rather than as another line of interface mono — and the whole
+     * argument for spending a second typeface is that it is unmistakably a
+     * different voice from the eyebrows around it. `font-score` resolves to
+     * Big Shoulders with the mono as fallback (globals.css).
+     */
+    expect(band.match(/font-score/g)?.length, "the face is not on both numerals").toBe(2);
+    // Tabular figures survive the change, or the count-up jiggles per frame.
+    expect(band.match(/tabular-nums/g)?.length).toBe(2);
+    const captions = band.match(/tracking-\[2\.6px\]/g) ?? [];
+    expect(captions.length, "the captions left the mono register").toBe(2);
   });
 
   it("gold arrives after the count stops, and never before", () => {
@@ -127,6 +140,47 @@ describe("the band and its doors", () => {
     expect(who).toMatch(/rounded-full border border-\[#D4A843\]/);
     const test = band.slice(band.indexOf("/test`"), band.indexOf("/test`") + 350);
     expect(test).toMatch(/rounded-full border border-white/);
+  });
+});
+
+describe("the display face is scoped to the score", () => {
+  const layout = strip(read("src", "app", "[locale]", "layout.tsx"));
+  const css = read("src", "app", "globals.css");
+
+  it("is self-hosted, swapped, and latin-subset", () => {
+    // Never a font CDN in the critical path, and a slow font must never block
+    // the number — the fallback renders first and is replaced.
+    expect(layout).toMatch(/Big_Shoulders/);
+    // "swap" specifically — "block" hides the number behind an invisible font
+    // for up to three seconds, which is the one behaviour a live score cannot
+    // afford, and it is the default a careless edit reaches for.
+    const face = layout.slice(layout.indexOf("Big_Shoulders({"), layout.indexOf("});", layout.indexOf("Big_Shoulders({")));
+    expect(face).toMatch(/display: "swap"/);
+    expect(face).not.toMatch(/display: "(block|fallback|optional|auto)"/);
+    expect(layout).toMatch(/subsets: \["latin"\]/);
+    expect(layout).not.toMatch(/fonts\.googleapis\.com/);
+  });
+
+  it("is a variable nothing inherits by accident", () => {
+    // A `variable` rather than a className: only what asks for font-score
+    // gets it, so the rest of the site keeps Geist and Geist Mono.
+    expect(layout).toMatch(/variable: "--font-score-face"/);
+    expect(layout).toMatch(/\$\{bigShoulders\.variable\}/);
+    expect(css).toMatch(/--font-score: var\(--font-score-face\), var\(--font-mono\)/);
+  });
+
+  it("is used by the score band and nothing else", () => {
+    /*
+     * The case for a second typeface is that it appears once. If it spreads,
+     * the score stops being the exception and the site has two body voices.
+     */
+    const users = ["home-shell", "questions-band", "reading-band", "latest-post-card"];
+    for (const name of users) {
+      const file = name === "home-shell"
+        ? read("src", "components", "home-shell.tsx")
+        : read("src", "components", "home", `${name}.tsx`);
+      expect(strip(file), `${name} uses the score face`).not.toMatch(/font-score/);
+    }
   });
 });
 
