@@ -55,14 +55,18 @@ export function advanceSection(root?: ParentNode | null): HTMLElement | null {
    */
   const behavior = "auto" as const;
 
-  /*
-   * "Starts in the lower half of the screen" is the test for what is next.
-   *
-   * `top > 0` is not, and that was the first version's bug: the shell pads the
-   * flow by 12px, so the section the reader is ALREADY looking at reports a top
-   * of 12 and matched — one tap re-centred the announcement instead of
-   * advancing past it.
-   */
+/**
+ * How far a section's top may sit from the top of the screen and still count as
+ * already aligned.
+ *
+ * `top > 0` was the first version and it was wrong: the shell pads the flow by
+ * 12px, so the section the reader is already looking at reported a top of 12 and
+ * matched, and one tap re-aligned what was already there instead of advancing.
+ * A landed section measures -6 to +6, so 24 clears both with room and still
+ * excludes nothing a reader would call unread.
+ */
+const ALIGNED_SLOP = 24;
+
   /*
    * No in-flight destination to reason about, which is the second thing the
    * instant hop bought. While the scroll was animated, its target spent most of
@@ -73,10 +77,26 @@ export function advanceSection(root?: ParentNode | null): HTMLElement | null {
    * of the screen and no longer a candidate, so the next tap finds the next one
    * with no bookkeeping at all.
    */
+  /*
+   * The next SECTION BOUNDARY, which is not always the next section.
+   *
+   * This used to test `top > innerHeight / 2`, and the half-viewport was doing
+   * damage nobody had measured. A reader who had scrolled by hand so that a
+   * section began just above the middle — its heading at 388, most of a screen
+   * of unread text below it — tapped, and the tap jumped straight past it to
+   * the section after. Measured: top 388 before the tap, -838 after. At 300 the
+   * same, with two thirds of a screen of unread argument skipped. Only a
+   * section starting BELOW the middle was treated as somewhere to go.
+   *
+   * The honest rule is that a tap advances to the next boundary, and when the
+   * current section has not been brought to the top yet, that boundary is its
+   * own top. So a tap never crosses text the reader has not been shown, and the
+   * arbitrary half-screen is gone rather than replaced with a different guess.
+   */
   const next = [...(root ?? document).querySelectorAll("section")].find(
     (section) =>
       isContentSection(section as HTMLElement) &&
-      section.getBoundingClientRect().top > window.innerHeight / 2,
+      section.getBoundingClientRect().top > ALIGNED_SLOP,
   ) as HTMLElement | undefined;
 
   if (next) {

@@ -85,11 +85,29 @@ describe("the scroll cue", () => {
     expect(advance).toMatch(/scrollIntoView\(\{\s*block:\s*"center"/);
   });
 
-  it("does not mistake the section the reader is already on for the next one", () => {
-    // The shell pads the flow by 12px, so the current section reports a top of
-    // 12. A `top > 0` test matched it and re-centred the announcement instead of
-    // advancing — the half-viewport threshold is what makes "next" mean next.
-    expect(advance).toMatch(/top > window\.innerHeight \/ 2/);
+  it("advances to the next boundary, not the next half-screen", () => {
+    /*
+     * `top > innerHeight / 2` was doing damage nobody had measured. A reader who
+     * had scrolled by hand so a section began just above the middle — heading at
+     * 388, most of a screen of unread text below it — tapped, and the tap jumped
+     * straight past it: measured top 388 before, -838 after. At 300 the same,
+     * two thirds of a screen of argument skipped. Only a section starting BELOW
+     * the middle counted as somewhere to go.
+     *
+     * A tap advances to the next boundary, and when the current section has not
+     * been brought to the top yet, that boundary is its own top — so a tap never
+     * crosses text the reader has not been shown.
+     */
+    expect(advance).toMatch(/top > ALIGNED_SLOP/);
+    expect(advance, "the half-screen guess is back").not.toMatch(/innerHeight \/ 2/);
+    /*
+     * The slop is not zero, and that is the original bug: the shell pads the
+     * flow by 12px, so a section already at the top reports 12 and a `top > 0`
+     * test re-aligned what the reader was looking at instead of advancing.
+     */
+    const slop = Number(advance.match(/const ALIGNED_SLOP = (\d+)/)?.[1]);
+    expect(slop, "no slop constant").toBeGreaterThan(12);
+    expect(slop, "so much slop that a real section start is treated as aligned").toBeLessThan(80);
   });
 
   it("still reaches the way out of a document with no sections", () => {
