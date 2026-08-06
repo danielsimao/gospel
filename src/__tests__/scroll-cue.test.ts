@@ -350,9 +350,21 @@ describe("grace carries the verdict's gesture across the seam", () => {
     const sections = grace.match(/<section\b[\s\S]*?>/g) ?? [];
     expect(sections.length, "grace lost its sections").toBe(revealSections + 1);
     for (const [i, section] of sections.entries()) {
+      /*
+       * `svh`, not `dvh`. On a phone `dvh` tracks the viewport as the URL bar
+       * collapses and expands, so mid-drag all eight sections would resize, the
+       * document height would change under the reader's thumb, and the words
+       * they were holding would move — which reads as the page fighting them,
+       * and is most obvious when a section is centred. `svh` is fixed at the
+       * bar-expanded size, so the page stops resizing itself while being read.
+       *
+       * Not reproducible in desktop touch emulation, which has no URL bar to
+       * collapse — this test is the record of why the unit is what it is.
+       */
       expect(section, `section ${i} does not claim a screen`).toMatch(
-        /min-h-\[calc\(100dvh-0\.75rem\)\]/,
+        /min-h-\[calc\(100svh-0\.75rem\)\]/,
       );
+      expect(section, `section ${i} resizes with the URL bar`).not.toMatch(/dvh/);
     }
   });
 

@@ -111,6 +111,16 @@ interface GraceScreenProps {
  * reading as a continuous scroll of ragged blocks was the seam showing from the
  * other side.
  *
+ * `svh`, not `dvh`, and on a long scroller that is the difference between calm
+ * and seasick. `dvh` tracks the viewport as the phone's URL bar collapses and
+ * expands, so mid-drag every one of these eight sections would grow or shrink,
+ * the document height would change under the reader's thumb, and the words they
+ * were holding would move. `svh` is fixed at the bar-expanded size: the page
+ * stops resizing itself while being read, at the price of a strip of ground
+ * below the fold once the bar retracts, which on a black background is nothing.
+ * The shell keeps `min-h-dvh` — it is one screen, it never scrolls, and there
+ * it is the right unit.
+ *
  * ── The shape, and why gold sits where it does ──────────────────────────────
  *
  * docs/METHOD.md holds two rules that pull against each other. Gold "arrives
@@ -495,7 +505,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
          * child claiming a full viewport on top of that scrolls by exactly that
          * much. Hence the subtraction.
          */}
-        <section className="flex min-h-[calc(100dvh-0.75rem)] flex-col items-center justify-center text-center">
+        <section className="flex min-h-[calc(100svh-0.75rem)] flex-col items-center justify-center text-center">
           <m.span
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -526,7 +536,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(0)}
           data-reveal="0"
-          className={`flex min-h-[calc(100dvh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(0)}`}
+          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(0)}`}
         >
           <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-red-400/70">
             {problem?.label}
@@ -554,7 +564,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(1)}
           data-reveal="1"
-          className={`mx-[calc(50%-50vw)] flex min-h-[calc(100dvh-0.75rem)] flex-col justify-center overflow-hidden px-5 py-[8vh] sm:px-6 ${revealClass(1)}`}
+          className={`mx-[calc(50%-50vw)] flex min-h-[calc(100svh-0.75rem)] flex-col justify-center overflow-hidden px-5 py-[8vh] sm:px-6 ${revealClass(1)}`}
           style={{
             background:
               "linear-gradient(to bottom, rgba(239,68,68,0.07) 0%, rgba(212,168,67,0.10) 52%, transparent 100%)",
@@ -580,7 +590,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(2)}
           data-reveal="2"
-          className={`flex min-h-[calc(100dvh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(2)}`}
+          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(2)}`}
         >
           <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
             {payer?.label}
@@ -598,7 +608,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(3)}
           data-reveal="3"
-          className={`flex min-h-[calc(100dvh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(3)}`}
+          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(3)}`}
         >
           <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
             {response?.label}
@@ -615,7 +625,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(4)}
           data-reveal="4"
-          className={`flex min-h-[calc(100dvh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(4)}`}
+          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(4)}`}
         >
           <blockquote className="border-l border-[#D4A843]/30 pl-4">
             <p className="text-[15px] italic leading-[1.8] text-white/60 sm:text-base">
@@ -646,7 +656,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(5)}
           data-reveal="5"
-          className={`flex min-h-[calc(100dvh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(5)}`}
+          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center py-[8vh] ${revealClass(5)}`}
         >
           <GraceRecord
             rows={buildRecord(state.answers, verdictLabels)}
@@ -658,7 +668,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(6)}
           data-reveal="6"
-          className={`flex min-h-[calc(100dvh-0.75rem)] flex-col justify-center items-center pt-[8vh] pb-[calc(8vh+env(safe-area-inset-bottom)+var(--consent-h,0px))] ${revealClass(6)}`}
+          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center items-center pt-[8vh] pb-[calc(8vh+env(safe-area-inset-bottom)+var(--consent-h,0px))] ${revealClass(6)}`}
         >
           <Button variant="gold" mist onClick={handleContinue}>
             {messages.continueLabel}
