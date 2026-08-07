@@ -19,7 +19,7 @@
  * heading — exactly as every topic page already looked before any cover
  * shipped.
  */
-const TOPIC_COVERS: ReadonlySet<string> = new Set(["who-is-jesus"]);
+const TOPIC_COVERS: ReadonlySet<string> = new Set(["who-is-jesus", "am-i-a-good-person"]);
 
 export function hasTopicCover(slug: string): boolean {
   return TOPIC_COVERS.has(slug);

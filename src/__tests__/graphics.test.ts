@@ -136,7 +136,7 @@ describe("the learn topic-page covers", () => {
     const setMatch = topicCover.match(/new Set\(\[([^\]]*)\]\)/);
     expect(setMatch, "TOPIC_COVERS set not found").not.toBeNull();
     const declared = Array.from(setMatch![1].matchAll(/"([^"]+)"/g)).map((m) => m[1]);
-    expect(declared.length, "pilot should ship exactly one cover so far").toBe(1);
+    expect(declared.length, "pilot should ship exactly two covers so far").toBe(2);
     for (const slug of declared) {
       for (const ext of ["avif", "webp"]) {
         expect(
@@ -296,7 +296,7 @@ describe("every asset keeps its prompt", () => {
   });
 
   it("names the assets that shipped", () => {
-    for (const name of ["tally", "dots", "fingerprint", "stone", "door", "door-decision", "paper", "courtroom", "who-is-jesus"]) {
+    for (const name of ["tally", "dots", "fingerprint", "stone", "door", "door-decision", "paper", "courtroom", "who-is-jesus", "am-i-a-good-person"]) {
       expect(prompts.toLowerCase(), `${name} has no prompt on record`).toContain(name);
     }
   });
