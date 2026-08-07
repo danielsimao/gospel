@@ -52,6 +52,31 @@ const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : us
  */
 const VISIBLE_THRESHOLD = 0.5;
 
+/**
+ * How much of the band is on screen, as a fraction of how much of it *could*
+ * be — never of its own height.
+ *
+ * IntersectionObserver's own ratio is target-relative, so a band taller than
+ * twice the viewport can never reach 0.5 no matter how it is scrolled.
+ * Verified in Chromium: a box three viewports tall, filling the screen, still
+ * reports ratio 0.333 and isIntersecting false against a 0.5 threshold — the
+ * count-up would never fire and the score would sit at "0" permanently, which
+ * is not a missing animation but a wrong number. Not hypothetical: at high
+ * browser zoom (WCAG 1.4.4 asks for 400%) the viewport shrinks under a band
+ * whose height does not.
+ *
+ * Capping the denominator at the viewport makes "half of what you could see"
+ * always reachable. The observer callback re-measures through this same
+ * function rather than trusting entry.intersectionRatio, so the staged check
+ * and the fired check cannot disagree.
+ */
+function revealedRatio(rect: DOMRect, viewportHeight: number): number {
+  const reachable = Math.min(rect.height, viewportHeight);
+  if (reachable <= 0) return 0;
+  const visible = Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, 0);
+  return Math.max(0, visible) / reachable;
+}
+
 /*
  * The face-off: two numbers, either side of a line.
  *
@@ -98,6 +123,7 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
 
     let raf = 0;
     let tickTimer: ReturnType<typeof setTimeout> | undefined;
+    let goldTimer: ReturnType<typeof setTimeout> | undefined;
     let live = target;
 
     /*
@@ -140,16 +166,14 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
      * simply stays the number: no flash, no rewind, no animation that would
      * have to start by contradicting what was already read.
      *
-     * Measured against the observer's OWN threshold rather than "is any part
-     * of it on screen". A first attempt used `top < innerHeight`, which counts
-     * a band peeking one pixel over the fold as visible: at 390x760 the band's
-     * top sits at 659, so the rewind was skipped while the observer — needing
-     * half the band — would never have fired either, and the count-up was lost
-     * entirely. One number, one rule, so the two cannot disagree.
+     * Measured against the observer's OWN rule rather than "is any part of it
+     * on screen". A first attempt used `top < innerHeight`, which counts a band
+     * peeking one pixel over the fold as visible: at 390x760 the band's top
+     * sits at 659, so the rewind was skipped while the observer — needing half
+     * the band — would never have fired either, and the count-up was lost
+     * entirely. One function, one rule, so the two cannot disagree.
      */
-    const rect = root.getBoundingClientRect();
-    const visible = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
-    if (rect.height > 0 && visible / rect.height >= VISIBLE_THRESHOLD) {
+    if (revealedRatio(root.getBoundingClientRect(), window.innerHeight) >= VISIBLE_THRESHOLD) {
       setPassVisible(true);
       scheduleTick();
       return () => clearTimeout(tickTimer);
@@ -157,8 +181,18 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
 
     el.textContent = "0";
     const observer = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return;
+      () => {
+        /*
+         * Re-measured rather than read off entry.intersectionRatio, which is
+         * target-relative and unreachable for a band taller than two
+         * viewports. The several thresholds are only there to get called
+         * during the scroll at all — a single 0 fires on the way in and never
+         * again, so a band that entered at 10% would be judged once, at 10%,
+         * and never animate.
+         */
+        if (revealedRatio(root.getBoundingClientRect(), window.innerHeight) < VISIBLE_THRESHOLD) {
+          return;
+        }
         observer.disconnect();
         const start = performance.now();
         const DURATION = 1400;
@@ -170,19 +204,22 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
           if (t < 1) raf = requestAnimationFrame(tick);
           else {
             // The pause before gold is the design: the Law finishes first.
-            setTimeout(() => setPassVisible(true), 350);
+            // Held, not fired and forgotten: an effect re-run during the pause
+            // would otherwise reveal gold over a freshly staged count-up.
+            goldTimer = setTimeout(() => setPassVisible(true), 350);
             scheduleTick();
           }
         };
         raf = requestAnimationFrame(tick);
       },
-      { threshold: VISIBLE_THRESHOLD },
+      { threshold: [0, 0.25, VISIBLE_THRESHOLD, 0.75, 1] },
     );
     observer.observe(root);
     return () => {
       observer.disconnect();
       cancelAnimationFrame(raf);
       clearTimeout(tickTimer);
+      clearTimeout(goldTimer);
     };
   }, [target, locale]);
 

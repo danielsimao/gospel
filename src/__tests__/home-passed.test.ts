@@ -152,11 +152,37 @@ describe("the band and its doors", () => {
      * count-up vanished. Two thresholds is the bug; this pins one.
      */
     expect(band).toMatch(/const VISIBLE_THRESHOLD = 0\.5;/);
-    expect(band).toMatch(/visible \/ rect\.height >= VISIBLE_THRESHOLD/);
-    expect(band).toMatch(/\{ threshold: VISIBLE_THRESHOLD \}/);
-    expect(band, "the observer went back to a hardcoded threshold").not.toMatch(
-      /threshold: 0\.\d/,
+    // One function, read by the staged check and by the observer callback.
+    expect(band.match(/revealedRatio\([\s\S]*?\) >= VISIBLE_THRESHOLD/g)?.length).toBe(1);
+    expect(band).toMatch(/revealedRatio\([\s\S]*?\) < VISIBLE_THRESHOLD/);
+  });
+
+  it("measures against what could be seen, not the band's own height", () => {
+    /*
+     * IntersectionObserver's ratio is target-relative, so a band taller than
+     * two viewports can never reach 0.5. Verified in Chromium: a box three
+     * viewports tall, filling the screen, reports ratio 0.333 and
+     * isIntersecting false against a 0.5 threshold — the count-up never fires
+     * and the score sits at "0", which is a wrong number rather than a missing
+     * animation. Reachable at the 400% zoom WCAG 1.4.4 asks for.
+     *
+     * Capping the denominator at the viewport makes the rule satisfiable at
+     * any zoom, and the callback re-measures instead of trusting the entry.
+     */
+    expect(band).toMatch(/Math\.min\(rect\.height, viewportHeight\)/);
+    expect(band, "the callback trusted a target-relative ratio again").not.toMatch(
+      /entry\.intersectionRatio/,
     );
+    // Several thresholds, or the observer is called once on the way in and
+    // judges a band that entered at 10% forever.
+    expect(band).toMatch(/threshold: \[0, 0\.25, VISIBLE_THRESHOLD, 0\.75, 1\]/);
+  });
+
+  it("clears the gold-reveal timer, not just the tick", () => {
+    // An effect re-run during the 350ms pause would otherwise reveal gold over
+    // a freshly staged count-up.
+    expect(band).toMatch(/goldTimer = setTimeout\(\(\) => setPassVisible\(true\), 350\)/);
+    expect(band).toMatch(/clearTimeout\(goldTimer\)/);
   });
 
   it("estimates deterministically, by the day", () => {
@@ -221,11 +247,28 @@ describe("the display face is scoped to the score", () => {
      * that was there, and the one a future tidy-up would most plausibly
      * restore for symmetry with --font-sans.
      */
-    expect(css).toMatch(/--font-score:[^;]*"Arial Narrow"/);
-    expect(css).toMatch(/--font-score:[^;]*sans-serif-condensed/);
+    expect(css).toMatch(/--font-score:[^;]*"Big Shoulders Fallback"/);
     expect(css, "the score face fell back to mono again — 50% wider, reflows the hero").not.toMatch(
       /--font-score: var\(--font-score-face\), var\(--font-mono\)/,
     );
+
+    /*
+     * Two @font-face rules under one family name — the browser takes the
+     * first whose src resolves. Naming a condensed font in the stack was not
+     * enough: it only helped where a platform happened to ship one, and Linux
+     * fell straight back to a 27% reflow. size-adjust makes the stand-in match
+     * by measurement instead of by luck.
+     */
+    const fallbackFaces = css.match(/@font-face \{[^}]*"Big Shoulders Fallback"[^}]*\}/g) ?? [];
+    expect(fallbackFaces.length, "the metric-matched fallback faces are gone").toBe(2);
+    expect(fallbackFaces.join("\n")).toMatch(/size-adjust: 96%/);
+    expect(fallbackFaces.join("\n")).toMatch(/size-adjust: 78\.7%/);
+    // local() only: a stand-in that has to be downloaded is not a stand-in.
+    for (const face of fallbackFaces) {
+      expect(face, "the fallback face fetches a file instead of using a local one").not.toMatch(
+        /url\(/,
+      );
+    }
   });
 
   it("marks what the site declares, and stays off what it explains", () => {
