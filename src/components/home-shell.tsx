@@ -421,13 +421,29 @@ export function HomeShell({
           </p>
 
           {/*
-           * Rate cards. Below sm they are bare figures — no panel, no border,
-           * no fills: the globe sits directly behind them there, and a boxed
-           * grid over a dot sphere made two competing surfaces where the
-           * numbers should simply be lying on the earth. From sm up the globe
-           * moves out from behind them and the panel returns.
+           * The spacers are the hero's composition. With the section claiming
+           * a full viewport, the content no longer fills it — measured at
+           * 390×844 the counter group ended ~y340 and the cue sat at ~y755,
+           * with 400px of dead ground between. Two flex spacers distribute
+           * that leftover: counter group anchored at the top where the globe
+           * and the scrims are aimed (those offsets are fixed values — moving
+           * the counter means re-measuring both), rate cards floated to the
+           * middle, cue at the foot. min-heights keep the old fixed gaps as
+           * the floor, so a short landscape viewport degrades to exactly the
+           * pre-split spacing instead of collapsing to zero.
            */}
-          <div className="mt-8 grid grid-cols-2 gap-x-8 gap-y-5 sm:mt-14 sm:flex sm:flex-wrap sm:justify-center sm:gap-px sm:overflow-hidden sm:rounded-lg sm:border sm:border-white/[0.04]">
+          <div aria-hidden="true" className="min-h-8 w-full flex-1 sm:min-h-14" />
+
+          {/*
+           * Rate cards. Below sm they are bare figures — no panel, no border,
+           * no fills: they began directly over the globe, and a boxed grid
+           * over a dot sphere made two competing surfaces where the numbers
+           * should simply be lying on the earth. Floated to the viewport's
+           * middle they now straddle its faded lower limb, where the ground
+           * scrim has already gone nearly solid — the bare treatment still
+           * reads, on darker earth. From sm up the panel returns.
+           */}
+          <div className="grid grid-cols-2 gap-x-8 gap-y-5 sm:flex sm:flex-wrap sm:justify-center sm:gap-px sm:overflow-hidden sm:rounded-lg sm:border sm:border-white/[0.04]">
             {RATE_CARDS.map((card, idx) => (
               <div
                 key={card.key}
@@ -447,6 +463,9 @@ export function HomeShell({
             ))}
           </div>
 
+          {/* The second half of the leftover — see the spacer note above. */}
+          <div aria-hidden="true" className="min-h-6 w-full flex-1" />
+
           {/*
            * A hero sized to the viewport exactly, with nothing intruding, is
            * the measured false-bottom pattern — grace and the verdict both hit
@@ -455,7 +474,7 @@ export function HomeShell({
            * is behind them and the cue goes with it, so it needs no retirement
            * logic. Its gold on a red screen has the verdict's own precedent.
            */}
-          <ScrollCue className="mt-auto" />
+          <ScrollCue />
         </div>
       </section>
 

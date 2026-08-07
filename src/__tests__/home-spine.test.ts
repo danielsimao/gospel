@@ -125,9 +125,17 @@ describe("the hero owns the first screen", () => {
     // cue, not a re-invention: one definition is how the shape and the tap
     // stay in agreement everywhere it appears.
     expect(shell).toMatch(/import \{ ScrollCue \} from "@\/components\/shared\/scroll-cue"/);
-    expect(shell).toMatch(/<ScrollCue className="mt-auto" \/>/);
-    // mt-auto only pushes if the column stretches to the section's bottom edge.
+    expect(shell).toMatch(/<ScrollCue \/>/);
+    /*
+     * The hero's leftover height is distributed, not parked at the bottom: two
+     * flex spacers float the rate cards to the viewport's middle and keep the
+     * cue at the foot. Their min-heights are the floor — a short landscape
+     * viewport degrades to the old fixed gaps instead of collapsing to zero.
+     * The column's flex-1 is what gives the spacers space to absorb.
+     */
     expect(shell).toMatch(/relative z-\[1\] flex w-full flex-1 flex-col items-center/);
+    const spacers = shell.match(/aria-hidden="true" className="min-h-\S+ w-full flex-1[^"]*"/g) ?? [];
+    expect(spacers.length, "the hero lost its distribution spacers").toBe(2);
     // The hero reserves the consent banner's height, or the cue sits exactly
     // behind the banner for first-visit readers — screenshotted at 390×844.
     const hero = (shell.match(/<section\b[^>]*>/g) ?? [])[0] ?? "";
