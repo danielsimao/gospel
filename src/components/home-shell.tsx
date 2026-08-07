@@ -301,14 +301,27 @@ export function HomeShell({
   }, [journey.ready, journey.stage, locale]);
 
   return (
-    <main className="min-h-dvh overflow-x-hidden bg-[#060404]">
+    /*
+     * Pulled up under the header by exactly the header's height (pt-4 + 40px
+     * capsule = 3.5rem; sm: pt-5 + 40px = 3.75rem), so the hero — and the
+     * globe inside it — starts at the top of the viewport instead of at the
+     * header's bottom edge. The section's overflow-hidden used to guillotine
+     * the sphere exactly there, and the old header scrim existed to fade that
+     * seam; with the scrim gone the hard edge showed. The header stays
+     * clickable and on top: it is position:relative z-10, this main is
+     * static. Every content offset below compensates by the same amount, so
+     * nothing the reader sees moved except the sphere's crop.
+     */
+    <main className="-mt-14 min-h-dvh overflow-x-hidden bg-[#060404] sm:-mt-[3.75rem]">
       {/* Ahead of the stage blocks it governs, so the attribute is already set
           by the time they are parsed. */}
       <script dangerouslySetInnerHTML={{ __html: STAGE_PREPAINT_SCRIPT }} />
-      <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-start overflow-hidden px-4 pt-8 pb-12 sm:px-6 sm:pt-10 sm:pb-16">
+      <section className="relative flex min-h-svh flex-col items-center justify-start overflow-hidden px-4 pt-[5.5rem] pb-12 sm:px-6 sm:pt-[6.25rem] sm:pb-16">
         {/* Offsets in px, not %: a percentage `top` resolves against the
             containing block's height, which for this section is viewport-derived
-            and put the sphere almost entirely above the fold. */}
+            and put the sphere almost entirely above the fold. All four are the
+            pre-pull-up values plus the header height, so the sphere kept its
+            on-screen position when the section's origin moved up. */}
         {/*
          * Sizes are not a smooth ramp. Phone: large, because the sphere is the
          * counter's backdrop and a small one behind that number reads as
@@ -319,7 +332,7 @@ export function HomeShell({
          */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -top-[5.5rem] left-1/2 -translate-x-1/2 sm:-top-[6rem] lg:left-auto lg:right-[-12rem] lg:top-[-10rem] lg:translate-x-0 xl:right-[-9rem] xl:top-[-11rem]"
+          className="pointer-events-none absolute -top-[2rem] left-1/2 -translate-x-1/2 sm:-top-[2.25rem] lg:left-auto lg:right-[-12rem] lg:top-[-6.25rem] lg:translate-x-0 xl:right-[-9rem] xl:top-[-7.25rem]"
         >
           <DeathGlobe
             className="relative w-[32rem] sm:w-[26rem] lg:w-[40rem] xl:w-[46rem]"
@@ -339,10 +352,14 @@ export function HomeShell({
 
         {/* Scrims. Two jobs: hold the counter legible over the dot field, and
             clear the ground under everything below it. The first mockups of
-            this layout were unreadable until the type had its own ground. */}
+            this layout were unreadable until the type had its own ground.
+            No top fade on lg any more: it existed to back the header's old
+            full-width scrim, and once the nav moved into its own glass
+            capsules it was the last thing still shaving the globe's upper
+            limb. */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_46%_12%_at_50%_15%,rgba(6,4,4,0.72)_0%,rgba(6,4,4,0.2)_66%,transparent_88%),linear-gradient(to_bottom,transparent_24%,rgba(6,4,4,0.86)_40%,#060404_54%)] lg:bg-[linear-gradient(to_bottom,rgba(6,4,4,0.8)_0%,rgba(6,4,4,0.25)_9%,transparent_16%),linear-gradient(to_right,#060404_20%,rgba(6,4,4,0.88)_50%,rgba(6,4,4,0.12)_70%,transparent_100%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_46%_12%_at_50%_15%,rgba(6,4,4,0.72)_0%,rgba(6,4,4,0.2)_66%,transparent_88%),linear-gradient(to_bottom,transparent_24%,rgba(6,4,4,0.86)_40%,#060404_54%)] lg:bg-[linear-gradient(to_right,#060404_20%,rgba(6,4,4,0.88)_50%,rgba(6,4,4,0.12)_70%,transparent_100%)]"
         />
 
         {/* Radial vignette — mobile only. It fades everything past 75% from the
