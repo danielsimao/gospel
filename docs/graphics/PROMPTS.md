@@ -445,3 +445,29 @@ The domain is not a question. It is a conditional with the second half
 missing: *if you died today…* has no main clause, and the reader supplies it.
 The mark is the punctuation the name withholds — which is a reason no other
 site can borrow, because it comes from the name rather than from the subject.
+
+---
+
+## 15 · As pegadas — the footprints (why-are-you-afraid-to-die)
+
+**Ships as:** `public/graphics/covers/why-are-you-afraid-to-die.avif` + `.webp` — homepage questions-band card and the topic page cover, same treatment as §9. Until the asset lands (and the slug joins `TOPIC_COVERS` in `topic-cover.tsx` — one line), the homepage card wears the gold medallion on its own ground; the flip is automatic.
+
+**Where it goes:** the third card of the homepage questions band, and the topic page for `why-are-you-afraid-to-die`. Same concept as the existing line-icon (Footprints) recomposed photographically — the §11 move: a trail that simply stops is the question's own image, austere rather than morbid. The exclusion list bars the "Footprints" poem cliché (a second trail) along with every grave-and-skull shortcut; the image must ask the question, not answer it with props.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of a single trail of bare footprints pressed into a thin layer of pale dust on a dark stone floor, walking away from the viewer into deep darkness. The trail starts at the lower edge of the frame and simply stops partway in — the last print or two fainter than the rest, with untouched dust beyond them. One low raking light from the side catches the edges of the prints; everything else falls into deep shadow.
+
+Colour: near-black, #060404, fully desaturated and cold. The dust is dim pale grey, never white; the prints read by shadow, not by colour. No warm tone, no gold, no amber.
+
+Composition: portrait 4:3. The trail runs from the bottom of the frame toward the upper third at a slight diagonal, ending well before any wall or horizon. Generous even darkness on every side, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+
+Do not include: any text, any numerals, any people, legs, feet, shoes, silhouettes, shadows of figures, a second trail of footprints, sand dunes, beaches, water, skulls, bones, graves, headstones, coffins, candles, gavels, scales, crosses, or lens flare.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
