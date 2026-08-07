@@ -142,7 +142,7 @@ export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
        *
        * Generated for this screen specifically (portrait, gap centred at 50%
        * and 8.6% wide, brightness capped so type can sit over it — the
-       * measurements are in docs/graphics/PROMPTS.md §9). The landscape OG
+       * measurements are in docs/graphics/PROMPTS.md §8). The landscape OG
        * door could not serve here: its light lives at 76-80% across by
        * design, exactly where a centred mask erases it.
        *

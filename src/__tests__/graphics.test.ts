@@ -1,14 +1,15 @@
 import { describe, it, expect } from "vitest";
-import { readFileSync, existsSync, statSync } from "node:fs";
+import { readFileSync, existsSync, statSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 /**
  * The generated graphics, and the rules that keep them from becoming weight.
  *
- * Every raster asset here was generated from a prompt in docs/graphics, and
- * every one is a background or a share plate — never content. So the guards
- * are about restraint: nothing on the LCP path, nothing served that is not
- * used, nothing that can take a click, and no prompt lost.
+ * Every raster asset here was generated from a prompt in docs/graphics. Most
+ * are a background or a share plate; the topic-page covers are the one
+ * foreground exception, framed content rather than dimmed atmosphere. So the
+ * guards are about restraint: nothing on the LCP path, nothing served that is
+ * not used, nothing that can take a click, and no prompt lost.
  */
 const ROOT = join(import.meta.dirname, "..", "..");
 const read = (...p: string[]) => readFileSync(join(ROOT, ...p), "utf8");
@@ -19,6 +20,8 @@ const kb = (...p: string[]) => statSync(join(ROOT, ...p)).size / 1024;
 const texture = strip(read("src", "components", "home", "band-texture.tsx"));
 const testOg = strip(read("src", "app", "[locale]", "(immersive)", "test", "opengraph-image.tsx"));
 const invitation = strip(read("src", "components", "invitation-screen.tsx"));
+const topicCover = strip(read("src", "components", "learn", "topic-cover.tsx"));
+const topicPage = strip(read("src", "components", "learn", "topic-page.tsx"));
 const prompts = read("docs", "graphics", "PROMPTS.md");
 
 describe("what is served, and what is not", () => {
@@ -117,6 +120,54 @@ describe("the decision-screen door", () => {
         `${name} grew the decision-screen door`,
       ).not.toMatch(/door-decision/);
     }
+  });
+});
+
+describe("the learn topic-page covers", () => {
+  const coverDir = join(ROOT, "public", "graphics", "covers");
+  const shippedSlugs = readdirSync(coverDir)
+    .filter((f) => f.endsWith(".avif"))
+    .map((f) => f.replace(/\.avif$/, ""));
+
+  it("ships both formats for every cover it names", () => {
+    // Reads the component's own set rather than a hardcoded slug list, so a
+    // cover added to the component without its files (or vice versa) fails
+    // here instead of 404ing in the browser.
+    const setMatch = topicCover.match(/new Set\(\[([^\]]*)\]\)/);
+    expect(setMatch, "TOPIC_COVERS set not found").not.toBeNull();
+    const declared = Array.from(setMatch![1].matchAll(/"([^"]+)"/g)).map((m) => m[1]);
+    expect(declared.length, "pilot should ship exactly one cover so far").toBe(1);
+    for (const slug of declared) {
+      for (const ext of ["avif", "webp"]) {
+        expect(
+          existsSync(join(coverDir, `${slug}.${ext}`)),
+          `graphics/covers/${slug}.${ext} is missing`,
+        ).toBe(true);
+      }
+    }
+    // And the reverse: no file served for a slug the component doesn't know.
+    expect(shippedSlugs.sort()).toEqual(declared.sort());
+  });
+
+  it("shows the cover at full strength, framed rather than dimmed", () => {
+    // Unlike the band textures, this is foreground content: no opacity
+    // damping, no radial mask fading it into the page.
+    expect(topicCover).not.toMatch(/opacity-\[0\./);
+    expect(topicCover).not.toMatch(/maskImage/);
+    expect(topicCover).toMatch(/rounded-2xl/);
+    expect(topicCover).toMatch(/border border-white\/10/);
+    expect(topicCover).toMatch(/object-cover/);
+    expect(topicCover).toMatch(/loading="lazy"/);
+    expect(topicCover).toMatch(/decoding="async"/);
+  });
+
+  it("replaced the topic page's emblem rather than sitting beside it", () => {
+    // The emblem at 32px didn't decode ("who is Jesus" as an abstract crook
+    // shape read as noise); the cover is what took its place there. The hub
+    // list's emblem is untouched — a separate, smaller problem left for
+    // later.
+    expect(topicPage).toMatch(/<TopicCover slug={topic\.slug}/);
+    expect(topicPage).not.toMatch(/TopicEmblem/);
   });
 });
 
@@ -226,7 +277,7 @@ describe("every asset keeps its prompt", () => {
   });
 
   it("names the assets that shipped", () => {
-    for (const name of ["tally", "dots", "fingerprint", "stone", "door", "door-decision", "paper", "courtroom"]) {
+    for (const name of ["tally", "dots", "fingerprint", "stone", "door", "door-decision", "paper", "courtroom", "who-is-jesus"]) {
       expect(prompts.toLowerCase(), `${name} has no prompt on record`).toContain(name);
     }
   });

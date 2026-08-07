@@ -206,7 +206,7 @@ archival, unremarkable. Photographic, not illustration.
 
 ---
 
-## 9 · A porta, centrada — the decision-screen door
+## 8 · A porta, centrada — the decision-screen door
 
 **Ships as:** `public/graphics/door-decision.avif` + `.webp` — fixed full-bleed behind the decision screen (`invitation-screen.tsx`), at 35% opacity, no scrim. The dismissed response is already told "A porta continua aberta"; this is that sentence as a picture, present before it is needed. John 10:9 without a caption.
 
@@ -234,7 +234,7 @@ Style: photographic, high contrast, sharply focused, architectural, not illustra
 
 ---
 
-## 10 · O espelho — the mirror (am-i-a-good-person)
+## 9 · O espelho — the mirror (am-i-a-good-person)
 
 **Ships as:** `public/graphics/covers/am-i-a-good-person.avif` + `.webp` — pilot cover for the topic page hero, full-strength (not a dimmed background), replacing the standalone emblem above the title.
 
@@ -268,9 +268,9 @@ Style: photographic, high contrast, sharply focused, not illustration, not a
 
 ---
 
-## 11 · O horizonte — the horizon (does-god-exist)
+## 10 · O horizonte — the horizon (does-god-exist)
 
-**Ships as:** `public/graphics/covers/does-god-exist.avif` + `.webp` — pilot cover, same treatment as §11.
+**Ships as:** `public/graphics/covers/does-god-exist.avif` + `.webp` — pilot cover, same treatment as §9.
 
 **Where it goes:** the topic page for `does-god-exist`, questions band. Cool and evidentiary rather than sentimental — deliberately not a warm, literal sunrise, which would read as mood rather than argument.
 
@@ -303,9 +303,9 @@ Style: photographic, high contrast, sharply focused, not illustration, not a
 
 ---
 
-## 12 · O cajado — the shepherd's staff (who-is-jesus)
+## 11 · O cajado — the shepherd's staff (who-is-jesus)
 
-**Ships as:** `public/graphics/covers/who-is-jesus.avif` + `.webp` — pilot cover, same treatment as §11.
+**Ships as:** `public/graphics/covers/who-is-jesus.avif` + `.webp` — pilot cover, same treatment as §9.
 
 **Where it goes:** the topic page for `who-is-jesus`, rescue band. Same concept as the existing line-icon (John 10, the Good Shepherd) recomposed photographically — a real staff reads unambiguously where the abstract crook shape did not.
 
@@ -336,7 +336,7 @@ Style: photographic, high contrast, sharply focused, not illustration, not a
 
 ---
 
-## 13 · O feixe de luz — the courtroom shaft
+## 12 · O feixe de luz — the courtroom shaft
 
 **Ships as:** `public/graphics/courtroom.avif` — grace's turn panel, behind "Mas alguém entra no tribunal", under two damping veils. Referenced from CSS `url()` in grace-screen, so a JSX grep will not find it.
 
