@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { BandSpine } from "@/components/home/band-spine";
 import { BandTexture } from "@/components/home/band-texture";
@@ -26,6 +26,31 @@ interface PassedBandProps {
       back to the day it shipped. */
   count: number | null;
 }
+
+/*
+ * The zero has to be written before the browser paints, not after.
+ *
+ * The span renders the real number in JSX — it must, so the server sends it
+ * and a reader without JS still gets a score. But the count-up then rewinds
+ * that span to "0", and in a plain effect (which runs after paint) the reader
+ * saw the final number, a flash to zero, and only then the climb. Rewinding
+ * in a layout effect happens in the same frame as hydration, so the first
+ * thing painted is already the zero.
+ *
+ * `useEffect` on the server: layout effects never run there, and React warns
+ * if one is scheduled during SSR. The value is only ever read on the client,
+ * where this is always useLayoutEffect.
+ */
+const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
+
+/**
+ * How much of the band has to be on screen for the count-up to be its
+ * entrance. Read twice — once to decide whether there is anything left to
+ * reveal at hydration, once as the observer's own threshold — and it has to be
+ * the same number both times or the band can fall between them and never
+ * animate at all.
+ */
+const VISIBLE_THRESHOLD = 0.5;
 
 /*
  * The face-off: two numbers, either side of a line.
@@ -66,7 +91,7 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
    * frame for a number only one span cares about. The ref writes textContent
    * directly; React never knows the animation happened.
    */
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const root = rootRef.current;
     const el = countRef.current;
     if (!root || !el) return;
@@ -99,6 +124,37 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
       return () => clearTimeout(tickTimer);
     }
 
+    /*
+     * Rewind to zero only while the band is still off-screen.
+     *
+     * The span is server-rendered with the real number, so the browser paints
+     * "1,845" the moment the HTML lands — before React has hydrated and can
+     * rewind it. Measured: four frames of the final number, then 0, then the
+     * climb. A layout effect does not help; the gap is hydration itself, not
+     * effect timing.
+     *
+     * So the count-up is only staged when there is something left to reveal.
+     * Below the fold (where this band lives) the rewind happens unseen and the
+     * reader gets the full climb on scroll. Already in view at hydration — a
+     * tall window, a restored scroll position, an anchor — and the number
+     * simply stays the number: no flash, no rewind, no animation that would
+     * have to start by contradicting what was already read.
+     *
+     * Measured against the observer's OWN threshold rather than "is any part
+     * of it on screen". A first attempt used `top < innerHeight`, which counts
+     * a band peeking one pixel over the fold as visible: at 390x760 the band's
+     * top sits at 659, so the rewind was skipped while the observer — needing
+     * half the band — would never have fired either, and the count-up was lost
+     * entirely. One number, one rule, so the two cannot disagree.
+     */
+    const rect = root.getBoundingClientRect();
+    const visible = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+    if (rect.height > 0 && visible / rect.height >= VISIBLE_THRESHOLD) {
+      setPassVisible(true);
+      scheduleTick();
+      return () => clearTimeout(tickTimer);
+    }
+
     el.textContent = "0";
     const observer = new IntersectionObserver(
       (entries) => {
@@ -120,7 +176,7 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
         };
         raf = requestAnimationFrame(tick);
       },
-      { threshold: 0.5 },
+      { threshold: VISIBLE_THRESHOLD },
     );
     observer.observe(root);
     return () => {

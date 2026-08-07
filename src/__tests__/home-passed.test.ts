@@ -120,6 +120,45 @@ describe("the band and its doors", () => {
     }
   });
 
+  it("rewinds the count to zero before the first paint, not after it", () => {
+    /*
+     * The span renders the real number in JSX so the server sends it and a
+     * no-JS reader still gets a score — which means the count-up has to rewind
+     * that span to "0" on the client. In a plain effect that write lands after
+     * paint, and the reader saw the final number, a flash to zero, then the
+     * climb. A layout effect runs in the same frame as hydration, so zero is
+     * the first thing painted.
+     */
+    expect(band).toMatch(/useIsomorphicLayoutEffect\(\(\) => \{/);
+    expect(band).toMatch(
+      /const useIsomorphicLayoutEffect = typeof window === "undefined" \? useEffect : useLayoutEffect/,
+    );
+    // The JSX still carries the real number — the rewind is client-only.
+    expect(band).toMatch(/\{formatter\.format\(target\)\}/);
+  });
+
+  it("only rewinds to zero when the band is still off-screen", () => {
+    /*
+     * The layout effect alone did not fix the flash: the span is
+     * server-rendered with the real number, so four frames of "1,845" paint
+     * before React has hydrated at all. The gap is hydration, not effect
+     * timing — so the rewind is staged only when there is something left to
+     * reveal, and a band already on screen keeps its number.
+     *
+     * Both the pre-check and the observer read ONE constant. A first attempt
+     * used `top < innerHeight` for the check against the observer's 0.5, and
+     * at 390x760 the band fell between them — counted visible enough to skip
+     * the rewind, never visible enough to trigger the observer, so the
+     * count-up vanished. Two thresholds is the bug; this pins one.
+     */
+    expect(band).toMatch(/const VISIBLE_THRESHOLD = 0\.5;/);
+    expect(band).toMatch(/visible \/ rect\.height >= VISIBLE_THRESHOLD/);
+    expect(band).toMatch(/\{ threshold: VISIBLE_THRESHOLD \}/);
+    expect(band, "the observer went back to a hardcoded threshold").not.toMatch(
+      /threshold: 0\.\d/,
+    );
+  });
+
   it("estimates deterministically, by the day", () => {
     // Same day, different hour: the same number — that is what keeps server
     // and client hydration in agreement. Different days grow by the rate.
@@ -166,7 +205,27 @@ describe("the display face is scoped to the score", () => {
     // gets it, so the rest of the site keeps Geist and Geist Mono.
     expect(layout).toMatch(/variable: "--font-score-face"/);
     expect(layout).toMatch(/\$\{bigShoulders\.variable\}/);
-    expect(css).toMatch(/--font-score: var\(--font-score-face\), var\(--font-mono\)/);
+    expect(css).toMatch(/--font-score: var\(--font-score-face\)/);
+  });
+
+  it("swaps in behind a condensed fallback, not a mono one", () => {
+    /*
+     * next/font ships no metric-matched fallback for this family (Geist has
+     * its own "Fallback" face; Big Shoulders does not), so whatever is named
+     * after it in the stack is literally what renders until the font arrives.
+     * Measured at 60px on "68,712": Geist Mono renders 216.8px against Big
+     * Shoulders' 144.5px — 50% wider, which reflowed the hero by 72px on
+     * every cold load. Arial Narrow is 150.5px, 4.2% off.
+     *
+     * The mono fallback is named explicitly in the negative: it is the one
+     * that was there, and the one a future tidy-up would most plausibly
+     * restore for symmetry with --font-sans.
+     */
+    expect(css).toMatch(/--font-score:[^;]*"Arial Narrow"/);
+    expect(css).toMatch(/--font-score:[^;]*sans-serif-condensed/);
+    expect(css, "the score face fell back to mono again — 50% wider, reflows the hero").not.toMatch(
+      /--font-score: var\(--font-score-face\), var\(--font-mono\)/,
+    );
   });
 
   it("marks what the site declares, and stays off what it explains", () => {
