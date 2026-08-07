@@ -9,6 +9,7 @@ import { LatestPostCard } from "@/components/home/latest-post-card";
 import { PassedBand } from "@/components/home/passed-band";
 import { QuestionsBand } from "@/components/home/questions-band";
 import { ReadingBand, type ReadingDay } from "@/components/home/reading-band";
+import { ScrollCue } from "@/components/shared/scroll-cue";
 import { StageSpine } from "@/components/home/stage-spine";
 import { SelfRating } from "@/components/home/self-rating";
 import { Button, ButtonArrow } from "@/components/ui/button";
@@ -316,7 +317,32 @@ export function HomeShell({
       {/* Ahead of the stage blocks it governs, so the attribute is already set
           by the time they are parsed. */}
       <script dangerouslySetInnerHTML={{ __html: STAGE_PREPAINT_SCRIPT }} />
-      <section className="relative flex min-h-svh flex-col items-center justify-start overflow-hidden px-4 pt-[5.5rem] pb-12 sm:px-6 sm:pt-[6.25rem] sm:pb-16">
+      {/*
+       * The hero owns the first screen. It used to share it: the section held
+       * hero, stage block and bands in one column, so on most viewports the
+       * ask rode up into the first paint next to the counter. Splitting them
+       * puts the stake on screen one and the question on screen two, with the
+       * scroll as the beat between them — METHOD.md's rule that mortality "must
+       * not be positioned so that it reads as pressure applied at the moment of
+       * choosing" argues FOR this shape, not against it.
+       *
+       * min-h-SVH, not dvh: grace's sections carry the measured record of why —
+       * dvh tracks the collapsing URL bar and resizes the page under the
+       * reader's thumb.
+       *
+       * Two <section>s, deliberately, not one with an inner wrapper: the scroll
+       * cue delegates to advanceSection, which moves to the next SECTION
+       * boundary. The content section is that boundary, so a tap lands with the
+       * stage block at the top of the screen instead of falling through to the
+       * fixed-distance fallback.
+       */}
+      {/* The bottom pad reserves the consent banner's measured height (the
+          banner writes --consent-h; landing.tsx is the in-flow precedent).
+          Without it the cue sits exactly behind the banner for first-visit
+          readers — the population the cue exists for. Screenshotted, not
+          guessed: at 390×844 the cue landed at ~y780 under a banner whose top
+          edge was ~y780. */}
+      <section className="relative flex min-h-svh flex-col items-center justify-start overflow-hidden px-4 pt-[5.5rem] pb-[calc(1.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] sm:px-6 sm:pt-[6.25rem] sm:pb-[calc(2rem+env(safe-area-inset-bottom)+var(--consent-h,0px))]">
         {/* Offsets in px, not %: a percentage `top` resolves against the
             containing block's height, which for this section is viewport-derived
             and put the sphere almost entirely above the fold. All four are the
@@ -369,7 +395,9 @@ export function HomeShell({
             that holds type. */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)] lg:bg-none" />
 
-        <div className="relative z-[1] flex w-full flex-col items-center">
+        {/* flex-1 so the column stretches to the section's bottom edge and the
+            cue's mt-auto has somewhere to push against. */}
+        <div className="relative z-[1] flex w-full flex-1 flex-col items-center">
           {/* Label */}
           <p className="font-mono text-[9px] uppercase tracking-[4px] text-white/60 sm:text-[10px] sm:tracking-[5px]">
             {hero.label}
@@ -419,6 +447,20 @@ export function HomeShell({
             ))}
           </div>
 
+          {/*
+           * A hero sized to the viewport exactly, with nothing intruding, is
+           * the measured false-bottom pattern — grace and the verdict both hit
+           * it, and this cue is their counter-measure, reused rather than
+           * re-invented. In flow, not fixed: once the reader scrolls, the hero
+           * is behind them and the cue goes with it, so it needs no retirement
+           * logic. Its gold on a red screen has the verdict's own precedent.
+           */}
+          <ScrollCue className="mt-auto" />
+        </div>
+      </section>
+
+      <section className="relative flex flex-col items-center px-4 pb-12 sm:px-6 sm:pb-16">
+        <div className="flex w-full flex-col items-center">
 
           {/*
            * === Bottom CTA section — adapts to journey stage ===
