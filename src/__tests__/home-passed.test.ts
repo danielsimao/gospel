@@ -288,4 +288,23 @@ describe("the count's plumbing", () => {
       expect(await fetchTestTakerCount()).toBeNull();
     }
   });
+
+  it("logs every fallback instead of failing silently", () => {
+    /*
+     * Found the hard way: a missing key and a real PostHog outage both render
+     * as the same day-granular estimate forever, and nothing on the homepage
+     * tells you which. verdict-count/route.ts already logs both its failure
+     * branches (see go-links.test.ts's "does not treat a refused capture as a
+     * recorded scan") — this pins the same discipline here, one console.warn
+     * per branch that can produce a null.
+     */
+    // Each branch's own message, not proximity to *a* console.warn — a
+    // window-based match here would count the catch block's warn as
+    // satisfying the branch above it once the two are close enough in the
+    // source, which is exactly the false pass a first draft of this test hit.
+    expect(stats).toMatch(/console\.warn\("\[test-stats\] falling back to the estimate: no POSTHOG_PERSONAL_API_KEY configured"\)/);
+    expect(stats).toMatch(/console\.warn\(`\[test-stats\] falling back to the estimate: PostHog answered \$\{response\.status\}`\)/);
+    expect(stats).toMatch(/console\.warn\("\[test-stats\] falling back to the estimate: HogQL answer did not parse as a number"\)/);
+    expect(stats).toMatch(/catch \(error\) \{\s*console\.warn\("\[test-stats\] falling back to the estimate:", error\)/);
+  });
 });

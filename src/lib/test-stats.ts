@@ -27,7 +27,15 @@ const POSTHOG_PROJECT_ID = process.env.POSTHOG_PROJECT_ID || "221882";
  */
 export async function fetchTestTakerCount(): Promise<number | null> {
   const apiKey = process.env.POSTHOG_PERSONAL_API_KEY;
-  if (!apiKey) return null;
+  if (!apiKey) {
+    // Silent to the reader (the band's job), loud in Vercel's function logs
+    // (the operator's job) — without this line, a missing key and a real
+    // PostHog outage look identical from the homepage: the same day-granular
+    // estimate, forever. Fires once per revalidation window (the fetch below
+    // is cached hourly), not once per request.
+    console.warn("[test-stats] falling back to the estimate: no POSTHOG_PERSONAL_API_KEY configured");
+    return null;
+  }
 
   try {
     const response = await fetch(
@@ -70,15 +78,23 @@ export async function fetchTestTakerCount(): Promise<number | null> {
         next: { revalidate: 3600 },
       },
     );
-    if (!response.ok) return null;
+    if (!response.ok) {
+      console.warn(`[test-stats] falling back to the estimate: PostHog answered ${response.status}`);
+      return null;
+    }
 
     const data = (await response.json()) as { results?: unknown[][] };
     const raw = data.results?.[0]?.[0];
     const count = typeof raw === "number" ? Math.trunc(raw) : Number.NaN;
+    if (!Number.isFinite(count)) {
+      console.warn("[test-stats] falling back to the estimate: HogQL answer did not parse as a number");
+      return null;
+    }
     // A count of zero is real (fresh project) but not worth printing — the
     // count-less sentence reads better than "0 people have taken this test".
-    return Number.isFinite(count) && count > 0 ? count : null;
-  } catch {
+    return count > 0 ? count : null;
+  } catch (error) {
+    console.warn("[test-stats] falling back to the estimate:", error);
     return null;
   }
 }
