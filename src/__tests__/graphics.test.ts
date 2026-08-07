@@ -236,7 +236,13 @@ describe("the band textures stay backgrounds", () => {
     const record = strip(read("src", "components", "grace-record.tsx"));
     expect(record).toMatch(/fingerprint\.avif/);
     expect(record).toMatch(/paper\.avif/);
-    for (const name of ["questions-band", "reading-band", "latest-post-card"]) {
+    // The questions band earned its own graphics through hasTopicCover — the
+    // same approved, per-topic mechanism /learn uses, not a decoration
+    // wired in ad hoc. Everything else stays plain.
+    const questions = strip(read("src", "components", "home", "questions-band.tsx"));
+    expect(questions).toMatch(/import \{ hasTopicCover \} from "@\/components\/learn\/topic-cover"/);
+    expect(questions).toMatch(/hasTopicCover\(q\.slug\)/);
+    for (const name of ["reading-band", "latest-post-card"]) {
       expect(
         strip(read("src", "components", "home", `${name}.tsx`)),
         `${name} grew a texture nobody approved`,
