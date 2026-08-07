@@ -102,7 +102,7 @@ describe("the band and its doors", () => {
      * stands in — a rate, like the death counter — and the band still wears
      * the pulse, counts up, and ticks while the reader lingers.
      */
-    expect(band).toMatch(/count \?\? estimateTestTakerCount\(\)/);
+    expect(band).toMatch(/Math\.max\(count \?\? 0, estimateTestTakerCount\(\)\)/);
     expect(band, "the dead-word fallback is back").not.toMatch(/failedFallback|Todos/);
     // The pulse point, which stops moving but stays visible under reduced motion.
     expect(band).toMatch(/animate-pulse motion-reduce:animate-none/);
@@ -183,6 +183,51 @@ describe("the band and its doors", () => {
     // a freshly staged count-up.
     expect(band).toMatch(/goldTimer = setTimeout\(\(\) => setPassVisible\(true\), 350\)/);
     expect(band).toMatch(/clearTimeout\(goldTimer\)/);
+  });
+
+  it("never lets the score go backwards", () => {
+    /*
+     * The band's copy calls its number a floor, and test-stats promises the
+     * real count "takes over as the counters accumulate". The code said
+     * `count ?? estimate`, which hands the page to ANY non-null count — so a
+     * freshly configured PostHog answering 500 against an estimate near 1,845
+     * would have dropped the homepage overnight. A score of people who have
+     * taken a test cannot go down.
+     *
+     * Behavioural, not a source match: the arithmetic is the claim, so the
+     * arithmetic is what is asserted.
+     */
+    const pick = (count: number | null, estimate: number) => Math.max(count ?? 0, estimate);
+    expect(pick(500, 1845), "a small real count beat the model").toBe(1845);
+    expect(pick(4217, 1845), "the real count stopped taking over").toBe(4217);
+    expect(pick(null, 1845), "no count lost the model").toBe(1845);
+    expect(pick(0, 1845), "a zero count beat the model").toBe(1845);
+  });
+
+  it("sends the whole score in the HTML, gold included", () => {
+    /*
+     * The gold column used to render at opacity-0 until a client effect
+     * revealed it, so a reader without JS got "N failed" and no "1 passed" —
+     * not a degraded band but the opposite claim, since the ratio IS the
+     * argument. It now ships visible and is only taken back inside the branch
+     * that actually animates, in a layout effect, while the band is still
+     * off-screen.
+     */
+    expect(band).toMatch(/const \[passVisible, setPassVisible\] = useState\(true\)/);
+    // Hidden exactly once, in the staging branch — not in the markup, and not
+    // in the reduced-motion or already-visible paths.
+    expect(band.match(/setPassVisible\(false\)/g)?.length).toBe(1);
+  });
+
+  it("keeps the estimate climbing when there is no key to fetch with", () => {
+    /*
+     * fetchTestTakerCount's `revalidate: 3600` rides on its fetch, and with no
+     * POSTHOG_PERSONAL_API_KEY it returns before reaching one — nothing
+     * registers a revalidation dependency, the page prerenders, and the
+     * day-granular estimate freezes on the day of the deploy. The page has to
+     * say the hour itself for the keyless path to age at all.
+     */
+    expect(page).toMatch(/export const revalidate = 3600/);
   });
 
   it("estimates deterministically, by the day", () => {

@@ -9,6 +9,21 @@ import { fetchTestTakerCount } from "@/lib/test-stats";
 import type { HomeMessages } from "@/lib/types";
 import type { Metadata } from "next";
 
+/*
+ * The score band's number goes stale without this.
+ *
+ * fetchTestTakerCount carries `next: { revalidate: 3600 }` on its fetch, which
+ * is the whole revalidation story only while there IS a fetch. With no
+ * POSTHOG_PERSONAL_API_KEY it returns before reaching it, nothing registers a
+ * revalidation dependency, and the page is baked at build time — so the
+ * day-granular estimate, which is supposed to climb daily, freezes at whatever
+ * day the deploy happened. Verified against a production build: both locales
+ * prerendered while logging the missing-key fallback.
+ *
+ * Declaring it here covers both paths with the same hour.
+ */
+export const revalidate = 3600;
+
 type Props = {
   params: Promise<{ locale: string }>;
 };

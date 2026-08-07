@@ -103,11 +103,34 @@ function revealedRatio(rect: DOMRect, viewportHeight: number): number {
 export function PassedBand({ locale, messages, count }: PassedBandProps) {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const countRef = useRef<HTMLSpanElement | null>(null);
-  const [passVisible, setPassVisible] = useState(false);
+  /*
+   * Visible until JavaScript says otherwise, not hidden until it says so.
+   *
+   * This started false, so the server sent the gold column at opacity-0 and
+   * only a client effect ever revealed it — a reader without JS got "1,845
+   * failed" and no "1 passed" at all. The ratio IS the argument here; half of
+   * it is not a degraded version of this band, it is the opposite claim.
+   *
+   * So the hiding happens in the layout effect, in the one branch that is
+   * actually going to animate, and before paint — see the staging note below.
+   */
+  const [passVisible, setPassVisible] = useState(true);
 
-  // Day-granular estimate, so server and client render the same number and
-  // hydration has nothing to disagree about.
-  const target = count ?? estimateTestTakerCount();
+  /*
+   * The larger of the two, never simply "the real one if we have it".
+   *
+   * This was `count ?? estimateTestTakerCount()`, which hands the page to any
+   * non-null count — including one far below the model. test-stats' own
+   * comment promised the opposite ("the real number takes over as the counters
+   * accumulate"), and the band's copy calls the number a floor. With the
+   * estimate near 1,845 today, a freshly configured PostHog answering 500
+   * would have dropped the homepage from 1,845 to 500 overnight: a score that
+   * goes backwards, which is the one thing a count of people who have taken a
+   * test cannot do.
+   *
+   * Day-granular on both sides, so server and client still agree at hydration.
+   */
+  const target = Math.max(count ?? 0, estimateTestTakerCount());
   const formatter = new Intl.NumberFormat(locale === "pt" ? "pt-PT" : "en-US");
 
   /*
@@ -143,9 +166,10 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
 
     const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (reduced || typeof IntersectionObserver === "undefined") {
-      // No entrance, but the score still lives: the tick is content, not motion.
+      // No entrance, but the score still lives: the tick is content, not
+      // motion. The gold is already visible — it ships that way — so there is
+      // nothing to reveal here, only the running count to keep.
       el.textContent = formatter.format(target);
-      setPassVisible(true);
       scheduleTick();
       return () => clearTimeout(tickTimer);
     }
@@ -174,11 +198,19 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
      * entirely. One function, one rule, so the two cannot disagree.
      */
     if (revealedRatio(root.getBoundingClientRect(), window.innerHeight) >= VISIBLE_THRESHOLD) {
-      setPassVisible(true);
       scheduleTick();
       return () => clearTimeout(tickTimer);
     }
 
+    /*
+     * Stage the entrance: rewind the count and take the gold back.
+     *
+     * Both writes happen here rather than in the markup so the server's HTML
+     * stays complete — the whole score is in it, and a reader without JS keeps
+     * both halves. This branch only runs when the band is still off-screen, in
+     * a layout effect, so nothing that gets hidden was ever painted.
+     */
+    setPassVisible(false);
     el.textContent = "0";
     const observer = new IntersectionObserver(
       () => {
