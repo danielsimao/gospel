@@ -355,3 +355,43 @@ Architectural, austere, quiet. Photographic, not illustration.
 ```
 
 **▲ COPY TO HERE ▲**
+
+---
+
+## 13 · O mundo — the world, from height (footer's closing verse)
+
+**Ships as:** not yet shipped — proposed for behind "For God so loved the world..." in `src/components/shared/footer.tsx`, site-wide.
+
+**Where it goes:** the one truly universal element on the site — the closing verse every page ends on, regardless of topic. Not a reuse of the door, horizon or courtroom shaft: each of those already carries a specific meaning elsewhere, and reusing them here would dilute that. The verse's own word — "the world" — is the brief.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of the earth's curved horizon seen from high altitude, near the
+edge of space, looking along the curve rather than straight down. A thin pale
+line of atmosphere traces the horizon; the earth's surface below it is dark
+and almost featureless — no visible continents, coastlines, city lights, or
+weather systems, just a dark curved mass. Above the horizon, deep black space
+with no stars, no sun, no moon, no lens flare.
+
+Colour: near-black, #060404, fully desaturated and cold throughout. The thin
+atmospheric line is pale and cool — a faint blue-white, never warm, never
+gold, never orange, not a sunrise or sunset in colour.
+
+Composition: wide 16:9. The horizon curve sits low in the frame, in the
+bottom quarter, curving gently across the full width. The upper three
+quarters of the frame are empty black space with nothing in them — that
+space is where text will sit.
+
+Do not include: any text, any numerals, any stars, clouds, continents,
+coastlines, city lights, satellites, spacecraft, astronauts, people, hands,
+faces, the sun, the moon, lens flare, or a visible atmosphere glow in any
+colour but pale cool blue-white.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a
+3D render, not a stock-photo Earth-from-space cliché with visible continents.
+```
+
+**▲ COPY TO HERE ▲**
