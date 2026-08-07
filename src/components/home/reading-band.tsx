@@ -70,7 +70,7 @@ export function ReadingBand({
   const day = finished ? null : days[Math.min(completed, days.length - 1)];
 
   return (
-    <div className="mt-14 w-full max-w-md text-left sm:max-w-2xl">
+    <div className="mt-24 w-full max-w-md text-left sm:max-w-2xl">
       <BandSpine label={label} />
       <Link
         href={`/${locale}/reading-plan`}

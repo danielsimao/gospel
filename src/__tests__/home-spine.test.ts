@@ -101,4 +101,19 @@ describe("João 3:16 appears once per page", () => {
     const positions = order.map(([, at]) => at);
     expect(positions).toEqual([...positions].sort((a, b) => a - b));
   });
+
+  it("gives each band room to read as its own section", () => {
+    /*
+     * mt-14 (56px) was the gap when every band was a plain hairline row —
+     * once questions-band and reading-band grew bordered cards and photos,
+     * 56px between one card's bottom edge and the next eyebrow read as
+     * continuous rather than a break. mt-24 (96px), same value everywhere
+     * so the rhythm stays one number, not three that could drift apart.
+     */
+    for (const name of ["questions-band", "reading-band", "latest-post-card"]) {
+      const band = strip(read("src", "components", "home", `${name}.tsx`));
+      expect(band, `${name} lost the inter-section gap`).toMatch(/\bmt-24\b/);
+      expect(band, `${name} still carries the old 56px gap`).not.toMatch(/\bmt-14\b/);
+    }
+  });
 });

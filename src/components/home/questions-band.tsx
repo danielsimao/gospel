@@ -48,7 +48,7 @@ export function QuestionsBand({ locale, label, allLabel, topics }: QuestionsBand
   if (questions.length === 0) return null;
 
   return (
-    <div className="relative mt-14 w-full max-w-md text-left sm:max-w-2xl">
+    <div className="relative mt-24 w-full max-w-md text-left sm:max-w-2xl">
       <div className="relative">
       <BandSpine label={label} />
       <div className="flex flex-col gap-2">
