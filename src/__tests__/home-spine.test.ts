@@ -20,7 +20,9 @@ const strip = (s: string) =>
 const spine = strip(read("src", "components", "home", "band-spine.tsx"));
 const stage = strip(read("src", "components", "home", "stage-spine.tsx"));
 const shell = strip(read("src", "components", "home-shell.tsx"));
-const BANDS = ["passed-band", "questions-band", "reading-band"] as const;
+// latest-post-card too: it kept the left BandHeader after the first migration
+// and the axis jumped back at the very bottom of the page.
+const BANDS = ["passed-band", "questions-band", "reading-band", "latest-post-card"] as const;
 
 describe("every band sits on the same axis", () => {
   it("uses the centred spine, and nothing uses the left header", () => {
@@ -60,6 +62,21 @@ describe("every band sits on the same axis", () => {
     const questions = strip(read("src", "components", "home", "questions-band.tsx"));
     const all = questions.slice(questions.indexOf("`/${locale}/learn`"));
     expect(all.slice(0, 300), "the all-topics link is not centred").toMatch(/mx-auto/);
+    const blog = strip(read("src", "components", "home", "latest-post-card.tsx"));
+    const allPosts = blog.slice(blog.indexOf("`/${locale}/blog`"));
+    expect(allPosts.slice(0, 300), "the all-posts link is not centred").toMatch(/mx-auto/);
+  });
+
+  it("opens every band with a full-width seam", () => {
+    /*
+     * mt-24 and a 9px eyebrow were the only things separating one band from
+     * the next — pauses, not boundaries. The seam is the section's top edge,
+     * and it lives in BandSpine so every band gets the same one and none can
+     * grow its own variant.
+     */
+    expect(spine, "the seam left BandSpine").toMatch(
+      /h-px w-full bg-gradient-to-r from-transparent via-white\/\[0\.08\] to-transparent/,
+    );
   });
 
   it("leaves next-steps alone", () => {

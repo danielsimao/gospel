@@ -337,6 +337,34 @@ html[data-journey-stage="dismissed"] [data-slot="journey-stage"][data-stage="vis
 }
 
 /*
+ * The reading plan, after the verdict only.
+ *
+ * "Seven days in John" is follow-up: the method places discipleship after the
+ * decision, and the band wears grace's gold medallion. Shown to a visitor it
+ * offered the aftercare before the Law had said anything, and spent gold on
+ * the front door of a reader the test has not met yet. So the band rides the
+ * same pre-paint attribute as the stage blocks: hidden by default — a
+ * stranger, or an unrecognised stage, gets the visitor door without it — and
+ * revealed for the four stages that have stood the test, all of which have
+ * seen gold arrive where it is supposed to.
+ *
+ * `display: contents` because the wrapper exists only for these rules to
+ * select; the band must stay a direct flex item of the column. Enumerated,
+ * never negated, and after the Tailwind import, for the reasons the journey
+ * stage rules above give — and nothing else may set `display` on the wrapper.
+ */
+[data-slot="post-test-band"] {
+  display: none;
+}
+
+html[data-journey-stage="undecided"] [data-slot="post-test-band"],
+html[data-journey-stage="thinking"] [data-slot="post-test-band"],
+html[data-journey-stage="committed"] [data-slot="post-test-band"],
+html[data-journey-stage="dismissed"] [data-slot="post-test-band"] {
+  display: contents;
+}
+
+/*
  * One next-steps track, chosen before the first paint.
  *
  * The track lives in localStorage, so the server could only render a

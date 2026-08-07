@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BandHeader } from "@/components/next-steps/band-header";
+import { BandSpine } from "@/components/home/band-spine";
 import { BandRow, BandRows } from "@/components/home/band-row";
 import { trackHomeBlogCardClicked } from "@/lib/eternity-analytics";
 
@@ -40,9 +40,11 @@ export function LatestPostCard({ locale, eyebrow, allLabel, post }: LatestPostCa
 
   return (
     <div className="mt-24 w-full max-w-md text-left sm:max-w-2xl">
-      {/* Shares the band header idiom with the two above it. Gold tone keeps it
-          distinct: the questions and the plan are the path, the blog is not. */}
-      <BandHeader label={eyebrow} tone="gold" />
+      {/* The centred spine every band above it wears — this card kept the old
+          left BandHeader after the others migrated, so the page's axis jumped
+          back to the left on its very last section. Gold tone stays: the
+          questions and the plan are the path, the blog is not. */}
+      <BandSpine label={eyebrow} tone="gold" />
       <BandRows>
         <BandRow
           href={href}
@@ -55,9 +57,11 @@ export function LatestPostCard({ locale, eyebrow, allLabel, post }: LatestPostCa
       {/* One post is all this band can show, and the reader has no way of
           knowing there are eleven more behind it. A door says so without
           quoting a number that would need translating. */}
+      {/* Centred like the questions band's all-topics door: a lone trailing
+          link is part of the block's own axis, not the list's left edge. */}
       <Link
         href={`/${locale}/blog`}
-        className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[1.6px] text-[#D4A843]/80 transition-colors hover:text-[#D4A843]"
+        className="mx-auto mt-3 block w-fit font-mono text-[10px] uppercase tracking-[1.6px] text-[#D4A843]/80 transition-colors hover:text-[#D4A843]"
       >
         {allLabel}{" "}
         &rarr;

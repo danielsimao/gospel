@@ -126,3 +126,41 @@ describe("journey stage markup and CSS", () => {
     for (const w of wrappers) expect(w).not.toMatch(/className=/);
   });
 });
+
+describe("the post-test band", () => {
+  /*
+   * The reading plan is follow-up — the method's step for AFTER the verdict —
+   * so the shell gates it behind the same pre-paint attribute the stage blocks
+   * ride. Same three-list agreement problem as above: the wrapper in the
+   * markup, the hide-by-default rule, and one reveal rule per post-test stage.
+   * A missing reveal hides the plan from that stage silently, forever.
+   */
+  const POST_TEST = JOURNEY_STAGES.filter((s) => s !== "visitor");
+
+  it("wraps the reading band in a class-free, stage-free slot", () => {
+    const wrappers = homeShell.match(/<div data-slot="post-test-band"[^>]*>/g) ?? [];
+    expect(wrappers).toHaveLength(1);
+    // No className, for the display argument above; no data-stage, because
+    // the exactly-one-block-per-stage assertion counts those.
+    expect(wrappers[0]).not.toMatch(/className=|data-stage=/);
+    const slotAt = homeShell.indexOf('data-slot="post-test-band"');
+    const bandAt = homeShell.indexOf("<ReadingBand");
+    expect(slotAt).toBeGreaterThan(-1);
+    expect(bandAt).toBeGreaterThan(slotAt);
+  });
+
+  it("hides the band by default, so a visitor or an unknown stage never sees it", () => {
+    expect(hasRule('[data-slot="post-test-band"] { display: none')).toBe(true);
+  });
+
+  it("reveals the band for each post-test stage by name, never by negation", () => {
+    for (const stage of POST_TEST) {
+      expect(
+        hasRule(`html[data-journey-stage="${stage}"] [data-slot="post-test-band"]`),
+        `globals.css does not reveal the post-test band for the "${stage}" stage`,
+      ).toBe(true);
+    }
+    // Written as :not(...visitor...) the reveal would fire for garbage stages.
+    expect(cssRules).not.toMatch(/:not\([^)]*\)\s*\[data-slot="post-test-band"\]/);
+  });
+});

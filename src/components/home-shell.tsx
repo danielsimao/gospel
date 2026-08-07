@@ -706,11 +706,21 @@ export function HomeShell({
           </div>
 
           {/*
-           * Three ungated bands, identical on all five stages. Each shows what
-           * is actually inside it rather than describing it: the topics as
-           * their own questions, the plan as the day this reader is on, the
-           * blog as its newest headline. Rendered once here rather than inside
-           * each stage branch, so they cannot drift between them.
+           * The bands. Each shows what is actually inside it rather than
+           * describing it: the topics as their own questions, the plan as the
+           * day this reader is on, the blog as its newest headline. Rendered
+           * once here rather than inside each stage branch, so they cannot
+           * drift between stages.
+           *
+           * Not all of them are for everyone, though. The score and questions
+           * bands are pre-evangelism and run on all five stages — the score is
+           * the strongest hook a stranger gets, and the questions band is the
+           * dismissed reader's designated non-test door. The reading plan is
+           * not pre-evangelism: it is what this app offers AFTER the verdict,
+           * so it is gated to the post-test stages — see the post-test-band
+           * rules in globals.css, which ride the same pre-paint attribute that
+           * picks the stage block, so the choice is made before first paint
+           * and nothing jumps.
            */}
           {/* First of the bands, because it is the strongest hook on the
               page: a score that ends "1 passed" leaves a question, and the
@@ -724,14 +734,19 @@ export function HomeShell({
             topics={topics}
           />
 
-          <ReadingBand
-            locale={locale}
-            label={home.journey.reading.label}
-            dayLabel={readingLabels.dayLabel}
-            completeDescription={readingLabels.complete}
-            days={readingDays}
-            completed={journey.readingDone}
-          />
+          {/* Class-free for the same reason the stage wrappers are: the
+              reveal rules in globals.css must be the only thing setting
+              `display` on it. */}
+          <div data-slot="post-test-band">
+            <ReadingBand
+              locale={locale}
+              label={home.journey.reading.label}
+              dayLabel={readingLabels.dayLabel}
+              completeDescription={readingLabels.complete}
+              days={readingDays}
+              completed={journey.readingDone}
+            />
+          </div>
 
           {latestPost && (
             <LatestPostCard
