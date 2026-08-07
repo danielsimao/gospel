@@ -234,7 +234,109 @@ Style: photographic, high contrast, sharply focused, architectural, not illustra
 
 ---
 
-## 10 · O feixe de luz — the courtroom shaft
+## 10 · O espelho — the mirror (am-i-a-good-person)
+
+**Ships as:** `public/graphics/covers/am-i-a-good-person.avif` + `.webp` — pilot cover for the topic page hero, full-strength (not a dimmed background), replacing the standalone emblem above the title.
+
+**Where it goes:** the topic page for `am-i-a-good-person`, law band. The Law as a mirror is the doctrine itself (James 1:23) — not a decorative pick — and photographic clarity fixes what the small line-icon couldn't: a mirror reads instantly, the abstract emblem did not.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of an old mirror mounted on a plain dark wall, angled slightly so
+its glass reflects nothing recognizable — only darkness and a faint pale
+sheen where the light catches it. The mirror's glass is foxed and mottled with
+age, its frame plain and unornamented. Everything around it is deep shadow.
+
+Colour: near-black, #060404, fully desaturated and cold. The pale sheen in the
+glass is neutral, not warm — no golden tone, no amber glow.
+
+Composition: portrait 4:3. The mirror sits centred, filling the middle third
+of the frame vertically, with generous dark space above and below it.
+
+Do not include: any text, any numerals, any reflection of a person, hands,
+faces, silhouettes, furniture, ornate frames, gilt, candles, gavels, scales,
+or crosses.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a
+3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 11 · O horizonte — the horizon (does-god-exist)
+
+**Ships as:** `public/graphics/covers/does-god-exist.avif` + `.webp` — pilot cover, same treatment as §11.
+
+**Where it goes:** the topic page for `does-god-exist`, questions band. Cool and evidentiary rather than sentimental — deliberately not a warm, literal sunrise, which would read as mood rather than argument.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of a plain dark horizon line where land meets sky, seen from a
+low, still viewpoint. A single hairline of pale light traces the horizon;
+everything above and below it falls into deep, even darkness. No sun disc, no
+clouds, no stars, nothing else visible in the frame.
+
+Colour: near-black, #060404, fully desaturated and cold. The hairline of light
+is pale and cool, near-white — no warm glow, no gold, no amber, no orange, not
+a sunrise or sunset in colour.
+
+Composition: wide 16:9, the horizon line running perfectly straight roughly
+through the centre of the frame. No vignette, no border.
+
+Do not include: any text, any numerals, any people, silhouettes, birds,
+buildings, mountains, trees, or other landmarks on the horizon line — it must
+read as empty and featureless.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a
+3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 12 · O cajado — the shepherd's staff (who-is-jesus)
+
+**Ships as:** `public/graphics/covers/who-is-jesus.avif` + `.webp` — pilot cover, same treatment as §11.
+
+**Where it goes:** the topic page for `who-is-jesus`, rescue band. Same concept as the existing line-icon (John 10, the Good Shepherd) recomposed photographically — a real staff reads unambiguously where the abstract crook shape did not.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of a single plain wooden shepherd's crook, leaning alone against
+a bare dark stone wall, its foot resting on a stone floor. Nobody is holding
+it. One raking light from the upper side catches the wood's grain and the
+curve of the crook; everything else falls into deep shadow.
+
+Colour: near-black, #060404, fully desaturated and cold. The wood carries only
+the faintest neutral tone — no warm honey colour, no golden glow, no amber.
+
+Composition: portrait 4:3. The crook stands at a slight diagonal, off-centre,
+filling the middle of the frame with generous dark space around it.
+
+Do not include: any text, any numerals, any people, hands, faces,
+silhouettes, sheep, animals, sandals, robes, gavels, scales, or crosses.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a
+3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 13 · O feixe de luz — the courtroom shaft
 
 **Ships as:** `public/graphics/courtroom.avif` — grace's turn panel, behind "Mas alguém entra no tribunal", under two damping veils. Referenced from CSS `url()` in grace-screen, so a JSX grep will not find it.
 
