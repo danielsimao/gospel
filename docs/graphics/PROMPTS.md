@@ -206,7 +206,35 @@ archival, unremarkable. Photographic, not illustration.
 
 ---
 
-## 8 · O feixe de luz — the courtroom shaft
+## 9 · A porta, centrada — the decision-screen door
+
+**Ships as:** `public/graphics/door-decision.avif` + `.webp` — fixed full-bleed behind the decision screen (`invitation-screen.tsx`), at 35% opacity, no scrim. The dismissed response is already told "A porta continua aberta"; this is that sentence as a picture, present before it is needed. John 10:9 without a caption.
+
+**Where it goes:** the decision screen only. Same room as §6's OG door so the two read as one world, recomposed for a portrait screen with content sitting over the middle rather than beside it: gap centred rather than in the right third, dimmer so type can sit directly over it with no scrim.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph taken from inside a dark bare stone room, looking straight ahead at a tall narrow vertical gap in the centre of the far wall. Pale cool daylight comes through the gap from the far side and falls in a thin band onto the stone floor, reaching toward the viewer. The gap is the only source of light; the walls and floor are plain, rough and unornamented, and everything not touched by the light falls into deep shadow.
+
+Colour: the stone is near-black, #060404, fully desaturated and cold. The light through the gap is pale, cool and slightly blue-neutral — daylight, not sunset. No warm glow, no golden tone, no amber.
+
+Brightness: the light must read instantly against the black but must be DIM — soft, at most 60% brightness, with no bloom, no halo, no rays — because text will sit directly over this image and the light must never compete with it.
+
+Composition: vertical 9:16. The gap is horizontally centred, roughly 1/10th of the image width across, running from about 15% to 75% of the frame's height. The rest of the frame is deep, even darkness with no detail.
+
+Do not include: any text, any numerals, any actual door, door frame, hinges, handle, steps, thresholds, furniture, people, figures, silhouettes, hands, faces, clouds, sky, god rays, sunbeams, dust beams, glowing particles, halos, lens flare, stained glass, church interiors, cathedrals, arches, columns, altars, candles, gavels, scales, or crosses. This is a plain gap in a plain wall, not a doorway and not a religious building.
+
+Style: photographic, high contrast, sharply focused, architectural, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 10 · O feixe de luz — the courtroom shaft
 
 **Ships as:** `public/graphics/courtroom.avif` — grace's turn panel, behind "Mas alguém entra no tribunal", under two damping veils. Referenced from CSS `url()` in grace-screen, so a JSX grep will not find it.
 

@@ -18,6 +18,7 @@ const kb = (...p: string[]) => statSync(join(ROOT, ...p)).size / 1024;
 
 const texture = strip(read("src", "components", "home", "band-texture.tsx"));
 const testOg = strip(read("src", "app", "[locale]", "(immersive)", "test", "opengraph-image.tsx"));
+const invitation = strip(read("src", "components", "invitation-screen.tsx"));
 const prompts = read("docs", "graphics", "PROMPTS.md");
 
 describe("what is served, and what is not", () => {
@@ -63,10 +64,59 @@ describe("what is served, and what is not", () => {
   it("keeps the served set small", () => {
     // These sit behind content below the fold. A texture that costs more than
     // the page it decorates has stopped being a background.
-    const total = ["tally", "paper", "fingerprint"].flatMap((n) => [`${n}.avif`, `${n}.webp`])
+    const total = ["tally", "paper", "fingerprint", "door-decision"].flatMap((n) => [`${n}.avif`, `${n}.webp`])
       .concat("door.jpg")
       .reduce((sum, f) => sum + kb("public", "graphics", f), 0);
     expect(total, `served graphics total ${total.toFixed(0)} KB`).toBeLessThan(500);
+  });
+});
+
+describe("the decision-screen door", () => {
+  it("ships both formats", () => {
+    for (const ext of ["avif", "webp"]) {
+      expect(
+        existsSync(join(ROOT, "public", "graphics", `door-decision.${ext}`)),
+        `graphics/door-decision.${ext} is missing`,
+      ).toBe(true);
+    }
+  });
+
+  it("stays a background, at the opacity it was measured at", () => {
+    /*
+     * Full-bleed with no scrim, unlike the courtroom shaft. The shaft's raw
+     * opacity is higher (70%) but sits under two dark gradient layers, so its
+     * effective brightness is well below the tally/paper/fingerprint's
+     * unscrimmed 7-16%. This has no scrim, so it is dimmed at the source
+     * instead — 35%, screenshotted against 0.55 and 0.80 and chosen because
+     * those two ran hotter than anything else in the set that isn't damped by
+     * a scrim on top of it.
+     */
+    const wrapper = invitation.match(
+      /<div aria-hidden="true" data-flow-graphic className="([^"]*)">/,
+    );
+    expect(wrapper, "the decision door's wrapper div was not found").not.toBeNull();
+    const className = wrapper?.[1] ?? "";
+    expect(className).toMatch(/pointer-events-none/);
+    expect(className).toMatch(/fixed inset-0/);
+    expect(className).toMatch(/opacity-\[0\.35\]/);
+
+    const pictureStart = invitation.indexOf("<picture>", invitation.indexOf("data-flow-graphic"));
+    const pictureEnd = invitation.indexOf("</picture>", pictureStart) + "</picture>".length;
+    const picture = invitation.slice(pictureStart, pictureEnd);
+    expect(picture).toMatch(/door-decision\.avif/);
+    expect(picture).toMatch(/door-decision\.webp/);
+    expect(picture).toMatch(/loading="lazy"/);
+    expect(picture).toMatch(/decoding="async"/);
+    expect(picture).toMatch(/alt=""/);
+  });
+
+  it("appears on the decision screen alone", () => {
+    for (const name of ["home-shell", "grace-screen", "grace-record", "verdict-screen"]) {
+      expect(
+        strip(read("src", "components", `${name}.tsx`)),
+        `${name} grew the decision-screen door`,
+      ).not.toMatch(/door-decision/);
+    }
   });
 });
 
@@ -169,13 +219,14 @@ describe("every asset keeps its prompt", () => {
     // An asset whose prompt is lost cannot be regenerated at another size or
     // with one constraint changed.
     // Grows as assets do — the floor is the six originals plus the two that
-    // predated the file and had their prompts back-filled.
-    expect(prompts.match(/COPY FROM HERE/g)?.length).toBeGreaterThanOrEqual(8);
-    expect(prompts.match(/Generate a new image\./g)?.length).toBeGreaterThanOrEqual(6);
+    // predated the file and had their prompts back-filled, plus the
+    // decision-screen door recomposed from the OG door's prompt.
+    expect(prompts.match(/COPY FROM HERE/g)?.length).toBeGreaterThanOrEqual(9);
+    expect(prompts.match(/Generate a new image\./g)?.length).toBeGreaterThanOrEqual(7);
   });
 
   it("names the assets that shipped", () => {
-    for (const name of ["tally", "dots", "fingerprint", "stone", "door", "paper", "courtroom"]) {
+    for (const name of ["tally", "dots", "fingerprint", "stone", "door", "door-decision", "paper", "courtroom"]) {
       expect(prompts.toLowerCase(), `${name} has no prompt on record`).toContain(name);
     }
   });
