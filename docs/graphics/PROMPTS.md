@@ -395,3 +395,53 @@ Style: photographic, high contrast, sharply focused, not illustration, not a
 ```
 
 **▲ COPY TO HERE ▲**
+
+---
+
+## 14 · A pergunta — the site mark
+
+**Ships as:** `src/app/icon.svg`, and the four rasters generated from it —
+`src/app/apple-icon.png` (180), `src/app/favicon.ico` (16/32/48), 
+`public/icon-192.png`, `public/icon-512.png`.
+
+**No prompt.** This one is in the file because the rule at the top says every
+asset records how it was made, and "how" here was not a prompt — it was a font
+and a parser. Recorded so the next person can regenerate it rather than
+redraw it by eye.
+
+### How to regenerate
+
+The mark is the Big Shoulders glyph for `?`, converted from TrueType
+quadratics to SVG paths and baked in as outlines, so the icon needs no font at
+runtime. Source: `bigshoulders700.ttf`, glyph id **568**, two contours — the
+body and a **rectangular** dot (not a circle; that is the face's character and
+the thing a hand-drawn version gets wrong).
+
+Two departures from the raw glyph, and only two:
+
+- The dot is nudged down, opening the gap from **5 to 7.2 units** in the 64
+  viewBox. At 16px the font's own spacing lets body and dot merge into a blob.
+- Nothing else. A draft grew the dot 18% "so it survives 16px"; measured, the
+  font's dot already renders 2.68 × 1.95px there, and the enlargement pushed
+  its height to a fractional 2.30px — the same half-lit-rows problem that rules
+  out thin strokes elsewhere in this file.
+
+The rasters are all `rsvg-convert` from `icon.svg`, so they cannot drift from
+it. The `.ico` is PNG-in-ICO at 16/32/48.
+
+### Why it is red, and why that is not an omission
+
+Gold on this site arrives once, late, on ground the red has drained out of
+(`verdict-screen.tsx`). A favicon is the earliest thing a stranger sees, so
+gold there spends the arrival before the Law has said anything — see
+`METHOD.md:119`, "Grace is never offered before the Law has done its work."
+Several gold variants were drawn and rejected on that basis, including a gold
+cross, which additionally collides with `why-the-cross`'s emblem and with this
+file's own reject list.
+
+### Why a question mark
+
+The domain is not a question. It is a conditional with the second half
+missing: *if you died today…* has no main clause, and the reader supplies it.
+The mark is the punctuation the name withholds — which is a reason no other
+site can borrow, because it comes from the name rather than from the subject.

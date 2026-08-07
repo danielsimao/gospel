@@ -1,6 +1,34 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- The live dot — the site's death counter pulse, reduced to its atom -->
+  <!--
+    The question, in the site's own display face.
+
+    The domain is not a question — it is a conditional with the second half
+    missing. "If you died today…" has no main clause; the reader supplies it.
+    This is the punctuation the name withholds, which is a reason no other site
+    can borrow: it comes from the name rather than from the subject.
+
+    Both paths are the real Big Shoulders glyph for "?", lifted from
+    bigshoulders700.ttf (glyph 568) and converted from its TrueType quadratics
+    to SVG — the same letterform the score band and the verdict already wear,
+    not an approximation of it. Baked as outlines so the icon needs no font at
+    runtime. The dot is a rectangle because that is what the face draws; a hand
+    version of this used a circle and was subtly, unnameably wrong.
+
+    Two deliberate departures from the raw glyph, and only two:
+      · The dot is nudged down, opening the gap from 5 to 7.2 units. At 16px
+        the font's own spacing lets the two merge into one blob.
+      · Nothing else. An earlier draft grew the dot 18% "so it survives 16px";
+        measured, the font's dot already renders 2.68 x 1.95px there, and the
+        enlargement pushed its height to a fractional 2.30px — the exact
+        half-lit-rows problem that rules out thin strokes elsewhere.
+
+    All red, no gold, and that is the point rather than an omission. Gold on
+    this site arrives once, late, on ground the red has drained out of (see
+    verdict-screen.tsx). A favicon is the earliest thing a stranger sees, so
+    gold here would spend the arrival before the Law has said anything —
+    METHOD.md:119, "Grace is never offered before the Law has done its work."
+  -->
   <rect width="64" height="64" rx="14" fill="#060404"/>
-  <circle cx="32" cy="32" r="17" fill="none" stroke="#ef4444" stroke-opacity="0.3" stroke-width="2.5"/>
-  <circle cx="32" cy="32" r="9" fill="#ef4444"/>
+  <path fill="#ef4444" d="M28.15 42.74L27.99 39.42Q27.84 37.07 28.13 35.28Q28.42 33.50 29.58 31.99Q30.74 30.48 33.14 28.97L34.31 28.26Q35.11 27.79 35.50 26.98Q35.88 26.16 35.99 25.14Q36.10 24.13 36.10 23.08L36.10 16.33Q36.10 14.75 35.02 13.92Q33.94 13.09 31.88 13.09Q29.97 13.09 28.93 13.92Q27.90 14.75 27.81 16.33Q27.68 18.24 27.67 20.30Q27.65 22.37 27.75 24.06L19.21 24.06Q19.15 22.62 19.11 21.68Q19.08 20.73 19.08 19.89Q19.08 19.04 19.15 17.90Q19.52 11.52 22.41 8.76Q25.31 6.00 31.82 6.00Q38.81 6.00 41.85 8.77Q44.89 11.55 44.89 17.90Q44.89 18.85 44.90 19.73Q44.92 20.61 44.92 21.44Q44.92 22.28 44.92 23.08Q44.89 26.44 44.28 28.47Q43.68 30.51 42.74 31.63Q41.80 32.76 40.75 33.33Q39.71 33.90 38.78 34.36L37.21 35.13Q35.82 35.81 35.55 37.00Q35.27 38.18 35.08 39.42L34.84 42.74L28.15 42.74Z"/>
+  <path fill="#ef4444" d="M26.14 58.20L26.14 50.40L36.87 50.40L36.87 58.20L26.14 58.20Z"/>
 </svg>
