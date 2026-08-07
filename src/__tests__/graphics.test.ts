@@ -157,6 +157,10 @@ describe("the learn topic-page covers", () => {
     expect(topicCover).toMatch(/rounded-2xl/);
     expect(topicCover).toMatch(/border border-white\/10/);
     expect(topicCover).toMatch(/object-cover/);
+    // The longest topic title ("Why Does God Allow Suffering?", 29 chars)
+    // wraps to 3 lines without this and eats most of the frame at 320px —
+    // measured live, fixed by adding text-balance, must not silently drop.
+    expect(topicCover).toMatch(/text-balance/);
     expect(topicCover).toMatch(/loading="lazy"/);
     expect(topicCover).toMatch(/decoding="async"/);
   });

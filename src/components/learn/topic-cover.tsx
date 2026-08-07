@@ -40,10 +40,10 @@ export function TopicCover({ slug, title }: { slug: string; title: string }) {
             className="size-full object-cover"
           />
         </picture>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#060404] from-[8%] via-[#060404]/50 via-[42%] to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#060404] from-[15%] via-[#060404]/55 via-[48%] to-transparent" />
       </div>
       <h1
-        className="absolute inset-x-0 bottom-0 p-5 text-4xl font-bold leading-[1.05] tracking-tight text-[#D4A843] sm:p-7 sm:text-5xl md:text-6xl"
+        className="absolute inset-x-0 bottom-0 p-5 text-balance text-3xl font-bold leading-[1.1] tracking-tight text-[#D4A843] sm:p-7 sm:text-4xl md:text-5xl"
         style={{ textShadow: "0 0 40px rgba(212,168,67,0.4), 0 2px 24px rgba(0,0,0,0.7)" }}
       >
         {title}
