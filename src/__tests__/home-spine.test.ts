@@ -125,7 +125,7 @@ describe("the hero owns the first screen", () => {
     // cue, not a re-invention: one definition is how the shape and the tap
     // stay in agreement everywhere it appears.
     expect(shell).toMatch(/import \{ ScrollCue \} from "@\/components\/shared\/scroll-cue"/);
-    expect(shell).toMatch(/<ScrollCue \/>/);
+    expect(shell).toMatch(/<ScrollCue className="lg:self-center" \/>/);
     /*
      * The hero's leftover height is distributed, not parked at the bottom: two
      * flex spacers float the rate cards to the viewport's middle and keep the

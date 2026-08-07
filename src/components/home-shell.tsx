@@ -396,27 +396,49 @@ export function HomeShell({
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)] lg:bg-none" />
 
         {/* flex-1 so the column stretches to the section's bottom edge and the
-            cue's mt-auto has somewhere to push against. */}
-        <div className="relative z-[1] flex w-full flex-1 flex-col items-center">
-          {/* Label */}
-          <p className="font-mono text-[9px] uppercase tracking-[4px] text-white/60 sm:text-[10px] sm:tracking-[5px]">
-            {hero.label}
-          </p>
+            spacers have leftover to absorb. From lg the hero goes asymmetric:
+            the lockup rides the left scrim's solid ground — the gradient that
+            exists precisely to hold type — while the globe answers from the
+            right, instead of a centred stack floating between the two. */}
+        <div className="relative z-[1] flex w-full flex-1 flex-col items-center lg:items-start lg:pl-10 xl:pl-20">
+          {/* Label — the hero's eyebrow, wearing the page's spine idiom in the
+              Law's colour: rule — TODAY — rule. It was a bare floating word;
+              flanked, it opens the page the way every section below opens. */}
+          <div className="flex items-center gap-2.5">
+            <span aria-hidden="true" className="h-px w-6 bg-red-500/40" />
+            <p className="font-mono text-[9px] uppercase tracking-[4px] text-white/60 sm:text-[10px] sm:tracking-[5px]">
+              {hero.label}
+            </p>
+            <span aria-hidden="true" className="h-px w-6 bg-red-500/40" />
+          </div>
 
           {/* Death counter. The daily 99,999 → 100,000 crossing does not shift
               it: DeathCounter reserves minWidth 7ch and centres inside that
-              itself, so nothing is needed here. */}
+              itself, so nothing is needed here. (On lg's left-aligned lockup
+              that internal centring means a short small-hours number floats
+              toward the middle of its reserve — visible for the first UTC
+              hours only, and the reserve is what keeps digit growth from
+              reflowing the lockup all day. Kept.)
+
+              Sized with clamp so the monument tracks the viewport instead of
+              stepping at breakpoints — at 390px it is ~86px tall, at 1440
+              ~208px. The score face is condensed, so seven characters hold
+              inside the left scrim's solid ground on every width measured. */}
           <DeathCounter
             fromMidnight
-            className="mt-4 font-score text-6xl font-bold tabular-nums tracking-[0.01em] text-red-500 sm:mt-5 sm:text-8xl md:text-9xl lg:text-[10rem]"
+            className="mt-4 font-score text-[clamp(4.5rem,22vw,7.5rem)] font-bold leading-none tabular-nums tracking-[0.01em] text-red-500 sm:mt-5 sm:text-[clamp(7.5rem,14vw,9.5rem)] lg:text-[clamp(10rem,14.5vw,13rem)]"
             style={{
               textShadow:
-                "0 0 80px rgba(239,68,68,0.25), 0 4px 60px rgba(0,0,0,0.8)",
+                "0 0 90px rgba(239,68,68,0.3), 0 0 220px rgba(239,68,68,0.14), 0 4px 60px rgba(0,0,0,0.85)",
             }}
           />
 
-          {/* Suffix */}
-          <p className="mt-2 text-sm tracking-wide text-white/60 sm:mt-3 sm:text-base">
+          {/* The statement, promoted into the score face. It was a 14px sans
+              whisper under a monument — the number declared and its own
+              sentence apologised for it. Same face, uppercase, tracked wide:
+              the lockup reads as one broadcast, the figure and what the figure
+              is. Uppercasing is CSS — the copy itself is untouched. */}
+          <p className="mt-3 font-score text-xl font-semibold uppercase tracking-[0.3em] text-white/65 sm:mt-4 sm:text-2xl lg:text-3xl lg:tracking-[0.38em]">
             {hero.suffix}
           </p>
 
@@ -474,7 +496,9 @@ export function HomeShell({
            * is behind them and the cue goes with it, so it needs no retirement
            * logic. Its gold on a red screen has the verdict's own precedent.
            */}
-          <ScrollCue />
+          {/* Self-centred: the cue belongs to the page's axis, not the
+              lockup's — it points at the centred content below the fold. */}
+          <ScrollCue className="lg:self-center" />
         </div>
       </section>
 
