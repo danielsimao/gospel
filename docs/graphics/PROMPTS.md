@@ -360,7 +360,7 @@ Architectural, austere, quiet. Photographic, not illustration.
 
 ## 13 · O mundo — the world, from height (footer's closing verse)
 
-**Ships as:** not yet shipped — proposed for behind "For God so loved the world..." in `src/components/shared/footer.tsx`, site-wide.
+**Ships as:** `public/graphics/world.avif` + `.webp` — bottom-anchored behind the closing verse in `src/components/shared/footer.tsx`, 14% opacity, linear-fade mask, site-wide on every page that carries the footer.
 
 **Where it goes:** the one truly universal element on the site — the closing verse every page ends on, regardless of topic. Not a reuse of the door, horizon or courtroom shaft: each of those already carries a specific meaning elsewhere, and reusing them here would dilute that. The verse's own word — "the world" — is the brief.
 

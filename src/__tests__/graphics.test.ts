@@ -22,6 +22,7 @@ const testOg = strip(read("src", "app", "[locale]", "(immersive)", "test", "open
 const invitation = strip(read("src", "components", "invitation-screen.tsx"));
 const topicCover = strip(read("src", "components", "learn", "topic-cover.tsx"));
 const topicPage = strip(read("src", "components", "learn", "topic-page.tsx"));
+const footer = strip(read("src", "components", "shared", "footer.tsx"));
 const prompts = read("docs", "graphics", "PROMPTS.md");
 
 describe("what is served, and what is not", () => {
@@ -302,8 +303,47 @@ describe("every asset keeps its prompt", () => {
   });
 
   it("names the assets that shipped", () => {
-    for (const name of ["tally", "dots", "fingerprint", "stone", "door", "door-decision", "paper", "courtroom", "who-is-jesus", "am-i-a-good-person", "does-god-exist"]) {
+    for (const name of ["tally", "dots", "fingerprint", "stone", "door", "door-decision", "paper", "courtroom", "who-is-jesus", "am-i-a-good-person", "does-god-exist", "world"]) {
       expect(prompts.toLowerCase(), `${name} has no prompt on record`).toContain(name);
     }
+  });
+});
+
+describe("the footer's closing verse", () => {
+  it("ships both formats", () => {
+    for (const ext of ["avif", "webp"]) {
+      expect(
+        existsSync(join(ROOT, "public", "graphics", `world.${ext}`)),
+        `graphics/world.${ext} is missing`,
+      ).toBe(true);
+    }
+  });
+
+  it("stays a background: masked, low-opacity, bottom-anchored, no click target", () => {
+    /*
+     * Bottom-anchored rather than centred like the band textures — the
+     * footer's height varies a lot page to page (the fact crawl and full
+     * link grid on home vs. a short legal page), but the verse it sits
+     * behind is always near the bottom. A fixed height anchored to the
+     * bottom keeps the graphic near the verse regardless.
+     */
+    expect(footer).toMatch(/aria-hidden="true"/);
+    expect(footer).toMatch(/pointer-events-none/);
+    expect(footer).toMatch(/absolute inset-x-0 bottom-0/);
+    expect(footer).toMatch(/opacity-\[0\.14\]/);
+    expect(footer).toMatch(/maskImage: "linear-gradient/);
+    expect(footer).toMatch(/WebkitMaskImage: "linear-gradient/);
+    expect(footer).toMatch(/graphics\/world\.avif/);
+    expect(footer).toMatch(/graphics\/world\.webp/);
+    expect(footer).toMatch(/loading="lazy"/);
+    expect(footer).toMatch(/decoding="async"/);
+  });
+
+  it("never paints over the fact crawl or the link grid", () => {
+    // The content wrapper carries the same z-[1] promotion PageShell uses
+    // to sit its content above its own background — without it, an
+    // absolutely-positioned background at the top of a stacking context
+    // paints above static content, not below it.
+    expect(footer).toMatch(/relative z-\[1\] mx-auto max-w-2xl/);
   });
 });
