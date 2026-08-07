@@ -169,6 +169,21 @@ describe("the learn topic-page covers", () => {
     expect(topicPage).toMatch(/<TopicCover slug={topic\.slug}/);
     expect(topicPage).not.toMatch(/TopicEmblem/);
   });
+
+  it("sets the title into the frame without borrowing the score band's face", () => {
+    /*
+     * Big Shoulders earns exactly one place on this site — the score band's
+     * numerals (see layout.tsx's own comment: "a display face earns entry in
+     * exactly one place"). The cover title reaches for scale, weight and the
+     * house glow on the existing sans instead of a second display face.
+     */
+    expect(topicCover).toMatch(/<h1\b/);
+    expect(topicCover).not.toMatch(/font-score/);
+    // Exactly one heading reaches the page for a covered topic: topic-page's
+    // own fallback <h1> is conditional on the cover NOT existing.
+    expect(topicPage).toMatch(/hasTopicCover\(topic\.slug\)/);
+    expect(topicPage.match(/<h1\b/g)?.length, "topic-page should carry no h1 of its own when a cover supplies one").toBe(1);
+  });
 });
 
 describe("the band textures stay backgrounds", () => {
