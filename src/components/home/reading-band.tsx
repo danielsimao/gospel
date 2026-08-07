@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { BookOpen } from "lucide-react";
 import { BandSpine } from "@/components/home/band-spine";
 import type { Locale } from "@/lib/i18n";
 
@@ -46,6 +47,13 @@ function trimVerse(verse: string): string {
  * sent back to the beginning. Finished readers get the completion line instead;
  * there is no eighth day to offer, and repeating day seven would read as though
  * their progress had been lost.
+ *
+ * The row used to sit inside a hairline list container built for multiple
+ * rows — this band only ever shows one. A medallion (the plan's own symbol,
+ * not a topic's) and seven progress dots replace that borrowed idiom with a
+ * card that only has to be itself: `i < completed` is filled gold, which
+ * also happens to fill every dot once `completed` reaches `days.length` —
+ * the finished state falls out of the same comparison, not a second branch.
  */
 export function ReadingBand({
   locale,
@@ -64,38 +72,54 @@ export function ReadingBand({
   return (
     <div className="mt-14 w-full max-w-md text-left sm:max-w-2xl">
       <BandSpine label={label} />
-      <div className="border-y border-white/[0.06]">
-        <Link
-          href={`/${locale}/reading-plan`}
-          className="group flex items-start gap-3 border-t border-white/[0.06] px-3 py-3.5 transition-colors first:border-t-0 hover:bg-white/[0.015]"
+      <Link
+        href={`/${locale}/reading-plan`}
+        className="group flex items-center gap-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-3.5 py-4 transition-colors hover:border-white/20 hover:bg-white/[0.04]"
+      >
+        <span
+          aria-hidden="true"
+          className="relative flex size-13 shrink-0 items-center justify-center rounded-full border border-[#D4A843]/25 shadow-[0_0_22px_-4px_rgba(212,168,67,0.35),inset_0_0_12px_rgba(212,168,67,0.08)]"
+          style={{
+            background:
+              "radial-gradient(circle at 35% 30%, rgba(212,168,67,0.16), rgba(212,168,67,0.03) 70%)",
+          }}
         >
-          <span className="min-w-0 flex-1">
-            {day ? (
-              <>
-                <span className="block text-[15px] font-semibold text-white/85 transition-colors group-hover:text-white">
-                  {dayLabel} {completed + 1} &middot; {day.title}
-                </span>
-                <span className="mt-1 block font-mono text-[11px] tracking-[1px] text-white/45">
-                  {day.passage}
-                </span>
-                <span className="mt-2.5 block border-l border-white/[0.14] pl-3 text-[12.5px] italic leading-relaxed text-white/55">
-                  &ldquo;{trimVerse(day.keyVerse)}&rdquo;
-                </span>
-              </>
-            ) : (
+          <BookOpen className="size-6 text-[#D4A843]" strokeWidth={1.6} />
+        </span>
+        <span className="min-w-0 flex-1">
+          {day ? (
+            <>
               <span className="block text-[15px] font-semibold text-white/85 transition-colors group-hover:text-white">
-                {completeDescription}
+                {dayLabel} {completed + 1} &middot; {day.title}
               </span>
-            )}
+              <span className="mt-1 block font-mono text-[11px] tracking-[1px] text-white/45">
+                {day.passage}
+              </span>
+              <span className="mt-2.5 block border-l border-white/[0.14] pl-3 text-[12.5px] italic leading-relaxed text-white/55">
+                &ldquo;{trimVerse(day.keyVerse)}&rdquo;
+              </span>
+            </>
+          ) : (
+            <span className="block text-[15px] font-semibold text-white/85 transition-colors group-hover:text-white">
+              {completeDescription}
+            </span>
+          )}
+          <span aria-hidden="true" className="mt-2.5 flex gap-1">
+            {days.map((_, i) => (
+              <i
+                key={i}
+                className={`h-[3px] w-3 rounded-full ${i < completed ? "bg-[#D4A843]" : "bg-white/[0.12]"}`}
+              />
+            ))}
           </span>
-          <span
-            aria-hidden="true"
-            className="mt-0.5 shrink-0 text-white/30 transition-transform group-hover:translate-x-1"
-          >
-            &rarr;
-          </span>
-        </Link>
-      </div>
+        </span>
+        <span
+          aria-hidden="true"
+          className="shrink-0 self-start text-white/30 transition-transform group-hover:translate-x-1"
+        >
+          &rarr;
+        </span>
+      </Link>
     </div>
   );
 }
