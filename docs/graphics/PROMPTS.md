@@ -270,7 +270,7 @@ Style: photographic, high contrast, sharply focused, not illustration, not a
 
 ## 10 · O horizonte — the horizon (does-god-exist)
 
-**Ships as:** `public/graphics/covers/does-god-exist.avif` + `.webp` — pilot cover, same treatment as §9.
+**Ships as:** superseded by §16 — kept for the record. Composed wide 16:9 for the topic page; in the homepage card's portrait crop the hairline all but vanished next to §9's mirror, and a row of cards needs comparable weight in every frame.
 
 **Where it goes:** the topic page for `does-god-exist`, questions band. Cool and evidentiary rather than sentimental — deliberately not a warm, literal sunrise, which would read as mood rather than argument.
 
@@ -466,6 +466,34 @@ Colour: near-black, #060404, fully desaturated and cold. The dust is dim pale gr
 Composition: portrait 4:3. The trail runs from the bottom of the frame toward the upper third at a slight diagonal, ending well before any wall or horizon. Generous even darkness on every side, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
 
 Do not include: any text, any numerals, any people, legs, feet, shoes, silhouettes, shadows of figures, a second trail of footprints, sand dunes, beaches, water, skulls, bones, graves, headstones, coffins, candles, gavels, scales, crosses, or lens flare.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 16 · A primeira luz — first light (does-god-exist, recomposed)
+
+**Ships as:** `public/graphics/covers/does-god-exist.avif` + `.webp` — replaces §10's files under the same names, so `TOPIC_COVERS` and every consumer are untouched. The §8 move: same idea, recomposed for the surface that actually shows it.
+
+**Where it goes:** the third card of the homepage questions band and the topic page for `does-god-exist`. §10's rationale stands — cool and evidentiary, deliberately not a warm sunrise, light arriving out of darkness rather than mood — but the hairline is now a narrow graded band with enough presence to hold a card, and the composition is portrait with the horizon just below centre so it survives all three crops in use (3:4 card, 2.6:1 phone card, 4:3 topic page).
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of a plain dark horizon at the very first moment of dawn, seen from a low, still viewpoint. A narrow band of pale cool light sits along the horizon line, brightest at the line itself and fading quickly into deep darkness both upward into the sky and downward across the land. No sun disc, no clouds, no stars — only the light itself, arriving.
+
+Colour: near-black, #060404, fully desaturated and cold. The light is pale blue-white, never warm — no gold, no amber, no orange, not a sunrise or sunset in colour.
+
+Brightness: the band must read instantly against the black but stay dim — at most 60% brightness at the line itself, with no bloom, no rays, no halo — because a gold title sits over the lower part of this image and the light must never compete with it.
+
+Composition: portrait 4:3. The horizon line runs perfectly straight across the full width, slightly below the centre of the frame. The land below it is featureless darkness; the sky above it is featureless darkness beyond the narrow band. Generous even darkness at the top and bottom edges, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+
+Do not include: any text, any numerals, any sun, moon, stars, clouds, birds, people, silhouettes, buildings, mountains, trees, roads, water, reflections, or other landmarks — the horizon must read as empty and featureless.
 
 Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
 ```
