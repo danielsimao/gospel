@@ -90,8 +90,20 @@ export async function fetchTestTakerCount(): Promise<number | null> {
       console.warn("[test-stats] falling back to the estimate: HogQL answer did not parse as a number");
       return null;
     }
+    /*
+     * The resolved count, in the operator's log.
+     *
+     * The four branches above all say why the number is missing; none said what
+     * it was when it arrived, and the homepage cannot be read backwards to find
+     * out — the band publishes the model whenever the real count is smaller, so
+     * a correct key and a broken one printed the same 1,845 for a day. This is
+     * the only place the true figure is observable without a PostHog login.
+     * Fires at build (once per locale) and hourly on revalidation.
+     */
+    console.info(`[test-stats] PostHog answered ${count}`);
     // A count of zero is real (fresh project) but not worth printing — the
-    // count-less sentence reads better than "0 people have taken this test".
+    // model reads better than "0 people have taken this test", and it is the
+    // one case where the estimate is still the honest thing to show.
     return count > 0 ? count : null;
   } catch (error) {
     console.warn("[test-stats] falling back to the estimate:", error);

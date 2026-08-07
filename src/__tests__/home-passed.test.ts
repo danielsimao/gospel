@@ -102,7 +102,7 @@ describe("the band and its doors", () => {
      * stands in — a rate, like the death counter — and the band still wears
      * the pulse, counts up, and ticks while the reader lingers.
      */
-    expect(band).toMatch(/Math\.max\(count \?\? 0, estimateTestTakerCount\(\)\)/);
+    expect(band).toMatch(/const target = count \?\? estimateTestTakerCount\(\)/);
     expect(band, "the dead-word fallback is back").not.toMatch(/failedFallback|Todos/);
     // The pulse point, which stops moving but stays visible under reduced motion.
     expect(band).toMatch(/animate-pulse motion-reduce:animate-none/);
@@ -185,23 +185,28 @@ describe("the band and its doors", () => {
     expect(band).toMatch(/clearTimeout\(goldTimer\)/);
   });
 
-  it("never lets the score go backwards", () => {
+  it("publishes the real count, even when it is smaller than the model", () => {
     /*
-     * The band's copy calls its number a floor, and test-stats promises the
-     * real count "takes over as the counters accumulate". The code said
-     * `count ?? estimate`, which hands the page to ANY non-null count — so a
-     * freshly configured PostHog answering 500 against an estimate near 1,845
-     * would have dropped the homepage overnight. A score of people who have
-     * taken a test cannot go down.
+     * The reverse of what this test used to assert, and the reversal is the
+     * point. It pinned `Math.max(count ?? 0, estimate)`, added to stop the
+     * score dropping if PostHog answered low. The cost was only visible once
+     * the key was configured on 2026-08-07: the model grows 35/day
+     * unconditionally, so a real count below it was discarded every hour and
+     * the homepage published 1,845 — the model exactly — while a working
+     * PostHog sat behind it. Monotonic was bought with never-true.
+     *
+     * The band wears a "live" badge; the owner chose a number that moves over
+     * one that only climbs. A drop is now possible and accepted.
      *
      * Behavioural, not a source match: the arithmetic is the claim, so the
      * arithmetic is what is asserted.
      */
-    const pick = (count: number | null, estimate: number) => Math.max(count ?? 0, estimate);
-    expect(pick(500, 1845), "a small real count beat the model").toBe(1845);
-    expect(pick(4217, 1845), "the real count stopped taking over").toBe(4217);
+    const pick = (count: number | null, estimate: number) => count ?? estimate;
+    expect(pick(500, 1845), "the model still suppressed a real count").toBe(500);
+    expect(pick(4217, 1845), "a large real count was not published").toBe(4217);
+    // Only when PostHog cannot answer at all does the model stand in. A zero
+    // count is turned into null upstream (test-stats), so it lands here too.
     expect(pick(null, 1845), "no count lost the model").toBe(1845);
-    expect(pick(0, 1845), "a zero count beat the model").toBe(1845);
   });
 
   it("sends the whole score in the HTML, gold included", () => {

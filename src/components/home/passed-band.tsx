@@ -118,20 +118,27 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
   const [passVisible, setPassVisible] = useState(true);
 
   /*
-   * The larger of the two, never simply "the real one if we have it".
+   * The real count when there is one. The model only when there is not.
    *
-   * This was `count ?? estimateTestTakerCount()`, which hands the page to any
-   * non-null count — including one far below the model. test-stats' own
-   * comment promised the opposite ("the real number takes over as the counters
-   * accumulate"), and the band's copy calls the number a floor. With the
-   * estimate near 1,845 today, a freshly configured PostHog answering 500
-   * would have dropped the homepage from 1,845 to 500 overnight: a score that
-   * goes backwards, which is the one thing a count of people who have taken a
-   * test cannot do.
+   * This was `Math.max(count ?? 0, estimateTestTakerCount())`, added to stop
+   * the score going backwards if PostHog answered lower than the model. It did
+   * stop that, and in exchange it guaranteed the opposite failure: the model
+   * grows 35/day unconditionally, so the real number could never surface until
+   * it out-ran a figure that keeps running away from it. On 2026-08-07, with
+   * the key finally configured and PostHog answering, the homepage still
+   * published 1,845 — the model, to the digit — because max() discarded the
+   * truth every hour. A number that can never be true is worse than a number
+   * that can go down.
+   *
+   * Owner's call, and the right one for this band: it wears a pulsing "live"
+   * badge, and liveness is the thing it trades on. A real number that moves is
+   * the point; a modelled one that only ever climbs is a prop. Slight
+   * over-count is accepted deliberately — the anonymous counter dedupes per
+   * device, not per person.
    *
    * Day-granular on both sides, so server and client still agree at hydration.
    */
-  const target = Math.max(count ?? 0, estimateTestTakerCount());
+  const target = count ?? estimateTestTakerCount();
   const formatter = new Intl.NumberFormat(locale === "pt" ? "pt-PT" : "en-US");
 
   /*
