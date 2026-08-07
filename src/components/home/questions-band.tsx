@@ -64,12 +64,18 @@ export function QuestionsBand({ locale, label, allLabel, topics }: QuestionsBand
             >
               <picture>
                 <source srcSet={`/graphics/covers/${q.slug}.avif`} type="image/avif" />
+                {/* The photo leans in on hover/focus — transform only, so it
+                    never repaints, and the frame's overflow-hidden crops the
+                    growth. The house strong ease-out, slow enough to read as
+                    the picture breathing rather than a zoom control. Keyboard
+                    gets the same move via group-focus-visible; reduced motion
+                    gets a still photo, which loses nothing this band says. */}
                 <img
                   src={`/graphics/covers/${q.slug}.webp`}
                   alt=""
                   loading="lazy"
                   decoding="async"
-                  className="absolute inset-0 size-full object-cover"
+                  className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-[var(--ease-out-strong)] group-hover:scale-[1.04] group-focus-visible:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100 motion-reduce:group-focus-visible:scale-100"
                 />
               </picture>
               <div className="absolute inset-0 bg-gradient-to-t from-[#060404] from-[10%] via-[#060404]/45 via-[45%] to-transparent" />

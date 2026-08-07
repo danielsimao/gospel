@@ -34,6 +34,16 @@ describe("the questions band's hybrid rows", () => {
     expect(band).toMatch(/aspect-\[2\.6\/1\]/);
   });
 
+  it("the photo leans in on interaction, and holds still under reduced motion", () => {
+    // Transform-only (never a repaint), the house strong ease-out, keyboard
+    // parity via focus-visible, and an explicit opt-out — a hover seen tens
+    // of times a day must be subtle everywhere and absent where asked.
+    expect(band).toMatch(/group-hover:scale-\[1\.04\]/);
+    expect(band).toMatch(/group-focus-visible:scale-\[1\.04\]/);
+    expect(band).toMatch(/ease-\[var\(--ease-out-strong\)\]/);
+    expect(band).toMatch(/motion-reduce:transition-none/);
+  });
+
   it("the medallion row still resolves a real per-topic emblem", () => {
     expect(band).toMatch(/<TopicEmblem slug={q\.slug}/);
   });
