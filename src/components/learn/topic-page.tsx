@@ -53,7 +53,7 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
   }, [topic.slug, locale]);
 
   return (
-    <PageShell width="wide">
+    <PageShell>
       <article>
         <m.div
           initial={{ opacity: 0, y: 16 }}
