@@ -305,7 +305,7 @@ Style: photographic, high contrast, sharply focused, not illustration, not a
 
 ## 11 · O cajado — the shepherd's staff (who-is-jesus)
 
-**Ships as:** `public/graphics/covers/who-is-jesus.avif` + `.webp` — pilot cover, same treatment as §9.
+**Ships as:** superseded by §17 — kept for the record. The crook recomposed the topic's line-icon faithfully, but a leaning stick answers "Who is Jesus?" with a prop; the replacement answers it with the claim.
 
 **Where it goes:** the topic page for `who-is-jesus`, rescue band. Same concept as the existing line-icon (John 10, the Good Shepherd) recomposed photographically — a real staff reads unambiguously where the abstract crook shape did not.
 
@@ -496,6 +496,32 @@ Composition: portrait 4:3. The horizon line runs perfectly straight across the f
 Do not include: any text, any numerals, any sun, moon, stars, clouds, birds, people, silhouettes, buildings, mountains, trees, roads, water, reflections, or other landmarks — the horizon must read as empty and featureless.
 
 Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 17 · A pedra removida — the stone rolled away (who-is-jesus)
+
+**Ships as:** `public/graphics/covers/who-is-jesus.avif` + `.webp` — replaces §11's files under the same names, so `TOPIC_COVERS` and the topic page are untouched.
+
+**Where it goes:** the topic page for `who-is-jesus`, rescue band. §11's crook recomposed the line-icon faithfully, but a leaning stick answers the question with a prop. The empty tomb answers it with the claim — the one fact the topic's whole argument stands on (1 Cor 15:14) — and it speaks the site's existing grammar of stone and arriving light (§§6, 8, 12) without a figure, which the house rules bar in any case. The exclusions keep it a tomb and not a cave, a garden, or an Easter card: no light rays, no glow from within, no angels, no cloth, no dawn sky. The stone aside and the dark opening are the whole statement.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of the entrance to an ancient rock-cut tomb: a low rounded opening in a rough stone face, with a massive circular stone slab rolled aside to one side of it, resting against the rock. The opening is dark and empty. Thin pale early light falls across the stone face and catches the rim of the rolled slab and the edge of the opening; everything else falls into deep shadow.
+
+Colour: near-black, #060404, fully desaturated and cold. The light is pale and neutral — no warm glow, no golden hour, no amber.
+
+Composition: wide 4:3. The opening sits just off-centre with the rolled stone beside it, together filling roughly the middle half of the frame, with generous even darkness around them on every side so the frame crops safely at other aspect ratios. Seen straight on from a low, still viewpoint. No vignette, no border or frame.
+
+Do not include: any text, any numerals, any people, figures, silhouettes, angels, hands, faces, folded cloth, linen, light rays, god rays, light coming from inside the tomb, glowing interiors, dawn skies, sun discs, gardens, flowers, trees, paths, steps, Roman soldiers, spears, helmets, gavels, scales, crosses, or lens flare. The opening is dark; the only light is the thin early light on the outside stone.
+
+Style: photographic, high contrast, sharply focused, architectural, not illustration, not a 3D render.
 ```
 
 **▲ COPY TO HERE ▲**
