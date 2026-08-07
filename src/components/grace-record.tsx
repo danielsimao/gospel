@@ -62,7 +62,41 @@ export function GraceRecord({ rows, messages }: GraceRecordProps) {
         {messages.eyebrow}
       </figcaption>
 
-      <div className="rounded-md border border-white/[0.13] bg-white/[0.015] p-4 sm:p-5">
+      <div className="relative overflow-hidden rounded-md border border-white/[0.13] bg-white/[0.015] p-4 sm:p-5">
+        {/*
+         * Two layers under the charges, and each means something.
+         *
+         * The paper is what makes the record read as issued rather than
+         * rendered — a document, not a styled div. The fingerprint is the
+         * reader pressed into their own record: identity, testimony, the mark
+         * a charge sheet carries. Both were measured in place; the print sits
+         * at 9% because at 16% it competed with the pleas it sits under.
+         *
+         * <picture> with AVIF + WebP, lazy — the record is many screens deep
+         * in the flow and nothing here may cost the reader a frame.
+         */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <picture>
+            <source srcSet="/graphics/paper.avif" type="image/avif" />
+            <img
+              src="/graphics/paper.webp"
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="size-full object-cover opacity-[0.07]"
+            />
+          </picture>
+          <picture>
+            <source srcSet="/graphics/fingerprint.avif" type="image/avif" />
+            <img
+              src="/graphics/fingerprint.webp"
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="absolute inset-0 m-auto h-[86%] w-auto opacity-[0.09]"
+            />
+          </picture>
+        </div>
         {/*
          * A real table, not a grid of divs. This is tabular data — count,
          * charge, plea — and the document look is styling on top of that, not a
@@ -70,7 +104,7 @@ export function GraceRecord({ rows, messages }: GraceRecordProps) {
          * are visually hidden because the record's own layout says what each
          * column is to anyone who can see it.
          */}
-        <table className="w-full border-collapse text-left">
+        <table className="relative w-full border-collapse text-left">
           <thead className="sr-only">
             <tr>
               <th scope="col">{messages.count}</th>
@@ -112,7 +146,7 @@ export function GraceRecord({ rows, messages }: GraceRecordProps) {
           </tbody>
         </table>
 
-        <dl className="mt-3 border-t border-white/[0.16] pt-3 font-mono text-[9.5px] uppercase tracking-[1.2px]">
+        <dl className="relative mt-3 border-t border-white/[0.16] pt-3 font-mono text-[9.5px] uppercase tracking-[1.2px]">
           <div className="flex items-baseline justify-between">
             <dt className="text-white/40">{messages.finding}</dt>
             <dd className="m-0 text-[11px] tracking-[1px] text-red-400/90">{messages.guilty}</dd>

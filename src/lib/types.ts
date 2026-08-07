@@ -192,6 +192,17 @@ export interface HomeMessages {
   /** What a tap costs: question count and rough duration. */
   testPreview: string;
   blogCard: { eyebrow: string };
+  /** The face-off band: N failed against the 1 who passed. The red side
+      always shows a number — the modelled estimate stands in when neither
+      counter can answer — and wears `liveBadge` with the pulse. */
+  passedBand: {
+    eyebrow: string;
+    liveBadge: string;
+    failedCaption: string;
+    passedCaption: string;
+    whoCta: string;
+    testCta: string;
+  };
   /** Header for the band of learn topics shown as their own questions. */
   questionsLabel: string;
   facts: string[];

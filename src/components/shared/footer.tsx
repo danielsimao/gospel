@@ -51,11 +51,34 @@ export function Footer({ messages, learnTopics, locale, facts = [], blogEnabled 
        drawn a hairline here, and the crawl is that hairline with the facts
        moving along it. Two would have stacked a band on a band. */
     <footer
-      className={`print-hide relative z-[1] bg-[#060404] ${hasCrawl ? "" : "border-t border-white/[0.08]"}`}
+      className={`print-hide relative z-[1] overflow-hidden bg-[#060404] ${hasCrawl ? "" : "border-t border-white/[0.08]"}`}
     >
+      {/* The world, from height — behind the one line every page ends on
+          regardless of topic: "For God so loved the world..." Bottom-anchored
+          so it sits near the verse whether the footer above it is tall (home,
+          with the fact crawl and full link grid) or short (a legal page). */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[320px] opacity-[0.14]"
+        style={{
+          maskImage: "linear-gradient(to top, black 35%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to top, black 35%, transparent 100%)",
+        }}
+      >
+        <picture>
+          <source srcSet="/graphics/world.avif" type="image/avif" />
+          <img
+            src="/graphics/world.webp"
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="size-full object-cover object-bottom"
+          />
+        </picture>
+      </div>
       <FactCrawl facts={facts} />
       <FactList facts={facts} />
-      <div className="mx-auto max-w-2xl px-6 py-10 sm:px-8 sm:py-12">
+      <div className="relative z-[1] mx-auto max-w-2xl px-6 py-10 sm:px-8 sm:py-12">
         {/* 3-column grid — stacks on mobile */}
         {/* Two columns on a phone, not one.
               Stacked, the three columns were 457px of the footer's 792 —

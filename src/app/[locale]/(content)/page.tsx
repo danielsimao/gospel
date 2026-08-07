@@ -5,8 +5,24 @@ import { StructuredData } from "@/components/structured-data";
 import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
 import { getPublishedPosts, getPostContent, getPostLocales } from "@/content/blog/posts";
 import { BLOG_ENABLED } from "@/lib/flags";
+import { fetchTestTakerCount } from "@/lib/test-stats";
 import type { HomeMessages } from "@/lib/types";
 import type { Metadata } from "next";
+
+/*
+ * The score band's number goes stale without this.
+ *
+ * fetchTestTakerCount carries `next: { revalidate: 3600 }` on its fetch, which
+ * is the whole revalidation story only while there IS a fetch. With no
+ * POSTHOG_PERSONAL_API_KEY it returns before reaching it, nothing registers a
+ * revalidation dependency, and the page is baked at build time — so the
+ * day-granular estimate, which is supposed to climb daily, freezes at whatever
+ * day the deploy happened. Verified against a production build: both locales
+ * prerendered while logging the missing-key fallback.
+ *
+ * Declaring it here covers both paths with the same hour.
+ */
+export const revalidate = 3600;
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -111,6 +127,8 @@ export default async function HomePage({ params }: Props) {
   /* The homepage's latest-post card is one of the blog's three entrances, and
      it goes quiet with the other two. The posts themselves stay live and
      indexed — see lib/flags.ts. */
+  const testTakerCount = await fetchTestTakerCount();
+
   const posts = BLOG_ENABLED ? getPublishedPosts() : [];
   const latest = posts[0] ?? null;
   const latestContent = latest
@@ -140,6 +158,7 @@ export default async function HomePage({ params }: Props) {
         readingLabels={data.readingLabels}
         allTopicsLabel={data.allTopicsLabel}
         allPostsLabel={data.allPostsLabel}
+        testTakerCount={testTakerCount}
         latestPost={latestPost}
       />
     </>

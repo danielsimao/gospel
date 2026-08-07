@@ -480,7 +480,7 @@
       {
         "slug": "who-is-jesus",
         "title": "Who is Jesus?",
-        "subtitle": "More than a good teacher.",
+        "subtitle": "God in flesh, and what that means for you.",
         "metaDescription": "Who was Jesus of Nazareth? Explore the evidence for His deity, humanity, and what it means for you.",
         "sections": [
           {
@@ -1518,6 +1518,14 @@
     "questionsLabel": "Questions people ask",
     "blogCard": {
       "eyebrow": "From the blog"
+    },
+    "passedBand": {
+      "eyebrow": "The score so far",
+      "failedCaption": "failed",
+      "passedCaption": "passed",
+      "liveBadge": "live",
+      "whoCta": "Find out who",
+      "testCta": "Take the test — see how you do"
     },
     "facts": [
       "56 million people die worldwide every year.",

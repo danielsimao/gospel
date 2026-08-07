@@ -134,6 +134,34 @@ export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
        * Law's hairline, which is what grace already does with its scripture
        * inside the same centred column.
        */}
+      {/*
+       * The door, behind the decision — the one screen whose copy already
+       * holds it: the dismissed response is told "A porta continua aberta",
+       * and this is that sentence as a picture, present before it is needed.
+       * John 10:9 without a caption.
+       *
+       * Generated for this screen specifically (portrait, gap centred at 50%
+       * and 8.6% wide, brightness capped so type can sit over it — the
+       * measurements are in docs/graphics/PROMPTS.md §8). The landscape OG
+       * door could not serve here: its light lives at 76-80% across by
+       * design, exactly where a centred mask erases it.
+       *
+       * data-flow-graphic rather than decoration-by-css: it needs the AVIF/
+       * WebP pair, and the tests pin it to this screen and this screen only.
+       */}
+      <div aria-hidden="true" data-flow-graphic className="pointer-events-none fixed inset-0 z-0 opacity-[0.35]">
+        <picture>
+          <source srcSet="/graphics/door-decision.avif" type="image/avif" />
+          <img
+            src="/graphics/door-decision.webp"
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="size-full object-cover object-center"
+          />
+        </picture>
+      </div>
+
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 py-14 text-center sm:px-10 sm:py-16 lg:px-16">
         <div className="w-full max-w-lg lg:max-w-2xl">
           {!invitationResponse && (
@@ -175,7 +203,7 @@ export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.1, ease: EASE_OUT_STRONG }}
-                className="mt-4 text-balance text-[34px] font-semibold leading-[1.16] tracking-[-0.03em] text-white/95 sm:text-[42px] lg:text-[52px]"
+                className="mt-4 text-balance font-score text-[38px] font-bold leading-[1.08] tracking-[0.005em] text-white/95 sm:text-[48px] lg:text-[58px]"
               >
                 {invitation.heading}
               </m.h2>

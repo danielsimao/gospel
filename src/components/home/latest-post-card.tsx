@@ -39,7 +39,7 @@ export function LatestPostCard({ locale, eyebrow, allLabel, post }: LatestPostCa
   const href = post.localeAvailable ? `/${locale}/blog/${post.slug}` : `/en/blog/${post.slug}`;
 
   return (
-    <div className="mt-12 w-full max-w-md text-left sm:max-w-2xl">
+    <div className="mt-24 w-full max-w-md text-left sm:max-w-2xl">
       {/* Shares the band header idiom with the two above it. Gold tone keeps it
           distinct: the questions and the plan are the path, the blog is not. */}
       <BandHeader label={eyebrow} tone="gold" />

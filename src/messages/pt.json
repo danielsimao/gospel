@@ -480,7 +480,7 @@
       {
         "slug": "who-is-jesus",
         "title": "Quem é Jesus?",
-        "subtitle": "Mais do que um bom mestre.",
+        "subtitle": "Deus em carne, e o que isso significa para ti.",
         "metaDescription": "Quem foi Jesus de Nazaré? Explora as evidências da Sua divindade, humanidade, e o que isso significa para ti.",
         "sections": [
           {
@@ -1518,6 +1518,14 @@
     "questionsLabel": "Perguntas que as pessoas fazem",
     "blogCard": {
       "eyebrow": "Do blog"
+    },
+    "passedBand": {
+      "eyebrow": "A contagem até agora",
+      "failedCaption": "chumbaram",
+      "passedCaption": "passou",
+      "liveBadge": "ao vivo",
+      "whoCta": "Descobre quem",
+      "testCta": "Faz o teste — vê como te sais"
     },
     "facts": [
       "56 milhões de pessoas morrem em todo o mundo todos os anos.",

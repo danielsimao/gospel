@@ -1,3 +1,4 @@
+import { Big_Shoulders } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { notFound } from "next/navigation";
@@ -37,6 +38,40 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+/**
+ * The site's declaring voice: what is stated, never what is explained.
+ *
+ * This began confined to the homepage scoreline, on the argument that a
+ * display face earns entry in exactly one place. That was the wrong test. One
+ * usage does not read as a decision, it reads as a stray — and it left the
+ * hero's death counter (the biggest number on the site) in mono while its own
+ * sibling stat two screens down was set in this face.
+ *
+ * So the rule is a job, not a location: every moment the site *declares*
+ * rather than explains wears it — the death counter, the score band's two
+ * numerals, the verdict's GUILTY, the decision's question. Body copy stays
+ * Geist Sans and every label stays Geist Mono; those two carry the reading,
+ * and nothing here touches them.
+ *
+ * Deliberately NOT the grace record's PAID IN FULL stamp: that card is set in
+ * mono end to end because it is a document, and the stamp is mono for the same
+ * reason the charges above it are. Signage there would break the one thing the
+ * record is imitating.
+ *
+ * Big Shoulders is industrial condensed — unmistakably a different voice from
+ * the mono around it, and narrow enough that six digits still fit a 320px
+ * phone. Self-hosted by next/font (never a font CDN in the critical path), and
+ * `display: "swap"` so a slow font never blocks the number: the fallback mono
+ * renders first and is replaced. Only a `variable`, so nothing inherits it by
+ * accident — every use opts in through Tailwind's font-score utility.
+ */
+const bigShoulders = Big_Shoulders({
+  subsets: ["latin"],
+  weight: "700",
+  display: "swap",
+  variable: "--font-score-face",
+});
+
 export default async function LocaleLayout({ params, children }: Props) {
   const { locale } = await params;
   if (!isValidLocale(locale)) notFound();
@@ -53,7 +88,7 @@ export default async function LocaleLayout({ params, children }: Props) {
        it. Scoped to <html> itself, so it silences nothing below. */
     <html lang={locale} className="dark" suppressHydrationWarning>
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased bg-black text-white min-h-dvh`}
+        className={`${GeistSans.variable} ${GeistMono.variable} ${bigShoulders.variable} font-sans antialiased bg-black text-white min-h-dvh`}
       >
         {/* No-JS visitors get the actual argument, not just a verse — this
             may be someone's only contact with the gospel. Static, bilingual.

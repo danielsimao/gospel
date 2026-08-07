@@ -7,7 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { TopicSection } from "./topic-section";
 import { TopicNav } from "./topic-nav";
 import { TopicFeedback } from "./topic-feedback";
-import { TopicEmblem } from "@/components/emblems";
+import { TopicCover, hasTopicCover } from "./topic-cover";
 import { trackTopicPageViewed } from "@/lib/learn-analytics";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import { PageShell } from "@/components/shared/page-shell";
@@ -53,7 +53,7 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
   }, [topic.slug, locale]);
 
   return (
-    <PageShell width="wide">
+    <PageShell>
       <article>
         <m.div
           initial={{ opacity: 0, y: 16 }}
@@ -67,17 +67,16 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
             <ArrowLeft className="size-3 transition-transform group-hover:-translate-x-0.5" />
             {label}
           </Link>
-          <TopicEmblem
-            slug={topic.slug}
-            className="mt-4 size-8 text-[#D4A843]/70"
-            strokeWidth={1.6}
-          />
-          <h1
-            className="mt-3 text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl md:text-5xl"
-            style={{ textShadow: "0 0 60px rgba(212,168,67,0.2)" }}
-          >
-            {topic.title}
-          </h1>
+          {hasTopicCover(topic.slug) ? (
+            <TopicCover slug={topic.slug} title={topic.title} />
+          ) : (
+            <h1
+              className="mt-3 text-3xl font-bold tracking-tight text-[#D4A843] sm:text-4xl md:text-5xl"
+              style={{ textShadow: "0 0 60px rgba(212,168,67,0.2)" }}
+            >
+              {topic.title}
+            </h1>
+          )}
           <p className="mt-3 text-sm text-white/60">{topic.subtitle}</p>
         </m.div>
 

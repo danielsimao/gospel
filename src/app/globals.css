@@ -11,6 +11,15 @@
   --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
   --font-heading: var(--font-sans);
+  /* The declaring voice — see [locale]/layout.tsx for which surfaces wear it.
+     Falls back through "Big Shoulders Fallback" (defined below), not to
+     --font-mono: next/font ships no metric-matched fallback for this family
+     the way it does for Geist, so whatever is named here is literally what
+     renders during the swap. Measured at 60px on "68,712": Geist Mono is
+     216.8px against Big Shoulders' 144.5px — 50% wider, a 72px reflow of the
+     hero on every cold load. */
+  --font-score: var(--font-score-face), "Big Shoulders Fallback", "Arial Narrow",
+    sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -117,6 +126,35 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* The score face's stand-in while it loads.
+ *
+ * Two rules, one family name: the browser takes the first whose src resolves,
+ * so a machine with Arial Narrow gets the near-match and everything else gets
+ * a plain grotesque squeezed to the same measure. Without this the stack fell
+ * through to whatever condensed font a platform happened to ship — fine on
+ * macOS and Windows, absent on Linux, where the swap went back to being a
+ * 27% reflow.
+ *
+ * size-adjust measured, not guessed: "68,712" at 100px is 240.8px in Big
+ * Shoulders, 250.8px in Arial Narrow (96%) and 305.9px in Arial/Helvetica/the
+ * default sans (78.7%). Only advance width matters here — these numerals sit
+ * alone on a line, so line-height and baseline are not part of the reflow. */
+@font-face {
+  font-family: "Big Shoulders Fallback";
+  src: local("Arial Narrow"), local("Helvetica Neue Condensed"),
+    local("Roboto Condensed"), local("Liberation Sans Narrow");
+  size-adjust: 96%;
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Big Shoulders Fallback";
+  src: local("Arial"), local("Helvetica"), local("Liberation Sans");
+  size-adjust: 78.7%;
+  font-weight: 700;
+  font-display: swap;
 }
 
 /* Shared entrance animation — survives bfcache/router cache */

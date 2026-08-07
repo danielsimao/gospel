@@ -386,6 +386,7 @@ export function GameShell({ messages, locale }: GameShellProps) {
               <VerdictScreen
                 messages={messages.verdict}
                 testMessages={messages.test}
+                locale={locale}
               />
             )}
 
