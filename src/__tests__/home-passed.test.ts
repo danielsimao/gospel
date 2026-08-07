@@ -169,17 +169,40 @@ describe("the display face is scoped to the score", () => {
     expect(css).toMatch(/--font-score: var\(--font-score-face\), var\(--font-mono\)/);
   });
 
-  it("is used by the score band and nothing else", () => {
+  it("marks what the site declares, and stays off what it explains", () => {
     /*
-     * The case for a second typeface is that it appears once. If it spreads,
-     * the score stops being the exception and the site has two body voices.
+     * The rule is a job, not a location. It was "the score band and nothing
+     * else", which read as a stray rather than a decision — and left the hero's
+     * death counter in mono while its sibling stat two screens down wore this
+     * face. Now every declaring surface carries it and every reading surface
+     * is guarded against it.
      */
-    const users = ["home-shell", "questions-band", "reading-band", "latest-post-card"];
-    for (const name of users) {
-      const file = name === "home-shell"
-        ? read("src", "components", "home-shell.tsx")
-        : read("src", "components", "home", `${name}.tsx`);
-      expect(strip(file), `${name} uses the score face`).not.toMatch(/font-score/);
+    const declares: Array<[string, string[]]> = [
+      ["the score band", ["src", "components", "home", "passed-band.tsx"]],
+      ["the hero's death counter", ["src", "components", "home-shell.tsx"]],
+      ["the verdict", ["src", "components", "verdict-screen.tsx"]],
+      ["the decision", ["src", "components", "invitation-screen.tsx"]],
+    ];
+    for (const [what, path] of declares) {
+      expect(strip(read(...path)), `${what} lost the score face`).toMatch(/font-score/);
+    }
+
+    /*
+     * The reading surfaces, and one deliberate abstainer: the grace record is
+     * set in mono end to end because it is a document, and its PAID IN FULL
+     * stamp is mono for the same reason the charges above it are. Signage there
+     * would break the one thing the record imitates.
+     */
+    const explains: Array<[string, string[]]> = [
+      ["the questions band", ["src", "components", "home", "questions-band.tsx"]],
+      ["the reading band", ["src", "components", "home", "reading-band.tsx"]],
+      ["the blog card", ["src", "components", "home", "latest-post-card.tsx"]],
+      ["the grace record", ["src", "components", "grace-record.tsx"]],
+      ["a learn topic page", ["src", "components", "learn", "topic-page.tsx"]],
+      ["the footer", ["src", "components", "shared", "footer.tsx"]],
+    ];
+    for (const [what, path] of explains) {
+      expect(strip(read(...path)), `${what} grew the score face`).not.toMatch(/font-score/);
     }
   });
 });

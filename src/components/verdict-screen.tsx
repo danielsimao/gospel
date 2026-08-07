@@ -362,7 +362,7 @@ export function VerdictScreen({
             initial={{ opacity: 0, scale: 1.12 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.55, ease: EASE_OUT_STRONG }}
-            className="text-[62px] font-black uppercase leading-none tracking-[0.1em] text-red-500 sm:text-[112px] lg:text-[150px]"
+            className="font-score text-[62px] font-bold uppercase leading-none tracking-[0.06em] text-red-500 sm:text-[112px] lg:text-[150px]"
             style={{ textShadow: "0 0 90px rgba(239,68,68,0.4)" }}
           >
             {messages.title.replace(/\.$/, "")}

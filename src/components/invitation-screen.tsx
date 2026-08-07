@@ -203,7 +203,7 @@ export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.1, ease: EASE_OUT_STRONG }}
-                className="mt-4 text-balance text-[34px] font-semibold leading-[1.16] tracking-[-0.03em] text-white/95 sm:text-[42px] lg:text-[52px]"
+                className="mt-4 text-balance font-score text-[38px] font-bold leading-[1.08] tracking-[0.005em] text-white/95 sm:text-[48px] lg:text-[58px]"
               >
                 {invitation.heading}
               </m.h2>
