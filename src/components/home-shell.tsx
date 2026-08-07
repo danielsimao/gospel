@@ -721,6 +721,14 @@ export function HomeShell({
            * rules in globals.css, which ride the same pre-paint attribute that
            * picks the stage block, so the choice is made before first paint
            * and nothing jumps.
+           *
+           * The gated band rides in every HTML response, hidden, exactly like
+           * the four unused stage blocks above — the same served-but-hidden
+           * tradeoff, accepted for the same reason: server branching is
+           * impossible on localStorage state, and client-only rendering hands
+           * back the layout jump. Its content is a teaser for /reading-plan,
+           * which is indexed on its own, so the crawler cost stays what the
+           * stage copy already pays.
            */}
           {/* First of the bands, because it is the strongest hook on the
               page: a score that ends "1 passed" leaves a question, and the

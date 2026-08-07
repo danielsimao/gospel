@@ -345,8 +345,14 @@ html[data-journey-stage="dismissed"] [data-slot="journey-stage"][data-stage="vis
  * the front door of a reader the test has not met yet. So the band rides the
  * same pre-paint attribute as the stage blocks: hidden by default — a
  * stranger, or an unrecognised stage, gets the visitor door without it — and
- * revealed for the four stages that have stood the test, all of which have
- * seen gold arrive where it is supposed to.
+ * revealed for the four stages that have reached the verdict.
+ *
+ * The verdict, precisely — not grace. An undecided reader can close the tab
+ * between the verdict and the courtroom analogy, so this gate cannot promise
+ * they saw gold arrive; what it promises is that the Law has done its work,
+ * and the plan is the right prescription for that reader either way. Do not
+ * tighten it to "grace was seen" without a storage field that records that,
+ * which today does not exist.
  *
  * `display: contents` because the wrapper exists only for these rules to
  * select; the band must stay a direct flex item of the column. Enumerated,
