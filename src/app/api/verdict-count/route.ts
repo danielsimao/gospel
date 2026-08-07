@@ -20,14 +20,28 @@ export async function POST(request: NextRequest) {
   // Preview deployments share the production token; without this, walking a
   // branch build would count as a verdict on the homepage of the real site.
   if (POSTHOG_KEY && process.env.VERCEL_ENV === "production") {
-    after(() => recordVerdict(request.headers.get("accept-language")));
+    /*
+     * The route locale the verdict was actually reached under, sent by the
+     * beacon. Accept-Language is only the fallback: it names the browser's
+     * tongue, and a pt reader on an English browser (or the reverse) was
+     * being filed under the wrong Law. Validated against the two locales
+     * that exist rather than trusted — this endpoint accepts anonymous POSTs.
+     */
+    const param = request.nextUrl.searchParams.get("locale");
+    const locale =
+      param === "pt" || param === "en"
+        ? param
+        : request.headers.get("accept-language")?.toLowerCase().startsWith("pt")
+          ? "pt"
+          : "en";
+    after(() => recordVerdict(locale));
   }
   // 204 either way: the client fires and forgets, and the band must never
   // learn anything from this route's answer.
   return new NextResponse(null, { status: 204 });
 }
 
-async function recordVerdict(acceptLanguage: string | null) {
+async function recordVerdict(locale: "en" | "pt") {
   try {
     const response = await fetch(`${POSTHOG_HOST}/capture/`, {
       method: "POST",
@@ -39,7 +53,7 @@ async function recordVerdict(acceptLanguage: string | null) {
         properties: {
           // The one property worth keeping: which locale's Law convicted.
           // Coarse (a language, not a place) and shared by millions.
-          locale: acceptLanguage?.toLowerCase().startsWith("pt") ? "pt" : "en",
+          locale,
           $process_person_profile: false,
           $geoip_disable: true,
           $ip: "0.0.0.0",

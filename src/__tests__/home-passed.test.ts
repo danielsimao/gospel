@@ -243,13 +243,15 @@ describe("the band and its doors", () => {
   });
 
   it("dresses the doors as doors", () => {
-    // Two pills, unequal on purpose: the gold one is the band's reason to
-    // exist, the quiet one is for whoever hears the scoreline as a challenge.
-    // className follows href in the JSX, so the window looks forward.
+    // Two house buttons, unequal on purpose: the gold one is the band's
+    // reason to exist, the ghost is for whoever hears the scoreline as a
+    // challenge. The house component and not bespoke pills — every other
+    // door on the page presses and springs, and these must move with them.
     const who = band.slice(band.indexOf("learn/who-is-jesus"), band.indexOf("learn/who-is-jesus") + 350);
-    expect(who).toMatch(/rounded-full border border-\[#D4A843\]/);
+    expect(who).toMatch(/variant="gold"/);
+    expect(who).toMatch(/ButtonArrow/);
     const test = band.slice(band.indexOf("/test`"), band.indexOf("/test`") + 350);
-    expect(test).toMatch(/rounded-full border border-white/);
+    expect(test).toMatch(/variant="ghost"/);
   });
 });
 
@@ -388,7 +390,37 @@ describe("the anonymous counter", () => {
     );
     expect(effect.length, "could not isolate the tracking effect").toBeGreaterThan(0);
     expect(effect).toMatch(/trackVerdictReached/);
-    expect(effect).toMatch(/sendBeacon\?\.\("\/api\/verdict-count"\)/);
+    expect(effect).toMatch(/sendBeacon\?\.\(`\/api\/verdict-count\?locale=\$\{locale\}`\)/);
+  });
+
+  it("counts a reader once, across reloads and retakes", () => {
+    /*
+     * The once-per-mount ref and the !returning gate both die with the mount:
+     * a reload at the verdict (graceReached is still false there) or a retake
+     * fired the beacon again for the same reader. The homepage reads this
+     * number back as people, and the consented twin is distinct-counted in
+     * the same query — so the anonymous side dedupes with a device-lifetime
+     * marker instead, one that clearSession() must never touch.
+     */
+    const effect = verdict.slice(
+      verdict.indexOf("if (!hasTracked.current && !returning)"),
+      verdict.indexOf("}, [state.answers"),
+    );
+    expect(effect).toMatch(/localStorage\.getItem\(VERDICT_COUNTED_KEY\) === null/);
+    expect(effect).toMatch(/localStorage\.setItem\(VERDICT_COUNTED_KEY, "1"\)/);
+    // Outside the session record: retaking clears gospel-test-session wholesale,
+    // and the marker surviving that is the entire point.
+    const session = strip(read("src", "lib", "test-session-storage.ts"));
+    expect(session).not.toMatch(/gospel-verdict-counted/);
+  });
+
+  it("records the locale the test was taken in, not the browser's", () => {
+    // The beacon carries the route locale; Accept-Language is only the
+    // fallback for beacons without the param. Anonymous POSTs cannot be
+    // trusted, so the param is validated against the two locales that exist.
+    expect(route).toMatch(/searchParams\.get\("locale"\)/);
+    expect(route).toMatch(/param === "pt" \|\| param === "en"/);
+    expect(route).toMatch(/accept-language/);
   });
 
   it("is read back as the greater of the two counts", () => {
