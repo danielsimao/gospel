@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { BandSpine } from "@/components/home/band-spine";
 import { BandTexture } from "@/components/home/band-texture";
+import { Button, ButtonArrow } from "@/components/ui/button";
 import { estimateTestTakerCount } from "@/lib/test-stats";
 import type { Locale } from "@/lib/i18n";
 
@@ -315,24 +316,20 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
         </div>
       </div>
 
-      {/* Two pills, deliberately unequal: the gold door is the one this band
-          exists for, the test is the quiet second for whoever hears the
-          scoreline as a challenge. Pills rather than bare links — the band is
-          open and centred, and two loose text links under two large numerals
-          read as footnotes rather than doors. */}
+      {/* Two doors, deliberately unequal: the gold one is the band's reason to
+          exist, the ghost is the quiet second for whoever hears the scoreline
+          as a challenge. The house 3D buttons rather than the flat mono pills
+          this started with — every other door on the page presses down and
+          springs back, and these two were the only ones that didn't move. */}
       <div className="flex flex-wrap items-center justify-center gap-3">
-        <Link
-          href={`/${locale}/learn/who-is-jesus`}
-          className="rounded-full border border-[#D4A843]/60 bg-[#D4A843]/[0.08] px-5 py-2.5 font-mono text-[11px] uppercase tracking-[1.6px] text-[#D4A843] transition-colors hover:border-[#D4A843]/90 hover:bg-[#D4A843]/[0.14]"
-          style={{ boxShadow: "0 0 40px rgba(212,168,67,0.12)" }}
-        >
-          {messages.whoCta} &rarr;
+        <Link href={`/${locale}/learn/who-is-jesus`}>
+          <Button variant="gold" size="sm">
+            {messages.whoCta}
+            <ButtonArrow />
+          </Button>
         </Link>
-        <Link
-          href={`/${locale}/test`}
-          className="rounded-full border border-white/[0.13] px-5 py-2.5 text-[13px] text-white/60 transition-colors hover:border-white/25 hover:text-white/80"
-        >
-          {messages.testCta}
+        <Link href={`/${locale}/test`}>
+          <Button variant="ghost" size="sm">{messages.testCta}</Button>
         </Link>
       </div>
       </div>
