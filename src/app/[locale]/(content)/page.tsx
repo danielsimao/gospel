@@ -60,7 +60,13 @@ interface HomeData {
    * All seven reading days. Passed whole rather than pre-selected: which day a
    * reader is on comes from localStorage, so only the client can pick.
    */
-  readingDays: Array<{ title: string; passage: string; keyVerse: string; keyVerseRef: string }>;
+  readingDays: Array<{
+    title: string;
+    passage: string;
+    passageUrl: string;
+    keyVerse: string;
+    keyVerseRef: string;
+  }>;
   readingLabels: { dayProgress: string; continueLabel: string; complete: string };
   allTopicsLabel: string;
   allPostsLabel: string;
@@ -82,9 +88,10 @@ async function getHomeData(locale: Locale): Promise<HomeData> {
   );
   const topicSlugs = topics.map((t: { slug: string }) => t.slug);
   const readingDays = (data.readingPlan?.days ?? []).map(
-    (d: { title: string; passage: string; keyVerse: string; keyVerseRef: string }) => ({
+    (d: { title: string; passage: string; passageUrl: string; keyVerse: string; keyVerseRef: string }) => ({
       title: d.title,
       passage: d.passage,
+      passageUrl: d.passageUrl,
       keyVerse: d.keyVerse,
       keyVerseRef: d.keyVerseRef,
     }),

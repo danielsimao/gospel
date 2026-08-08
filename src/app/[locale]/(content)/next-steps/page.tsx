@@ -61,9 +61,10 @@ export default async function NextStepsPage({ params }: Props) {
      localStorage, so only the client can pick. Same shape the homepage
      resolves for its band; the ticket labels ride along. */
   const readingDays = (data.readingPlan?.days ?? []).map(
-    (d: { title: string; passage: string; keyVerse: string; keyVerseRef: string }) => ({
+    (d: { title: string; passage: string; passageUrl: string; keyVerse: string; keyVerseRef: string }) => ({
       title: d.title,
       passage: d.passage,
+      passageUrl: d.passageUrl,
       keyVerse: d.keyVerse,
       keyVerseRef: d.keyVerseRef,
     }),
@@ -80,6 +81,12 @@ export default async function NextStepsPage({ params }: Props) {
         readingLabels={{
           dayProgress: data.readingPlan.dayProgress,
           complete: data.home.journey.reading.descComplete,
+          /* The Read door's label and its finished-plan fallback. Both come
+             from readingPlan, beside the days they describe, so the card
+             cannot name one passage and open another. */
+          readDay: data.readingPlan.readDayLabel,
+          continueLabel: data.readingPlan.continueReadingLabel,
+          continueUrl: data.readingPlan.continueReadingLink,
         }}
       />
     </>

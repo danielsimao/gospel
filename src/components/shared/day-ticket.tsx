@@ -1,8 +1,24 @@
 export interface ReadingDay {
   title: string;
   passage: string;
+  /** Where this day is actually read. The ticket names a passage, so any door
+      beside it must open that passage and not a fixed chapter. */
+  passageUrl: string;
   keyVerse: string;
   keyVerseRef: string;
+}
+
+/**
+ * The day this reader is on, or null once the plan is finished.
+ *
+ * `completed` is a count, so it doubles as the index of the next unread day.
+ * Exported because the ticket's surroundings need the same day the ticket
+ * shows — a card whose eyebrow says JOHN 10 beside a button opening JOHN 1 is
+ * the drift this shared component exists to prevent.
+ */
+export function currentDay(days: ReadingDay[], completed: number): ReadingDay | null {
+  if (completed >= days.length) return null;
+  return days[Math.min(completed, days.length - 1)] ?? null;
 }
 
 interface DayTicketBodyProps {
@@ -47,9 +63,7 @@ export function DayTicketBody({
   days,
   completed,
 }: DayTicketBodyProps) {
-  const finished = completed >= days.length;
-  // completed is a count, so it doubles as the index of the next unread day.
-  const day = finished ? null : days[Math.min(completed, days.length - 1)];
+  const day = currentDay(days, completed);
   const progressLine = dayProgress
     .replace("{n}", String(completed + 1))
     .replace("{total}", String(days.length));
