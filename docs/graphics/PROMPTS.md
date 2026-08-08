@@ -87,7 +87,7 @@ Style: photographic, high contrast, not illustration. Send it darker and more co
 
 ## 3 · A impressão digital — the fingerprint
 
-**Ships as:** `public/graphics/fingerprint.avif` + `.webp` — pressed under the reader's own charge sheet on the grace record at 9%, above the paper at 7%. Also print (tract backs).
+**Ships as:** `public/graphics/fingerprint.avif` + `.webp` — pressed under the reader's own charge sheet on the grace record at 9%, above the paper at 7%. Also print (tract backs). And `.jpg` — the testimony story card (`testimony/story/route.tsx`) at 16% under the stamped verdict, finally serving the surface this section always named; JPEG because satori decodes neither AVIF nor WebP.
 
 **Where it goes:** the verdict's OG/share image, and the tract backs. Testimony, identity, the record.
 
