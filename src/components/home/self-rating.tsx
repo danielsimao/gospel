@@ -15,21 +15,24 @@ interface SelfRatingProps {
   ariaLabel: string;
   className?: string;
   /**
-   * `row` — three chips centred on one line. The homepage hero, where the
-   * question is the only thing on screen and has the width to hold them.
+   * `row` — stacked full-width on a phone, three equal columns from `sm`. The
+   * homepage hero, where the question has the width to hold a row.
    *
-   * `stack` — one chip per line on a phone, returning to a row from `sm`. The
-   * test's landing ranges its type left inside the same narrow column the
-   * questions use, and at that width the third chip wraps: two answers on one
-   * line and one alone underneath, which reads as a different kind of answer
-   * rather than the third of three.
+   * `stack` — one answer per line at every width. The test's landing ranges
+   * its type left inside the same narrow column the questions use, and three
+   * columns there crush the Portuguese "Mais ou menos" against its radio.
    */
   layout?: "row" | "stack";
 }
 
 const FIELDSET_LAYOUT: Record<NonNullable<SelfRatingProps["layout"]>, string> = {
-  row: "flex-wrap items-center justify-center",
-  stack: "flex-col items-stretch sm:flex-row sm:flex-wrap sm:items-center sm:justify-start",
+  row: "flex-col items-stretch sm:flex-row",
+  stack: "flex-col items-stretch",
+};
+
+const BUTTON_LAYOUT: Record<NonNullable<SelfRatingProps["layout"]>, string> = {
+  row: "sm:flex-1",
+  stack: "",
 };
 
 /**
@@ -39,13 +42,20 @@ const FIELDSET_LAYOUT: Record<NonNullable<SelfRatingProps["layout"]>, string> = 
  * shortcut taken. See `SelfRating` in types for why a "no" does not earn a
  * shorter Law.
  *
- * Deliberately not the house 3D `Button`: three of those side by side read as
- * three competing calls to action, and the reader is answering a question here,
- * not choosing between destinations. Flat chips, one visual weight, no
- * recommended option.
+ * These used to be small centred chips, and readers read them as labels
+ * rather than controls — nothing about three quiet pills says "we are waiting
+ * for you". They are answer rows now, each carrying an EMPTY RADIO MARK that
+ * fills on hover and focus: an unticked form control is the plainest
+ * "your input is expected here" signal there is, and it is honest — tapping
+ * one does not navigate to the test, it ANSWERS the test's first question
+ * (the route lands with the reply already rendered; see home-shell).
  *
- * Rendered on the homepage and on the test's landing screen, so the question is
- * asked exactly once wherever the reader first meets it.
+ * Still deliberately not the house 3D `Button`, and still one visual weight
+ * with no recommended option: three competing calls to action would make this
+ * a choice between destinations, and gold or red on any door would either
+ * spend grace's colour early or ask the reader to condemn themselves before
+ * the Law has said anything. The radio is aria-hidden decoration — the
+ * control is the button itself, named by its label.
  */
 export function SelfRating({
   messages,
@@ -74,9 +84,24 @@ export function SelfRating({
           key={option.value}
           type="button"
           onClick={() => onSelect(option.value)}
-          className="min-h-[44px] rounded-xl border border-white/[0.14] bg-gradient-to-b from-[#0e0c0c] to-[#0a0808] px-5 py-3 text-[14px] text-white/70 transition-[color,border-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:border-white/25 hover:text-white/90 active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100 sm:px-6 sm:text-[15px]"
+          className={`group flex min-h-[52px] items-center gap-3 rounded-2xl border border-white/[0.12] bg-white/[0.035] px-4 py-3.5 text-left text-[15px] font-semibold text-white/85 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-white/30 hover:bg-white/[0.06] hover:text-white focus-visible:border-white/30 active:translate-y-0 active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 ${BUTTON_LAYOUT[layout]}`}
         >
+          {/* The empty radio, filling on hover/focus. Decoration, not a
+              control — the button is the control — so it is hidden from
+              assistive tech, which already has the labelled button. */}
+          <span
+            aria-hidden="true"
+            className="grid size-[18px] shrink-0 place-items-center rounded-full border-[1.5px] border-white/30 transition-colors duration-200 group-hover:border-white/60 group-focus-visible:border-white/60"
+          >
+            <span className="size-2 scale-0 rounded-full bg-white/90 transition-transform duration-200 ease-[var(--ease-out-strong)] group-hover:scale-100 group-focus-visible:scale-100 motion-reduce:transition-none" />
+          </span>
           {option.label}
+          <span
+            aria-hidden="true"
+            className="ml-auto text-[13px] text-white/40 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none"
+          >
+            &rarr;
+          </span>
         </button>
       ))}
     </fieldset>

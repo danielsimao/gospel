@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { HOME_QUESTION_SLUGS, HOME_QUESTIONS_MOBILE } from "@/lib/home-questions";
+import { HOME_QUESTION_SLUGS } from "@/lib/home-questions";
 import { TOPIC_EMBLEMS } from "@/components/emblems";
 import en from "../messages/en.json";
 import pt from "../messages/pt.json";
@@ -32,11 +32,11 @@ describe("HOME_QUESTION_SLUGS", () => {
   });
 
   /*
-   * A phone shows only the first few. If the list ever shrank below that, the
-   * "hidden on mobile" styling would silently apply to nothing and the two
-   * layouts would stop differing — harmless, but not what was designed.
+   * The band is one row of three cards — sm+ renders grid-cols-3 directly
+   * from this list, so a fourth entry would wrap into a lonely second row and
+   * a second entry would leave a hole. The count is part of the design.
    */
-  it("holds more questions than a phone shows", () => {
-    expect(HOME_QUESTION_SLUGS.length).toBeGreaterThan(HOME_QUESTIONS_MOBILE);
+  it("holds exactly one row of cards", () => {
+    expect(HOME_QUESTION_SLUGS.length).toBe(3);
   });
 });

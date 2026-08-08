@@ -20,7 +20,9 @@ const strip = (s: string) =>
 const spine = strip(read("src", "components", "home", "band-spine.tsx"));
 const stage = strip(read("src", "components", "home", "stage-spine.tsx"));
 const shell = strip(read("src", "components", "home-shell.tsx"));
-const BANDS = ["passed-band", "questions-band", "reading-band"] as const;
+// latest-post-card too: it kept the left BandHeader after the first migration
+// and the axis jumped back at the very bottom of the page.
+const BANDS = ["passed-band", "questions-band", "reading-band", "latest-post-card"] as const;
 
 describe("every band sits on the same axis", () => {
   it("uses the centred spine, and nothing uses the left header", () => {
@@ -60,6 +62,21 @@ describe("every band sits on the same axis", () => {
     const questions = strip(read("src", "components", "home", "questions-band.tsx"));
     const all = questions.slice(questions.indexOf("`/${locale}/learn`"));
     expect(all.slice(0, 300), "the all-topics link is not centred").toMatch(/mx-auto/);
+    const blog = strip(read("src", "components", "home", "latest-post-card.tsx"));
+    const allPosts = blog.slice(blog.indexOf("`/${locale}/blog`"));
+    expect(allPosts.slice(0, 300), "the all-posts link is not centred").toMatch(/mx-auto/);
+  });
+
+  it("opens every band with a full-width seam", () => {
+    /*
+     * mt-24 and a 9px eyebrow were the only things separating one band from
+     * the next — pauses, not boundaries. The seam is the section's top edge,
+     * and it lives in BandSpine so every band gets the same one and none can
+     * grow its own variant.
+     */
+    expect(spine, "the seam left BandSpine").toMatch(
+      /h-px w-full bg-gradient-to-r from-transparent via-white\/\[0\.08\] to-transparent/,
+    );
   });
 
   it("leaves next-steps alone", () => {
@@ -77,6 +94,65 @@ describe("every band sits on the same axis", () => {
        */
       expect(file, `${name} was dragged into the homepage's dialect`).not.toMatch(/BandSpine/);
     }
+  });
+});
+
+describe("the hero owns the first screen", () => {
+  /*
+   * The hero and the ask used to share the first viewport, which put the death
+   * counter directly against the question — the exact adjacency METHOD.md's
+   * "mortality is a stake, not a lever" warns about. The hero now claims one
+   * full screen and everything from the stage block down starts after the fold.
+   */
+  it("gives the hero a viewport and the rest its own section", () => {
+    const sections = shell.match(/<section\b[^>]*>/g) ?? [];
+    // Two, exactly: the cue delegates to advanceSection, which moves to the
+    // next SECTION boundary — the content section IS that boundary. A third
+    // section would become a second tap stop nobody designed.
+    expect(sections.length, "the homepage lost its two-section shape").toBe(2);
+    expect(sections[0], "the hero no longer claims the first screen").toMatch(/min-h-svh/);
+    // svh, not dvh: grace's sections carry the measured record of why — dvh
+    // resizes the page under the reader's thumb as the URL bar collapses.
+    expect(sections[0], "the hero resizes with the URL bar").not.toMatch(/dvh/);
+    expect(sections[1], "the content section grew a viewport claim of its own").not.toMatch(
+      /min-h-svh/,
+    );
+  });
+
+  it("breaks the false bottom with the shared cue, pinned to the hero's foot", () => {
+    // A section sized to the viewport exactly, with nothing intruding, reads
+    // as the end of the page — grace and the verdict both measured it. Same
+    // cue, not a re-invention: one definition is how the shape and the tap
+    // stay in agreement everywhere it appears.
+    expect(shell).toMatch(/import \{ ScrollCue \} from "@\/components\/shared\/scroll-cue"/);
+    expect(shell).toMatch(/<ScrollCue className="lg:self-center" \/>/);
+    /*
+     * The hero's leftover height is distributed, not parked at the bottom: two
+     * flex spacers float the rate cards to the viewport's middle and keep the
+     * cue at the foot. Their min-heights are the floor — a short landscape
+     * viewport degrades to the old fixed gaps instead of collapsing to zero.
+     * The column's flex-1 is what gives the spacers space to absorb.
+     */
+    expect(shell).toMatch(/relative z-\[1\] flex w-full flex-1 flex-col items-center/);
+    const spacers = shell.match(/aria-hidden="true" className="min-h-\S+ w-full flex-1[^"]*"/g) ?? [];
+    expect(spacers.length, "the hero lost its distribution spacers").toBe(2);
+    // The hero reserves the consent banner's height, or the cue sits exactly
+    // behind the banner for first-visit readers — screenshotted at 390×844.
+    const hero = (shell.match(/<section\b[^>]*>/g) ?? [])[0] ?? "";
+    expect(hero, "the cue is behind the consent banner again").toContain("var(--consent-h,0px)");
+  });
+
+  it("puts every stage block and band after the fold", () => {
+    const secondSectionAt = shell.indexOf("<section", shell.indexOf("<section") + 1);
+    expect(secondSectionAt).toBeGreaterThan(-1);
+    expect(
+      shell.indexOf('data-slot="journey-stage"'),
+      "a stage block is back on the hero's screen",
+    ).toBeGreaterThan(secondSectionAt);
+    expect(
+      shell.indexOf("<PassedBand"),
+      "a band is back on the hero's screen",
+    ).toBeGreaterThan(secondSectionAt);
   });
 });
 

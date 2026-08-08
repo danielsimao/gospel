@@ -18,6 +18,8 @@ interface PassedBandProps {
     failedCaption: string;
     /** Under the gold 1: "passou" / "passed". */
     passedCaption: string;
+    /** Under the verdict bar, with `{n}` for the live count. */
+    barCaption: string;
     whoCta: string;
     testCta: string;
   };
@@ -104,6 +106,10 @@ function revealedRatio(rect: DOMRect, viewportHeight: number): number {
 export function PassedBand({ locale, messages, count }: PassedBandProps) {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const countRef = useRef<HTMLSpanElement | null>(null);
+  /* The verdict bar's caption repeats the count in words. Every write to the
+     numeral writes here too — count-up, slow tick, rewind — because two copies
+     of one live number that can disagree is worse than either alone. */
+  const captionCountRef = useRef<HTMLSpanElement | null>(null);
   /*
    * Visible until JavaScript says otherwise, not hidden until it says so.
    *
@@ -157,6 +163,12 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
     let goldTimer: ReturnType<typeof setTimeout> | undefined;
     let live = target;
 
+    /* One write for the two places the number lives. */
+    const writeCount = (value: string) => {
+      el.textContent = value;
+      if (captionCountRef.current) captionCountRef.current.textContent = value;
+    };
+
     /*
      * The slow tick: +1 at an uneven 34–60s. Most readers never see one —
      * the liveness they feel is the count-up and the pulse — but the reader
@@ -167,7 +179,7 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
     const scheduleTick = () => {
       tickTimer = setTimeout(() => {
         live += 1;
-        el.textContent = formatter.format(live);
+        writeCount(formatter.format(live));
         scheduleTick();
       }, 34_000 + Math.random() * 26_000);
     };
@@ -177,7 +189,7 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
       // No entrance, but the score still lives: the tick is content, not
       // motion. The gold is already visible — it ships that way — so there is
       // nothing to reveal here, only the running count to keep.
-      el.textContent = formatter.format(target);
+      writeCount(formatter.format(target));
       scheduleTick();
       return () => clearTimeout(tickTimer);
     }
@@ -219,7 +231,7 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
      * a layout effect, so nothing that gets hidden was ever painted.
      */
     setPassVisible(false);
-    el.textContent = "0";
+    writeCount("0");
     const observer = new IntersectionObserver(
       () => {
         /*
@@ -240,7 +252,7 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
           const t = Math.min(1, (now - start) / DURATION);
           // ease-out quartic: fast early, settling late, like the house curve
           const eased = 1 - (1 - t) ** 4;
-          el.textContent = formatter.format(Math.round(eased * target));
+          writeCount(formatter.format(Math.round(eased * target)));
           if (t < 1) raf = requestAnimationFrame(tick);
           else {
             // The pause before gold is the design: the Law finishes first.
@@ -323,20 +335,62 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
         </div>
       </div>
 
-      {/* Two doors, deliberately unequal: the gold one is the band's reason to
-          exist, the ghost is the quiet second for whoever hears the scoreline
-          as a challenge. The house 3D buttons rather than the flat mono pills
-          this started with — every other door on the page presses down and
-          springs back, and these two were the only ones that didn't move. */}
-      <div className="flex flex-wrap items-center justify-center gap-3">
+      {/*
+       * The verdict bar — the whole score as one graphic: a wall of red for
+       * everyone who stood trial, one gold stroke for the One who passed.
+       * This is the tally texture's own documented idea ("the single gold
+       * stroke is drawn in code on top, so the count stays honest" —
+       * PROMPTS.md §1) promoted from background to instrument. The stroke
+       * breathes on the LIVE pulse and holds still, visible, under reduced
+       * motion — the fact-crawl precedent, again.
+       *
+       * The caption restates the ratio in words, in the interface mono — not
+       * the score face, which stays on the two numerals alone. Its count is a
+       * second copy of a live number, so every write to the numeral writes
+       * here too (see writeCount); a caption that lags the score it captions
+       * would be the band contradicting itself in one breath.
+       */}
+      <div className="mb-7">
+        <div className="relative h-[5px] rounded-full bg-gradient-to-r from-red-400/50 to-red-400/25">
+          <span
+            aria-hidden="true"
+            className="absolute right-0.5 top-1/2 h-[15px] w-[3px] -translate-y-1/2 rounded-[2px] bg-[#D4A843] shadow-[0_0_12px_rgba(212,168,67,0.8),0_0_30px_rgba(212,168,67,0.4)] animate-pulse motion-reduce:animate-none"
+          />
+        </div>
+        <p className="mt-3 text-center font-mono text-[9.5px] uppercase tracking-[1.8px] text-white/40">
+          {messages.barCaption.split("{n}").map((part, i) =>
+            i === 0 ? (
+              part
+            ) : (
+              <span key={i}>
+                <span ref={captionCountRef} suppressHydrationWarning>
+                  {formatter.format(target)}
+                </span>
+                {part}
+              </span>
+            ),
+          )}
+        </p>
+      </div>
+
+      {/* One door owns the band. The ghost "take the test" button that stood
+          beside the gold one split the band's question in two — and the ask
+          above this band already IS the test's entry. The test door stays,
+          demoted to the quiet underlined line the journey stages use for
+          retake: present for whoever hears the scoreline as a challenge,
+          silent for everyone else. */}
+      <div className="flex flex-col items-center">
         <Link href={`/${locale}/learn/who-is-jesus`}>
           <Button variant="gold" size="sm">
             {messages.whoCta}
             <ButtonArrow />
           </Button>
         </Link>
-        <Link href={`/${locale}/test`}>
-          <Button variant="ghost" size="sm">{messages.testCta}</Button>
+        <Link
+          href={`/${locale}/test`}
+          className="mt-4 text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
+        >
+          {messages.testCta}
         </Link>
       </div>
       </div>

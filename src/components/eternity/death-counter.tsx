@@ -105,7 +105,17 @@ export const DeathCounter = memo(function DeathCounter({
       ref={ref}
       suppressHydrationWarning
       className={className}
-      style={{ ...style, display: "inline-block", minWidth: "7ch", textAlign: "center" }}
+      /*
+       * The 7ch reserve stays inline — it is the layout invariant that keeps
+       * digit growth from reflowing whatever surrounds the number. How the
+       * number sits INSIDE that reserve is the caller's call, via className:
+       * this used to hardcode textAlign center, which was right for centred
+       * columns and wrong the moment the homepage's lg lockup ranged left —
+       * "130,861" is six digits and a narrow comma, always under 7ch, so the
+       * number floated visibly off the lockup's left edge all day, not just
+       * in the small hours the old comment guessed at.
+       */
+      style={{ ...style, display: "inline-block", minWidth: "7ch" }}
       dangerouslySetInnerHTML={SEED_HTML}
     />
   );

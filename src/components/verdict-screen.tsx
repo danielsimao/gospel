@@ -431,7 +431,9 @@ export function VerdictScreen({
           >
             <DeathCounter
               baseMs={counterBaseMs}
-              className="font-mono text-[76px] font-extrabold leading-none tabular-nums text-red-500 sm:text-[128px] lg:text-[150px]"
+              // text-center: alignment inside the 7ch reserve is the caller's
+              // now (see death-counter), and this column centres.
+              className="text-center font-mono text-[76px] font-extrabold leading-none tabular-nums text-red-500 sm:text-[128px] lg:text-[150px]"
               style={{ textShadow: "0 0 70px rgba(239,68,68,0.3)" }}
             />
             <p className="mt-4 text-sm italic leading-relaxed text-white/60 sm:text-[19px] lg:text-xl">

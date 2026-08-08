@@ -264,6 +264,8 @@
     "subtitle": "A week in the Gospel of John — meeting Jesus for yourself.",
     "progressLabel": "Day {current} of {total}",
     "dayLabel": "Day",
+    "dayProgress": "Day {n} of {total}",
+    "continueLabel": "Continue reading",
     "markReadLabel": "Mark as read",
     "completedLabel": "Completed",
     "allCompleteHeading": "Well done.",
@@ -1515,6 +1517,7 @@
       "no": "No"
     },
     "testPreview": "6 questions · 2 minutes",
+    "testHint": "Tap your answer to begin",
     "questionsLabel": "Questions people ask",
     "blogCard": {
       "eyebrow": "From the blog"
@@ -1523,6 +1526,7 @@
       "eyebrow": "The score so far",
       "failedCaption": "failed",
       "passedCaption": "passed",
+      "barCaption": "{n} stood trial · one walked free",
       "liveBadge": "live",
       "whoCta": "Find out who",
       "testCta": "Take the test — see how you do"
