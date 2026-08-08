@@ -26,6 +26,7 @@ const topicPage = strip(read("src", "components", "learn", "topic-page.tsx"));
 const topicCoverCard = strip(read("src", "components", "learn", "topic-cover-card.tsx"));
 const learnHub = strip(read("src", "components", "learn", "learn-hub.tsx"));
 const topicNav = strip(read("src", "components", "learn", "topic-nav.tsx"));
+const topicSection = strip(read("src", "components", "learn", "topic-section.tsx"));
 const footer = strip(read("src", "components", "shared", "footer.tsx"));
 const prompts = read("docs", "graphics", "PROMPTS.md");
 
@@ -245,6 +246,22 @@ describe("the cover-first learn hub (plan 015)", () => {
     // plausible LCP element on /learn itself.
     expect(topicCoverCard).toMatch(/loading=\{priority \? "eager" : "lazy"\}/);
     expect(learnHub).toMatch(/priority=\{bandIdx === 0 && idxInBand < 2\}/);
+  });
+});
+
+describe("the topic-page section-progress bar", () => {
+  it("passes TopicSection a stable callback, not a fresh one per reveal", () => {
+    // Caught in review: an inline arrow here changes identity on every
+    // render, and TopicSection's observer effect lists the callback as a
+    // dependency — a changing reference tore down and recreated every
+    // section's IntersectionObserver each time any one section was reached.
+    // A freshly created observer fires immediately for whatever is already
+    // intersecting, so sections still in view kept re-firing
+    // trackTopicSectionReached (and markTopicCompleted on the last one).
+    const topicPage = strip(read("src", "components", "learn", "topic-page.tsx"));
+    expect(topicPage).toMatch(/useCallback\(/);
+    expect(topicPage).toMatch(/onSectionReached=\{handleSectionReached\}/);
+    expect(topicSection).toMatch(/onSectionReached\?\.\(index\)/);
   });
 });
 

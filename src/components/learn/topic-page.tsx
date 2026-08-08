@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { m } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -68,6 +68,19 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
     .replace("{sections}", String(totalSections))
     .replace("{quizzes}", String(quizCount));
 
+  // Stable across renders — an inline arrow here would change identity on
+  // every reveal, and TopicSection's observer effect depends on this
+  // callback, so a changing reference tore down and recreated every
+  // section's IntersectionObserver on each reveal. A freshly created
+  // observer fires immediately for whatever is already intersecting, so
+  // sections still in view re-fired trackTopicSectionReached (and
+  // markTopicCompleted on the last one) every time any other section was
+  // reached — caught in code review, not by any test, since this repo's
+  // suite is source-text assertions rather than rendered component tests.
+  const handleSectionReached = useCallback((index: number) => {
+    setViewedSections((prev) => new Set(prev).add(index));
+  }, []);
+
   return (
     <PageShell>
       <article>
@@ -132,7 +145,7 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
               locale={locale}
               quiz={section.quiz}
               isLast={i === topic.sections.length - 1}
-              onSectionReached={(index) => setViewedSections((prev) => new Set(prev).add(index))}
+              onSectionReached={handleSectionReached}
             />
           ))}
         </div>
