@@ -19,6 +19,15 @@ From the `improve-animations` audit of `/[locale]/test` (landing → questions �
 | 013 | [Dead eternity motion CSS removal](013-dead-motion-css.md) | LOW | DONE |
 | 014 | [Day-card COMPLETED chip pop](014-daycard-completed-pop.md) | LOW | DONE |
 
+## Design plans (separate origin)
+
+Not from the animation audit — owner-requested design work, same self-contained
+format so any implementation agent can pick one up.
+
+| # | Plan | Severity | Status |
+| --- | --- | --- | --- |
+| 015 | [Cover-first learn hub](015-learn-hub-cover-first.md) | MEDIUM | PROPOSED — layout choice open |
+
 ## Recommended execution order
 
 1. **004** first — one-liner, and its reduced-motion behavior is part of 002's verification.
