@@ -756,16 +756,23 @@ Style: photographic, high contrast, sharply focused, not illustration, not a 3D 
 
 **Where it goes:** the topic page for `why-the-cross`, rescue band. The emblem is a cross on a hill (`CrossOnHill`), and this is the one subject in the file the reject list already names — "stock crosses" are barred everywhere else precisely so that the topic *about* the cross can use one without inheriting the cliché. So it is built rather than symbolic: rough sawn timber, tool marks, the grain visible, photographed from below and close enough that it reads as an execution stake rather than a shape. Empty, and no sunset behind it. The site's own reject list stands: the gold cross was drawn and rejected (§14), and nothing here reintroduces it.
 
+Two failed generations before this one, both caught by looking at the actual result rather than the prompt that produced it:
+
+1. The crossbeam sat at the very top edge with no upright visible above it — a corner joint, not a cross.
+2. Fixed that, but the crossbeam then sat low enough in the frame that it landed under this cover's own title scrim (`topic-cover.tsx`'s gradient is near-opaque across roughly the bottom half, for text legibility) — the arms existed in the file and were invisible on the page. A center-weighted crop cannot rescue this: the source's tip-to-crossbeam distance was wider than a 4:3 frame at this width can hold along with headroom above the tip, so no crop of it puts the beam above the scrim.
+
+The composition clause below asks for the opposite bias from the first attempt: the whole intersection pinned into the top third, arms reaching the side edges immediately, so the darkened lower half of the shipped cover is empty upright and black sky by construction, not by cropping luck.
+
 **▼ COPY FROM HERE ▼**
 
 ```
 Generate a new image.
 
-A photograph looking up at a rough-hewn wooden upright and crossbeam against a black sky, seen from close below and slightly to one side, so the timbers run out of the frame. The wood is coarse sawn timber with visible grain, splinters and tool marks, weathered and unpainted, joined plainly. It is empty. One hard low light from the side rakes across the grain; the sky behind is featureless black.
+A photograph looking up at a rough-hewn wooden cross standing against a black sky, seen from below and slightly to one side, framed so the whole intersection sits close to the top of the picture: the upright's top end has only a small margin of black sky above it — a few centimetres, not metres — and the crossbeam meets it almost immediately below that, well within the top third of the frame. Both arms of the crossbeam extend clearly to left and right before running out of the frame edges. The upright then continues straight down through the remaining two-thirds of the frame and exits at the bottom. The wood is coarse sawn timber with visible grain, splinters and tool marks, weathered and unpainted, joined plainly. It is empty. One hard low light from the side rakes across the grain; the sky behind is featureless black.
 
 Colour: near-black, #060404, fully desaturated and cold. The wood is dim grey, never brown and never warm. No gold, no amber, no orange, no sunset colour of any kind.
 
-Composition: portrait 4:3. The upright runs vertically slightly off-centre with the crossbeam entering the upper third, both cropped by the frame edges, and generous even darkness around them, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+Composition: portrait 4:3. This is the essential constraint: the crossbeam and the top of the upright must both sit in the UPPER THIRD of the frame, because the lower half of this image will be darkened underneath a title and needs to be comparatively empty dark timber and black sky, not the crossbeam. The silhouette must read unmistakably as a cross.
 
 Do not include: any text, any numerals, any people, figures, bodies, hands, nails, blood, crowns of thorns, ropes, crowds, hills with three crosses, silhouetted crosses on horizons, sunsets, sunrises, sunbeams, rays of light, glowing edges, doves, clouds, churches, ornate or metal or jewellery crosses, candles, gavels, or scales.
 

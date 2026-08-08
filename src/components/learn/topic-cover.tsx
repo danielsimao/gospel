@@ -24,6 +24,16 @@ const TOPIC_COVERS: ReadonlySet<string> = new Set([
   "am-i-a-good-person",
   "does-god-exist",
   "why-are-you-afraid-to-die",
+  "what-is-sin",
+  "what-happens-when-i-die",
+  "is-there-life-after-death",
+  "what-is-the-meaning-of-life",
+  "why-does-god-allow-suffering",
+  "what-is-the-gospel",
+  "why-the-cross",
+  "how-can-my-sins-be-forgiven",
+  "what-is-repentance",
+  "how-can-i-be-saved",
 ]);
 
 export function hasTopicCover(slug: string): boolean {
