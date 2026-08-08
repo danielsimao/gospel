@@ -1,6 +1,8 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { isValidLocale, SUPPORTED_LOCALES } from "@/lib/i18n";
-import { loadOgFontsSafe, OG_BACKGROUND, OG_VIGNETTE } from "@/lib/og";
+import { loadOgFontsSafe, loadScoreFontSafe, OG_BACKGROUND, OG_VIGNETTE } from "@/lib/og";
 
 // 1080×1920 Instagram Story graphic for sharing the journey itself —
 // offered on the committed track. First-person testimony framing; the
@@ -8,6 +10,15 @@ import { loadOgFontsSafe, OG_BACKGROUND, OG_VIGNETTE } from "@/lib/og";
 // (journey state lives in localStorage, so nothing user-specific can be
 // rendered server-side — the first person voice IS the personalization).
 // Content stays inside IG's safe zones: ≥250px top, ≥340px bottom, ≥60px sides.
+//
+// The fingerprint under the verdict is PROMPTS.md §3 serving the surface it
+// was written for — "Where it goes: the verdict's OG/share image … testimony,
+// identity, the record." It sat staged for months while this card shipped
+// bare. The record is the reader's own, so their mark sits beneath the stamp.
+//
+// GUILTY wears the score face (Big Shoulders, the signage the verdict screen
+// itself declares in), boxed and tilted a hair — a stamp pressed onto the
+// record, not a heading typeset over it.
 const WIDTH = 1080;
 const HEIGHT = 1920;
 
@@ -42,7 +53,24 @@ export async function GET(
   }
 
   const copy = COPY[locale];
-  const fonts = await loadOgFontsSafe();
+  const [fonts, scoreFont] = await Promise.all([loadOgFontsSafe(), loadScoreFontSafe()]);
+
+  /*
+   * Read from disk, never fetched: satori resolves <img src> over the
+   * network, which at prerender means a request to a host that may not be
+   * serving yet — the /test plate learned this first (graphics.test.ts pins
+   * it there). JPEG because satori does not decode the site's AVIF/WebP
+   * pair; the .jpg exists for this card alone.
+   */
+  let printSrc: string | null = null;
+  try {
+    const bytes = await readFile(join(process.cwd(), "public", "graphics", "fingerprint.jpg"));
+    printSrc = `data:image/jpeg;base64,${bytes.toString("base64")}`;
+  } catch (error) {
+    console.error("[testimony/story] fingerprint.jpg not found:", error);
+  }
+
+  const allFonts = [...(fonts ?? []), ...(scoreFont ? [scoreFont] : [])];
 
   return new ImageResponse(
     (
@@ -57,6 +85,22 @@ export async function GET(
           position: "relative",
         }}
       >
+        {/* The reader's own mark, under everything — the record this card
+            testifies about. Dim enough that type never fights it. */}
+        {printSrc && (
+          <img
+            alt=""
+            src={printSrc}
+            width={860}
+            height={860}
+            style={{
+              position: "absolute",
+              top: "440px",
+              left: "110px",
+              opacity: 0.16,
+            }}
+          />
+        )}
         <div
           style={{
             position: "absolute",
@@ -70,7 +114,7 @@ export async function GET(
           style={{
             position: "absolute",
             inset: 0,
-            background: "radial-gradient(ellipse at 50% 45%, rgba(239,68,68,0.14) 0%, transparent 55%)",
+            background: "radial-gradient(ellipse at 50% 45%, rgba(239,68,68,0.16) 0%, transparent 55%)",
             display: "flex",
           }}
         />
@@ -111,23 +155,28 @@ export async function GET(
             {copy.line1}
           </div>
 
-          {/* Stamped verdict block — double hairlines, like the verdict screen */}
+          {/* The stamp: the score face, boxed on all four sides and tilted a
+              hair — pressed onto the record over the reader's own mark, the
+              way a verdict actually lands on a page. */}
           <div
             style={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              borderTop: "3px solid rgba(239, 68, 68, 0.35)",
-              borderBottom: "3px solid rgba(239, 68, 68, 0.35)",
-              padding: "36px 90px",
+              border: "6px solid rgba(239, 68, 68, 0.45)",
+              borderRadius: "10px",
+              padding: "18px 64px 26px",
+              transform: "rotate(-2.5deg)",
+              marginTop: "12px",
+              marginBottom: "12px",
             }}
           >
             <div
               style={{
-                fontFamily: "Geist",
-                fontSize: "128px",
+                fontFamily: scoreFont ? "BigShoulders" : "Geist",
+                fontSize: "210px",
                 fontWeight: 600,
-                letterSpacing: "14px",
+                letterSpacing: "8px",
                 color: "#ef4444",
               }}
             >
@@ -192,7 +241,7 @@ export async function GET(
     {
       width: WIDTH,
       height: HEIGHT,
-      ...(fonts ? { fonts } : {}),
+      ...(allFonts.length ? { fonts: allFonts } : {}),
     },
   );
 }
