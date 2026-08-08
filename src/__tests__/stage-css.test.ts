@@ -176,18 +176,37 @@ describe("the colour spine, before the Law", () => {
    * answer to begin" shipped in gold on the strength of being a caption rather
    * than a control. A caption register is not an exemption from the spine.
    *
-   * Scoped to the visitor block deliberately. The stages past the verdict may
-   * carry gold — grace has arrived for them, which is the whole point — and
-   * the committed block's blockquote does.
+   * Scoped to the stage blocks, and that scope is the whole argument — state
+   * it precisely, because the obvious "improvement" is to widen it and that
+   * would be wrong:
+   *
+   * - The stages past the verdict may carry gold. Grace has arrived for them,
+   *   which is the point, and the committed block's blockquote does.
+   * - The score and questions bands below the stage group carry gold too, and
+   *   they render for all five stages including visitors. That is deliberate
+   *   (see the bands comment in home-shell) — they are pre-evangelism, and the
+   *   owner settled the gold door on the score band. So the rule this guard
+   *   enforces is not "no gold on a visitor's screen"; it is the narrower and
+   *   actually-violated one: the stage copy itself, which is where the test is
+   *   introduced, does not spend gold before the Law.
+   *
+   * Bounding matters for the same reason. The visitor block is the LAST stage
+   * wrapper, so "slice to the next wrapper" runs to end-of-file and silently
+   * swallows the bands region — a guard that looks scoped and is not. It stops
+   * at the first band instead.
    */
   const GOLD = /#D4A843/;
 
   function stageBlock(stage: JourneyStage): string {
     const open = homeShell.indexOf(`<div data-slot="journey-stage" data-stage="${stage}">`);
     expect(open, `no block found for the ${stage} stage`).toBeGreaterThan(-1);
-    // Runs to the next stage wrapper, or to the end of the stage group.
-    const next = homeShell.indexOf('<div data-slot="journey-stage"', open + 1);
-    return homeShell.slice(open, next === -1 ? homeShell.length : next);
+    const nextStage = homeShell.indexOf('<div data-slot="journey-stage"', open + 1);
+    // The first band marks the end of the stage group. If it is ever renamed
+    // this throws rather than quietly widening every assertion below.
+    const firstBand = homeShell.indexOf("<PassedBand", open + 1);
+    expect(firstBand, "the stage group's end marker (<PassedBand) moved").toBeGreaterThan(-1);
+    const end = nextStage === -1 ? firstBand : Math.min(nextStage, firstBand);
+    return homeShell.slice(open, end);
   }
 
   it("spends no gold on a reader the Law has not met", () => {
