@@ -264,6 +264,8 @@
     "subtitle": "Uma semana no Evangelho de João — conhece Jesus por ti mesmo.",
     "progressLabel": "Dia {current} de {total}",
     "dayLabel": "Dia",
+    "dayProgress": "Dia {n} de {total}",
+    "continueLabel": "Continua a ler",
     "markReadLabel": "Marcar como lido",
     "completedLabel": "Concluído",
     "allCompleteHeading": "Muito bem.",
@@ -1515,6 +1517,7 @@
       "no": "Não"
     },
     "testPreview": "6 perguntas · 2 minutos",
+    "testHint": "Toca na tua resposta para começar",
     "questionsLabel": "Perguntas que as pessoas fazem",
     "blogCard": {
       "eyebrow": "Do blog"
@@ -1523,6 +1526,7 @@
       "eyebrow": "A contagem até agora",
       "failedCaption": "chumbaram",
       "passedCaption": "passou",
+      "barCaption": "{n} estiveram em julgamento · um saiu livre",
       "liveBadge": "ao vivo",
       "whoCta": "Descobre quem",
       "testCta": "Faz o teste — vê como te sais"

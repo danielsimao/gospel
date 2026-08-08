@@ -137,7 +137,7 @@ describe("the learn topic-page covers", () => {
     const setMatch = topicCover.match(/new Set\(\[([^\]]*)\]\)/);
     expect(setMatch, "TOPIC_COVERS set not found").not.toBeNull();
     const declared = Array.from(setMatch![1].matchAll(/"([^"]+)"/g)).map((m) => m[1]);
-    expect(declared.length, "the pilot's three covers should all be shipped now").toBe(3);
+    expect(declared.length, "every declared cover should be shipped").toBe(4);
     for (const slug of declared) {
       for (const ext of ["avif", "webp"]) {
         expect(

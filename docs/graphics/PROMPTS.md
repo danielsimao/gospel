@@ -270,7 +270,7 @@ Style: photographic, high contrast, sharply focused, not illustration, not a
 
 ## 10 · O horizonte — the horizon (does-god-exist)
 
-**Ships as:** `public/graphics/covers/does-god-exist.avif` + `.webp` — pilot cover, same treatment as §9.
+**Ships as:** superseded by §16 — kept for the record. Composed wide 16:9 for the topic page; in the homepage card's portrait crop the hairline all but vanished next to §9's mirror, and a row of cards needs comparable weight in every frame.
 
 **Where it goes:** the topic page for `does-god-exist`, questions band. Cool and evidentiary rather than sentimental — deliberately not a warm, literal sunrise, which would read as mood rather than argument.
 
@@ -305,7 +305,7 @@ Style: photographic, high contrast, sharply focused, not illustration, not a
 
 ## 11 · O cajado — the shepherd's staff (who-is-jesus)
 
-**Ships as:** `public/graphics/covers/who-is-jesus.avif` + `.webp` — pilot cover, same treatment as §9.
+**Ships as:** superseded by §17 — kept for the record. The crook recomposed the topic's line-icon faithfully, but a leaning stick answers "Who is Jesus?" with a prop; the replacement answers it with the claim.
 
 **Where it goes:** the topic page for `who-is-jesus`, rescue band. Same concept as the existing line-icon (John 10, the Good Shepherd) recomposed photographically — a real staff reads unambiguously where the abstract crook shape did not.
 
@@ -445,3 +445,109 @@ The domain is not a question. It is a conditional with the second half
 missing: *if you died today…* has no main clause, and the reader supplies it.
 The mark is the punctuation the name withholds — which is a reason no other
 site can borrow, because it comes from the name rather than from the subject.
+
+---
+
+## 15 · As pegadas — the footprints (why-are-you-afraid-to-die)
+
+**Ships as:** `public/graphics/covers/why-are-you-afraid-to-die.avif` + `.webp` — homepage questions-band card and the topic page cover, same treatment as §9. Until the asset lands (and the slug joins `TOPIC_COVERS` in `topic-cover.tsx` — one line), the homepage card wears the gold medallion on its own ground; the flip is automatic.
+
+**Where it goes:** the third card of the homepage questions band, and the topic page for `why-are-you-afraid-to-die`. Same concept as the existing line-icon (Footprints) recomposed photographically — the §11 move: a trail that simply stops is the question's own image, austere rather than morbid. The exclusion list bars the "Footprints" poem cliché (a second trail) along with every grave-and-skull shortcut; the image must ask the question, not answer it with props.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of a single trail of bare footprints pressed into a thin layer of pale dust on a dark stone floor, walking away from the viewer into deep darkness. The trail starts at the lower edge of the frame and simply stops partway in — the last print or two fainter than the rest, with untouched dust beyond them. One low raking light from the side catches the edges of the prints; everything else falls into deep shadow.
+
+Colour: near-black, #060404, fully desaturated and cold. The dust is dim pale grey, never white; the prints read by shadow, not by colour. No warm tone, no gold, no amber.
+
+Composition: portrait 4:3. The trail runs from the bottom of the frame toward the upper third at a slight diagonal, ending well before any wall or horizon. Generous even darkness on every side, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+
+Do not include: any text, any numerals, any people, legs, feet, shoes, silhouettes, shadows of figures, a second trail of footprints, sand dunes, beaches, water, skulls, bones, graves, headstones, coffins, candles, gavels, scales, crosses, or lens flare.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 16 · A primeira luz — first light (does-god-exist, recomposed)
+
+**Ships as:** shipped briefly, superseded by §18 — kept for the record. The recomposition gave §10's hairline enough weight to hold a card, but the owner ruled the line itself too thin an idea: twice generated, it stayed a picture of almost nothing. §18 changes the argument instead of the exposure.
+
+**Where it goes:** the third card of the homepage questions band and the topic page for `does-god-exist`. §10's rationale stands — cool and evidentiary, deliberately not a warm sunrise, light arriving out of darkness rather than mood — but the hairline is now a narrow graded band with enough presence to hold a card, and the composition is portrait with the horizon just below centre so it survives all three crops in use (3:4 card, 2.6:1 phone card, 4:3 topic page).
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of a plain dark horizon at the very first moment of dawn, seen from a low, still viewpoint. A narrow band of pale cool light sits along the horizon line, brightest at the line itself and fading quickly into deep darkness both upward into the sky and downward across the land. No sun disc, no clouds, no stars — only the light itself, arriving.
+
+Colour: near-black, #060404, fully desaturated and cold. The light is pale blue-white, never warm — no gold, no amber, no orange, not a sunrise or sunset in colour.
+
+Brightness: the band must read instantly against the black but stay dim — at most 60% brightness at the line itself, with no bloom, no rays, no halo — because a gold title sits over the lower part of this image and the light must never compete with it.
+
+Composition: portrait 4:3. The horizon line runs perfectly straight across the full width, slightly below the centre of the frame. The land below it is featureless darkness; the sky above it is featureless darkness beyond the narrow band. Generous even darkness at the top and bottom edges, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+
+Do not include: any text, any numerals, any sun, moon, stars, clouds, birds, people, silhouettes, buildings, mountains, trees, roads, water, reflections, or other landmarks — the horizon must read as empty and featureless.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 17 · A pedra removida — the stone rolled away (who-is-jesus)
+
+**Ships as:** `public/graphics/covers/who-is-jesus.avif` + `.webp` — replaces §11's files under the same names, so `TOPIC_COVERS` and the topic page are untouched.
+
+**Where it goes:** the topic page for `who-is-jesus`, rescue band. §11's crook recomposed the line-icon faithfully, but a leaning stick answers the question with a prop. The empty tomb answers it with the claim — the one fact the topic's whole argument stands on (1 Cor 15:14) — and it speaks the site's existing grammar of stone and arriving light (§§6, 8, 12) without a figure, which the house rules bar in any case. The exclusions keep it a tomb and not a cave, a garden, or an Easter card: no light rays, no glow from within, no angels, no cloth, no dawn sky. The stone aside and the dark opening are the whole statement.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of the entrance to an ancient rock-cut tomb: a low rounded opening in a rough stone face, with a massive circular stone slab rolled aside to one side of it, resting against the rock. The opening is dark and empty. Thin pale early light falls across the stone face and catches the rim of the rolled slab and the edge of the opening; everything else falls into deep shadow.
+
+Colour: near-black, #060404, fully desaturated and cold. The light is pale and neutral — no warm glow, no golden hour, no amber.
+
+Composition: wide 4:3. The opening sits just off-centre with the rolled stone beside it, together filling roughly the middle half of the frame, with generous even darkness around them on every side so the frame crops safely at other aspect ratios. Seen straight on from a low, still viewpoint. No vignette, no border or frame.
+
+Do not include: any text, any numerals, any people, figures, silhouettes, angels, hands, faces, folded cloth, linen, light rays, god rays, light coming from inside the tomb, glowing interiors, dawn skies, sun discs, gardens, flowers, trees, paths, steps, Roman soldiers, spears, helmets, gavels, scales, crosses, or lens flare. The opening is dark; the only light is the thin early light on the outside stone.
+
+Style: photographic, high contrast, sharply focused, architectural, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 18 · O relógio — the watchmaker's movement (does-god-exist)
+
+**Ships as:** `public/graphics/covers/does-god-exist.avif` + `.webp` — replaces §16's files under the same names, so `TOPIC_COVERS` and every consumer are untouched.
+
+**Where it goes:** the third card of the homepage questions band and the topic page for `does-god-exist`. The horizon (§10, §16) was cool and evidentiary but twice proved a picture of almost nothing; this is the topic's own apologetic made visible — Paley's watch, the argument Comfort runs as "a building proves a builder": an exposed mechanical movement, every part meshed with the next, is a made thing asking for its maker. No dial and no numerals — partly the house text rule, partly the point: the argument is the mechanism, not the time.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A macro photograph of the open back of an old mechanical pocket watch lying on a dark stone surface, its case back removed so the movement is exposed: interlocking gears of different sizes, a coiled spring, tiny screws, every part meshed with the next. One low raking light from the side catches the teeth of the gears and the edges where they mesh; everything else falls into deep shadow.
+
+Colour: near-black, #060404, fully desaturated and cold. The metal is dim steel grey — no gold, no brass, no copper, no amber, no warm tone of any kind.
+
+Composition: portrait 4:3, seen from directly above. The watch lies just off-centre, filling roughly half the frame, with generous even darkness around it on every side so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+
+Do not include: any text, any numerals, any watch dial, clock face, clock hands, Roman numerals, engraved lettering, brand names, chains, straps, people, fingers, hands, workbenches, tools, loupes, other watches, gavels, scales, crosses, or lens flare. Only the open movement and the dark stone it lies on.
+
+Style: photographic macro, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**

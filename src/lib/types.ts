@@ -191,6 +191,8 @@ export interface HomeMessages {
   selfRating: { yes: string; mostly: string; no: string };
   /** What a tap costs: question count and rough duration. */
   testPreview: string;
+  /** The instruction under the step bar: the tap IS the answer to question 1. */
+  testHint: string;
   blogCard: { eyebrow: string };
   /** The face-off band: N failed against the 1 who passed. The red side
       always shows a number — the modelled estimate stands in when neither
@@ -200,6 +202,8 @@ export interface HomeMessages {
     liveBadge: string;
     failedCaption: string;
     passedCaption: string;
+    /** Under the verdict bar, with `{n}` for the live count. */
+    barCaption: string;
     whoCta: string;
     testCta: string;
   };

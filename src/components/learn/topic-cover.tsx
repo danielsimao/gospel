@@ -23,6 +23,7 @@ const TOPIC_COVERS: ReadonlySet<string> = new Set([
   "who-is-jesus",
   "am-i-a-good-person",
   "does-god-exist",
+  "why-are-you-afraid-to-die",
 ]);
 
 export function hasTopicCover(slug: string): boolean {

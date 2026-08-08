@@ -9,6 +9,7 @@ import { LatestPostCard } from "@/components/home/latest-post-card";
 import { PassedBand } from "@/components/home/passed-band";
 import { QuestionsBand } from "@/components/home/questions-band";
 import { ReadingBand, type ReadingDay } from "@/components/home/reading-band";
+import { ScrollCue } from "@/components/shared/scroll-cue";
 import { StageSpine } from "@/components/home/stage-spine";
 import { SelfRating } from "@/components/home/self-rating";
 import { Button, ButtonArrow } from "@/components/ui/button";
@@ -51,9 +52,9 @@ interface HomeShellProps {
   home: HomeMessages;
   locale: Locale;
   topicSlugs: string[];
-  topics: Array<{ slug: string; title: string }>;
+  topics: Array<{ slug: string; title: string; subtitle?: string }>;
   readingDays: ReadingDay[];
-  readingLabels: { dayLabel: string; complete: string };
+  readingLabels: { dayProgress: string; continueLabel: string; complete: string };
   /** Reused from the learn hub and the blog index rather than restated here. */
   allTopicsLabel: string;
   allPostsLabel: string;
@@ -316,7 +317,32 @@ export function HomeShell({
       {/* Ahead of the stage blocks it governs, so the attribute is already set
           by the time they are parsed. */}
       <script dangerouslySetInnerHTML={{ __html: STAGE_PREPAINT_SCRIPT }} />
-      <section className="relative flex min-h-svh flex-col items-center justify-start overflow-hidden px-4 pt-[5.5rem] pb-12 sm:px-6 sm:pt-[6.25rem] sm:pb-16">
+      {/*
+       * The hero owns the first screen. It used to share it: the section held
+       * hero, stage block and bands in one column, so on most viewports the
+       * ask rode up into the first paint next to the counter. Splitting them
+       * puts the stake on screen one and the question on screen two, with the
+       * scroll as the beat between them — METHOD.md's rule that mortality "must
+       * not be positioned so that it reads as pressure applied at the moment of
+       * choosing" argues FOR this shape, not against it.
+       *
+       * min-h-SVH, not dvh: grace's sections carry the measured record of why —
+       * dvh tracks the collapsing URL bar and resizes the page under the
+       * reader's thumb.
+       *
+       * Two <section>s, deliberately, not one with an inner wrapper: the scroll
+       * cue delegates to advanceSection, which moves to the next SECTION
+       * boundary. The content section is that boundary, so a tap lands with the
+       * stage block at the top of the screen instead of falling through to the
+       * fixed-distance fallback.
+       */}
+      {/* The bottom pad reserves the consent banner's measured height (the
+          banner writes --consent-h; landing.tsx is the in-flow precedent).
+          Without it the cue sits exactly behind the banner for first-visit
+          readers — the population the cue exists for. Screenshotted, not
+          guessed: at 390×844 the cue landed at ~y780 under a banner whose top
+          edge was ~y780. */}
+      <section className="relative flex min-h-svh flex-col items-center justify-start overflow-hidden px-4 pt-[5.5rem] pb-[calc(1.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] sm:px-6 sm:pt-[6.25rem] sm:pb-[calc(2rem+env(safe-area-inset-bottom)+var(--consent-h,0px))]">
         {/* Offsets in px, not %: a percentage `top` resolves against the
             containing block's height, which for this section is viewport-derived
             and put the sphere almost entirely above the fold. All four are the
@@ -369,37 +395,79 @@ export function HomeShell({
             that holds type. */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)] lg:bg-none" />
 
-        <div className="relative z-[1] flex w-full flex-col items-center">
-          {/* Label */}
-          <p className="font-mono text-[9px] uppercase tracking-[4px] text-white/60 sm:text-[10px] sm:tracking-[5px]">
-            {hero.label}
-          </p>
+        {/* flex-1 so the column stretches to the section's bottom edge and the
+            spacers have leftover to absorb. From lg the hero goes asymmetric:
+            the lockup rides the left scrim's solid ground — the gradient that
+            exists precisely to hold type — while the globe answers from the
+            right, instead of a centred stack floating between the two. */}
+        <div className="relative z-[1] flex w-full flex-1 flex-col items-center lg:items-start lg:pl-10 xl:pl-20">
+          {/* Label — the hero's eyebrow, wearing the page's spine idiom in the
+              Law's colour: rule — TODAY — rule. It was a bare floating word;
+              flanked, it opens the page the way every section below opens. */}
+          <div className="flex items-center gap-2.5">
+            <span aria-hidden="true" className="h-px w-6 bg-red-500/40" />
+            <p className="font-mono text-[9px] uppercase tracking-[4px] text-white/60 sm:text-[10px] sm:tracking-[5px]">
+              {hero.label}
+            </p>
+            <span aria-hidden="true" className="h-px w-6 bg-red-500/40" />
+          </div>
 
-          {/* Death counter. The daily 99,999 → 100,000 crossing does not shift
-              it: DeathCounter reserves minWidth 7ch and centres inside that
-              itself, so nothing is needed here. */}
+          {/* Death counter. The daily 99,999 → 100,000 crossing does not
+              shift the layout: DeathCounter reserves minWidth 7ch inline, and
+              alignment inside that reserve is this caller's — centred on the
+              centred mobile column, ranged left from lg with the lockup. The
+              old "kept" note here claimed the centring only showed in the
+              small hours; wrong, and the owner saw it: six digits plus a
+              narrow comma is always under 7ch, so the number floated off the
+              lockup's left edge all day. On lg the number now grows rightward
+              from a fixed left edge, which shifts nothing.
+
+              Sized with clamp so the monument tracks the viewport instead of
+              stepping at breakpoints — at 390px it is ~86px tall, at 1440
+              ~208px. The score face is condensed, so seven characters hold
+              inside the left scrim's solid ground on every width measured. */}
           <DeathCounter
             fromMidnight
-            className="mt-4 font-score text-6xl font-bold tabular-nums tracking-[0.01em] text-red-500 sm:mt-5 sm:text-8xl md:text-9xl lg:text-[10rem]"
+            className="mt-4 text-center font-score text-[clamp(4.5rem,22vw,7.5rem)] font-bold leading-none tabular-nums tracking-[0.01em] text-red-500 sm:mt-5 sm:text-[clamp(7.5rem,14vw,9.5rem)] lg:text-left lg:text-[clamp(10rem,14.5vw,13rem)]"
             style={{
               textShadow:
-                "0 0 80px rgba(239,68,68,0.25), 0 4px 60px rgba(0,0,0,0.8)",
+                "0 0 90px rgba(239,68,68,0.3), 0 0 220px rgba(239,68,68,0.14), 0 4px 60px rgba(0,0,0,0.85)",
             }}
           />
 
-          {/* Suffix */}
-          <p className="mt-2 text-sm tracking-wide text-white/60 sm:mt-3 sm:text-base">
+          {/* The statement, promoted into the score face. It was a 14px sans
+              whisper under a monument — the number declared and its own
+              sentence apologised for it. Same face, uppercase, tracked wide:
+              the lockup reads as one broadcast, the figure and what the figure
+              is. Uppercasing is CSS — the copy itself is untouched. */}
+          <p className="mt-3 font-score text-xl font-semibold uppercase tracking-[0.3em] text-white/65 sm:mt-4 sm:text-2xl lg:text-3xl lg:tracking-[0.38em]">
             {hero.suffix}
           </p>
 
           {/*
-           * Rate cards. Below sm they are bare figures — no panel, no border,
-           * no fills: the globe sits directly behind them there, and a boxed
-           * grid over a dot sphere made two competing surfaces where the
-           * numbers should simply be lying on the earth. From sm up the globe
-           * moves out from behind them and the panel returns.
+           * The spacers are the hero's composition. With the section claiming
+           * a full viewport, the content no longer fills it — measured at
+           * 390×844 the counter group ended ~y340 and the cue sat at ~y755,
+           * with 400px of dead ground between. Two flex spacers distribute
+           * that leftover: counter group anchored at the top where the globe
+           * and the scrims are aimed (those offsets are fixed values — moving
+           * the counter means re-measuring both), rate cards floated to the
+           * middle, cue at the foot. min-heights keep the old fixed gaps as
+           * the floor, so a short landscape viewport degrades to exactly the
+           * pre-split spacing instead of collapsing to zero.
            */}
-          <div className="mt-8 grid grid-cols-2 gap-x-8 gap-y-5 sm:mt-14 sm:flex sm:flex-wrap sm:justify-center sm:gap-px sm:overflow-hidden sm:rounded-lg sm:border sm:border-white/[0.04]">
+          <div aria-hidden="true" className="min-h-8 w-full flex-1 sm:min-h-14" />
+
+          {/*
+           * Rate cards. Below sm they are bare figures — no panel, no border,
+           * no fills: they began directly over the globe, and a boxed grid
+           * over a dot sphere made two competing surfaces where the numbers
+           * should simply be lying on the earth. Floated to the viewport's
+           * middle they now straddle its faded lower limb, where the ground
+           * scrim has already gone nearly solid — the bare treatment still
+           * reads, on darker earth. From sm up the panel returns.
+           */}
+          <div className="grid grid-cols-2 gap-x-8 gap-y-5 sm:flex sm:flex-wrap sm:justify-center sm:gap-px sm:overflow-hidden sm:rounded-lg sm:border sm:border-white/[0.04]">
             {RATE_CARDS.map((card, idx) => (
               <div
                 key={card.key}
@@ -419,6 +487,25 @@ export function HomeShell({
             ))}
           </div>
 
+          {/* The second half of the leftover — see the spacer note above. */}
+          <div aria-hidden="true" className="min-h-6 w-full flex-1" />
+
+          {/*
+           * A hero sized to the viewport exactly, with nothing intruding, is
+           * the measured false-bottom pattern — grace and the verdict both hit
+           * it, and this cue is their counter-measure, reused rather than
+           * re-invented. In flow, not fixed: once the reader scrolls, the hero
+           * is behind them and the cue goes with it, so it needs no retirement
+           * logic. Its gold on a red screen has the verdict's own precedent.
+           */}
+          {/* Self-centred: the cue belongs to the page's axis, not the
+              lockup's — it points at the centred content below the fold. */}
+          <ScrollCue className="lg:self-center" />
+        </div>
+      </section>
+
+      <section className="relative flex flex-col items-center px-4 pb-12 sm:px-6 sm:pb-16">
+        <div className="flex w-full flex-col items-center">
 
           {/*
            * === Bottom CTA section — adapts to journey stage ===
@@ -671,7 +758,10 @@ export function HomeShell({
                 messages={home.selfRating}
                 ariaLabel={home.selfRatingQuestion}
                 onSelect={handleSelfRating}
-                className="mt-8"
+                /* sm:max-w-2xl, the bands' own width — measured at max-w-xl
+                   the middle button wrapped "Mais ou menos" onto two lines
+                   while its neighbours held one. */
+                className="mt-8 w-full max-w-sm sm:max-w-2xl"
               />
 
               {/* What a tap does, in the step bar the test itself uses. Cold
@@ -682,17 +772,40 @@ export function HomeShell({
                   aria-hidden="true"
                   className="flex h-[3px] w-40 items-center gap-1.5 sm:w-48"
                 >
+                  {/* The first segment pulses — the score band's LIVE-dot
+                      treatment, same reduced-motion fallback. Lit alone it
+                      read as decoration; breathing, it reads as the step that
+                      is live and waiting on this reader. */}
                   {Array.from({ length: TOTAL_QUESTIONS }).map((_, i) => (
                     <span
                       key={i}
                       className={`h-[3px] flex-1 rounded-full ${
-                        i === 0 ? "bg-white/70" : "bg-white/[0.14]"
+                        i === 0
+                          ? "bg-white/70 animate-pulse motion-reduce:animate-none"
+                          : "bg-white/[0.14]"
                       }`}
                     />
                   ))}
                 </div>
                 <p className="font-mono text-[10px] uppercase tracking-[1.6px] text-white/50">
                   {home.testPreview}
+                </p>
+                {/* The instruction. It converts the section from statement to
+                    expectation, and it is literally true: the tap IS the
+                    answer to question 1 (see handleSelfRating).
+
+                    Deliberately NOT gold, though it was written that way
+                    first. METHOD.md: "Gold does not appear during the Law. It
+                    arrives once, and its arrival is the event. Do not spend it
+                    early." This sits before the Law has said anything — the
+                    earliest point on the whole journey — which is the one
+                    place gold costs the most to spend. A caption register is
+                    not an exemption from the colour spine; the gold band two
+                    hundred lines below is gated away from this very reader for
+                    the same reason. Brighter than the metadata above it so it
+                    still reads as an instruction rather than a label. */}
+                <p className="font-mono text-[10px] uppercase tracking-[1.6px] text-white/70">
+                  {home.testHint}
                 </p>
               </div>
 
@@ -706,11 +819,29 @@ export function HomeShell({
           </div>
 
           {/*
-           * Three ungated bands, identical on all five stages. Each shows what
-           * is actually inside it rather than describing it: the topics as
-           * their own questions, the plan as the day this reader is on, the
-           * blog as its newest headline. Rendered once here rather than inside
-           * each stage branch, so they cannot drift between them.
+           * The bands. Each shows what is actually inside it rather than
+           * describing it: the topics as their own questions, the plan as the
+           * day this reader is on, the blog as its newest headline. Rendered
+           * once here rather than inside each stage branch, so they cannot
+           * drift between stages.
+           *
+           * Not all of them are for everyone, though. The score and questions
+           * bands are pre-evangelism and run on all five stages — the score is
+           * the strongest hook a stranger gets, and the questions band is the
+           * dismissed reader's designated non-test door. The reading plan is
+           * not pre-evangelism: it is what this app offers AFTER the verdict,
+           * so it is gated to the post-test stages — see the post-test-band
+           * rules in globals.css, which ride the same pre-paint attribute that
+           * picks the stage block, so the choice is made before first paint
+           * and nothing jumps.
+           *
+           * The gated band rides in every HTML response, hidden, exactly like
+           * the four unused stage blocks above — the same served-but-hidden
+           * tradeoff, accepted for the same reason: server branching is
+           * impossible on localStorage state, and client-only rendering hands
+           * back the layout jump. Its content is a teaser for /reading-plan,
+           * which is indexed on its own, so the crawler cost stays what the
+           * stage copy already pays.
            */}
           {/* First of the bands, because it is the strongest hook on the
               page: a score that ends "1 passed" leaves a question, and the
@@ -724,14 +855,20 @@ export function HomeShell({
             topics={topics}
           />
 
-          <ReadingBand
-            locale={locale}
-            label={home.journey.reading.label}
-            dayLabel={readingLabels.dayLabel}
-            completeDescription={readingLabels.complete}
-            days={readingDays}
-            completed={journey.readingDone}
-          />
+          {/* Class-free for the same reason the stage wrappers are: the
+              reveal rules in globals.css must be the only thing setting
+              `display` on it. */}
+          <div data-slot="post-test-band">
+            <ReadingBand
+              locale={locale}
+              label={home.journey.reading.label}
+              dayProgress={readingLabels.dayProgress}
+              continueLabel={readingLabels.continueLabel}
+              completeDescription={readingLabels.complete}
+              days={readingDays}
+              completed={journey.readingDone}
+            />
+          </div>
 
           {latestPost && (
             <LatestPostCard

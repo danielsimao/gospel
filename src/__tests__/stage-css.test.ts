@@ -126,3 +126,80 @@ describe("journey stage markup and CSS", () => {
     for (const w of wrappers) expect(w).not.toMatch(/className=/);
   });
 });
+
+describe("the post-test band", () => {
+  /*
+   * The reading plan is follow-up — the method's step for AFTER the verdict —
+   * so the shell gates it behind the same pre-paint attribute the stage blocks
+   * ride. Same three-list agreement problem as above: the wrapper in the
+   * markup, the hide-by-default rule, and one reveal rule per post-test stage.
+   * A missing reveal hides the plan from that stage silently, forever.
+   */
+  const POST_TEST = JOURNEY_STAGES.filter((s) => s !== "visitor");
+
+  it("wraps the reading band in a class-free, stage-free slot", () => {
+    const wrappers = homeShell.match(/<div data-slot="post-test-band"[^>]*>/g) ?? [];
+    expect(wrappers).toHaveLength(1);
+    // No className, for the display argument above; no data-stage, because
+    // the exactly-one-block-per-stage assertion counts those.
+    expect(wrappers[0]).not.toMatch(/className=|data-stage=/);
+    const slotAt = homeShell.indexOf('data-slot="post-test-band"');
+    const bandAt = homeShell.indexOf("<ReadingBand");
+    expect(slotAt).toBeGreaterThan(-1);
+    expect(bandAt).toBeGreaterThan(slotAt);
+  });
+
+  it("hides the band by default, so a visitor or an unknown stage never sees it", () => {
+    expect(hasRule('[data-slot="post-test-band"] { display: none')).toBe(true);
+  });
+
+  it("reveals the band for each post-test stage by name, never by negation", () => {
+    for (const stage of POST_TEST) {
+      expect(
+        hasRule(`html[data-journey-stage="${stage}"] [data-slot="post-test-band"]`),
+        `globals.css does not reveal the post-test band for the "${stage}" stage`,
+      ).toBe(true);
+    }
+    // Written as :not(...visitor...) the reveal would fire for garbage stages.
+    expect(cssRules).not.toMatch(/:not\([^)]*\)\s*\[data-slot="post-test-band"\]/);
+  });
+});
+
+describe("the colour spine, before the Law", () => {
+  /*
+   * METHOD.md: "Gold does not appear during the Law. It arrives once, and its
+   * arrival is the event. Do not spend it early."
+   *
+   * The visitor block is the earliest surface on the whole journey — a reader
+   * who has not been asked anything yet. It is where gold costs the most to
+   * spend, and it is exactly where it crept in: the test section's "Tap your
+   * answer to begin" shipped in gold on the strength of being a caption rather
+   * than a control. A caption register is not an exemption from the spine.
+   *
+   * Scoped to the visitor block deliberately. The stages past the verdict may
+   * carry gold — grace has arrived for them, which is the whole point — and
+   * the committed block's blockquote does.
+   */
+  const GOLD = /#D4A843/;
+
+  function stageBlock(stage: JourneyStage): string {
+    const open = homeShell.indexOf(`<div data-slot="journey-stage" data-stage="${stage}">`);
+    expect(open, `no block found for the ${stage} stage`).toBeGreaterThan(-1);
+    // Runs to the next stage wrapper, or to the end of the stage group.
+    const next = homeShell.indexOf('<div data-slot="journey-stage"', open + 1);
+    return homeShell.slice(open, next === -1 ? homeShell.length : next);
+  }
+
+  it("spends no gold on a reader the Law has not met", () => {
+    expect(
+      stageBlock("visitor"),
+      "gold appeared in the visitor block — METHOD.md: do not spend it early",
+    ).not.toMatch(GOLD);
+  });
+
+  it("still lets gold through after the verdict, so this guard is not vacuous", () => {
+    // If the committed block ever loses its gold, the assertion above stops
+    // proving anything and this fails to say so.
+    expect(stageBlock("committed")).toMatch(GOLD);
+  });
+});
