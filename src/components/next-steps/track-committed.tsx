@@ -8,7 +8,7 @@ import { ShareButtons } from "@/components/share-buttons";
 import { SaveStoryImageButton } from "@/components/blog/save-story-image-button";
 import { BandHeader } from "./band-header";
 import { Button, ButtonArrow } from "@/components/ui/button";
-import { DayTicketBody, type ReadingDay } from "@/components/shared/day-ticket";
+import { DayTicketBody, currentDay, type ReadingDay } from "@/components/shared/day-ticket";
 import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
 import { readJourney } from "@/lib/journey-storage";
 import { useJourney } from "@/lib/use-journey";
@@ -22,8 +22,6 @@ interface TrackCommittedMessages {
   welcomeReturn: string;
   whatHappened: string;
   readHeading: string;
-  readLink: string;
-  readLinkLabel: string;
   readPlanLabel: string;
   prayHeading: string;
   prayBody: string;
@@ -54,7 +52,14 @@ interface TrackCommittedProps {
   /** The plan's days and the ticket's labels — the Read card shows the
       reader's actual day via the shared DayTicketBody, not a description. */
   readingDays: ReadingDay[];
-  readingLabels: { dayProgress: string; complete: string };
+  readingLabels: {
+    dayProgress: string;
+    complete: string;
+    /** "Read {passage}" — templated so the door names the day it opens. */
+    readDay: string;
+    continueLabel: string;
+    continueUrl: string;
+  };
 }
 
 // One gentle rise per paragraph, capped so the emotional opener still
@@ -76,6 +81,24 @@ export function TrackCommitted({
   // The reader's real progress, so a returning believer meets day four, not a
   // pitch for day one. Same source the homepage band reads.
   const { readingDone } = useJourney();
+
+  /*
+   * The door has to open the day the ticket names.
+   *
+   * The card used to describe the plan in a paragraph, so one fixed "Read John
+   * 1" was honest. Now the ticket says "DAY 4 OF 7 · JOHN 10:1–18" — a fixed
+   * chapter link beside it is a button that lies about where it goes. Day one
+   * is unchanged in practice: the plan's first passageUrl IS John 1.
+   *
+   * Finished readers have no day to open, so they get the plan's own
+   * continue-reading door (John 8 onwards) rather than being sent back to the
+   * beginning.
+   */
+  const today = currentDay(readingDays, readingDone);
+  const readHref = today ? today.passageUrl : readingLabels.continueUrl;
+  const readLabel = today
+    ? readingLabels.readDay.replace("{passage}", today.passage)
+    : readingLabels.continueLabel;
 
   // SSR and first client render show the durable opener; if the visitor
   // arrived within an hour of responding, upgrade to the conversational
@@ -159,9 +182,9 @@ export function TrackCommitted({
             completed={readingDone}
           />
           <div className="mt-5 flex flex-wrap gap-2">
-            <a href={messages.readLink} target="_blank" rel="noopener noreferrer" onClick={() => trackNextStepsActionClicked("read", "committed")}>
+            <a href={readHref} target="_blank" rel="noopener noreferrer" onClick={() => trackNextStepsActionClicked("read", "committed")}>
               <Button variant="gold" size="sm">
-                {messages.readLinkLabel}
+                {readLabel}
                 <ButtonArrow />
               </Button>
             </a>

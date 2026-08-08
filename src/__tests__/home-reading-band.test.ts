@@ -29,9 +29,45 @@ describe("the shared day ticket body", () => {
       ["the committed track", track],
     ] as const) {
       expect(src, `${name} lost the shared body`).toMatch(
-        /import \{ DayTicketBody(, type ReadingDay)? \} from "@\/components\/shared\/day-ticket"/,
+        /import \{ DayTicketBody[^}]*\} from "@\/components\/shared\/day-ticket"/,
       );
       expect(src, `${name} does not render the shared body`).toMatch(/<DayTicketBody/);
+    }
+  });
+
+  it("opens the day it names, on the surface that offers a door", () => {
+    /*
+     * The card used to describe the plan in a paragraph, so one fixed "Read
+     * John 1" was honest beside it. Once the ticket says "DAY 4 OF 7 · JOHN
+     * 10:1-18", a hardcoded chapter link is a button that lies about where it
+     * goes — caught in review before it shipped.
+     *
+     * Both halves are pinned: the href comes from the same day the ticket
+     * picked (one shared currentDay, so they cannot disagree), and the label
+     * is templated off that day's passage rather than naming a chapter.
+     */
+    expect(track, "the Read door stopped using the shared day").toMatch(
+      /const today = currentDay\(readingDays, readingDone\)/,
+    );
+    expect(track).toMatch(/today \? today\.passageUrl : readingLabels\.continueUrl/);
+    expect(track).toMatch(/readingLabels\.readDay\.replace\("\{passage\}", today\.passage\)/);
+    expect(track, "a hardcoded chapter link came back").not.toMatch(/messages\.readLink/);
+
+    // The template must survive translation in both locales, or the door
+    // renders a literal "{passage}".
+    for (const [locale, rp] of [
+      ["en", en.readingPlan],
+      ["pt", pt.readingPlan],
+    ] as const) {
+      expect(rp.readDayLabel, `${locale} lost the read-day label`).toMatch(/\{passage\}/);
+    }
+    // And the keys it replaced are gone from both, not left to rot.
+    for (const [locale, m] of [
+      ["en", en],
+      ["pt", pt],
+    ] as const) {
+      expect(m.nextSteps.trackA.readLink, `${locale} kept a dead readLink`).toBeUndefined();
+      expect(m.nextSteps.trackA.readLinkLabel, `${locale} kept a dead readLinkLabel`).toBeUndefined();
     }
   });
 
