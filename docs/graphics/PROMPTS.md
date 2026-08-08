@@ -87,7 +87,7 @@ Style: photographic, high contrast, not illustration. Send it darker and more co
 
 ## 3 · A impressão digital — the fingerprint
 
-**Ships as:** `public/graphics/fingerprint.avif` + `.webp` — pressed under the reader's own charge sheet on the grace record at 9%, above the paper at 7%. Also print (tract backs).
+**Ships as:** `public/graphics/fingerprint.avif` + `.webp` — pressed under the reader's own charge sheet on the grace record at 9%, above the paper at 7%. Also print (tract backs). And `.jpg` — the testimony story card (`testimony/story/route.tsx`) at 16% under the stamped verdict, finally serving the surface this section always named; JPEG because satori decodes neither AVIF nor WebP.
 
 **Where it goes:** the verdict's OG/share image, and the tract backs. Testimony, identity, the record.
 
@@ -270,7 +270,7 @@ Style: photographic, high contrast, sharply focused, not illustration, not a
 
 ## 10 · O horizonte — the horizon (does-god-exist)
 
-**Ships as:** superseded by §16 — kept for the record. Composed wide 16:9 for the topic page; in the homepage card's portrait crop the hairline all but vanished next to §9's mirror, and a row of cards needs comparable weight in every frame.
+**Ships as:** `public/graphics/covers/does-god-exist.avif` + `.webp` — pilot cover, same treatment as §9.
 
 **Where it goes:** the topic page for `does-god-exist`, questions band. Cool and evidentiary rather than sentimental — deliberately not a warm, literal sunrise, which would read as mood rather than argument.
 
@@ -305,7 +305,7 @@ Style: photographic, high contrast, sharply focused, not illustration, not a
 
 ## 11 · O cajado — the shepherd's staff (who-is-jesus)
 
-**Ships as:** superseded by §17 — kept for the record. The crook recomposed the topic's line-icon faithfully, but a leaning stick answers "Who is Jesus?" with a prop; the replacement answers it with the claim.
+**Ships as:** `public/graphics/covers/who-is-jesus.avif` + `.webp` — pilot cover, same treatment as §9.
 
 **Where it goes:** the topic page for `who-is-jesus`, rescue band. Same concept as the existing line-icon (John 10, the Good Shepherd) recomposed photographically — a real staff reads unambiguously where the abstract crook shape did not.
 
@@ -548,6 +548,306 @@ Composition: portrait 4:3, seen from directly above. The watch lies just off-cen
 Do not include: any text, any numerals, any watch dial, clock face, clock hands, Roman numerals, engraved lettering, brand names, chains, straps, people, fingers, hands, workbenches, tools, loupes, other watches, gavels, scales, crosses, or lens flare. Only the open movement and the dark stone it lies on.
 
 Style: photographic macro, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## The remaining topic covers (§19–§28)
+
+Ten of the fourteen learn topics still wear the line emblem on its own ground.
+These are their covers, written together so the set reads as one hand rather
+than ten separate commissions.
+
+Three rules run through all ten, and they are the reason the blocks look alike:
+
+- **The emblem is the brief.** §11 and §15 set the move — take the topic's
+  existing line-icon and recompose it photographically, so the cover and the
+  emblem argue the same thing. Where a block departs from its emblem, the
+  prose above it says why, and the reason is always a collision with an image
+  this file has already spent.
+- **Nothing decorative gets a second job.** The exclusion lists bar the props
+  that turn austerity into a stock photo — gavels, scales, glowing crosses,
+  skulls, candles, doves, rays of light — and each block adds the specific
+  cliché its own subject attracts.
+- **Portrait 4:3, with darkness to spare.** Every cover is cropped three ways
+  (3:4 hub card, 2.6:1 phone card, 4:3 topic page), so the subject sits well
+  inside the frame and the edges stay empty. §16 learned this the hard way.
+
+Three of the ten also carry a title over the image on the homepage questions
+band — `what-happens-when-i-die`, `why-does-god-allow-suffering` and
+`what-is-the-gospel`. Those three carry the brightness ceiling §16 introduced;
+the other seven do not need it.
+
+Until an asset lands **and** its slug joins `TOPIC_COVERS` in
+`topic-cover.tsx` (one line each), the topic keeps its emblem. The flip is
+automatic and the two can be done in any order — `graphics.test.ts` fails if a
+slug is declared without its files, so the test is the ratchet, not a
+convention.
+
+---
+
+## 19 · A folha de acusação — the charge sheet (what-is-sin)
+
+**Ships as:** `public/graphics/covers/what-is-sin.avif` + `.webp` — topic page cover, same treatment as §9.
+
+**Where it goes:** the topic page for `what-is-sin`, law band. The emblem is a scroll of text (`ScrollText`), and the recomposition makes it the reader's own charge sheet — the app's word for the same object on the grace record. Sin as a written record rather than a mood is the doctrine the topic teaches: it is countable, specific, and against someone. The lines run off the frame because the count is the point and the count does not end.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of a single sheet of aged paper lying flat on dark stone, covered edge to edge in dense handwritten lines in dark ink. The writing is small, tight and unreadable — line after line after line, with no margins and no gaps, running off the bottom edge of the sheet as though the page could not hold it. One low raking light from the side catches the paper's grain and its slightly curled edge; everything around it falls into deep shadow.
+
+Colour: near-black, #060404, fully desaturated and cold. The paper is dim grey, never white or cream; the ink reads darker still. No warm tone, no gold, no amber, no sepia.
+
+Composition: portrait 4:3. The sheet sits centred and fills the middle of the frame at a slight angle, with generous even darkness on every side, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+
+Do not include: any legible text, any real words, any numerals, any letters that resolve on close inspection, any people, hands, pens, quills, ink bottles, wax seals, ribbons, scrolls with ornate rods, gavels, scales, crosses, or candles.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 20 · A ampulheta — the hourglass (what-happens-when-i-die)
+
+**Ships as:** `public/graphics/covers/what-happens-when-i-die.avif` + `.webp` — homepage questions-band card and the topic page cover, same treatment as §9.
+
+**Where it goes:** the second card of the homepage questions band, and the topic page for `what-happens-when-i-die`, law band. The emblem is an hourglass and it recomposes directly. Nearly run out rather than half full: the topic is not that time passes but that it ends. Every grave-and-skull prop is barred — the question is austere, and the props answer it with a mood instead of a fact.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of a plain glass hourglass standing on dark stone, almost run out — only a small mound of sand left in the upper bulb, with a thin thread of grains falling. The frame is simple turned wood, unornamented. One low raking light from the side catches the glass edges and the falling thread; everything else falls into deep shadow.
+
+Colour: near-black, #060404, fully desaturated and cold. The sand and the glass highlights are dim pale grey, never white. No warm tone, no gold, no amber, no brass.
+
+Brightness: the hourglass must read instantly against the black but stay dim — no bloom, no glow, no rays, no lens flare — because a title sits over the lower part of this image on the homepage card and the image must never compete with it.
+
+Composition: portrait 4:3. The hourglass stands centred, filling the middle third of the frame vertically, with generous even darkness above, below and to both sides, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+
+Do not include: any text, any numerals, any people, hands, silhouettes, skulls, bones, graves, headstones, coffins, clocks, watches, calendars, wilting flowers, candles, gavels, scales, or crosses.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 21 · O rebento — the shoot (is-there-life-after-death)
+
+**Ships as:** `public/graphics/covers/is-there-life-after-death.avif` + `.webp` — topic page cover, same treatment as §9.
+
+**Where it goes:** the topic page for `is-there-life-after-death`, questions band. The emblem is a sprout (`Sprout`) and it recomposes directly — and the image is Paul's own argument in 1 Corinthians 15, where what is sown is not what rises. Stone rather than soil, so it reads as life from where life does not come, and the shoot stays pale and desaturated: a green sprig would turn the argument into springtime.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of a single thin shoot with two small leaves pushing up through a narrow crack in a slab of dark stone. The stone is dry, cold and featureless apart from the crack; the shoot is slender and stands only a few centimetres. One low raking light from the side rims the leaves and the edge of the crack; everything else falls into deep shadow.
+
+Colour: near-black, #060404, fully desaturated and cold. The shoot is pale grey, never green and never bright; the stone is darker still. No warm tone, no gold, no amber, no colour of any kind.
+
+Composition: portrait 4:3. The shoot sits centred in the lower middle of the frame, small against a large field of stone and darkness, with generous even darkness above and to both sides, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+
+Do not include: any text, any numerals, any people, hands, soil, pots, gardens, fields, flowers, blossom, butterflies, sunlight, sunbeams, rays, doves, skies, skulls, graves, candles, gavels, scales, or crosses.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 22 · A bússola — the compass (what-is-the-meaning-of-life)
+
+**Ships as:** `public/graphics/covers/what-is-the-meaning-of-life.avif` + `.webp` — topic page cover, same treatment as §9.
+
+**Where it goes:** the topic page for `what-is-the-meaning-of-life`, questions band. The emblem is a compass (`Compass`) and it recomposes directly. Worn and scratched rather than pristine, because the question is asked by someone who has already been walking a while. The needle is left settled, not spinning: the topic answers the question rather than celebrating the search, and a spinning needle would make aimlessness the point.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of an old pocket compass lying open on dark stone, its glass scratched and its face worn almost blank, the needle settled and still. The case is plain and unengraved. One low raking light from the side catches the rim of the case and the edge of the glass; everything else falls into deep shadow.
+
+Colour: near-black, #060404, fully desaturated and cold. The metal is dull grey, never polished, never brass and never gold; the face is dim grey, never white. No warm tone, no amber.
+
+Composition: portrait 4:3. The compass sits centred, filling roughly the middle third of the frame, with generous even darkness on every side, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+
+Do not include: any legible text, any letters, any numerals, any cardinal-point markings that resolve on close inspection, any people, hands, maps, charts, globes, ships, telescopes, sextants, wooden desks, candles, gavels, scales, or crosses.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 23 · A água funda — deep water (why-does-god-allow-suffering)
+
+**Ships as:** `public/graphics/covers/why-does-god-allow-suffering.avif` + `.webp` — homepage questions-band card and the topic page cover, same treatment as §9.
+
+**Where it goes:** the fifth card of the homepage questions band, and the topic page for `why-does-god-allow-suffering`, questions band. The emblem is waves (`Waves`) and it recomposes directly — the psalms' deep waters, which is the register this topic is written in. No storm, no wreck, no drama: the grief this page meets is heavy rather than spectacular, and a shipwreck would make somebody else's catastrophe of it.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of open deep water at night, seen close to the surface — a slow heavy swell with no breaking crest and no foam, its ridges catching a faint pale sheen. No horizon, no sky, no shore, no vessel: the frame holds nothing but moving water and darkness.
+
+Colour: near-black, #060404, fully desaturated and cold. The sheen on the water is dim pale grey, never white and never blue. No warm tone, no gold, no amber.
+
+Brightness: the water must read instantly against the black but stay dim — no bloom, no glare, no moonlight path, no rays, no lens flare — because a title sits over the lower part of this image on the homepage card and the image must never compete with it.
+
+Composition: portrait 4:3. The swell runs across the full width of the frame, with the darkest, quietest water at the bottom edge and generous even darkness at the top, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+
+Do not include: any text, any numerals, any people, hands, swimmers, boats, ships, wrecks, sails, lighthouses, piers, rocks, land, horizon line, sky, moon, stars, lightning, rain, breaking waves, whitecaps, spray, candles, gavels, scales, or crosses.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 24 · O embrulho — the plain parcel (what-is-the-gospel)
+
+**Ships as:** `public/graphics/covers/what-is-the-gospel.avif` + `.webp` — homepage questions-band card and the topic page cover, same treatment as §9.
+
+**Where it goes:** the sixth card of the homepage questions band, and the topic page for `what-is-the-gospel`, rescue band — the anchor topic of the whole hub. The emblem is a gift (`Gift`), and the recomposition keeps the gift while stripping everything festive from it: plain paper, coarse string, no ribbon and no bow. The doctrine is that the gospel is a gift rather than a wage (Romans 6:23), and a birthday parcel would make it a treat. Unopened, deliberately — the topic makes the offer, it does not perform the reader's acceptance of it.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of a small parcel wrapped in plain coarse paper and tied with rough string, sitting on dark stone. The paper is creased and unprinted; the string is knotted once, with no bow, no ribbon, no label and no seal. The parcel is closed. One low raking light from the side catches the creases in the paper and the twist of the string; everything else falls into deep shadow.
+
+Colour: near-black, #060404, fully desaturated and cold. The paper is dim grey, never brown, never cream and never white. No warm tone, no gold, no amber.
+
+Brightness: the parcel must read instantly against the black but stay dim — no bloom, no glow, no rays, no lens flare — because a title sits over the lower part of this image on the homepage card and the image must never compete with it.
+
+Composition: portrait 4:3. The parcel sits centred, filling roughly the middle third of the frame, with generous even darkness on every side, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+
+Do not include: any text, any numerals, any people, hands, bows, ribbons, gift tags, wax seals, wrapping patterns, confetti, balloons, Christmas imagery, candles, doves, rays of light, gavels, scales, or crosses.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 25 · A viga — the upright timber (why-the-cross)
+
+**Ships as:** `public/graphics/covers/why-the-cross.avif` + `.webp` — topic page cover, same treatment as §9.
+
+**Where it goes:** the topic page for `why-the-cross`, rescue band. The emblem is a cross on a hill (`CrossOnHill`), and this is the one subject in the file the reject list already names — "stock crosses" are barred everywhere else precisely so that the topic *about* the cross can use one without inheriting the cliché. So it is built rather than symbolic: rough sawn timber, tool marks, the grain visible, photographed from below and close enough that it reads as an execution stake rather than a shape. Empty, and no sunset behind it. The site's own reject list stands: the gold cross was drawn and rejected (§14), and nothing here reintroduces it.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph looking up at a rough-hewn wooden upright and crossbeam against a black sky, seen from close below and slightly to one side, so the timbers run out of the frame. The wood is coarse sawn timber with visible grain, splinters and tool marks, weathered and unpainted, joined plainly. It is empty. One hard low light from the side rakes across the grain; the sky behind is featureless black.
+
+Colour: near-black, #060404, fully desaturated and cold. The wood is dim grey, never brown and never warm. No gold, no amber, no orange, no sunset colour of any kind.
+
+Composition: portrait 4:3. The upright runs vertically slightly off-centre with the crossbeam entering the upper third, both cropped by the frame edges, and generous even darkness around them, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+
+Do not include: any text, any numerals, any people, figures, bodies, hands, nails, blood, crowns of thorns, ropes, crowds, hills with three crosses, silhouetted crosses on horizons, sunsets, sunrises, sunbeams, rays of light, glowing edges, doves, clouds, churches, ornate or metal or jewellery crosses, candles, gavels, or scales.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 26 · A bacia — the basin (how-can-my-sins-be-forgiven)
+
+**Ships as:** `public/graphics/covers/how-can-my-sins-be-forgiven.avif` + `.webp` — topic page cover, same treatment as §9.
+
+**Where it goes:** the topic page for `how-can-my-sins-be-forgiven`, rescue band. This is the one block that departs from its emblem, and the reason is collision: the emblem is an open door (`DoorOpen`) and this file has already spent the door twice — §6 for the share plate and §8 for the decision screen — so a third would read as the same asset rather than as this topic's own. The washing takes its place, which the topic's own scripture carries (Isaiah 1:18, "though your sins be as scarlet, they shall be as white as snow"). Still water rather than the act of washing: nobody is performing the cleansing, which is the whole doctrine of the page.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of a plain stone basin standing on dark stone, filled to the brim with perfectly still, clear water. The basin is unornamented and slightly worn at the rim. The water's surface is flat and unbroken, holding a faint pale sheen where the light catches it, reflecting nothing recognizable. One low raking light from the side catches the rim and the surface; everything else falls into deep shadow.
+
+Colour: near-black, #060404, fully desaturated and cold. The sheen on the water and the lit edge of the stone are dim pale grey, never white and never blue. No warm tone, no gold, no amber.
+
+Composition: portrait 4:3. The basin sits centred, filling roughly the middle third of the frame, with generous even darkness above, below and to both sides, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+
+Do not include: any text, any numerals, any people, hands, faces, reflections of figures, towels, cloths, jugs, soap, ripples, splashes, running water, fountains, doors, doorways, thresholds, keys, chains, doves, rays of light, candles, gavels, scales, or crosses.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 27 · A curva — the turn (what-is-repentance)
+
+**Ships as:** `public/graphics/covers/what-is-repentance.avif` + `.webp` — topic page cover, same treatment as §9.
+
+**Where it goes:** the topic page for `what-is-repentance`, rescue band. The emblem is a reversing arrow (`Undo2`) and the recomposition is the turn itself, seen from above: a track that goes one way, doubles back hard, and leaves in the other direction. Deliberately not footprints — §15 has those, and this would read as the same asset. The track is bare because repentance is a change of direction rather than an emotion, which is the correction this topic exists to make: no tears, no kneeling figure, no altar.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph looking straight down from above at a narrow track worn into pale dust across dark stone. The track comes in from the bottom edge of the frame, runs forward, then doubles back on itself in a single hard hairpin turn and leaves by the bottom edge again, heading the other way. Nothing else is in the frame. One low raking light from the side gives the worn track its edge; everything around it falls into deep shadow.
+
+Colour: near-black, #060404, fully desaturated and cold. The dust is dim pale grey, never white. No warm tone, no gold, no amber.
+
+Composition: portrait 4:3, a flat overhead view with no perspective and no horizon. The hairpin sits in the middle of the frame with generous even darkness on every side, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+
+Do not include: any text, any numerals, any people, figures, kneeling, hands, feet, footprints, shoes, tyre tracks, road markings, signs, arrows, crossroads, forks, maps, altars, churches, tears, candles, doves, rays of light, gavels, scales, or crosses.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 28 · A âncora — the anchor (how-can-i-be-saved)
+
+**Ships as:** `public/graphics/covers/how-can-i-be-saved.avif` + `.webp` — topic page cover, same treatment as §9.
+
+**Where it goes:** the topic page for `how-can-i-be-saved`, rescue band. The emblem is an anchor (`Anchor`) and it recomposes directly — Hebrews 6:19, hope as an anchor of the soul, sure and steadfast. Set and holding rather than lying loose on a deck: the topic's answer is that the reader's safety rests on something already fixed, and a decorative nautical anchor would make it a motif. The chain runs out of frame because what it is fastened to is not in the picture, which is the point.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of a heavy old iron anchor set into dark rock, one fluke buried and the shank angled upward, with a thick chain running taut from its ring out of the top of the frame. The iron is pitted and rough with age. One low raking light from the side catches the chain links and the edge of the shank; everything else falls into deep shadow.
+
+Colour: near-black, #060404, fully desaturated and cold. The iron is dull grey, never rusted orange, never polished and never brass. No warm tone, no gold, no amber.
+
+Composition: portrait 4:3. The anchor sits centred in the lower two thirds of the frame with the chain rising out of the top edge, and generous even darkness on every side, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+
+Do not include: any text, any numerals, any people, hands, divers, boats, ships, harbours, quays, ropes, nets, buoys, fish, seaweed, coral, bubbles, water surface, sky, horizon, nautical decoration, candles, gavels, scales, or crosses.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
 ```
 
 **▲ COPY TO HERE ▲**

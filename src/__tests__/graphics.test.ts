@@ -20,6 +20,7 @@ const kb = (...p: string[]) => statSync(join(ROOT, ...p)).size / 1024;
 const texture = strip(read("src", "components", "home", "band-texture.tsx"));
 const testOg = strip(read("src", "app", "[locale]", "(immersive)", "test", "opengraph-image.tsx"));
 const invitation = strip(read("src", "components", "invitation-screen.tsx"));
+const storyOg = strip(read("src", "app", "[locale]", "(content)", "testimony", "story", "route.tsx"));
 const topicCover = strip(read("src", "components", "learn", "topic-cover.tsx"));
 const topicPage = strip(read("src", "components", "learn", "topic-page.tsx"));
 const footer = strip(read("src", "components", "shared", "footer.tsx"));
@@ -68,8 +69,11 @@ describe("what is served, and what is not", () => {
   it("keeps the served set small", () => {
     // These sit behind content below the fold. A texture that costs more than
     // the page it decorates has stopped being a background.
+    // The two .jpg plates are counted too: satori decodes neither AVIF nor
+    // WebP, so each OG surface that wants a photograph ships a third copy of
+    // it. Left out of this total, they were weight the budget could not see.
     const total = ["tally", "paper", "fingerprint", "door-decision"].flatMap((n) => [`${n}.avif`, `${n}.webp`])
-      .concat("door.jpg")
+      .concat("door.jpg", "fingerprint.jpg")
       .reduce((sum, f) => sum + kb("public", "graphics", f), 0);
     expect(total, `served graphics total ${total.toFixed(0)} KB`).toBeLessThan(500);
   });
@@ -345,5 +349,42 @@ describe("the footer's closing verse", () => {
     // absolutely-positioned background at the top of a stacking context
     // paints above static content, not below it.
     expect(footer).toMatch(/relative z-\[1\] mx-auto max-w-2xl/);
+  });
+});
+
+describe("the testimony story card", () => {
+  it("reads the fingerprint from disk rather than fetching it", () => {
+    // Same rule the /test plate learned: satori resolves <img src> over the
+    // network, and at prerender that is a request to a host not serving yet.
+    expect(storyOg).toMatch(
+      /readFile\(join\(process\.cwd\(\), "public", "graphics", "fingerprint\.jpg"\)\)/,
+    );
+    expect(storyOg).toMatch(/data:image\/jpeg;base64/);
+    expect(storyOg).not.toMatch(/src=\{`https?:/);
+  });
+
+  it("survives the image and the score face being missing", () => {
+    // Both are decoration on a card whose words carry it. Absent, the reader
+    // gets a plainer record — never a broken one, and never no card at all.
+    expect(storyOg).toMatch(/printSrc && \(/);
+    expect(storyOg).toMatch(/scoreFont \? "BigShoulders" : "Geist"/);
+    expect(storyOg).toMatch(/allFonts\.length \? \{ fonts: allFonts \} : \{\}/);
+  });
+
+  it("carries the score face's licence beside it", () => {
+    /*
+     * Big Shoulders is OFL, and committing the .ttf to this repo IS
+     * redistribution — the licence requires its copyright notice to travel
+     * with the file. The notice names the upstream project so the next caller
+     * can find where the bytes came from.
+     */
+    const ofl = read("src", "lib", "fonts", "OFL.txt");
+    expect(ofl).toMatch(/SIL OPEN FONT LICENSE Version 1\.1/);
+    expect(ofl, "the notice must name the copyright holder").toMatch(
+      /Copyright 2019 The Big Shoulders Project Authors/,
+    );
+    expect(ofl, "the notice must name where the font came from").toMatch(
+      /github\.com\/xotypeco\/big_shoulders/,
+    );
   });
 });
