@@ -412,13 +412,15 @@ export function HomeShell({
             <span aria-hidden="true" className="h-px w-6 bg-red-500/40" />
           </div>
 
-          {/* Death counter. The daily 99,999 → 100,000 crossing does not shift
-              it: DeathCounter reserves minWidth 7ch and centres inside that
-              itself, so nothing is needed here. (On lg's left-aligned lockup
-              that internal centring means a short small-hours number floats
-              toward the middle of its reserve — visible for the first UTC
-              hours only, and the reserve is what keeps digit growth from
-              reflowing the lockup all day. Kept.)
+          {/* Death counter. The daily 99,999 → 100,000 crossing does not
+              shift the layout: DeathCounter reserves minWidth 7ch inline, and
+              alignment inside that reserve is this caller's — centred on the
+              centred mobile column, ranged left from lg with the lockup. The
+              old "kept" note here claimed the centring only showed in the
+              small hours; wrong, and the owner saw it: six digits plus a
+              narrow comma is always under 7ch, so the number floated off the
+              lockup's left edge all day. On lg the number now grows rightward
+              from a fixed left edge, which shifts nothing.
 
               Sized with clamp so the monument tracks the viewport instead of
               stepping at breakpoints — at 390px it is ~86px tall, at 1440
@@ -426,7 +428,7 @@ export function HomeShell({
               inside the left scrim's solid ground on every width measured. */}
           <DeathCounter
             fromMidnight
-            className="mt-4 font-score text-[clamp(4.5rem,22vw,7.5rem)] font-bold leading-none tabular-nums tracking-[0.01em] text-red-500 sm:mt-5 sm:text-[clamp(7.5rem,14vw,9.5rem)] lg:text-[clamp(10rem,14.5vw,13rem)]"
+            className="mt-4 text-center font-score text-[clamp(4.5rem,22vw,7.5rem)] font-bold leading-none tabular-nums tracking-[0.01em] text-red-500 sm:mt-5 sm:text-[clamp(7.5rem,14vw,9.5rem)] lg:text-left lg:text-[clamp(10rem,14.5vw,13rem)]"
             style={{
               textShadow:
                 "0 0 90px rgba(239,68,68,0.3), 0 0 220px rgba(239,68,68,0.14), 0 4px 60px rgba(0,0,0,0.85)",
