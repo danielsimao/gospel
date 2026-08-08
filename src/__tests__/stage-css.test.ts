@@ -194,6 +194,15 @@ describe("the colour spine, before the Law", () => {
    * wrapper, so "slice to the next wrapper" runs to end-of-file and silently
    * swallows the bands region — a guard that looks scoped and is not. It stops
    * at the first band instead.
+   *
+   * What this cannot prove, stated so nobody mistakes green for airtight: it
+   * reads source text, so it catches gold WRITTEN in a form the codebase uses.
+   * A colour computed at runtime, or an arbitrary near-gold hex nobody has
+   * used before (#D5A944), renders gold and matches nothing here. The hsl and
+   * oklch branches are a best effort at the same hue, not a proof. What it
+   * does prove is that no known gold token, and no gold-by-default component,
+   * reaches the visitor block through the render tree — which is how the
+   * regression actually arrived, twice.
    */
   /*
    * Every way this codebase can say gold, because matching only the hex is a
@@ -208,7 +217,7 @@ describe("the colour spine, before the Law", () => {
    * `rgba(212, 168, 67` appear in the tree.
    */
   const GOLD =
-    /#D4A843|rgba?\(\s*212\s*,\s*168\s*,\s*67|--color-gold|\b(?:text|bg|border|from|via|to|ring|shadow|fill|stroke|decoration|outline|accent|caret|divide)-gold\b/i;
+    /#D4A843|rgba?\(\s*212\s*,\s*168\s*,\s*67|hsla?\(\s*4[0-6]\b[^)]*\b6[0-9]%|oklch\([^)]*\b8[0-9]\.?\d*\s|--color-gold|\b(?:text|bg|border|from|via|to|ring|shadow|fill|stroke|decoration|outline|accent|caret|divide)-gold\b/i;
 
   /** Comments discuss gold constantly — "spent gold on the front door", "the
       gold band two hundred lines below". Only the code may be asserted on. */
@@ -216,37 +225,90 @@ describe("the colour spine, before the Law", () => {
     s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\{\/\*[\s\S]*?\*\/\}/g, "").replace(/\/\/.*$/gm, "");
 
   /**
-   * Components home-shell imports from the repo, by tag name.
+   * Repo modules a file imports, by the name it renders them under.
    *
-   * The guard reads one file, so gold moved into a child rendered inside the
-   * visitor block would pass it untouched — the most plausible way this
-   * regression comes back, since the block renders SelfRating. Resolving the
-   * import lets the child be read too.
+   * Named, default, and namespace imports all resolve, and a bare directory
+   * falls back to its index — a component reached through a barrel or brought
+   * in as a default export is exactly as visible on screen as a named one, so
+   * the resolver cannot be the thing that decides whether it gets checked.
    */
-  const importedPaths = new Map<string, string>();
-  for (const [, names, spec] of homeShell.matchAll(
-    /import\s+(?:type\s+)?\{([^}]+)\}\s+from\s+"(@\/[^"]+)"/g,
-  )) {
-    for (const raw of names.split(",")) {
-      const name = raw.replace(/^\s*type\s+/, "").split(/\s+as\s+/).pop()?.trim();
-      if (name && /^[A-Z]/.test(name)) importedPaths.set(name, spec.replace("@/", "src/"));
+  function importsOf(source: string): Map<string, string> {
+    const map = new Map<string, string>();
+    const add = (name: string | undefined, spec: string) => {
+      const clean = name?.replace(/^\s*type\s+/, "").split(/\s+as\s+/).pop()?.trim();
+      if (clean && /^[A-Z]/.test(clean)) map.set(clean, spec.replace("@/", "src/"));
+    };
+    for (const [, names, spec] of source.matchAll(
+      /import\s+(?:type\s+)?\{([^}]+)\}\s+from\s+"(@\/[^"]+)"/g,
+    )) {
+      for (const raw of names.split(",")) add(raw, spec);
     }
+    // default and namespace: `import X from "@/…"`, `import * as X from "@/…"`
+    for (const [, name, spec] of source.matchAll(
+      /import\s+(?:\*\s+as\s+)?([A-Za-z_$][\w$]*)\s*(?:,\s*\{[^}]*\})?\s+from\s+"(@\/[^"]+)"/g,
+    )) {
+      add(name, spec);
+    }
+    return map;
   }
 
-  /** Source of every repo component rendered inside `block`, comments stripped. */
-  function renderedChildSources(block: string): Array<{ name: string; source: string }> {
-    const out: Array<{ name: string; source: string }> = [];
-    for (const tag of new Set([...block.matchAll(/<([A-Z][A-Za-z0-9]*)/g)].map((m) => m[1]))) {
-      const rel = importedPaths.get(tag);
-      if (!rel) continue;
-      for (const ext of [".tsx", ".ts"]) {
-        const file = join(ROOT, rel + ext);
-        if (!existsSync(file)) continue;
-        out.push({ name: tag, source: stripComments(readFileSync(file, "utf8")) });
-        break;
-      }
+  function resolve(rel: string): string | null {
+    for (const cand of [`${rel}.tsx`, `${rel}.ts`, `${rel}/index.tsx`, `${rel}/index.ts`]) {
+      const file = join(ROOT, cand);
+      if (existsSync(file)) return file;
     }
-    return out;
+    return null;
+  }
+
+  /**
+   * Components whose DEFAULT is gold, so absence of a gold token proves nothing.
+   *
+   * `ui/button.tsx` declares `defaultVariants: { variant: "gold" }` and the
+   * component signature repeats `variant = "gold"` — a bare `<Button>` renders
+   * gold while its call site contains no gold string at all. Scanning
+   * button.tsx's own source is the wrong answer too: it legitimately defines
+   * every variant for callers elsewhere, so it would fail for the whole app.
+   * The honest check is at the usage: inside this block, a Button must name a
+   * variant, and that variant may not be gold.
+   */
+  const GOLD_BY_DEFAULT = new Set(["Button"]);
+
+  /**
+   * Every repo component rendered inside `block`, transitively.
+   *
+   * One hop was not enough: a child that renders a grandchild carrying gold
+   * would pass. Recursion follows only tags that are actually RENDERED, so a
+   * shared primitive enters the set when someone puts it on screen and not
+   * merely because it exists — which is what keeps button.tsx out of a scan it
+   * would always fail.
+   */
+  function renderedTree(block: string, source: string) {
+    const seen = new Set<string>();
+    const out: Array<{ name: string; source: string; usedIn: string }> = [];
+    const goldDefaultUses: Array<{ name: string; tag: string; usedIn: string }> = [];
+
+    const walk = (markup: string, imports: Map<string, string>, where: string, depth: number) => {
+      if (depth > 6) return;
+      for (const tag of new Set([...markup.matchAll(/<([A-Z][A-Za-z0-9]*)/g)].map((m) => m[1]))) {
+        if (GOLD_BY_DEFAULT.has(tag)) {
+          for (const [, attrs] of markup.matchAll(new RegExp(`<${tag}\\b([^>]*)>`, "g"))) {
+            goldDefaultUses.push({ name: tag, tag: attrs, usedIn: where });
+          }
+          continue;
+        }
+        const rel = imports.get(tag);
+        if (!rel) continue;
+        const file = resolve(rel);
+        if (!file || seen.has(file)) continue;
+        seen.add(file);
+        const childSource = stripComments(readFileSync(file, "utf8"));
+        out.push({ name: tag, source: childSource, usedIn: where });
+        walk(childSource, importsOf(childSource), tag, depth + 1);
+      }
+    };
+
+    walk(block, importsOf(source), "the visitor block", 0);
+    return { components: out, goldDefaultUses };
   }
 
   function stageBlock(stage: JourneyStage): string {
@@ -268,19 +330,40 @@ describe("the colour spine, before the Law", () => {
     ).not.toMatch(GOLD);
   });
 
-  it("spends none in the components that block renders either", () => {
+  it("spends none in the components that block renders, at any depth", () => {
     // Where the regression would actually hide: the markup stays neutral and
-    // the gold moves one file down, into a child nobody re-reads.
-    const children = renderedChildSources(stageBlock("visitor"));
+    // the gold moves a file or two down, into a child nobody re-reads.
+    const { components } = renderedTree(stageBlock("visitor"), homeShell);
     expect(
-      children.map((c) => c.name),
+      components.map((c) => c.name),
       "no repo component resolved inside the visitor block — the import scan broke",
     ).not.toHaveLength(0);
-    for (const { name, source } of children) {
+    for (const { name, source, usedIn } of components) {
       expect(
         source,
-        `${name} renders inside the visitor block and spends gold before the Law`,
+        `${name} (rendered by ${usedIn}) spends gold before the Law`,
       ).not.toMatch(GOLD);
+    }
+  });
+
+  it("lets no gold-by-default component in without naming a quieter variant", () => {
+    /*
+     * The vector no token scan can see. `<Button>` with no variant IS gold —
+     * ui/button.tsx defaults it — so the call site reads perfectly neutral
+     * while the screen does not. Checked at the usage rather than in
+     * button.tsx, which defines every variant and would fail for the whole app.
+     */
+    const { goldDefaultUses } = renderedTree(stageBlock("visitor"), homeShell);
+    for (const { name, tag, usedIn } of goldDefaultUses) {
+      const variant = tag.match(/variant=(?:"([^"]+)"|\{"([^"]+)"\})/);
+      expect(
+        variant?.[1] ?? variant?.[2],
+        `<${name}> in ${usedIn} names no variant, and its default is gold — before the Law`,
+      ).toBeDefined();
+      expect(
+        variant?.[1] ?? variant?.[2],
+        `<${name}> in ${usedIn} is gold before the Law`,
+      ).not.toBe("gold");
     }
   });
 
