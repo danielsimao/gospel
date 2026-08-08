@@ -49,6 +49,12 @@ describe("the shared day ticket body", () => {
     expect(track, "the Read door stopped using the shared day").toMatch(
       /const today = currentDay\(readingDays, readingDone\)/,
     );
+    // Both ends of "cannot disagree": the door resolves its day through
+    // currentDay, and so does the ticket beside it. Without this second half
+    // the pin passes while the body quietly goes back to picking its own day.
+    expect(ticket, "the ticket stopped resolving its day through currentDay").toMatch(
+      /const day = currentDay\(days, completed\)/,
+    );
     expect(track).toMatch(/today \? today\.passageUrl : readingLabels\.continueUrl/);
     expect(track).toMatch(/readingLabels\.readDay\.replace\("\{passage\}", today\.passage\)/);
     expect(track, "a hardcoded chapter link came back").not.toMatch(/messages\.readLink/);
