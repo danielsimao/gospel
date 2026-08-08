@@ -55,6 +55,22 @@ describe("the questions band's cards", () => {
     expect(band).toMatch(/<TopicEmblem slug={q\.slug}/);
   });
 
+  it("lifts on hover and answers back with the topic's own standfirst", () => {
+    /*
+     * The 2px lift is the page's shared pressable-surface move (the answer
+     * rows wear the same one). The subtitle is the topic page's standfirst
+     * reused — no homepage copy of its own to drift — collapsed only where a
+     * hover exists AND the card is a portrait column: the media query is
+     * capability, not width, so a touch tablet at desktop size keeps the
+     * always-on line rather than a reveal it cannot perform.
+     */
+    expect(band).toMatch(/hover:-translate-y-0\.5/);
+    expect(band).toMatch(/q\.subtitle/);
+    expect(band).toMatch(/hover:hover\)_and_\(min-width:640px\)\]:max-h-0/);
+    expect(band).toMatch(/group-hover:max-h-16/);
+    expect(band).toMatch(/group-focus-visible:max-h-16/);
+  });
+
   it("hides nothing by width — three cards reach every viewport", () => {
     /*
      * The six-question list needed a mobile cut (four of six); three cards

@@ -264,6 +264,8 @@
     "subtitle": "A week in the Gospel of John — meeting Jesus for yourself.",
     "progressLabel": "Day {current} of {total}",
     "dayLabel": "Day",
+    "dayProgress": "Day {n} of {total}",
+    "continueLabel": "Continue reading",
     "markReadLabel": "Mark as read",
     "completedLabel": "Completed",
     "allCompleteHeading": "Well done.",

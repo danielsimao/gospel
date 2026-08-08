@@ -53,14 +53,15 @@ interface HomeData {
   };
   meta: { title: string; description: string };
   topicSlugs: string[];
-  /** Slug + title for every learn topic; the questions band resolves its own. */
-  topics: Array<{ slug: string; title: string }>;
+  /** Slug, title and standfirst for every learn topic; the questions band
+      resolves its own and reuses the subtitle as its cards' hover-reveal. */
+  topics: Array<{ slug: string; title: string; subtitle?: string }>;
   /**
    * All seven reading days. Passed whole rather than pre-selected: which day a
    * reader is on comes from localStorage, so only the client can pick.
    */
-  readingDays: Array<{ title: string; passage: string; keyVerse: string }>;
-  readingLabels: { dayLabel: string; complete: string };
+  readingDays: Array<{ title: string; passage: string; keyVerse: string; keyVerseRef: string }>;
+  readingLabels: { dayProgress: string; continueLabel: string; complete: string };
   allTopicsLabel: string;
   allPostsLabel: string;
 }
@@ -73,14 +74,19 @@ async function getHomeData(locale: Locale): Promise<HomeData> {
   const messages = await import(`@/messages/${locale}.json`);
   const data = messages.default;
   const topics = (data.learn?.topics ?? []).map(
-    (t: { slug: string; title: string }) => ({ slug: t.slug, title: t.title }),
+    (t: { slug: string; title: string; subtitle?: string }) => ({
+      slug: t.slug,
+      title: t.title,
+      subtitle: t.subtitle,
+    }),
   );
   const topicSlugs = topics.map((t: { slug: string }) => t.slug);
   const readingDays = (data.readingPlan?.days ?? []).map(
-    (d: { title: string; passage: string; keyVerse: string }) => ({
+    (d: { title: string; passage: string; keyVerse: string; keyVerseRef: string }) => ({
       title: d.title,
       passage: d.passage,
       keyVerse: d.keyVerse,
+      keyVerseRef: d.keyVerseRef,
     }),
   );
   return {
@@ -93,7 +99,8 @@ async function getHomeData(locale: Locale): Promise<HomeData> {
     topics,
     readingDays,
     readingLabels: {
-      dayLabel: data.readingPlan.dayLabel,
+      dayProgress: data.readingPlan.dayProgress,
+      continueLabel: data.readingPlan.continueLabel,
       complete: data.home.journey.reading.descComplete,
     },
     allTopicsLabel: data.learn.allTopicsLabel,

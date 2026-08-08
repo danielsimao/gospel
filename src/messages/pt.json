@@ -264,6 +264,8 @@
     "subtitle": "Uma semana no Evangelho de João — conhece Jesus por ti mesmo.",
     "progressLabel": "Dia {current} de {total}",
     "dayLabel": "Dia",
+    "dayProgress": "Dia {n} de {total}",
+    "continueLabel": "Continua a ler",
     "markReadLabel": "Marcar como lido",
     "completedLabel": "Concluído",
     "allCompleteHeading": "Muito bem.",

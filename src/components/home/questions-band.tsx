@@ -9,8 +9,10 @@ interface QuestionsBandProps {
   locale: Locale;
   label: string;
   allLabel: string;
-  /** Every learn topic, so the band can resolve its slugs to titles. */
-  topics: Array<{ slug: string; title: string }>;
+  /** Every learn topic, so the band can resolve its slugs to titles. The
+      subtitle is the topic page's own standfirst, reused as the card's
+      hover-reveal — no homepage copy of its own to drift. */
+  topics: Array<{ slug: string; title: string; subtitle?: string }>;
 }
 
 /**
@@ -36,13 +38,13 @@ interface QuestionsBandProps {
  * generous dark space around their subjects (see PROMPTS.md §§9–11, 15).
  */
 export function QuestionsBand({ locale, label, allLabel, topics }: QuestionsBandProps) {
-  const bySlug = new Map(topics.map((t) => [t.slug, t.title]));
+  const bySlug = new Map(topics.map((t) => [t.slug, t]));
   // A slug with no title means the topic was renamed. The unit test fails the
   // build for that, so this only ever drops one at runtime if messages and code
   // ship out of step — better a shorter row than a card with no words in it.
   const questions = HOME_QUESTION_SLUGS.flatMap((slug) => {
-    const title = bySlug.get(slug);
-    return title ? [{ slug: slug as string, title }] : [];
+    const topic = bySlug.get(slug);
+    return topic ? [{ slug: slug as string, title: topic.title, subtitle: topic.subtitle }] : [];
   });
 
   if (questions.length === 0) return null;
@@ -56,7 +58,9 @@ export function QuestionsBand({ locale, label, allLabel, topics }: QuestionsBand
             <Link
               key={q.slug}
               href={`/${locale}/learn/${q.slug}`}
-              className="group relative block aspect-[2.6/1] overflow-hidden rounded-2xl border border-white/[0.08] transition-colors hover:border-white/20 sm:aspect-[3/4]"
+              // The 2px hover lift the answer rows wear — every pressable
+              // surface on this page moves the same way.
+              className="group relative block aspect-[2.6/1] overflow-hidden rounded-2xl border border-white/[0.08] transition-[border-color,transform] duration-300 ease-[var(--ease-out-strong)] hover:-translate-y-0.5 hover:border-white/20 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:aspect-[3/4]"
             >
               {hasTopicCover(q.slug) ? (
                 <picture>
@@ -104,11 +108,29 @@ export function QuestionsBand({ locale, label, allLabel, topics }: QuestionsBand
                 className="absolute inset-0 bg-gradient-to-t from-[#060404] from-[10%] via-[#060404]/45 via-[45%] to-transparent"
               />
               <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3.5">
-                <span
-                  className="text-[15px] font-bold leading-snug text-[#D4A843]"
-                  style={{ textShadow: "0 0 20px rgba(212,168,67,0.4), 0 2px 10px rgba(0,0,0,0.7)" }}
-                >
-                  {q.title}
+                <span className="min-w-0">
+                  <span
+                    className="block text-[17.5px] font-bold leading-[1.2] tracking-[-0.01em] text-[#D4A843]"
+                    style={{ textShadow: "0 0 20px rgba(212,168,67,0.4), 0 2px 10px rgba(0,0,0,0.7)" }}
+                  >
+                    {q.title}
+                  </span>
+                  {/*
+                   * The topic's own standfirst, answering the question back.
+                   *
+                   * Visible by default — the wide phone card has the room, and
+                   * a device that cannot hover must never be shown a reveal it
+                   * cannot perform. Only where a hover exists AND the card is
+                   * a portrait column (sm+) does it collapse and open on
+                   * hover/focus; that reveal is itself the affordance, and the
+                   * media query is capability, not width, so a touch tablet at
+                   * desktop size keeps the always-on line.
+                   */}
+                  {q.subtitle && (
+                    <span className="mt-1 block max-h-16 text-[12px] leading-snug text-white/60 opacity-100 transition-[max-height,opacity] duration-500 ease-[var(--ease-out-strong)] motion-reduce:transition-none [@media(hover:hover)_and_(min-width:640px)]:max-h-0 [@media(hover:hover)_and_(min-width:640px)]:overflow-hidden [@media(hover:hover)_and_(min-width:640px)]:opacity-0 [@media(hover:hover)_and_(min-width:640px)]:group-hover:max-h-16 [@media(hover:hover)_and_(min-width:640px)]:group-hover:opacity-100 [@media(hover:hover)_and_(min-width:640px)]:group-focus-visible:max-h-16 [@media(hover:hover)_and_(min-width:640px)]:group-focus-visible:opacity-100">
+                      {q.subtitle}
+                    </span>
+                  )}
                 </span>
                 <span
                   aria-hidden="true"

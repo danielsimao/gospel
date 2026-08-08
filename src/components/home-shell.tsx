@@ -52,9 +52,9 @@ interface HomeShellProps {
   home: HomeMessages;
   locale: Locale;
   topicSlugs: string[];
-  topics: Array<{ slug: string; title: string }>;
+  topics: Array<{ slug: string; title: string; subtitle?: string }>;
   readingDays: ReadingDay[];
-  readingLabels: { dayLabel: string; complete: string };
+  readingLabels: { dayProgress: string; continueLabel: string; complete: string };
   /** Reused from the learn hub and the blog index rather than restated here. */
   allTopicsLabel: string;
   allPostsLabel: string;
@@ -850,7 +850,8 @@ export function HomeShell({
             <ReadingBand
               locale={locale}
               label={home.journey.reading.label}
-              dayLabel={readingLabels.dayLabel}
+              dayProgress={readingLabels.dayProgress}
+              continueLabel={readingLabels.continueLabel}
               completeDescription={readingLabels.complete}
               days={readingDays}
               completed={journey.readingDone}
