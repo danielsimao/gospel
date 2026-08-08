@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { JOURNEY_STAGES, type JourneyStage } from "@/lib/journey-storage";
 
@@ -195,7 +195,59 @@ describe("the colour spine, before the Law", () => {
    * swallows the bands region — a guard that looks scoped and is not. It stops
    * at the first band instead.
    */
-  const GOLD = /#D4A843/;
+  /*
+   * Every way this codebase can say gold, because matching only the hex is a
+   * guard with four doors left open. All four forms are in live use here:
+   *
+   *   #D4A843               globals.css:10 and most components
+   *   rgba(212,168,67,…)    verdict-screen, invitation-screen, questions-band
+   *   --color-gold          globals.css:10 defines it
+   *   to-gold / text-gold   invitation-screen:95 uses the utility
+   *
+   * Spacing is tolerated in the rgb form because both `rgba(212,168,67` and
+   * `rgba(212, 168, 67` appear in the tree.
+   */
+  const GOLD =
+    /#D4A843|rgba?\(\s*212\s*,\s*168\s*,\s*67|--color-gold|\b(?:text|bg|border|from|via|to|ring|shadow|fill|stroke|decoration|outline|accent|caret|divide)-gold\b/i;
+
+  /** Comments discuss gold constantly — "spent gold on the front door", "the
+      gold band two hundred lines below". Only the code may be asserted on. */
+  const stripComments = (s: string) =>
+    s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\{\/\*[\s\S]*?\*\/\}/g, "").replace(/\/\/.*$/gm, "");
+
+  /**
+   * Components home-shell imports from the repo, by tag name.
+   *
+   * The guard reads one file, so gold moved into a child rendered inside the
+   * visitor block would pass it untouched — the most plausible way this
+   * regression comes back, since the block renders SelfRating. Resolving the
+   * import lets the child be read too.
+   */
+  const importedPaths = new Map<string, string>();
+  for (const [, names, spec] of homeShell.matchAll(
+    /import\s+(?:type\s+)?\{([^}]+)\}\s+from\s+"(@\/[^"]+)"/g,
+  )) {
+    for (const raw of names.split(",")) {
+      const name = raw.replace(/^\s*type\s+/, "").split(/\s+as\s+/).pop()?.trim();
+      if (name && /^[A-Z]/.test(name)) importedPaths.set(name, spec.replace("@/", "src/"));
+    }
+  }
+
+  /** Source of every repo component rendered inside `block`, comments stripped. */
+  function renderedChildSources(block: string): Array<{ name: string; source: string }> {
+    const out: Array<{ name: string; source: string }> = [];
+    for (const tag of new Set([...block.matchAll(/<([A-Z][A-Za-z0-9]*)/g)].map((m) => m[1]))) {
+      const rel = importedPaths.get(tag);
+      if (!rel) continue;
+      for (const ext of [".tsx", ".ts"]) {
+        const file = join(ROOT, rel + ext);
+        if (!existsSync(file)) continue;
+        out.push({ name: tag, source: stripComments(readFileSync(file, "utf8")) });
+        break;
+      }
+    }
+    return out;
+  }
 
   function stageBlock(stage: JourneyStage): string {
     const open = homeShell.indexOf(`<div data-slot="journey-stage" data-stage="${stage}">`);
@@ -211,14 +263,56 @@ describe("the colour spine, before the Law", () => {
 
   it("spends no gold on a reader the Law has not met", () => {
     expect(
-      stageBlock("visitor"),
+      stripComments(stageBlock("visitor")),
       "gold appeared in the visitor block — METHOD.md: do not spend it early",
     ).not.toMatch(GOLD);
   });
 
+  it("spends none in the components that block renders either", () => {
+    // Where the regression would actually hide: the markup stays neutral and
+    // the gold moves one file down, into a child nobody re-reads.
+    const children = renderedChildSources(stageBlock("visitor"));
+    expect(
+      children.map((c) => c.name),
+      "no repo component resolved inside the visitor block — the import scan broke",
+    ).not.toHaveLength(0);
+    for (const { name, source } of children) {
+      expect(
+        source,
+        `${name} renders inside the visitor block and spends gold before the Law`,
+      ).not.toMatch(GOLD);
+    }
+  });
+
   it("still lets gold through after the verdict, so this guard is not vacuous", () => {
-    // If the committed block ever loses its gold, the assertion above stops
+    // If the committed block ever loses its gold, the assertions above stop
     // proving anything and this fails to say so.
-    expect(stageBlock("committed")).toMatch(GOLD);
+    expect(stripComments(stageBlock("committed"))).toMatch(GOLD);
+  });
+
+  it("recognises every form this codebase writes gold in", () => {
+    /*
+     * The guard's own coverage, pinned. A matcher that only knew the hex
+     * passed while `to-gold`, `rgba(212,168,67…)` and `var(--color-gold)` all
+     * walked straight through it — so the alternation is asserted directly
+     * rather than trusted.
+     */
+    for (const form of [
+      "#D4A843",
+      "#d4a843",
+      "rgba(212,168,67,0.3)",
+      "rgba(212, 168, 67, 0.3)",
+      "rgb(212,168,67)",
+      "var(--color-gold)",
+      "text-gold",
+      "to-gold",
+      "border-gold/30",
+    ]) {
+      expect(form, `the gold matcher does not recognise ${form}`).toMatch(GOLD);
+    }
+    // And it must not fire on prose or on unrelated colours.
+    for (const safe of ["text-white/70", "the gold band below", "#D4A844", "goldilocks"]) {
+      expect(safe, `the gold matcher false-positives on ${safe}`).not.toMatch(GOLD);
+    }
   });
 });
