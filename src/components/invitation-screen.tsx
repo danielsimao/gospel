@@ -30,6 +30,33 @@ interface InvitationScreenProps {
  */
 const COMMITTED_HOLD_MS = 2000;
 
+/*
+ * How long the three responses refuse input after the screen arrives.
+ *
+ * The verdict says "click anywhere, or press space" and grace keeps that
+ * contract for another eight sections — a dozen screens teach the reader to
+ * tap the middle of the page to go on. Then this screen mounts with the
+ * commitment button in exactly that spot, at opacity 0 for its first 350ms
+ * and fading in over 600 more — and clickable the whole time. Reproduced
+ * with an automated walk at a reader's own cadence: taps advanced grace,
+ * "So what now?", and the very next centre tap — 400ms in, buttons still
+ * invisible — recorded "committed". A profession of faith the reader never
+ * saw, on the one screen the method requires to be a free, visible choice.
+ *
+ * This component already knows the rule it was breaking: onwardReady "gates
+ * the element rather than its opacity — a button at opacity 0 is an
+ * invisible click target". The responses kept their entrance fade, so they
+ * get the other half: pointer-events off and the handler inert until the
+ * entrance has finished. 950ms is that entrance — the 350ms delay plus the
+ * 600ms fade — so the guard ends at the exact frame the buttons are fully
+ * there, and a change to one without the other fails the test that pins
+ * both.
+ *
+ * A deliberate early tap loses nothing: it lands on nothing, and the next
+ * tap — on a button the reader can now see — works.
+ */
+const CHOICE_GUARD_MS = 950;
+
 export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
   const { invitation } = messages;
   const state = useGameState();
@@ -50,6 +77,13 @@ export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
    */
   const answeredAtMount = useRef(invitationResponse !== null);
   const [onwardReady, setOnwardReady] = useState(answeredAtMount.current);
+
+  /* The choice arms when its entrance completes — see CHOICE_GUARD_MS. */
+  const [choicesArmed, setChoicesArmed] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setChoicesArmed(true), CHOICE_GUARD_MS);
+    return () => clearTimeout(t);
+  }, []);
   useEffect(() => {
     if (!invitationResponse || answeredAtMount.current) return;
     /*
@@ -73,6 +107,9 @@ export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
   }, [invitationResponse]);
 
   function handleResponse(response: InvitationResponse) {
+    // Belt to the pointer-events braces: covers focus-and-Enter during the
+    // entrance and any tap that slips a frame past the class toggle.
+    if (!choicesArmed) return;
     const totalTime = Date.now() - state.startedAt;
     trackInvitationResponse(response, totalTime);
     saveInvitationResponse(response);
@@ -222,7 +259,7 @@ export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.35 }}
-                className="mt-9 flex flex-col gap-2.5"
+                className={`mt-9 flex flex-col gap-2.5 ${choicesArmed ? "" : "pointer-events-none"}`}
               >
                 <Button variant="gold" mist onClick={() => handleResponse("committed")} className="w-full">
                   {invitation.responses.committed}
