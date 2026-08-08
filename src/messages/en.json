@@ -1515,6 +1515,7 @@
       "no": "No"
     },
     "testPreview": "6 questions · 2 minutes",
+    "testHint": "Tap your answer — question 1 of 6",
     "questionsLabel": "Questions people ask",
     "blogCard": {
       "eyebrow": "From the blog"
@@ -1523,6 +1524,7 @@
       "eyebrow": "The score so far",
       "failedCaption": "failed",
       "passedCaption": "passed",
+      "barCaption": "{n} stood trial · one walked free",
       "liveBadge": "live",
       "whoCta": "Find out who",
       "testCta": "Take the test — see how you do"

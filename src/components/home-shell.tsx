@@ -756,7 +756,10 @@ export function HomeShell({
                 messages={home.selfRating}
                 ariaLabel={home.selfRatingQuestion}
                 onSelect={handleSelfRating}
-                className="mt-8"
+                /* sm:max-w-2xl, the bands' own width — measured at max-w-xl
+                   the middle button wrapped "Mais ou menos" onto two lines
+                   while its neighbours held one. */
+                className="mt-8 w-full max-w-sm sm:max-w-2xl"
               />
 
               {/* What a tap does, in the step bar the test itself uses. Cold
@@ -767,17 +770,30 @@ export function HomeShell({
                   aria-hidden="true"
                   className="flex h-[3px] w-40 items-center gap-1.5 sm:w-48"
                 >
+                  {/* The first segment pulses — the score band's LIVE-dot
+                      treatment, same reduced-motion fallback. Lit alone it
+                      read as decoration; breathing, it reads as the step that
+                      is live and waiting on this reader. */}
                   {Array.from({ length: TOTAL_QUESTIONS }).map((_, i) => (
                     <span
                       key={i}
                       className={`h-[3px] flex-1 rounded-full ${
-                        i === 0 ? "bg-white/70" : "bg-white/[0.14]"
+                        i === 0
+                          ? "bg-white/70 animate-pulse motion-reduce:animate-none"
+                          : "bg-white/[0.14]"
                       }`}
                     />
                   ))}
                 </div>
                 <p className="font-mono text-[10px] uppercase tracking-[1.6px] text-white/50">
                   {home.testPreview}
+                </p>
+                {/* The instruction, in gold's caption register — not a gold
+                    control. It converts the section from statement to
+                    expectation, and it is literally true: the tap IS the
+                    answer to question 1 (see handleSelfRating). */}
+                <p className="font-mono text-[10px] uppercase tracking-[1.6px] text-[#D4A843]/75">
+                  {home.testHint}
                 </p>
               </div>
 

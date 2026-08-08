@@ -247,16 +247,60 @@ describe("the band and its doors", () => {
     expect(estimateTestTakerCount(0)).toBe(ESTIMATE_BASE);
   });
 
-  it("dresses the doors as doors", () => {
-    // Two house buttons, unequal on purpose: the gold one is the band's
-    // reason to exist, the ghost is for whoever hears the scoreline as a
-    // challenge. The house component and not bespoke pills — every other
-    // door on the page presses and springs, and these must move with them.
+  it("gives the band one door, and keeps the test as a quiet line", () => {
+    /*
+     * Two buttons of similar weight split the band's question in two — and
+     * the ask directly above this band already IS the test's entry (question
+     * 1 answers on the homepage). So gold owns the band, and the test door
+     * demotes to the underlined sentence-case line the journey stages use for
+     * retake. It must never grow back into a competing button.
+     */
     const who = band.slice(band.indexOf("learn/who-is-jesus"), band.indexOf("learn/who-is-jesus") + 350);
     expect(who).toMatch(/variant="gold"/);
     expect(who).toMatch(/ButtonArrow/);
     const test = band.slice(band.indexOf("/test`"), band.indexOf("/test`") + 350);
-    expect(test).toMatch(/variant="ghost"/);
+    expect(test).toMatch(/underline decoration-white\/15/);
+    expect(test, "the test door grew back into a button").not.toMatch(/<Button|variant=/);
+  });
+
+  it("draws the verdict as a bar: a wall of red, one gold stroke", () => {
+    /*
+     * The tally texture's own documented idea — "the single gold stroke is
+     * drawn in code on top, so the count stays honest" (PROMPTS.md §1) —
+     * promoted from background to instrument. The stroke breathes on the LIVE
+     * pulse and holds still, visible, under reduced motion.
+     */
+    expect(band).toMatch(/from-red-400\/50 to-red-400\/25/);
+    const stroke = band.slice(band.indexOf("from-red-400/50"), band.indexOf("from-red-400/50") + 400);
+    expect(stroke).toMatch(/bg-\[#D4A843\]/);
+    expect(stroke).toMatch(/animate-pulse motion-reduce:animate-none/);
+  });
+
+  it("keeps the caption's count in step with the numeral", () => {
+    /*
+     * The bar caption restates the live count in words — a second copy of a
+     * number that moves. Every path that writes the numeral goes through one
+     * function that writes both, or the band contradicts itself in one
+     * breath: the score climbing while the sentence below it holds the old
+     * figure.
+     */
+    expect(band).toMatch(/const writeCount = \(value: string\) => \{/);
+    // Exactly one numeral write — writeCount's own — so no path can update
+    // the score without the caption hearing about it.
+    expect(band.match(/el\.textContent =/g)?.length, "a numeral write bypasses the caption").toBe(1);
+    expect(band).toMatch(/captionCountRef/);
+    // The caption is template-driven, so the locales control the wording.
+    expect(band).toMatch(/messages\.barCaption\.split\("\{n\}"\)/);
+    for (const [locale, home] of [
+      ["en", en.home],
+      ["pt", pt.home],
+    ] as const) {
+      expect(home.passedBand.barCaption, `${locale} lost the bar caption`).toContain("{n}");
+    }
+    // Mono register, not the score face — and not the numerals' own tracking,
+    // which the same-size test above counts exactly twice.
+    const caption = band.slice(band.indexOf("barCaption"), band.indexOf("barCaption") + 300);
+    expect(caption).not.toMatch(/font-score/);
   });
 });
 
