@@ -121,16 +121,18 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
             skeptic after reading, so it sits directly under the primary. */}
         <div className="mt-5">
           <p className="text-sm leading-relaxed text-white/60">{messages.talkLabel}</p>
+          {/* The shared pressable-row idiom — quiet card frame, 2px lift,
+              arrow slide. */}
           <a
             href={messages.talkUrl}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackNextStepsActionClicked("talk", "thinking")}
-            className="mt-2 flex min-h-[44px] items-center gap-3 rounded-lg border border-white/[0.08] px-4 py-2.5 text-sm text-white/70 transition-colors hover:border-[#D4A843]/25 hover:text-[#D4A843]/80"
+            className="group mt-2 flex min-h-[48px] items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-sm font-semibold text-white/75 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-[#D4A843]/35 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
           >
             <MessageCircle className="size-4 shrink-0 text-white/50" aria-hidden="true" />
             <span className="flex-1">{messages.talkLink}</span>
-            <span aria-hidden="true" className="text-white/40">&rarr;</span>
+            <span aria-hidden="true" className="text-white/40 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
           </a>
         </div>
       </m.div>
@@ -144,24 +146,25 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
       >
         <BandHeader label={messages.bands.deeper} tone="dim" />
 
-        <div className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+        {/* The same quiet card rows the committed track wears. */}
+        <div className="flex flex-col gap-2">
           <Link
             href={`/${locale}/learn`}
             onClick={() => trackNextStepsActionClicked("learn", "thinking")}
-            className="flex min-h-[52px] items-center gap-3 px-1 py-3 text-sm text-white/60 transition-colors hover:text-white/90"
+            className="group flex min-h-[48px] items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-sm font-semibold text-white/70 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-white/25 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
           >
             <Compass className="size-4 shrink-0 text-white/40" aria-hidden="true" />
             <span className="flex-1">{messages.learnLinkLabel}</span>
-            <span aria-hidden="true" className="text-white/30">&rarr;</span>
+            <span aria-hidden="true" className="text-white/30 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
           </Link>
           <Link
             href={`/${locale}/reading-plan`}
             onClick={() => trackNextStepsActionClicked("reading_plan", "thinking")}
-            className="flex min-h-[52px] items-center gap-3 px-1 py-3 text-sm text-white/60 transition-colors hover:text-white/90"
+            className="group flex min-h-[48px] items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-sm font-semibold text-white/70 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-white/25 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
           >
             <CalendarDays className="size-4 shrink-0 text-white/40" aria-hidden="true" />
             <span className="flex-1">{messages.readingPlanLabel}</span>
-            <span aria-hidden="true" className="text-white/30">&rarr;</span>
+            <span aria-hidden="true" className="text-white/30 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
           </Link>
         </div>
       </m.div>

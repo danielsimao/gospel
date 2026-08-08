@@ -18,9 +18,18 @@ interface NextStepsClientProps {
   };
   shareMessages: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
   locale: Locale;
+  /** The plan's days + ticket labels, for the committed track's Read card. */
+  readingDays: Parameters<typeof TrackCommitted>[0]["readingDays"];
+  readingLabels: Parameters<typeof TrackCommitted>[0]["readingLabels"];
 }
 
-export function NextStepsClient({ nextStepsMessages, shareMessages, locale }: NextStepsClientProps) {
+export function NextStepsClient({
+  nextStepsMessages,
+  shareMessages,
+  locale,
+  readingDays,
+  readingLabels,
+}: NextStepsClientProps) {
   const journey = useJourney();
   const { stage, ready } = journey;
   const router = useRouter();
@@ -84,7 +93,13 @@ export function NextStepsClient({ nextStepsMessages, shareMessages, locale }: Ne
       <script dangerouslySetInnerHTML={{ __html: STAGE_PREPAINT_SCRIPT }} />
       <PageShell>
         <div data-slot="next-steps-track" data-track="committed">
-          <TrackCommitted messages={nextStepsMessages.trackA} shareMessages={shareMessages} locale={locale} />
+          <TrackCommitted
+            messages={nextStepsMessages.trackA}
+            shareMessages={shareMessages}
+            locale={locale}
+            readingDays={readingDays}
+            readingLabels={readingLabels}
+          />
         </div>
         <div data-slot="next-steps-track" data-track="thinking">
           <TrackThinking messages={nextStepsMessages.trackB} locale={locale} />
