@@ -23,6 +23,9 @@ const invitation = strip(read("src", "components", "invitation-screen.tsx"));
 const storyOg = strip(read("src", "app", "[locale]", "(content)", "testimony", "story", "route.tsx"));
 const topicCover = strip(read("src", "components", "learn", "topic-cover.tsx"));
 const topicPage = strip(read("src", "components", "learn", "topic-page.tsx"));
+const topicCoverCard = strip(read("src", "components", "learn", "topic-cover-card.tsx"));
+const learnHub = strip(read("src", "components", "learn", "learn-hub.tsx"));
+const topicNav = strip(read("src", "components", "learn", "topic-nav.tsx"));
 const footer = strip(read("src", "components", "shared", "footer.tsx"));
 const prompts = read("docs", "graphics", "PROMPTS.md");
 
@@ -192,6 +195,56 @@ describe("the learn topic-page covers", () => {
     // own fallback <h1> is conditional on the cover NOT existing.
     expect(topicPage).toMatch(/hasTopicCover\(topic\.slug\)/);
     expect(topicPage.match(/<h1\b/g)?.length, "topic-page should carry no h1 of its own when a cover supplies one").toBe(1);
+  });
+});
+
+describe("the cover-first learn hub (plan 015)", () => {
+  it("retires the line emblem — the last surface that still wore it", () => {
+    // topic-cover.tsx's own epitaph for the emblem ("a 32px line icon
+    // doesn't decode... where a photograph of the same idea does") is why
+    // the topic pages moved to covers first; the hub and its "Next up" /
+    // "Keep digging" rows were the last surfaces still rendering it.
+    expect(learnHub).not.toMatch(/TopicEmblem/);
+    expect(topicNav).not.toMatch(/TopicEmblem/);
+  });
+
+  it("shares one cover-card component rather than three copies of the markup", () => {
+    expect(learnHub).toMatch(/<TopicCoverCard/);
+    expect(topicNav).toMatch(/<TopicCoverCard/);
+  });
+
+  it("stays in the reading column — page-shell.test.ts owns this split", () => {
+    // Widening was tried during plan 015 (matching the questions-band/footer
+    // grid precedent) and reverted: page-shell.test.ts already pins learn-hub
+    // to the narrow reading column alongside reading-plan and next-steps, a
+    // prior regression fix. The two weak covers were fixed at the source
+    // (regenerated with a bold rim-lit silhouette, docs/graphics/PROMPTS.md
+    // §29–§30) instead of solved by giving the grid more room.
+    expect(learnHub).not.toMatch(/<PageShell width="wide">/);
+  });
+
+  it("holds band eyebrows neutral — no doctrinal red or gold as a filing label", () => {
+    // Red and gold are event colours (the Law's verdict, grace's arrival),
+    // not category tags for a library index — spending gold here is gold in
+    // front of a reader who hasn't taken the test yet.
+    expect(learnHub).not.toMatch(/band\.key === "law"[\s\S]{0,40}red-/);
+    expect(learnHub).not.toMatch(/band\.key === "rescue"[\s\S]{0,40}D4A843/);
+  });
+
+  it("keeps every subtitle visible by default, never hover-only", () => {
+    // Two topics are near-duplicate questions ("What Happens When You
+    // Die?" / "Is There Life After Death?"); the subtitle is their only
+    // disambiguator, so it cannot be gated behind a hover state the hub's
+    // touch readers (the majority) can never trigger.
+    expect(topicCoverCard).not.toMatch(/group-hover:opacity-100/);
+    expect(topicCoverCard).not.toMatch(/group-hover:max-h/);
+  });
+
+  it("gives the hub's own first row eager loading, everything else lazy", () => {
+    // 14 covers is too many to ship eager — only the first row is a
+    // plausible LCP element on /learn itself.
+    expect(topicCoverCard).toMatch(/loading=\{priority \? "eager" : "lazy"\}/);
+    expect(learnHub).toMatch(/priority=\{bandIdx === 0 && idxInBand < 2\}/);
   });
 });
 

@@ -24,9 +24,11 @@ interface TopicSectionProps {
   locale: string;
   quiz?: QuizData;
   isLast?: boolean;
+  /** The section's own reveal firing, reused for the page's honest section-progress bar. */
+  onSectionReached?: (index: number) => void;
 }
 
-export function TopicSection({ heading, body, scripture, scriptureRef, index, slug, locale, quiz, isLast }: TopicSectionProps) {
+export function TopicSection({ heading, body, scripture, scriptureRef, index, slug, locale, quiz, isLast, onSectionReached }: TopicSectionProps) {
   const [revealed, setRevealed] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -39,6 +41,7 @@ export function TopicSection({ heading, body, scripture, scriptureRef, index, sl
         if (entry.isIntersecting) {
           setRevealed(true);
           trackTopicSectionReached(slug, index, locale);
+          onSectionReached?.(index);
           if (isLast) markTopicCompleted(slug);
           observer.disconnect();
         }
@@ -48,7 +51,7 @@ export function TopicSection({ heading, body, scripture, scriptureRef, index, sl
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [slug, index, locale, isLast]);
+  }, [slug, index, locale, isLast, onSectionReached]);
 
   const paragraphs = body.split("\n\n");
 

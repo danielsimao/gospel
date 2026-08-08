@@ -75,6 +75,7 @@ export default async function LearnPage({ params }: Props) {
         resetConfirmButton={learn.resetConfirmButton}
         resetCancelButton={learn.resetCancelButton}
         shareMessages={messages.default.share}
+        quizLabel={learn.quizLabel}
         topics={learn.topics}
         locale={locale as Locale}
       />

@@ -12,6 +12,7 @@ import {
 } from "@/lib/seo";
 import { TOPIC_DATES } from "@/lib/topic-dates";
 import { LEARN_BANDS } from "@/lib/learn-bands";
+import { RELATED_TOPICS } from "@/lib/related-topics";
 import type { Metadata } from "next";
 
 type Props = {
@@ -35,6 +36,10 @@ interface LearnData {
   completedCtaButton?: string;
   allTopicsLabel?: string;
   nextLabel: string;
+  relatedLabel?: string;
+  quizLabel: string;
+  sectionCostLabel: string;
+  faqLabel: string;
   feedback: { question: string; yes: string; no: string; thanks: string; followup: string };
   topics: TopicData[];
 }
@@ -113,6 +118,18 @@ export default async function LearnTopicPage({ params }: Props) {
     ? { slug: next.slug, title: next.title, subtitle: next.subtitle, number: orderIndex + 2 }
     : null;
 
+  // "Keep digging" — 1-2 pastoral cross-references (src/lib/related-topics.ts),
+  // resolved to the same display number the hub and "Next up" use.
+  const relatedTopics = (RELATED_TOPICS[slug] ?? [])
+    .map((relatedSlug) => {
+      const found = data.topics.find((t) => t.slug === relatedSlug);
+      const index = orderedTopics.findIndex((t) => t.slug === relatedSlug);
+      return found && index !== -1
+        ? { slug: found.slug, title: found.title, subtitle: found.subtitle, number: index + 1 }
+        : null;
+    })
+    .filter((t): t is { slug: string; title: string; subtitle: string; number: number } => Boolean(t));
+
   const messages = await import(`@/messages/${locale}.json`);
   const brand = messages.default.topBar?.brand ?? "Gospel";
   const dates = TOPIC_DATES[slug] ?? { published: "2026-07-12", modified: "2026-07-12" };
@@ -148,6 +165,11 @@ export default async function LearnTopicPage({ params }: Props) {
         allTopicsLabel={data.allTopicsLabel}
         nextLabel={data.nextLabel}
         nextTopic={nextTopic}
+        relatedLabel={data.relatedLabel}
+        relatedTopics={relatedTopics}
+        quizLabel={data.quizLabel}
+        sectionCostLabel={data.sectionCostLabel}
+        faqLabel={data.faqLabel}
         feedbackMessages={data.feedback}
         faq={topic.faq ?? []}
       />

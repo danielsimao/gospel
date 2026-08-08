@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Check } from "lucide-react";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { ShareButtons } from "@/components/share-buttons";
 import { subscribeToStorage } from "@/lib/client-storage";
@@ -13,7 +12,7 @@ import { readJourney, deriveStage } from "@/lib/journey-storage";
 import { trackLearnProgressReset } from "@/lib/learn-analytics";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { PageShell } from "@/components/shared/page-shell";
-import { TopicEmblem } from "@/components/emblems";
+import { TopicCoverCard } from "@/components/learn/topic-cover-card";
 import { LEARN_BANDS } from "@/lib/learn-bands";
 import type { Locale } from "@/lib/i18n";
 
@@ -47,6 +46,7 @@ interface LearnHubProps {
   resetCancelButton: string;
   shareMessages: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
   bandLabels: { law: string; questions: string; rescue: string };
+  quizLabel: string;
   topics: Topic[];
   locale: Locale;
 }
@@ -96,21 +96,23 @@ function getEmptyLearnHubState(): LearnHubSnapshot {
   };
 }
 
-export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, allCompleteTestCta, allCompleteReadingCta, allCompleteShareCta, resetLabel, resetConfirmTitle, resetConfirmBody, resetConfirmButton, resetCancelButton, shareMessages, bandLabels, topics, locale }: LearnHubProps) {
-  const [snapshot, setSnapshot] = useState<LearnHubSnapshot>(() =>
-    typeof window === "undefined"
-      ? getEmptyLearnHubState()
-      : readLearnHubState(
-          topics,
-          locale,
-          allCompleteTestCta,
-          allCompleteReadingCta,
-          allCompleteShareCta,
-        ),
-  );
+export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, allCompleteTestCta, allCompleteReadingCta, allCompleteShareCta, resetLabel, resetConfirmTitle, resetConfirmBody, resetConfirmButton, resetCancelButton, shareMessages, bandLabels, quizLabel, topics, locale }: LearnHubProps) {
+  // Pre-existing hydration bug, caught while verifying this redesign: the
+  // initializer used to branch on `typeof window === "undefined"` directly,
+  // which is false by the time the *client's* first render runs — so a
+  // returning reader with any progress got a client tree that already had
+  // the progress bar mounted, against server HTML that didn't. React then
+  // discards and regenerates the mismatched subtree, which on this page
+  // lands mid-animation and leaves a whole band's fadeInUp stuck at its
+  // 0%-opacity keyframe — cover cards present in the DOM (confirmed loaded)
+  // but invisible. Starting empty unconditionally, on both passes, and
+  // syncing the real snapshot only after mount (the same "flush after
+  // ready" shape TopicNav's CTA already uses) removes the mismatch instead
+  // of papering over its symptom.
+  const [snapshot, setSnapshot] = useState<LearnHubSnapshot>(getEmptyLearnHubState);
 
   useEffect(() => {
-    return subscribeToStorage(() =>
+    const sync = () =>
       setSnapshot(
         readLearnHubState(
           topics,
@@ -119,8 +121,9 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
           allCompleteReadingCta,
           allCompleteShareCta,
         ),
-      ),
-    );
+      );
+    sync();
+    return subscribeToStorage(sync);
   }, [topics, locale, allCompleteTestCta, allCompleteReadingCta, allCompleteShareCta]);
 
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
@@ -205,7 +208,14 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
       {/* The argument's arc, made visible: Law → the big questions → the
           rescue. Bands are grouping, not prerequisites — every topic stays
           an entry-anywhere page. Unbanded topics (drift guard) fall into
-          the final band rather than disappearing. */}
+          the final band rather than disappearing.
+
+          Band eyebrows stay neutral (white, not red/gold): those two colours
+          are event colours — the Law's verdict, grace's arrival — and a
+          filing label above a library index is not either event. Spending
+          gold here in front of a reader who hasn't taken the test yet is the
+          exact "gold before the test" mistake the method guards against
+          elsewhere; red as a category tag has the same problem in reverse. */}
       <div className="mt-10 flex flex-col gap-8">
         {LEARN_BANDS.map((band, bandIdx) => {
           // Render in band.slugs order (the argument's order), not the
@@ -223,18 +233,6 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
                 ]
               : inBand;
           if (banded.length === 0) return null;
-          const hairline =
-            band.key === "law"
-              ? "bg-red-500/40"
-              : band.key === "rescue"
-                ? "bg-[#D4A843]/40"
-                : "bg-white/[0.14]";
-          const eyebrow =
-            band.key === "law"
-              ? "text-red-400/75"
-              : band.key === "rescue"
-                ? "text-[#D4A843]/75"
-                : "text-white/60";
           return (
             <div
               key={band.key}
@@ -242,54 +240,41 @@ export function LearnHub({ label, subtitle, progressLabel, allCompleteHeading, a
               style={{ animationDelay: `${120 + bandIdx * 80}ms` }}
             >
               <div className="mb-3 flex items-center gap-2">
-                <span className={`h-px w-6 ${hairline}`} />
-                <span className={`font-mono text-[9px] uppercase tracking-[3px] ${eyebrow}`}>
+                <span className="h-px w-6 bg-white/[0.14]" />
+                <span className="font-mono text-[9px] uppercase tracking-[3px] text-white/60">
                   {bandLabels[band.key]}
                 </span>
-                <span className={`h-px flex-1 ${hairline} opacity-40`} />
+                <span className="h-px flex-1 bg-white/[0.14] opacity-40" />
               </div>
-              {/* One grouped container per band — 14 separate boxes read as
-                  14 obligations; one container per band reads as a path with
-                  stops. overflow-hidden keeps row hovers inside the corners. */}
-              <div className="divide-y divide-white/[0.05] overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.015]">
-                {banded.map((topic) => {
+              {/* Two-up rather than three: at three, a card falls below the
+                  ~250px width where the set's two weakest covers stop
+                  reading as anything (measured full-size against all 14
+                  real covers, plan 015 — the failure held at every desktop
+                  card size this layout can produce, which is why those two
+                  covers were regenerated rather than the grid re-tuned). */}
+              <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2">
+                {banded.map((topic, idxInBand) => {
                   // Number by display position (bands reorder the array).
                   const displayOrder = LEARN_BANDS.flatMap((b) => b.slugs);
                   const pos = displayOrder.indexOf(topic.slug);
                   const i = pos === -1 ? displayOrder.length : pos;
-          const isDone = snapshot.completed.has(topic.slug);
-          return (
-            <Link
-              key={topic.slug}
-              href={`/${locale}/learn/${topic.slug}`}
-              className="group flex items-center justify-between px-5 py-3 transition-colors hover:bg-[#D4A843]/[0.03] sm:px-6 sm:py-3.5"
-            >
-              <div className="flex items-center gap-4">
-                <span className="font-mono text-[10px] tabular-nums text-[#D4A843]/70">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <TopicEmblem
-                  slug={topic.slug}
-                  className="size-5 shrink-0 text-[#D4A843]/70 transition-colors group-hover:text-[#D4A843]/80"
-                  strokeWidth={1.7}
-                />
-                <div>
-                  <p className="text-[15px] font-semibold text-white/85 sm:text-base">{topic.title}</p>
-                  <p className="mt-0.5 text-xs text-white/60">{topic.subtitle}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                {isDone && (
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#D4A843]/15 text-[#D4A843]">
-                    <Check className="h-2.5 w-2.5" strokeWidth={1.5} aria-hidden />
-                  </span>
-                )}
-                <span className="text-white/60 transition-[transform,color] group-hover:translate-x-1 group-hover:text-[#D4A843]/70">
-                  &rarr;
-                </span>
-              </div>
-            </Link>
-          );
+                  const isDone = snapshot.completed.has(topic.slug);
+                  return (
+                    <TopicCoverCard
+                      key={topic.slug}
+                      slug={topic.slug}
+                      href={`/${locale}/learn/${topic.slug}`}
+                      title={topic.title}
+                      subtitle={topic.subtitle}
+                      number={i + 1}
+                      isDone={isDone}
+                      quizTag={quizLabel}
+                      // Only the hub's own first row is a plausible LCP
+                      // element — one column on mobile, two on desktop, so
+                      // the first two cards of the first band cover both.
+                      priority={bandIdx === 0 && idxInBand < 2}
+                    />
+                  );
                 })}
               </div>
             </div>
