@@ -790,11 +790,21 @@ export function HomeShell({
                 <p className="font-mono text-[10px] uppercase tracking-[1.6px] text-white/50">
                   {home.testPreview}
                 </p>
-                {/* The instruction, in gold's caption register — not a gold
-                    control. It converts the section from statement to
+                {/* The instruction. It converts the section from statement to
                     expectation, and it is literally true: the tap IS the
-                    answer to question 1 (see handleSelfRating). */}
-                <p className="font-mono text-[10px] uppercase tracking-[1.6px] text-[#D4A843]/75">
+                    answer to question 1 (see handleSelfRating).
+
+                    Deliberately NOT gold, though it was written that way
+                    first. METHOD.md: "Gold does not appear during the Law. It
+                    arrives once, and its arrival is the event. Do not spend it
+                    early." This sits before the Law has said anything — the
+                    earliest point on the whole journey — which is the one
+                    place gold costs the most to spend. A caption register is
+                    not an exemption from the colour spine; the gold band two
+                    hundred lines below is gated away from this very reader for
+                    the same reason. Brighter than the metadata above it so it
+                    still reads as an instruction rather than a label. */}
+                <p className="font-mono text-[10px] uppercase tracking-[1.6px] text-white/70">
                   {home.testHint}
                 </p>
               </div>

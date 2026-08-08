@@ -164,3 +164,42 @@ describe("the post-test band", () => {
     expect(cssRules).not.toMatch(/:not\([^)]*\)\s*\[data-slot="post-test-band"\]/);
   });
 });
+
+describe("the colour spine, before the Law", () => {
+  /*
+   * METHOD.md: "Gold does not appear during the Law. It arrives once, and its
+   * arrival is the event. Do not spend it early."
+   *
+   * The visitor block is the earliest surface on the whole journey — a reader
+   * who has not been asked anything yet. It is where gold costs the most to
+   * spend, and it is exactly where it crept in: the test section's "Tap your
+   * answer to begin" shipped in gold on the strength of being a caption rather
+   * than a control. A caption register is not an exemption from the spine.
+   *
+   * Scoped to the visitor block deliberately. The stages past the verdict may
+   * carry gold — grace has arrived for them, which is the whole point — and
+   * the committed block's blockquote does.
+   */
+  const GOLD = /#D4A843/;
+
+  function stageBlock(stage: JourneyStage): string {
+    const open = homeShell.indexOf(`<div data-slot="journey-stage" data-stage="${stage}">`);
+    expect(open, `no block found for the ${stage} stage`).toBeGreaterThan(-1);
+    // Runs to the next stage wrapper, or to the end of the stage group.
+    const next = homeShell.indexOf('<div data-slot="journey-stage"', open + 1);
+    return homeShell.slice(open, next === -1 ? homeShell.length : next);
+  }
+
+  it("spends no gold on a reader the Law has not met", () => {
+    expect(
+      stageBlock("visitor"),
+      "gold appeared in the visitor block — METHOD.md: do not spend it early",
+    ).not.toMatch(GOLD);
+  });
+
+  it("still lets gold through after the verdict, so this guard is not vacuous", () => {
+    // If the committed block ever loses its gold, the assertion above stops
+    // proving anything and this fails to say so.
+    expect(stageBlock("committed")).toMatch(GOLD);
+  });
+});
