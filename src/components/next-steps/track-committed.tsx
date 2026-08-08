@@ -8,8 +8,10 @@ import { ShareButtons } from "@/components/share-buttons";
 import { SaveStoryImageButton } from "@/components/blog/save-story-image-button";
 import { BandHeader } from "./band-header";
 import { Button, ButtonArrow } from "@/components/ui/button";
+import { DayTicketBody, type ReadingDay } from "@/components/shared/day-ticket";
 import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
 import { readJourney } from "@/lib/journey-storage";
+import { useJourney } from "@/lib/use-journey";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { Locale } from "@/lib/i18n";
 
@@ -20,7 +22,6 @@ interface TrackCommittedMessages {
   welcomeReturn: string;
   whatHappened: string;
   readHeading: string;
-  readBody: string;
   readLink: string;
   readLinkLabel: string;
   readPlanLabel: string;
@@ -50,6 +51,10 @@ interface TrackCommittedProps {
   messages: TrackCommittedMessages;
   shareMessages: { prompt: string; whatsappMessage: string; telegramMessage: string; linkCopied: string };
   locale: Locale;
+  /** The plan's days and the ticket's labels — the Read card shows the
+      reader's actual day via the shared DayTicketBody, not a description. */
+  readingDays: ReadingDay[];
+  readingLabels: { dayProgress: string; complete: string };
 }
 
 // One gentle rise per paragraph, capped so the emotional opener still
@@ -60,8 +65,17 @@ const para = (i: number) => ({ duration: 0.7, delay: 0.15 + Math.min(i, 3) * 0.1
 const band = { duration: 0.7, ease: EASE_OUT_STRONG };
 
 
-export function TrackCommitted({ messages, shareMessages, locale }: TrackCommittedProps) {
+export function TrackCommitted({
+  messages,
+  shareMessages,
+  locale,
+  readingDays,
+  readingLabels,
+}: TrackCommittedProps) {
   const paragraphs = messages.whatHappened.split("\n\n");
+  // The reader's real progress, so a returning believer meets day four, not a
+  // pitch for day one. Same source the homepage band reads.
+  const { readingDone } = useJourney();
 
   // SSR and first client render show the durable opener; if the visitor
   // arrived within an hour of responding, upgrade to the conversational
@@ -128,14 +142,23 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
       >
         <BandHeader label={messages.bands.today} tone="gold" />
 
-        {/* PRIMARY — Read. The one loud card on the page. */}
+        {/* PRIMARY — Read. The one loud card on the page, now showing the
+            reader's actual day instead of a paragraph describing the plan:
+            the shared DayTicketBody, identical by construction to the
+            homepage band's. The old readBody line retired with the change —
+            it described what the ticket now shows. Both doors survive. */}
         <div className="rounded-2xl border border-[#D4A843]/40 bg-[#D4A843]/[0.05] p-6 shadow-[0_0_40px_-12px_rgba(212,168,67,0.25)]">
-          <div className="flex items-center gap-2.5">
+          <div className="mb-4 flex items-center gap-2.5">
             <BookOpen className="size-5 text-[#D4A843]" aria-hidden="true" />
             <h3 className="text-base font-semibold tracking-wide text-[#D4A843]">{messages.readHeading}</h3>
           </div>
-          <p className="mt-2 text-[15px] leading-relaxed text-white/70">{messages.readBody}</p>
-          <div className="mt-4 flex flex-wrap gap-2">
+          <DayTicketBody
+            dayProgress={readingLabels.dayProgress}
+            completeDescription={readingLabels.complete}
+            days={readingDays}
+            completed={readingDone}
+          />
+          <div className="mt-5 flex flex-wrap gap-2">
             <a href={messages.readLink} target="_blank" rel="noopener noreferrer" onClick={() => trackNextStepsActionClicked("read", "committed")}>
               <Button variant="gold" size="sm">
                 {messages.readLinkLabel}
@@ -165,14 +188,16 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
         {/* Warm secondary — a person/community, not a loud card. Points at the
             on-site explainer: we teach the gospel marks of a sound church
             rather than recommending a specific church or directory. */}
+        {/* The shared pressable-row idiom: quiet card frame, 2px lift, arrow
+            slide — the move every pressable surface on the site now makes. */}
         <Link
           href={`/${locale}/find-a-church`}
           onClick={() => trackNextStepsActionClicked("community", "committed")}
-          className="mt-5 flex min-h-[44px] items-center gap-3 rounded-lg border border-white/[0.08] px-4 py-2.5 text-sm text-white/70 transition-colors hover:border-[#D4A843]/25 hover:text-[#D4A843]/80"
+          className="group mt-5 flex min-h-[48px] items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-sm font-semibold text-white/75 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-[#D4A843]/35 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
         >
           <Users className="size-4 shrink-0 text-white/50" aria-hidden="true" />
           <span className="flex-1">{messages.communityLinkLabel}</span>
-          <span aria-hidden="true" className="text-white/40">&rarr;</span>
+          <span aria-hidden="true" className="text-white/40 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
         </Link>
       </m.div>
 
@@ -185,24 +210,26 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
       >
         <BandHeader label={messages.bands.grow} tone="dim" />
 
-        <div className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+        {/* Hairline dividers traded for the quiet card rows the homepage
+            wears — each one lifts, none of them shouts. */}
+        <div className="flex flex-col gap-2">
           <Link
             href={`/${locale}/learn`}
             onClick={() => trackNextStepsActionClicked("learn", "committed")}
-            className="flex min-h-[52px] items-center gap-3 px-1 py-3 text-sm text-white/60 transition-colors hover:text-white/90"
+            className="group flex min-h-[48px] items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-sm font-semibold text-white/70 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-white/25 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
           >
             <Compass className="size-4 shrink-0 text-white/40" aria-hidden="true" />
             <span className="flex-1">{messages.learnLinkLabel}</span>
-            <span aria-hidden="true" className="text-white/30">&rarr;</span>
+            <span aria-hidden="true" className="text-white/30 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
           </Link>
           <Link
             href={`/${locale}/cards`}
             onClick={() => trackNextStepsActionClicked("cards", "committed")}
-            className="flex min-h-[52px] items-center gap-3 px-1 py-3 text-sm text-white/60 transition-colors hover:text-white/90"
+            className="group flex min-h-[48px] items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-sm font-semibold text-white/70 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-white/25 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
           >
             <Printer className="size-4 shrink-0 text-white/40" aria-hidden="true" />
             <span className="flex-1">{messages.streetLinkLabel}</span>
-            <span aria-hidden="true" className="text-white/30">&rarr;</span>
+            <span aria-hidden="true" className="text-white/30 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
           </Link>
         </div>
 
@@ -215,10 +242,12 @@ export function TrackCommitted({ messages, shareMessages, locale }: TrackCommitt
             utmCampaign="testimony"
             copyText={messages.shareMessage}
           />
-          <div className="mt-8 text-center">
+          {/* Preview beside its button from sm, stacked below — the block
+              ends level instead of in a centred tower. */}
+          <div className="mt-8 text-center sm:flex sm:items-center sm:justify-center sm:gap-6 sm:text-left">
             {/* The testimony story graphic, previewed inline (9:16, lazy so it
                 never competes for LCP). Reserved aspect box keeps CLS at 0. */}
-            <div className="mx-auto mb-4 w-full max-w-[190px] overflow-hidden rounded-xl border border-white/10">
+            <div className="mx-auto mb-4 w-full max-w-[190px] shrink-0 overflow-hidden rounded-xl border border-white/10 sm:mx-0 sm:mb-0 sm:max-w-[150px]">
               <img
                 src={`/${locale}/testimony/story`}
                 alt=""

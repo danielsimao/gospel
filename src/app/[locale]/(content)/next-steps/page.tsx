@@ -57,10 +57,31 @@ export default async function NextStepsPage({ params }: Props) {
     description: getNextStepsDescription(locale),
   });
 
+  /* The plan's days, whole — which day the reader is on comes from
+     localStorage, so only the client can pick. Same shape the homepage
+     resolves for its band; the ticket labels ride along. */
+  const readingDays = (data.readingPlan?.days ?? []).map(
+    (d: { title: string; passage: string; keyVerse: string; keyVerseRef: string }) => ({
+      title: d.title,
+      passage: d.passage,
+      keyVerse: d.keyVerse,
+      keyVerseRef: d.keyVerseRef,
+    }),
+  );
+
   return (
     <>
       <StructuredData data={webPageSchema} />
-      <NextStepsClient nextStepsMessages={data.nextSteps} shareMessages={data.share} locale={locale as Locale} />
+      <NextStepsClient
+        nextStepsMessages={data.nextSteps}
+        shareMessages={data.share}
+        locale={locale as Locale}
+        readingDays={readingDays}
+        readingLabels={{
+          dayProgress: data.readingPlan.dayProgress,
+          complete: data.home.journey.reading.descComplete,
+        }}
+      />
     </>
   );
 }
