@@ -183,14 +183,35 @@ export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
        * door could not serve here: its light lives at 76-80% across by
        * design, exactly where a centred mask erases it.
        *
+       * Two pairs, not one, swapped at `sm`. `object-cover` on a portrait
+       * source stretched across a desktop-wide viewport scales by width
+       * alone — the gap composed at ~8.6% of the image's own width shrinks to
+       * a thin grey column adrift in solid black, and the "before you were
+       * needed" atmosphere the copy above is counting on is gone. §8's wide
+       * counterpart (§32, docs/graphics/PROMPTS.md) is generated natively
+       * landscape, so `cover` at desktop widths asks it for the crop it
+       * already is.
+       *
        * data-flow-graphic rather than decoration-by-css: it needs the AVIF/
        * WebP pair, and the tests pin it to this screen and this screen only.
        */}
-      <div aria-hidden="true" data-flow-graphic className="pointer-events-none fixed inset-0 z-0 opacity-[0.35]">
+      <div aria-hidden="true" data-flow-graphic className="pointer-events-none fixed inset-0 z-0 opacity-[0.35] sm:hidden">
         <picture>
           <source srcSet="/graphics/door-decision.avif" type="image/avif" />
           <img
             src="/graphics/door-decision.webp"
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="size-full object-cover object-center"
+          />
+        </picture>
+      </div>
+      <div aria-hidden="true" data-flow-graphic className="pointer-events-none fixed inset-0 z-0 hidden opacity-[0.35] sm:block">
+        <picture>
+          <source srcSet="/graphics/door-decision-wide.avif" type="image/avif" />
+          <img
+            src="/graphics/door-decision-wide.webp"
             alt=""
             loading="lazy"
             decoding="async"
