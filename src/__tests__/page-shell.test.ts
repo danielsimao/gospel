@@ -3,23 +3,27 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 /**
- * page-shell.tsx documents a split — narrow for the reading column (learn,
- * reading plan, next-steps), wide for legal/about prose — that the code
- * silently broke: learn-hub and topic-page both passed width="wide",
- * giving learn extra top padding (py-24/32 vs narrow's py-16/24) and a wider
- * column than its own sibling pages. Pinning both sides of the split so it
- * can't drift back without a test noticing.
+ * page-shell.tsx documents a three-way split: narrow for the reading column
+ * (topic pages, reading plan, next-steps) — prose read top to bottom, so it
+ * stays letter-width even on a wide desktop; grid for the learn hub's card
+ * layout — same vertical rhythm as narrow, but wide enough that a 2-up grid
+ * isn't squeezed to ~226px cards on desktop (the original bug this test
+ * caught: learn-hub and topic-page both passed width="wide", giving the hub
+ * a column *and* a legal-prose vertical rhythm it never asked for); wide for
+ * legal/about prose, its own larger vertical rhythm. Pinning all three so
+ * the split can't drift back without a test noticing.
  */
 const ROOT = join(import.meta.dirname, "..", "..");
 const read = (...p: string[]) => readFileSync(join(ROOT, ...p), "utf8");
 const strip = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
 
 const NARROW = [
-  ["components", "learn", "learn-hub.tsx"],
   ["components", "learn", "topic-page.tsx"],
   ["app", "[locale]", "(content)", "reading-plan", "page.tsx"],
   ["app", "[locale]", "(content)", "next-steps", "client.tsx"],
 ];
+
+const GRID = [["components", "learn", "learn-hub.tsx"]];
 
 const WIDE = [
   ["app", "[locale]", "(content)", "about", "page.tsx"],
@@ -29,12 +33,21 @@ const WIDE = [
   ["components", "blog", "blog-post-page.tsx"],
 ];
 
-describe("PageShell's narrow/wide split", () => {
-  it("keeps the reading column narrow: learn, reading plan, next-steps", () => {
+describe("PageShell's narrow/grid/wide split", () => {
+  it("keeps the reading column narrow: topic pages, reading plan, next-steps", () => {
     for (const parts of NARROW) {
       const src = strip(read("src", ...parts));
-      expect(src, `${parts.join("/")} should not opt into width="wide"`).not.toMatch(
-        /<PageShell width="wide"/,
+      expect(src, `${parts.join("/")} should not opt into width="wide" or "grid"`).not.toMatch(
+        /<PageShell width="(wide|grid)"/,
+      );
+    }
+  });
+
+  it("gives the learn hub's card grid room to breathe on desktop", () => {
+    for (const parts of GRID) {
+      const src = strip(read("src", ...parts));
+      expect(src, `${parts.join("/")} should declare width="grid"`).toMatch(
+        /<PageShell width="grid"/,
       );
     }
   });
