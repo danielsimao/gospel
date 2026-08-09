@@ -367,6 +367,9 @@
     "nextLabel": "Next",
     "prevLabel": "Previous",
     "relatedLabel": "Keep digging",
+    "quizLabel": "Quiz",
+    "sectionCostLabel": "{sections} sections · {quizzes} quizzes",
+    "faqLabel": "Frequently asked",
     "bands": {
       "law": "Start here",
       "questions": "The big questions",

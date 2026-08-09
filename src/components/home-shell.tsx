@@ -851,13 +851,17 @@ export function HomeShell({
            */}
           {/* First of the bands, because it is the strongest hook on the
               page: a score that ends "1 passed" leaves a question, and the
-              question has a door. */}
-          <PassedBand
-            locale={locale}
-            messages={home.passedBand}
-            count={testTakerCount}
-            verdicts={recentVerdicts}
-          />
+              question has a door. Gated on real data, not a journey stage —
+              testTakerCount is null when PostHog can't answer, and the band
+              would rather not exist than publish a fabricated number. */}
+          {testTakerCount !== null && (
+            <PassedBand
+              locale={locale}
+              messages={home.passedBand}
+              count={testTakerCount}
+              verdicts={recentVerdicts}
+            />
+          )}
 
           <QuestionsBand
             locale={locale}

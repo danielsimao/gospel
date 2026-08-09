@@ -590,7 +590,7 @@ convention.
 
 ## 19 · A folha de acusação — the charge sheet (what-is-sin)
 
-**Ships as:** `public/graphics/covers/what-is-sin.avif` + `.webp` — topic page cover, same treatment as §9.
+**Ships as:** shipped briefly, superseded by §29 — kept for the record. Rendered full-size against all 14 covers together (plan 015), the flat sheet measured as pure grey noise with no discernible shape at hub card size (226–298px) — no rim light, no fold, nothing for the eye to catch. §29 keeps the charge-sheet doctrine but adds the curl and the backlight the shape needed.
 
 **Where it goes:** the topic page for `what-is-sin`, law band. The emblem is a scroll of text (`ScrollText`), and the recomposition makes it the reader's own charge sheet — the app's word for the same object on the grace record. Sin as a written record rather than a mood is the doctrine the topic teaches: it is countable, specific, and against someone. The lines run off the frame because the count is the point and the count does not end.
 
@@ -696,7 +696,7 @@ Style: photographic, high contrast, sharply focused, not illustration, not a 3D 
 
 ## 23 · A água funda — deep water (why-does-god-allow-suffering)
 
-**Ships as:** `public/graphics/covers/why-does-god-allow-suffering.avif` + `.webp` — homepage questions-band card and the topic page cover, same treatment as §9.
+**Ships as:** shipped briefly, superseded by §30 — kept for the record. Open water with no discrete object in it measured as illegible at hub card size — all soft gradient, no edge for the eye to catch, worse even than §19 because water has no silhouette at all. §30 keeps the deep-water register (no storm, no drama) but gives it one object with a shape.
 
 **Where it goes:** the fifth card of the homepage questions band, and the topic page for `why-does-god-allow-suffering`, questions band. The emblem is waves (`Waves`) and it recomposes directly — the psalms' deep waters, which is the register this topic is written in. No storm, no wreck, no drama: the grief this page meets is heavy rather than spectacular, and a shipwreck would make somebody else's catastrophe of it.
 
@@ -853,6 +853,74 @@ Colour: near-black, #060404, fully desaturated and cold. The iron is dull grey, 
 Composition: portrait 4:3. The anchor sits centred in the lower two thirds of the frame with the chain rising out of the top edge, and generous even darkness on every side, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
 
 Do not include: any text, any numerals, any people, hands, divers, boats, ships, harbours, quays, ropes, nets, buoys, fish, seaweed, coral, bubbles, water surface, sky, horizon, nautical decoration, candles, gavels, scales, or crosses.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## Learn hub, cover-first (plan 015)
+
+Rendering all 14 covers together at real hub-card size — the render a
+3-card sample cannot substitute for — surfaced two that had shipped as flat
+grey-on-grey texture with no rim light and no fold: nothing for the eye to
+catch at 226–298px. Both are replaced below, same doctrine, same "Do not
+include" bans, with one added constraint: the subject must have a bright
+edge visible against black at small size, not just correct colour and
+composition.
+
+---
+
+## 29 · A folha de acusação, retomada — the charge sheet, recomposed (what-is-sin)
+
+**Ships as:** `public/graphics/covers/what-is-sin.avif` + `.webp` — topic page cover and learn hub card, same treatment as §9.
+
+**Where it goes:** the topic page for `what-is-sin`, law band, and its card on the cover-first learn hub. Supersedes §19: same charge-sheet doctrine (sin as a countable written record, not a mood), but the sheet now curls and catches a rim light instead of lying flat, so it reads as a bright, sharply lit shape against black rather than a grey texture — legible at the hub's 2-up card size, which §19 was never measured against.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of a long strip of paper — like an unspooling till receipt or ledger tape — curling up off a dark stone surface and spilling toward the camera, covered edge to edge in dense handwritten lines with no margins and no gaps. One hard rim light from behind catches the curled edge of the paper brightly, so the curl reads as a bright, sharply lit shape against total black; the flat parts of the strip recede into shadow. The rest of the frame is empty dark stone and black.
+
+Colour: near-black, #060404, fully desaturated and cold. The paper is dim grey where lit, never white or cream; the ink reads darker still. No warm tone, no gold, no amber, no sepia.
+
+Brightness: this must read as a bright, unmistakable curling shape against black even at very small size — the earlier version of this image was a flat sheet lying still, with no rim light and no fold, and it measured as an illegible grey texture once cropped to a small card. The curl and the backlight are the fix: there must be one clear bright edge the eye catches instantly.
+
+Composition: portrait 4:3. The curling paper rises through the centre of the frame at a slight angle, with generous even darkness on every side, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+
+Do not include: any legible text, any real words, any numerals, any letters that resolve on close inspection, any people, hands, pens, quills, ink bottles, wax seals, ribbons, scrolls with ornate rods, gavels, scales, crosses, or candles.
+
+Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 30 · O poste na água — the post in the water (why-does-god-allow-suffering)
+
+**Ships as:** `public/graphics/covers/why-does-god-allow-suffering.avif` + `.webp` — homepage questions-band card, topic page cover, and learn hub card, same treatment as §9.
+
+**Where it goes:** the fifth card of the homepage questions band, the topic page for `why-does-god-allow-suffering`, questions band, and its card on the cover-first learn hub. Supersedes §23: same deep-water register (heavy, not spectacular — no storm, no wreck), but open water alone has no silhouette at any size. A single weathered post, most of it submerged, gives the water one object that stands rather than one more surface that is swept — the doctrine's own point about this topic, not just a fix for legibility.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of a single weathered wooden mooring post standing alone in still dark water at night, most of its length submerged, only its worn top few feet rising above the surface. One hard rim light from the side catches the post's grain and its top edge brightly, so it reads as a bright, narrow, unmistakable vertical shape against black; the water around it is almost still, with only the faintest ripple, and recedes into total darkness a short distance out. No horizon, no sky, no shore, no boat, no chain, no rope.
+
+Colour: near-black, #060404, fully desaturated and cold. The wood is dim grey where lit, never brown and never warm. The water is darker still, with only a faint pale sheen near the post. No warm tone, no gold, no amber.
+
+Brightness: this must read as a bright, unmistakable vertical shape against black even at very small size — the earlier version of this image was open water with no discrete object in it, all soft gradients and no edge, and it measured as illegible at a small card size. A single rim-lit post breaking the surface is the fix: there must be one clear bright edge the eye catches instantly, standing the weight of what is around it rather than being swept by it.
+
+Composition: portrait 4:3. The post stands just off-centre, rising through the lower two-thirds of the frame, with generous even dark water and darkness on every side, so the frame crops safely at other aspect ratios. No vignette, no border or frame.
+
+Do not include: any text, any numerals, any people, hands, boats, ships, wreckage, storms, waves breaking, foam, rope, chain, anchors, birds, horizons, skies, moonlight paths, rays, gavels, scales, or crosses.
 
 Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
 ```

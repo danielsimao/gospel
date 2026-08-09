@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button, ButtonArrow } from "@/components/ui/button";
-import { TopicEmblem } from "@/components/emblems";
+import { TopicCoverCard } from "@/components/learn/topic-cover-card";
+import { isTopicCompleted } from "@/lib/learn-progress-storage";
 import { useJourney, TOTAL_READING_DAYS } from "@/lib/use-journey";
 import { trackTopicCtaClicked, trackTopicNavClicked } from "@/lib/learn-analytics";
 
@@ -11,6 +13,9 @@ interface TopicNavProps {
   locale: string;
   nextLabel: string;
   nextTopic: { slug: string; title: string; subtitle: string; number: number } | null;
+  relatedLabel?: string;
+  relatedTopics: Array<{ slug: string; title: string; subtitle: string; number: number }>;
+  quizLabel: string;
   ctaHeading: string;
   ctaButton: string;
   completedCtaHeading?: string;
@@ -18,13 +23,24 @@ interface TopicNavProps {
   allTopicsLabel?: string;
 }
 
-export function TopicNav({ slug, locale, nextLabel, nextTopic, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, allTopicsLabel }: TopicNavProps) {
+export function TopicNav({ slug, locale, nextLabel, nextTopic, relatedLabel, relatedTopics, quizLabel, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, allTopicsLabel }: TopicNavProps) {
   // Server render and first client render have no reliable journey/reading
   // state (it lives in localStorage), so no CTA renders until `ready` flips
   // post-mount — matches FooterNextStepsLink's gate on the same hook.
   const { stage, readingDone, ready } = useJourney();
   const testDone = stage !== "visitor";
   const readingComplete = readingDone >= TOTAL_READING_DAYS;
+
+  // Same reason: localStorage isn't readable during the server render or the
+  // first client pass, so the "✓ read" chip starts absent and fills in after
+  // mount rather than risking a hydration mismatch against the server HTML.
+  const [completed, setCompleted] = useState<ReadonlySet<string>>(new Set());
+  useEffect(() => {
+    const slugs = [nextTopic?.slug, ...relatedTopics.map((t) => t.slug)].filter(
+      (s): s is string => Boolean(s),
+    );
+    setCompleted(new Set(slugs.filter((s) => isTopicCompleted(s))));
+  }, [nextTopic, relatedTopics]);
 
   const cta = !ready
     ? null
@@ -51,38 +67,54 @@ export function TopicNav({ slug, locale, nextLabel, nextTopic, ctaHeading, ctaBu
         </div>
       )}
 
-      {/* ── Next up: the argument's next stop, in the hub's row vocabulary.
-          One object on one axis — no prev (the browser and the hub cover
-          going back), no two-column skeleton to collapse on the arc's
-          endpoints. Absent on the last topic; the CTA carries the tail. ── */}
+      {/* ── Next up: the argument's next stop, now a cover card rather than
+          the emblem row — finishing a topic should feel like arriving at
+          the next poster, not the next list item. Absent on the last topic;
+          the CTA carries the tail. ── */}
       {nextTopic && (
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[2.5px] text-[#D4A843]/70">
             {nextLabel}
           </p>
-          <Link
-            href={`/${locale}/learn/${nextTopic.slug}`}
-            onClick={() => trackTopicNavClicked(slug, "next", locale)}
-            className="group mt-3 flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.015] px-5 py-3.5 transition-colors hover:border-[#D4A843]/25 hover:bg-[#D4A843]/[0.03] sm:px-6"
-          >
-            <div className="flex items-center gap-4">
-              <span className="font-mono text-[10px] tabular-nums text-[#D4A843]/70">
-                {String(nextTopic.number).padStart(2, "0")}
-              </span>
-              <TopicEmblem
-                slug={nextTopic.slug}
-                className="size-5 shrink-0 text-[#D4A843]/70 transition-colors group-hover:text-[#D4A843]/80"
-                strokeWidth={1.7}
+          <div className="mt-3">
+            <TopicCoverCard
+              slug={nextTopic.slug}
+              href={`/${locale}/learn/${nextTopic.slug}`}
+              title={nextTopic.title}
+              subtitle={nextTopic.subtitle}
+              number={nextTopic.number}
+              isDone={completed.has(nextTopic.slug)}
+              onClick={() => trackTopicNavClicked(slug, "next", locale)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* ── Keep digging: 1-2 covers chosen across bands rather than along
+          the arc — the reader on What is Sin? whose real question is How
+          Can My Sins Be Forgiven? shouldn't have to walk the whole
+          argument to get there. Quiet by design: smaller cards, below the
+          page's one primary ask. ── */}
+      {relatedLabel && relatedTopics.length > 0 && (
+        <div className="mt-10">
+          <p className="font-mono text-[10px] uppercase tracking-[2.5px] text-white/50">
+            {relatedLabel}
+          </p>
+          <div className="mt-3 grid grid-cols-1 gap-3 min-[480px]:grid-cols-2">
+            {relatedTopics.map((topic) => (
+              <TopicCoverCard
+                key={topic.slug}
+                slug={topic.slug}
+                href={`/${locale}/learn/${topic.slug}`}
+                title={topic.title}
+                subtitle={topic.subtitle}
+                number={topic.number}
+                isDone={completed.has(topic.slug)}
+                quizTag={quizLabel}
+                onClick={() => trackTopicNavClicked(slug, "related", locale)}
               />
-              <div>
-                <p className="text-[15px] font-semibold text-white/85 sm:text-base">{nextTopic.title}</p>
-                <p className="mt-0.5 text-xs text-white/60">{nextTopic.subtitle}</p>
-              </div>
-            </div>
-            <span className="text-white/60 transition-[transform,color] group-hover:translate-x-1 group-hover:text-[#D4A843]/70">
-              &rarr;
-            </span>
-          </Link>
+            ))}
+          </div>
         </div>
       )}
 

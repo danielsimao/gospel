@@ -24,10 +24,17 @@ interface TopicSectionProps {
   locale: string;
   quiz?: QuizData;
   isLast?: boolean;
+  /** The section's own reveal firing, reused for the page's honest section-progress bar. */
+  onSectionReached?: (index: number) => void;
 }
 
-export function TopicSection({ heading, body, scripture, scriptureRef, index, slug, locale, quiz, isLast }: TopicSectionProps) {
-  const [revealed, setRevealed] = useState(false);
+export function TopicSection({ heading, body, scripture, scriptureRef, index, slug, locale, quiz, isLast, onSectionReached }: TopicSectionProps) {
+  // The first section sits right under the cover/title — already on
+  // screen at load, not something a reader scrolls to discover. Gating it
+  // behind the same IntersectionObserver as the rest meant a tall cover on
+  // a short viewport could leave the opening paragraph blank until the
+  // reader scrolled past the 0.3 threshold.
+  const [revealed, setRevealed] = useState(index === 0);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,6 +46,7 @@ export function TopicSection({ heading, body, scripture, scriptureRef, index, sl
         if (entry.isIntersecting) {
           setRevealed(true);
           trackTopicSectionReached(slug, index, locale);
+          onSectionReached?.(index);
           if (isLast) markTopicCompleted(slug);
           observer.disconnect();
         }
@@ -48,14 +56,14 @@ export function TopicSection({ heading, body, scripture, scriptureRef, index, sl
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [slug, index, locale, isLast]);
+  }, [slug, index, locale, isLast, onSectionReached]);
 
   const paragraphs = body.split("\n\n");
 
   return (
     <div ref={ref} className="mt-12 first:mt-0">
       <m.div
-        initial={{ opacity: 0, y: 16 }}
+        initial={index === 0 ? false : { opacity: 0, y: 16 }}
         animate={revealed ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.8, ease: EASE_OUT_STRONG }}
       >
