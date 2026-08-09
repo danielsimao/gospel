@@ -925,4 +925,50 @@ Do not include: any text, any numerals, any people, hands, boats, ships, wreckag
 Style: photographic, high contrast, sharply focused, not illustration, not a 3D render.
 ```
 
+---
+
+## 31 · O feixe de luz, alargado — the courtroom shaft, widescreen
+
+**Ships as:** `public/graphics/courtroom-wide.avif` — grace's turn panel (`grace-screen.tsx`), desktop/tablet companion to §12's `courtroom.avif`, swapped in at `sm` and up.
+
+**Where it goes:** the same panel as §12, at the same two gradient veils, at desktop widths only. §12 is portrait — generated and measured against a phone screen — and `background-size: cover` on a portrait source stretched across a desktop-wide viewport scales by width alone, blowing the floor-light detail up several times past its composed size into something that overlaps and competes with the heading. This is the same scene, composed natively landscape, so `cover` at desktop widths asks it for the crop it was already built for. Caught live: a full run through `/test` at 1440px showed the floor-light as an oversized amber blob sitting behind "Someone pays the fine in full," where the 390px original had shown the same detail small and quiet, exactly as intended.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph of a single pool of pale daylight falling through a tall unseen window onto a bare stone floor, in a large empty room, photographed from a low wide angle. Near-black throughout, almost monochrome, with only the light itself bright. Deep shadow occupying most of the frame. Extremely high contrast, large simple shapes, very little detail. Horizontal 16:9 composition, the light pool positioned in the right half of the frame, with most of the left half and the entire upper third dark and empty. No people, no furniture, no text, no visible window frame. Architectural, austere, quiet. Photographic, not illustration.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 32 · A porta, alargada — the decision-screen door, widescreen
+
+**Ships as:** `public/graphics/door-decision-wide.avif` + `.webp` — the decision screen (`invitation-screen.tsx`), desktop/tablet companion to §8's `door-decision.avif`, swapped in at `sm` and up.
+
+**Where it goes:** the same fixed full-bleed layer as §8, at the same 35% opacity, at desktop widths only. §8 is portrait, with its light gap composed at roughly 8.6% of the image's own width — right for a phone screen, where `object-cover` barely has to scale it. Stretched across a desktop-wide viewport, the same crop rule shrinks that gap to a thin grey column adrift in a mostly-empty black frame, which is not "before you were needed," it is absent. This is the same idea, generated natively landscape with a proportionally wider gap (roughly a fifth of the frame), so the light stays legible at the aspect ratio it is actually shown at.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image.
+
+A photograph taken from inside a dark bare stone room, looking straight ahead at a tall gap in the centre of the far wall, wider than a single doorway — roughly one fifth of the frame's width. Pale cool daylight comes through the gap from the far side and falls in a broad band onto the stone floor, reaching toward the viewer. The gap is the only source of light; the walls and floor are plain, rough and unornamented, and everything not touched by the light falls into deep shadow.
+
+Colour: the stone is near-black, #060404, fully desaturated and cold. The light through the gap is pale, cool and slightly blue-neutral — daylight, not sunset. No warm glow, no golden tone, no amber.
+
+Brightness: the light must read instantly against the black but must be DIM — soft, at most 60% brightness, with no bloom, no halo, no rays — because text will sit directly over this image and the light must never compete with it.
+
+Composition: horizontal 16:9. The gap is horizontally centred, roughly one fifth of the image width, running from about 20% to 85% of the frame's height. The rest of the frame is deep, even darkness with no detail.
+
+Do not include: any text, any numerals, any actual door, door frame, hinges, handle, steps, thresholds, furniture, people, figures, silhouettes, hands, faces, clouds, sky, god rays, sunbeams, dust beams, glowing particles, halos, lens flare, stained glass, church interiors, cathedrals, arches, columns, altars, candles, gavels, scales, or crosses. This is a plain gap in a plain wall, not a doorway and not a religious building.
+
+Style: photographic, high contrast, sharply focused, architectural, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
 **▲ COPY TO HERE ▲**
