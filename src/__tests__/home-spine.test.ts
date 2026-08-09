@@ -125,7 +125,14 @@ describe("the hero owns the first screen", () => {
     // cue, not a re-invention: one definition is how the shape and the tap
     // stay in agreement everywhere it appears.
     expect(shell).toMatch(/import \{ ScrollCue \} from "@\/components\/shared\/scroll-cue"/);
-    expect(shell).toMatch(/<ScrollCue className="lg:self-center" \/>/);
+    /*
+     * self-center alone centred the cue within the lockup's PADDED content
+     * box (lg:pl-10/xl:pl-20 is left-only, no right), not the section's true
+     * axis — measured 40px off-centre at 1440px before the -ml-10/-ml-20
+     * counter-margin was added. See home-shell.tsx's own comment for why the
+     * margin has to equal the padding in full, not half of it.
+     */
+    expect(shell).toMatch(/<ScrollCue className="lg:self-center lg:-ml-10 xl:-ml-20" \/>/);
     /*
      * The hero's leftover height is distributed, not parked at the bottom: two
      * flex spacers float the rate cards to the viewport's middle and keep the
