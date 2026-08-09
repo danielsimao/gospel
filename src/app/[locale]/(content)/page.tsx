@@ -5,7 +5,7 @@ import { StructuredData } from "@/components/structured-data";
 import { buildPageMetadata, buildWebPageSchema } from "@/lib/seo";
 import { getPublishedPosts, getPostContent, getPostLocales } from "@/content/blog/posts";
 import { BLOG_ENABLED } from "@/lib/flags";
-import { fetchTestTakerCount } from "@/lib/test-stats";
+import { fetchRecentVerdicts, fetchTestTakerCount } from "@/lib/test-stats";
 import type { HomeMessages } from "@/lib/types";
 import type { Metadata } from "next";
 
@@ -141,7 +141,14 @@ export default async function HomePage({ params }: Props) {
   /* The homepage's latest-post card is one of the blog's three entrances, and
      it goes quiet with the other two. The posts themselves stay live and
      indexed — see lib/flags.ts. */
-  const testTakerCount = await fetchTestTakerCount();
+  /* Two reads of the same project, so they go together rather than in series —
+     the ledger must never add its round trip to the homepage's time to first
+     byte. Neither can reject: both answer with a documented empty value when
+     PostHog cannot be reached. */
+  const [testTakerCount, recentVerdicts] = await Promise.all([
+    fetchTestTakerCount(),
+    fetchRecentVerdicts(),
+  ]);
 
   const posts = BLOG_ENABLED ? getPublishedPosts() : [];
   const latest = posts[0] ?? null;
@@ -173,6 +180,7 @@ export default async function HomePage({ params }: Props) {
         allTopicsLabel={data.allTopicsLabel}
         allPostsLabel={data.allPostsLabel}
         testTakerCount={testTakerCount}
+        recentVerdicts={recentVerdicts}
         latestPost={latestPost}
       />
     </>

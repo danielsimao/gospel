@@ -25,6 +25,14 @@ const TEXTURE: Record<Texture, { opacity: string; alt: string }> = {
 /**
  * A generated texture behind a homepage band.
  *
+ * `opacity` overrides the measured default above, and exists because that
+ * default is a property of the PLACEMENT, not of the image: 0.16 was measured
+ * behind the scoreline, which is two numerals and a lot of open black. Behind
+ * the ledger the same strokes land at the weight of the row rules, so structure
+ * and wall become indistinguishable — and tally marks behind a list of counted
+ * rows read as a second count that disagrees with the first. Re-measured there
+ * rather than assumed; see the call in passed-band.
+ *
  * Absolutely positioned, wider than its band, and masked to nothing before it
  * reaches the edges — a rectangle of texture with visible corners reads as a
  * panel the band is sitting in, which is the opposite of what a background is
@@ -37,8 +45,14 @@ const TEXTURE: Record<Texture, { opacity: string; alt: string }> = {
  * 67 KB — because the source images are mostly black. They sit behind
  * content that is already below the fold, so neither is on the LCP path.
  */
-export function BandTexture({ texture }: { texture: Texture }) {
-  const { opacity } = TEXTURE[texture];
+export function BandTexture({
+  texture,
+  opacity: override,
+}: {
+  texture: Texture;
+  opacity?: string;
+}) {
+  const opacity = override ?? TEXTURE[texture].opacity;
   return (
     <div
       aria-hidden="true"

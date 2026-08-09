@@ -112,6 +112,177 @@ export async function fetchTestTakerCount(): Promise<number | null> {
 }
 
 /**
+ * One row of the ledger: where someone stood trial, and when.
+ *
+ * No identity of any kind survives into this shape — not the distinct_id the
+ * query dedupes on, not an IP, not a coordinate. A place and a moment, which
+ * is all the band renders.
+ */
+export interface VerdictRow {
+  /** ISO 8601 in UTC. The client formats it; the server only passes it on. */
+  at: string;
+  /** Empty unless the city cleared LEDGER_CITY_MIN — see the threshold below. */
+  city: string;
+  /** GeoIP's own name, in English, and only the fallback for `countryCode`. */
+  country: string;
+  /** ISO 3166-1 alpha-2, so the band can say the country in the reader's own
+      language. GeoIP answers "Brazil" whoever is asking, and a Portuguese page
+      reading "São Paulo, Brazil" is the site speaking English mid-sentence. */
+  countryCode: string;
+}
+
+/** How far back the ledger looks. Long enough that a quiet week still fills. */
+export const LEDGER_WINDOW_DAYS = 30;
+
+/**
+ * How many verdicts a city needs before the ledger will name it.
+ *
+ * k-anonymity, and it is the whole reason cities are allowed here at all.
+ * "Someone in Óbidos failed, 3 minutes ago" is a sentence everyone in Óbidos
+ * can resolve to a person; "Portugal" is not. The threshold is computed from
+ * the data rather than from a population table, so a city earns its name by
+ * having a crowd to hide in — and as traffic grows, more cities do.
+ */
+export const LEDGER_CITY_MIN = 5;
+
+/** Rows the band asks for. More is a wall; fewer is not a ledger. */
+export const LEDGER_ROWS = 5;
+
+/**
+ * ClickHouse can answer `2026-08-09 12:34:56` — no `T`, no zone — and
+ * `new Date()` reads that as LOCAL time: right by accident on a UTC server,
+ * silently hours out anywhere else. Normalised here so what reaches the client
+ * is unambiguous, and rejected outright when it does not parse, because a row
+ * whose time is a guess has no business in a ledger.
+ */
+function parseTimestamp(raw: unknown): string | null {
+  if (typeof raw !== "string" || !raw) return null;
+  const hasZone = /(?:Z|[+-]\d{2}:?\d{2})$/.test(raw);
+  const at = new Date(raw.replace(" ", "T") + (hasZone ? "" : "Z"));
+  return Number.isNaN(at.getTime()) ? null : at.toISOString();
+}
+
+/**
+ * The last few verdicts, as places and times — the rows above Jerusalem.
+ *
+ * Only the CONSENTED `verdict_reached` event can answer this. Its anonymous
+ * twin is captured with `$geoip_disable` and a zeroed IP on purpose (see
+ * api/verdict-count), so it knows how many stood trial and deliberately not
+ * where — that decision is older than this band and is not reopened here. The
+ * ledger therefore shows a subset of the count above it, which is the honest
+ * relationship: every row is a real verdict, and there were more.
+ *
+ * An empty array is a supported answer, not an error. The band falls back to
+ * the scoreline, which argues the same thing with the number alone. Nothing
+ * here is ever modelled: the aggregate count may stand in an estimate (a rate,
+ * like the death counter), but an invented row — a city nobody took the test
+ * in — would be fabricated testimony, which is a different thing entirely.
+ */
+export async function fetchRecentVerdicts(): Promise<VerdictRow[]> {
+  const apiKey = process.env.POSTHOG_PERSONAL_API_KEY;
+  if (!apiKey) {
+    console.warn("[test-stats] no ledger: no POSTHOG_PERSONAL_API_KEY configured");
+    return [];
+  }
+
+  try {
+    const response = await fetch(
+      `${POSTHOG_API_HOST}/api/projects/${POSTHOG_PROJECT_ID}/query/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          query: {
+            kind: "HogQLQuery",
+            /*
+             * `crowded` is the k-anonymity pass: a city is named only once
+             * LEDGER_CITY_MIN verdicts have come from it, and every other row
+             * falls back to its country. The empty string rather than null
+             * throughout, so a missing city cannot turn the `if` into a
+             * nullable comparison and take the whole row with it.
+             *
+             * distinct_id is selected but never returned — it exists so one
+             * reader who reloads the verdict five times cannot fill the
+             * ledger on their own, which would render five verdicts as five
+             * people. Deduped in TypeScript rather than with LIMIT BY: the
+             * query is the part that cannot be run locally, so it stays as
+             * ordinary as possible.
+             */
+            query:
+              "with recent as (" +
+              "select timestamp, " +
+              "properties.$geoip_country_name as country, " +
+              "coalesce(properties.$geoip_country_code, '') as country_code, " +
+              "coalesce(properties.$geoip_city_name, '') as city, " +
+              "distinct_id " +
+              "from events " +
+              "where event = 'verdict_reached' " +
+              `and timestamp > now() - interval ${LEDGER_WINDOW_DAYS} day ` +
+              "and properties.$geoip_country_name != ''" +
+              "), crowded as (" +
+              "select city from recent where city != '' " +
+              `group by city having count() >= ${LEDGER_CITY_MIN}` +
+              ") " +
+              "select timestamp, country, country_code, " +
+              "if(city in (select city from crowded), city, '') as city, " +
+              "distinct_id " +
+              "from recent order by timestamp desc limit 60",
+          },
+        }),
+        // The same hourly window the count rides on. A ledger an hour old is
+        // still true: the times are formatted from the timestamps on the
+        // client, so a stale page ages its own rows rather than lying about
+        // them.
+        next: { revalidate: 3600 },
+      },
+    );
+    if (!response.ok) {
+      console.warn(`[test-stats] no ledger: PostHog answered ${response.status}`);
+      return [];
+    }
+
+    const data = (await response.json()) as { results?: unknown[][] };
+    const results = Array.isArray(data.results) ? data.results : [];
+
+    const readers = new Set<string>();
+    const rows: VerdictRow[] = [];
+    for (const result of results) {
+      const at = parseTimestamp(result?.[0]);
+      const country = typeof result?.[1] === "string" ? result[1].trim() : "";
+      const rawCode = typeof result?.[2] === "string" ? result[2].trim().toUpperCase() : "";
+      const city = typeof result?.[3] === "string" ? result[3].trim() : "";
+      const reader = typeof result?.[4] === "string" ? result[4] : "";
+      if (!at || !country) continue;
+      if (reader) {
+        if (readers.has(reader)) continue;
+        readers.add(reader);
+      }
+      rows.push({
+        at,
+        city,
+        country,
+        // Only a well-formed alpha-2 travels; anything else would just be a
+        // string the band has to guard again on the other side.
+        countryCode: /^[A-Z]{2}$/.test(rawCode) ? rawCode : "",
+      });
+      if (rows.length >= LEDGER_ROWS) break;
+    }
+
+    // The operator's only view of what the homepage actually published, for
+    // the same reason the count logs its answer: a working key and a broken
+    // one otherwise look identical from outside.
+    console.info(`[test-stats] ledger: ${rows.length} of ${results.length} rows`);
+    return rows;
+  } catch (error) {
+    console.warn("[test-stats] no ledger:", error);
+    return [];
+  }
+}
+
+/**
  * The modelled count, for when neither counter can answer.
  *
  * A dead word ("Todos") in the red slot kills the liveness the band trades

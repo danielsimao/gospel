@@ -3,9 +3,13 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   fetchTestTakerCount,
+  fetchRecentVerdicts,
   estimateTestTakerCount,
   ESTIMATE_BASE,
   ESTIMATE_PER_DAY,
+  LEDGER_CITY_MIN,
+  LEDGER_ROWS,
+  LEDGER_WINDOW_DAYS,
 } from "@/lib/test-stats";
 
 /**
@@ -23,6 +27,7 @@ const strip = (s: string) =>
   s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
 
 const band = strip(read("src", "components", "home", "passed-band.tsx"));
+const ledger = strip(read("src", "components", "home", "verdict-ledger.tsx"));
 const shell = strip(read("src", "components", "home-shell.tsx"));
 const stats = strip(read("src", "lib", "test-stats.ts"));
 const page = strip(read("src", "app", "[locale]", "(content)", "page.tsx"));
@@ -490,7 +495,12 @@ describe("the count's plumbing", () => {
      */
     expect(stats).not.toMatch(/NEXT_PUBLIC/);
     expect(stats).toMatch(/POSTHOG_PERSONAL_API_KEY/);
-    expect(page).toMatch(/await fetchTestTakerCount\(\)/);
+    /* Awaited in the page, which is a server component — it was a bare
+       `await fetchTestTakerCount()` until the ledger gave the page a second
+       read of the same project and the two were paired into one Promise.all
+       so the ledger's round trip never lands on top of the count's. What this
+       pins is unchanged: the call is resolved here, on the server. */
+    expect(page).toMatch(/await Promise\.all\(\[\s*fetchTestTakerCount\(\),/);
     // …and the client component receives a number, not the means to fetch one.
     expect(band).not.toMatch(/fetch\(|process\.env/);
   });
@@ -557,5 +567,258 @@ describe("the count's plumbing", () => {
     expect(stats).toMatch(/console\.warn\(`\[test-stats\] falling back to the estimate: PostHog answered \$\{response\.status\}`\)/);
     expect(stats).toMatch(/console\.warn\("\[test-stats\] falling back to the estimate: HogQL answer did not parse as a number"\)/);
     expect(stats).toMatch(/catch \(error\) \{\s*console\.warn\("\[test-stats\] falling back to the estimate:", error\)/);
+  });
+});
+
+/**
+ * The ledger — the same argument as the scoreline, with a name on the end.
+ *
+ * Every row above the gold one is a real verdict somebody reached. That is the
+ * whole difference between this and the count above it: the count may stand in
+ * a modelled rate when PostHog cannot answer (a rate, like the death counter),
+ * because nobody reads "1,915" as a claim about a particular person. A row is
+ * exactly that claim, so a row is never modelled, never padded and never
+ * approximated — when there is no data there is no ledger, and the scoreline
+ * takes the band back.
+ */
+describe("the ledger", () => {
+  const rowsFrom = (results: unknown[][]) => {
+    vi.stubEnv("POSTHOG_PERSONAL_API_KEY", "phx_test");
+    vi.stubGlobal("fetch", vi.fn(async () => ({ ok: true, json: async () => ({ results }) })));
+    return fetchRecentVerdicts();
+  };
+
+  it("shows a name, a place and a date — with the gold row last", () => {
+    /*
+     * The format IS the argument: "2,000 years ago" sitting in the column where
+     * every row above it says minutes. Both halves have to be in the markup —
+     * a ledger whose last line arrived by effect would argue only the Law to
+     * anyone whose observer never fired.
+     */
+    expect(ledger).toMatch(/messages\.ledgerPlace/);
+    expect(ledger).toMatch(/messages\.ledgerWhen/);
+    // Last in the source is last on the page: the list is static order, not a
+    // sort that a future edit could invert.
+    expect(ledger.indexOf("messages.ledgerWhen")).toBeGreaterThan(ledger.indexOf("rows.map"));
+    for (const [locale, home] of [
+      ["en", en.home],
+      ["pt", pt.home],
+    ] as const) {
+      expect(home.passedBand.ledgerPlace, `${locale} lost the gold row's place`).toBeTruthy();
+      expect(home.passedBand.ledgerWhen, `${locale} lost the gold row's date`).toBeTruthy();
+    }
+  });
+
+  it("reuses the scoreline's own two words for the verdicts", () => {
+    // One vocabulary across both renderings. A second pair of strings for
+    // "failed"/"passed" is two places for the translation to drift.
+    expect(ledger).toMatch(/messages\.failedCaption/);
+    expect(ledger).toMatch(/messages\.passedCaption/);
+    expect(ledger, "the ledger grew its own verdict wording").not.toMatch(/rowFailed|rowPassed/);
+  });
+
+  it("is a record, so it is set in mono — no score face", () => {
+    /*
+     * The grace record made this call first and for the same reason: signage
+     * would break the one thing a record imitates. The declaring voice stays on
+     * the scoreline's two numerals, which the same-size test counts exactly
+     * twice in the band next door.
+     */
+    expect(ledger, "the ledger took the declaring voice").not.toMatch(/font-score/);
+    expect(ledger).toMatch(/font-mono/);
+  });
+
+  it("falls back to the scoreline rather than to a thinner ledger", () => {
+    /*
+     * A list of one is not a pattern — and it points at that one reader harder
+     * than the city threshold upstream is willing to allow. Below the minimum
+     * the band renders what it always rendered.
+     */
+    expect(band).toMatch(/const LEDGER_MIN_ROWS = 3;/);
+    expect(band).toMatch(/verdicts\.length >= LEDGER_MIN_ROWS/);
+    // The scoreline is still fully present — this is a branch, not a rewrite.
+    expect(band).toMatch(/estimateTestTakerCount\(\)/);
+    expect(band).toMatch(/<VerdictLedger/);
+    // …and nothing anywhere manufactures a row to reach the minimum.
+    expect(ledger, "the ledger invented rows").not.toMatch(/placeholder|sample|Math\.random/);
+    expect(stats, "the ledger invented rows").not.toMatch(/estimateRecentVerdicts|fakeRow/);
+  });
+
+  it("draws the bar in the scoreline only", () => {
+    // The ledger already IS a column of red with one gold under it. The bar
+    // restating that immediately beneath would make the argument twice.
+    expect(band).toMatch(/\{!showLedger && \(/);
+    expect(ledger).not.toMatch(/from-red-400\/50/);
+  });
+
+  it("names a city only once there is a crowd to hide in", async () => {
+    /*
+     * k-anonymity, and the reason cities are allowed here at all. "Someone in
+     * Óbidos failed, 3 minutes ago" is a sentence everyone in Óbidos can
+     * resolve to a person; "Portugal" is not. The threshold is computed from
+     * the data rather than from a population table, so a city earns its name.
+     */
+    expect(stats).toMatch(/having count\(\) >= \$\{LEDGER_CITY_MIN\}/);
+    expect(LEDGER_CITY_MIN).toBeGreaterThanOrEqual(5);
+    // The query blanks the city itself, so a blanked one arrives here as an
+    // empty string and the row falls back to its country alone.
+    const rows = await rowsFrom([
+      ["2026-08-09T12:00:00Z", "Portugal", "PT", "Lisboa", "a"],
+      ["2026-08-09T11:00:00Z", "Portugal", "PT", "", "b"],
+    ]);
+    expect(rows.map((r) => r.city)).toEqual(["Lisboa", ""]);
+  });
+
+  it("says the country in the reader's language, not in GeoIP's", () => {
+    /*
+     * GeoIP answers "Brazil" whoever is asking. Composing the place upstream
+     * printed "São Paulo, Brazil" on a Portuguese page — the site dropping into
+     * English mid-sentence — so the alpha-2 code travels instead and the
+     * country is resolved per locale in the component.
+     *
+     * The city has no code behind it and stays as GeoIP wrote it. That is a
+     * limit of the data, and the reason the half that can be said properly is.
+     */
+    expect(ledger).toMatch(/Intl\.DisplayNames/);
+    expect(ledger).toMatch(/type: "region"/);
+    expect(stats).toMatch(/properties\.\$geoip_country_code/);
+    // Only a well-formed alpha-2 travels, so the component has one shape to
+    // guard rather than whatever the property happened to hold.
+    expect(stats).toMatch(/\/\^\[A-Z\]\{2\}\$\/\.test\(rawCode\)/);
+    const codes = [
+      ["BR", "en", "Brazil"],
+      ["BR", "pt", "Brasil"],
+      ["GB", "pt", "Reino Unido"],
+    ] as const;
+    for (const [code, locale, expected] of codes) {
+      const named = new Intl.DisplayNames([locale === "pt" ? "pt-PT" : "en-US"], {
+        type: "region",
+      }).of(code);
+      expect(named, `${code} in ${locale}`).toBe(expected);
+    }
+  });
+
+  it("never lets one reader fill the ledger", async () => {
+    /*
+     * The consented event fires again on a reload at the verdict and on a
+     * retake — five reloads would otherwise render as five people, which is
+     * the one thing this band must not overstate. Deduped on a distinct_id
+     * that is fetched and then dropped: it exists to collapse rows, and it is
+     * not part of what the component receives.
+     */
+    const rows = await rowsFrom([
+      ["2026-08-09T12:00:00Z", "Portugal", "PT", "", "same-reader"],
+      ["2026-08-09T11:00:00Z", "Portugal", "PT", "", "same-reader"],
+      ["2026-08-09T10:00:00Z", "Brazil", "BR", "", "other-reader"],
+    ]);
+    expect(rows).toHaveLength(2);
+    expect(rows.map((r) => r.country)).toEqual(["Portugal", "Brazil"]);
+    // A place and a moment, and nothing else — no id, no ip, no coordinate.
+    expect(Object.keys(rows[0]).sort()).toEqual(["at", "city", "country", "countryCode"]);
+  });
+
+  it("reads a zone-less ClickHouse timestamp as UTC, not as local time", async () => {
+    /*
+     * ClickHouse can answer "2026-08-09 12:34:56" — no T, no zone — and
+     * new Date() reads that as LOCAL time: right by accident on a UTC server
+     * and silently hours out anywhere else. An hours-wrong row is worse than a
+     * missing one, because the column it lands in is the argument.
+     */
+    const rows = await rowsFrom([["2026-08-09 12:34:56", "Portugal", "PT", "", "a"]]);
+    expect(rows[0].at).toBe("2026-08-09T12:34:56.000Z");
+    // And a timestamp that cannot be parsed takes its own row out, quietly.
+    expect(await rowsFrom([["not a date", "Portugal", "PT", "", "a"]])).toEqual([]);
+  });
+
+  it("asks for a bounded window and stops at the rows it shows", async () => {
+    expect(stats).toMatch(/interval \$\{LEDGER_WINDOW_DAYS\} day/);
+    expect(LEDGER_WINDOW_DAYS).toBeGreaterThan(0);
+    const many = Array.from({ length: LEDGER_ROWS + 6 }, (_, i) => [
+      `2026-08-09T1${i % 10}:00:00Z`,
+      "Portugal",
+      "PT",
+      "",
+      `reader-${i}`,
+    ]);
+    expect(await rowsFrom(many)).toHaveLength(LEDGER_ROWS);
+  });
+
+  it("turns every failure into no ledger, never a throw", async () => {
+    // Same contract as the count: the homepage must never break because an
+    // analytics vendor had a bad day. Here the cost of failing is smaller —
+    // the scoreline simply keeps the band.
+    vi.stubEnv("POSTHOG_PERSONAL_API_KEY", "phx_test");
+    for (const impl of [
+      async () => ({ ok: false, json: async () => ({}) }),
+      async () => ({ ok: true, json: async () => ({}) }),
+      async () => ({ ok: true, json: async () => ({ results: "not an array" }) }),
+      async () => ({ ok: true, json: async () => ({ results: [[null, null, null, null, null]] }) }),
+      async () => ({
+        ok: true,
+        json: async () => ({ results: [["2026-08-09T12:00:00Z", "", "", "", "a"]] }),
+      }),
+      async () => {
+        throw new Error("network");
+      },
+    ]) {
+      vi.stubGlobal("fetch", vi.fn(impl));
+      expect(await fetchRecentVerdicts()).toEqual([]);
+    }
+  });
+
+  it("asks for nothing when there is no key to ask with", async () => {
+    vi.stubEnv("POSTHOG_PERSONAL_API_KEY", "");
+    const fetchSpy = vi.fn();
+    vi.stubGlobal("fetch", fetchSpy);
+    expect(await fetchRecentVerdicts()).toEqual([]);
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("reads the consented event, because it is the only one with a place in it", () => {
+    /*
+     * The anonymous twin is captured with $geoip_disable and a zeroed IP on
+     * purpose — that decision predates this band and is pinned by "counts
+     * without anyone in the event" above. The ledger therefore shows a subset
+     * of the count beside it, and the honest consequence is that it can be
+     * empty while the count is large.
+     */
+    expect(stats).toMatch(/where event = 'verdict_reached' /);
+    expect(stats, "the ledger reached for the counter that has no geography").not.toMatch(
+      /verdict_reached_anon[\s\S]{0,200}geoip/,
+    );
+    expect(stats).toMatch(/properties\.\$geoip_country_name/);
+  });
+
+  it("resolves on the server, like the count it sits under", () => {
+    // The personal key reads every event in the project; the component gets
+    // rows, not the means to fetch them.
+    expect(page).toMatch(/fetchRecentVerdicts\(\)/);
+    expect(ledger).not.toMatch(/fetch\(|process\.env|POSTHOG/);
+    expect(stats).toMatch(/revalidate: 3600/);
+  });
+
+  it("renders a date the cache cannot falsify, then lets the client say when", () => {
+    /*
+     * "4 minutes ago" baked into HTML that revalidates hourly is a lie forty
+     * minutes later. So the SERVER renders a UTC, day-granular date — pure from
+     * the timestamp, zone pinned, so hydration cannot disagree and there is
+     * nothing to suppress — and the client rewrites it to the relative form
+     * before paint, from the real timestamp in the datetime attribute.
+     *
+     * Intl does the wording rather than a hand-translated table, so Portuguese
+     * gets "há 4 minutos" and "ontem" as its own idiom.
+     */
+    expect(ledger).toMatch(/timeZone: "UTC"/);
+    expect(ledger).toMatch(/useIsomorphicLayoutEffect/);
+    expect(ledger).toMatch(/Intl\.RelativeTimeFormat/);
+    expect(ledger).toMatch(/dateTime=\{row\.at\}/);
+    // Clamped at zero: a clock a few seconds fast must not put a verdict in
+    // the future, and "0 seconds ago" is worse than "1 minute ago".
+    expect(ledger).toMatch(/Math\.max\(0, now - at\)/);
+    expect(ledger).toMatch(/-Math\.max\(1, minutes\)/);
+    // The ageing rows are content, not motion — they keep running when a
+    // reader has asked for less of it. The gold row is markup and never ticks.
+    expect(ledger).toMatch(/setInterval\(write, 60_000\)/);
+    expect(ledger).toMatch(/clearInterval\(timer\)/);
   });
 });

@@ -4,8 +4,9 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { BandSpine } from "@/components/home/band-spine";
 import { BandTexture } from "@/components/home/band-texture";
+import { VerdictLedger } from "@/components/home/verdict-ledger";
 import { Button, ButtonArrow } from "@/components/ui/button";
-import { estimateTestTakerCount } from "@/lib/test-stats";
+import { estimateTestTakerCount, type VerdictRow } from "@/lib/test-stats";
 import type { Locale } from "@/lib/i18n";
 
 interface PassedBandProps {
@@ -20,6 +21,9 @@ interface PassedBandProps {
     passedCaption: string;
     /** Under the verdict bar, with `{n}` for the live count. */
     barCaption: string;
+    /** The gold row of the ledger — where the one pass happened, and when. */
+    ledgerPlace: string;
+    ledgerWhen: string;
     whoCta: string;
     testCta: string;
   };
@@ -28,7 +32,20 @@ interface PassedBandProps {
       consent-gating hides decliners, and the anonymous counter only reaches
       back to the day it shipped. */
   count: number | null;
+  /** Real, consented verdicts with a place on them. Empty is normal — only the
+      consented event carries geography, and PostHog may not answer at all. */
+  verdicts: VerdictRow[];
 }
+
+/**
+ * Rows the ledger needs before it is worth showing instead of the scoreline.
+ *
+ * Two reasons, and they agree. A list of one is not a pattern, so the argument
+ * the ledger makes — every line the same verdict, until the last — needs a few
+ * lines to make it. And a ledger showing a single reader points harder at that
+ * reader than the city threshold upstream is willing to allow.
+ */
+const LEDGER_MIN_ROWS = 3;
 
 /*
  * The zero has to be written before the browser paints, not after.
@@ -103,7 +120,20 @@ function revealedRatio(rect: DOMRect, viewportHeight: number): number {
  * only after the red stops climbing: gold arriving late, after the Law has
  * finished, is the site's own grammar.
  */
-export function PassedBand({ locale, messages, count }: PassedBandProps) {
+export function PassedBand({ locale, messages, count, verdicts }: PassedBandProps) {
+  /*
+   * Which of the two renderings the band is doing today.
+   *
+   * The ledger says the same thing with a name and a place on the end of it,
+   * so it is preferred whenever the data can support one honestly. When it
+   * cannot — no key, no consented geography, a quiet month — the scoreline
+   * stands, and it is not a degraded band: it is what shipped, arguing the
+   * same ratio with the number alone.
+   *
+   * Deliberately NOT a fallback the other way round: nothing here invents a
+   * row to reach the minimum.
+   */
+  const showLedger = verdicts.length >= LEDGER_MIN_ROWS;
   const rootRef = useRef<HTMLDivElement | null>(null);
   const countRef = useRef<HTMLSpanElement | null>(null);
   /* The verdict bar's caption repeats the count in words. Every write to the
@@ -155,6 +185,11 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
    */
   useIsomorphicLayoutEffect(() => {
     const root = rootRef.current;
+    /* Null whenever the ledger is rendering — there is no numeral to count up,
+       and the ledger's own liveness is its rows ageing, not a climbing figure.
+       The slow tick stays out of that mode on purpose: a caption ticking to
+       1,916 with no sixth row under it would be the band contradicting itself
+       in the one place it is showing its working. */
     const el = countRef.current;
     if (!root || !el) return;
 
@@ -277,11 +312,18 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
 
   return (
     <div ref={rootRef} className="relative mt-14 w-full max-w-md text-left sm:max-w-2xl">
-      <BandTexture texture="tally" />
+      {/* Dimmed under the ledger, where the strokes otherwise land at the
+          weight of the row rules and a texture that means "counting" sits
+          behind something already doing the counting. The scoreline keeps the
+          value measured for it. */}
+      <BandTexture texture="tally" opacity={showLedger ? "0.07" : undefined} />
       <div className="relative">
       <BandSpine label={messages.eyebrow} />
 
-      {/* Open, not boxed: this is a beat of the page, not a widget. */}
+      {showLedger ? (
+        <VerdictLedger locale={locale} messages={messages} rows={verdicts} />
+      ) : (
+      /* Open, not boxed: this is a beat of the page, not a widget. */
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 py-6 sm:gap-6 sm:py-8">
         <div className="text-center">
           {/* The test page's own liveness mark: a pulsing red point. It stops
@@ -334,6 +376,7 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
           </span>
         </div>
       </div>
+      )}
 
       {/*
        * The verdict bar — the whole score as one graphic: a wall of red for
@@ -344,20 +387,33 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
        * breathes on the LIVE pulse and holds still, visible, under reduced
        * motion — the fact-crawl precedent, again.
        *
+       * It belongs to the scoreline only. The ledger draws the same figure
+       * literally — a column of red verdicts with one gold one under them — and
+       * a bar restating that directly beneath would be the argument made twice
+       * in a row, in two registers.
+       *
        * The caption restates the ratio in words, in the interface mono — not
        * the score face, which stays on the two numerals alone. Its count is a
        * second copy of a live number, so every write to the numeral writes
        * here too (see writeCount); a caption that lags the score it captions
-       * would be the band contradicting itself in one breath.
+       * would be the band contradicting itself in one breath. It stays in both
+       * renderings: the ledger shows a handful of verdicts, and this is the
+       * line that says how many there really were.
        */}
       <div className="mb-7">
+        {!showLedger && (
         <div className="relative h-[5px] rounded-full bg-gradient-to-r from-red-400/50 to-red-400/25">
           <span
             aria-hidden="true"
             className="absolute right-0.5 top-1/2 h-[15px] w-[3px] -translate-y-1/2 rounded-[2px] bg-[#D4A843] shadow-[0_0_12px_rgba(212,168,67,0.8),0_0_30px_rgba(212,168,67,0.4)] animate-pulse motion-reduce:animate-none"
           />
         </div>
-        <p className="mt-3 text-center font-mono text-[9.5px] uppercase tracking-[1.8px] text-white/40">
+        )}
+        <p
+          className={`text-center font-mono text-[9.5px] uppercase tracking-[1.8px] text-white/40 ${
+            showLedger ? "mt-6" : "mt-3"
+          }`}
+        >
           {messages.barCaption.split("{n}").map((part, i) =>
             i === 0 ? (
               part
