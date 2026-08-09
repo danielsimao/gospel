@@ -12,7 +12,7 @@ export function trackTopicCtaClicked(slug: string, locale: string) {
   safeCapture("topic_cta_clicked", { slug, locale });
 }
 
-export function trackTopicNavClicked(slug: string, direction: "next" | "prev", locale: string) {
+export function trackTopicNavClicked(slug: string, direction: "next" | "prev" | "related", locale: string) {
   safeCapture("topic_nav_clicked", { slug, direction, locale });
 }
 

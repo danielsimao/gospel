@@ -67,8 +67,9 @@ describe("placeholders", () => {
 
 describe("untranslated strings", () => {
   // Values that are legitimately identical: URLs, route slugs, and proper nouns
-  // that are the same word in both languages.
-  const SHARED = /(?:Url|url|slug)$|^blog\.(label|indexTitle)$|^footer\.(blogLink|needGodLink)$/;
+  // that are the same word in both languages. "Quiz" joins the list for the
+  // same reason "Blog" did — an established loanword, invariant in PT-PT.
+  const SHARED = /(?:Url|url|slug)$|^blog\.(label|indexTitle)$|^footer\.(blogLink|needGodLink)$|^learn\.quizLabel$/;
 
   it("has no English left in the Portuguese file", () => {
     const identical = strings(EN)

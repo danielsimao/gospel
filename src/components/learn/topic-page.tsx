@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { m } from "framer-motion";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -43,14 +43,43 @@ interface TopicPageProps {
   allTopicsLabel?: string;
   nextLabel: string;
   nextTopic: { slug: string; title: string; subtitle: string; number: number } | null;
+  relatedLabel?: string;
+  relatedTopics: Array<{ slug: string; title: string; subtitle: string; number: number }>;
+  quizLabel: string;
+  sectionCostLabel: string;
+  faqLabel: string;
   feedbackMessages: { question: string; yes: string; no: string; thanks: string; followup: string };
   faq: Array<{ question: string; answer: string }>;
 }
 
-export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, allTopicsLabel, nextLabel, nextTopic, faq, feedbackMessages }: TopicPageProps) {
+export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, completedCtaHeading, completedCtaButton, allTopicsLabel, nextLabel, nextTopic, relatedLabel, relatedTopics, quizLabel, sectionCostLabel, faqLabel, faq, feedbackMessages }: TopicPageProps) {
   useEffect(() => {
     trackTopicPageViewed(topic.slug, locale);
   }, [topic.slug, locale]);
+
+  // Lifted out of each TopicSection's own IntersectionObserver (which already
+  // fires trackTopicSectionReached) rather than a second observer — the
+  // section-progress bar under the cover reads real reveal events, not an
+  // invented estimate.
+  const [viewedSections, setViewedSections] = useState<Set<number>>(new Set());
+  const totalSections = topic.sections.length;
+  const quizCount = topic.sections.filter((s) => s.quiz).length;
+  const costLine = sectionCostLabel
+    .replace("{sections}", String(totalSections))
+    .replace("{quizzes}", String(quizCount));
+
+  // Stable across renders — an inline arrow here would change identity on
+  // every reveal, and TopicSection's observer effect depends on this
+  // callback, so a changing reference tore down and recreated every
+  // section's IntersectionObserver on each reveal. A freshly created
+  // observer fires immediately for whatever is already intersecting, so
+  // sections still in view re-fired trackTopicSectionReached (and
+  // markTopicCompleted on the last one) every time any other section was
+  // reached — caught in code review, not by any test, since this repo's
+  // suite is source-text assertions rather than rendered component tests.
+  const handleSectionReached = useCallback((index: number) => {
+    setViewedSections((prev) => new Set(prev).add(index));
+  }, []);
 
   return (
     <PageShell>
@@ -78,6 +107,29 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
             </h1>
           )}
           <p className="mt-3 text-sm text-white/60">{topic.subtitle}</p>
+
+          {/* The honest step-bar the hub isn't allowed: the hub is
+              entry-anywhere, but a topic's sections are genuinely ordered,
+              so a segment per section tells the truth rather than inventing
+              one. Real counts ("N sections, M quizzes"), no invented
+              minutes — the same rule the hub's cards keep. */}
+          {totalSections > 0 && (
+            <div className="mt-5">
+              <p className="font-mono text-[10px] uppercase tracking-[2px] text-white/50">
+                {costLine}
+              </p>
+              <div className="mt-2 flex gap-1">
+                {topic.sections.map((_, i) => (
+                  <div key={i} className="h-[2px] flex-1 overflow-hidden rounded-full bg-white/[0.06]">
+                    <div
+                      className="h-full bg-[#D4A843] transition-[width] duration-500 ease-out"
+                      style={{ width: viewedSections.has(i) ? "100%" : "0%" }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </m.div>
 
         <div className="mt-12">
@@ -93,12 +145,16 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
               locale={locale}
               quiz={section.quiz}
               isLast={i === topic.sections.length - 1}
+              onSectionReached={handleSectionReached}
             />
           ))}
         </div>
 
         {faq.length > 0 && (
           <div className="mt-14">
+            <p className="mb-3 font-mono text-[9px] uppercase tracking-[3px] text-white/60">
+              {faqLabel}
+            </p>
             <div className="space-y-3">
               {faq.map((item, i) => (
                 <details
@@ -128,6 +184,9 @@ export function TopicPage({ topic, locale, label, ctaHeading, ctaButton, complet
           locale={locale}
           nextLabel={nextLabel}
           nextTopic={nextTopic}
+          relatedLabel={relatedLabel}
+          relatedTopics={relatedTopics}
+          quizLabel={quizLabel}
           ctaHeading={ctaHeading}
           ctaButton={ctaButton}
           completedCtaHeading={completedCtaHeading}
