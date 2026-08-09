@@ -11,6 +11,17 @@ import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { Locale } from "@/lib/i18n";
 import type { SelfRating as SelfRatingValue } from "@/lib/types";
 
+/**
+ * Set once, never cleared — not even by a retake. The homepage reads the
+ * anonymous counter back as readers, not trials ("N chumbaram"), and the
+ * consented twin is deduped by distinct_id in the same query; without this
+ * marker a retake (fresh landing mount, same device) fired the beacon again
+ * and counted one reader twice. Deliberately outside the test session
+ * storage, whose whole record is erased by clearSession() on every retake
+ * link.
+ */
+const TRIAL_COUNTED_KEY = "gospel-trial-counted";
+
 interface LandingProps {
   messages: {
     title: string;
@@ -112,6 +123,28 @@ export function Landing({ messages, locale }: LandingProps) {
 
   function handleBegin() {
     trackGameStarted(locale);
+
+    /*
+     * The anonymous twin, for the homepage's score band. The consented event
+     * above misses every reader who declined the banner, so the band's
+     * denominator would be wrong by exactly the decline rate. sendBeacon
+     * because the answer is never read and must never delay the transition
+     * into the Law; guarded by TRIAL_COUNTED_KEY (see its comment) and by the
+     * route itself outside production. The locale rides in the URL because
+     * the route otherwise only has Accept-Language, which records the
+     * browser's tongue, not the Law the reader is about to stand under. A
+     * reader without sendBeacon or localStorage is a missed count, not an
+     * error — the number is a floor by design.
+     */
+    try {
+      if (localStorage.getItem(TRIAL_COUNTED_KEY) === null) {
+        navigator.sendBeacon?.(`/api/trial-count?locale=${locale}`);
+        localStorage.setItem(TRIAL_COUNTED_KEY, "1");
+      }
+    } catch {
+      // Counting is never worth breaking the transition for.
+    }
+
     dispatch({ type: "START_GAME" });
   }
 

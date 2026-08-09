@@ -1,21 +1,16 @@
 import { describe, it, expect, afterEach, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import {
-  fetchTestTakerCount,
-  estimateTestTakerCount,
-  ESTIMATE_BASE,
-  ESTIMATE_PER_DAY,
-} from "@/lib/test-stats";
+import { fetchTestTakerCount } from "@/lib/test-stats";
 
 /**
  * "N took the test. 1 passed." — the homepage's score band.
  *
  * The claim is doctrine, not data: exactly one person in history kept the Law,
  * and he is not a row in PostHog. So the band's guards split cleanly in two —
- * the sentence must stand on its own when the number is missing, and the
- * number's plumbing must never be able to break, shift, or leak from the
- * homepage.
+ * the band must not exist when the number is missing (no fabricated stand-in,
+ * ever), and the number's plumbing must never be able to break, shift, or leak
+ * from the homepage.
  */
 const ROOT = join(import.meta.dirname, "..", "..");
 const read = (...p: string[]) => readFileSync(join(ROOT, ...p), "utf8");
@@ -35,7 +30,7 @@ afterEach(() => {
 });
 
 describe("the band and its doors", () => {
-  it("is ungated — every stage sees the same score", () => {
+  it("is ungated on journey stage — every stage sees the same score when there is one", () => {
     // Rendered once among the ungated bands, not inside a journey branch: the
     // same precedent as the questions and reading bands, so the five stages
     // cannot drift apart.
@@ -44,13 +39,26 @@ describe("the band and its doors", () => {
     expect(at, "PassedBand is not before QuestionsBand").toBeLessThan(shell.indexOf("<QuestionsBand"));
     expect(shell.match(/<PassedBand/g)?.length, "rendered more than once").toBe(1);
     /*
-     * Not wrapped in a stage conditional. The first version of this assertion
-     * only checked ordering, and a mutation gating the band on
+     * Not wrapped in a journey-stage conditional. The first version of this
+     * assertion only checked ordering, and a mutation gating the band on
      * journey.stage === "visitor" passed it — the exact drift this test exists
-     * to stop. The window before the JSX is where a gate would sit.
+     * to stop. The one legitimate gate left (testTakerCount !== null, pinned
+     * below) is data-availability, not a journey stage, so it is named
+     * specifically rather than caught by a generic "no && (" ban.
      */
-    const before = shell.slice(Math.max(0, at - 160), at);
-    expect(before, "the band is gated on a journey stage").not.toMatch(/journey\.|stage|&& \(/);
+    const before = shell.slice(Math.max(0, at - 200), at);
+    expect(before, "the band is gated on a journey stage").not.toMatch(/journey\.stage|stage ===|stage !==/);
+  });
+
+  it("is gated on real data, not rendered with a fabricated stand-in", () => {
+    // The only condition allowed to keep this band off the page: no real
+    // count. If this regresses to always-render, fetchTestTakerCount's null
+    // has nowhere left to go and the band is one edit away from inventing a
+    // number again.
+    const at = shell.indexOf("<PassedBand");
+    const before = shell.slice(Math.max(0, at - 200), at);
+    expect(before, "PassedBand lost its null guard").toMatch(/testTakerCount !== null/);
+    expect(shell.slice(at, at + 120)).toMatch(/count=\{testTakerCount\}/);
   });
 
   it("opens both doors: who he is, and the test itself", () => {
@@ -95,14 +103,16 @@ describe("the band and its doors", () => {
     expect(band).toMatch(/passVisible \? "translate-y-0 opacity-100"/);
   });
 
-  it("always shows a number, and behaves live even without one", () => {
+  it("shows the real count only, and still behaves live", () => {
     /*
-     * The owner's brief, verbatim: a dead word in the red slot kills the
-     * liveness the band trades on. With no real count the modelled estimate
-     * stands in — a rate, like the death counter — and the band still wears
-     * the pulse, counts up, and ticks while the reader lingers.
+     * No fallback left to fall back to: `count` is a required real number
+     * (home-shell only renders this band when there is one), so the band
+     * always has a true figure to animate — it just never invents one when
+     * there isn't. Still wears the pulse, counts up, and ticks while the
+     * reader lingers, same as when the estimate existed.
      */
-    expect(band).toMatch(/const target = count \?\? estimateTestTakerCount\(\)/);
+    expect(band).toMatch(/const target = count;/);
+    expect(band, "the estimate fallback is back").not.toMatch(/estimateTestTakerCount|\?\? estimate/);
     expect(band, "the dead-word fallback is back").not.toMatch(/failedFallback|Todos/);
     // The pulse point, which stops moving but stays visible under reduced motion.
     expect(band).toMatch(/animate-pulse motion-reduce:animate-none/);
@@ -185,30 +195,6 @@ describe("the band and its doors", () => {
     expect(band).toMatch(/clearTimeout\(goldTimer\)/);
   });
 
-  it("publishes the real count, even when it is smaller than the model", () => {
-    /*
-     * The reverse of what this test used to assert, and the reversal is the
-     * point. It pinned `Math.max(count ?? 0, estimate)`, added to stop the
-     * score dropping if PostHog answered low. The cost was only visible once
-     * the key was configured on 2026-08-07: the model grows 35/day
-     * unconditionally, so a real count below it was discarded every hour and
-     * the homepage published 1,845 — the model exactly — while a working
-     * PostHog sat behind it. Monotonic was bought with never-true.
-     *
-     * The band wears a "live" badge; the owner chose a number that moves over
-     * one that only climbs. A drop is now possible and accepted.
-     *
-     * Behavioural, not a source match: the arithmetic is the claim, so the
-     * arithmetic is what is asserted.
-     */
-    const pick = (count: number | null, estimate: number) => count ?? estimate;
-    expect(pick(500, 1845), "the model still suppressed a real count").toBe(500);
-    expect(pick(4217, 1845), "a large real count was not published").toBe(4217);
-    // Only when PostHog cannot answer at all does the model stand in. A zero
-    // count is turned into null upstream (test-stats), so it lands here too.
-    expect(pick(null, 1845), "no count lost the model").toBe(1845);
-  });
-
   it("sends the whole score in the HTML, gold included", () => {
     /*
      * The gold column used to render at opacity-0 until a client effect
@@ -224,27 +210,15 @@ describe("the band and its doors", () => {
     expect(band.match(/setPassVisible\(false\)/g)?.length).toBe(1);
   });
 
-  it("keeps the estimate climbing when there is no key to fetch with", () => {
+  it("keeps the count fresh when there is no key to fetch with", () => {
     /*
      * fetchTestTakerCount's `revalidate: 3600` rides on its fetch, and with no
      * POSTHOG_PERSONAL_API_KEY it returns before reaching one — nothing
-     * registers a revalidation dependency, the page prerenders, and the
-     * day-granular estimate freezes on the day of the deploy. The page has to
-     * say the hour itself for the keyless path to age at all.
+     * registers a revalidation dependency, so the page prerenders and never
+     * re-checks whether a key has since been configured. The page has to say
+     * the hour itself for the keyless path to ever pick one up.
      */
     expect(page).toMatch(/export const revalidate = 3600/);
-  });
-
-  it("estimates deterministically, by the day", () => {
-    // Same day, different hour: the same number — that is what keeps server
-    // and client hydration in agreement. Different days grow by the rate.
-    const morning = Date.UTC(2026, 7, 6, 8);
-    const evening = Date.UTC(2026, 7, 6, 22);
-    const nextDay = Date.UTC(2026, 7, 7, 8);
-    expect(estimateTestTakerCount(morning)).toBe(estimateTestTakerCount(evening));
-    expect(estimateTestTakerCount(nextDay)).toBe(estimateTestTakerCount(morning) + ESTIMATE_PER_DAY);
-    // …and never negative, whatever the clock says.
-    expect(estimateTestTakerCount(0)).toBe(ESTIMATE_BASE);
   });
 
   it("gives the band one door, and keeps the test as a quiet line", () => {
@@ -406,64 +380,102 @@ describe("the display face is scoped to the score", () => {
 });
 
 describe("the anonymous counter", () => {
-  const route = strip(read("src", "app", "api", "verdict-count", "route.ts"));
-  const verdict = strip(read("src", "components", "verdict-screen.tsx"));
+  /*
+   * Fires at the trial's start (landing.tsx's handleBegin), not at the
+   * verdict. James 2:10 — guilty of all by stumbling in one point — is the
+   * app's own doctrine for the verdict, and it does not wait for a reader to
+   * finish: someone who answers one question and quits is already convicted
+   * by it, so "N stood trial" has to count them. It used to fire from
+   * verdict-screen.tsx as `verdict_reached_anon`, which erased every
+   * abandoner from the claim; this section pins the redefinition, not the
+   * old behaviour.
+   */
+  const route = strip(read("src", "app", "api", "trial-count", "route.ts"));
+  const landing = strip(read("src", "components", "landing.tsx"));
 
   it("counts without anyone in the event", () => {
     // The same contract as the QR scan counter: one identity for every
-    // verdict ever, no person, no geo, no IP. A counter with nobody in it
+    // trial ever, no person, no geo, no IP. A counter with nobody in it
     // needs nobody's consent — which is the whole reason it exists.
-    expect(route).toMatch(/distinct_id: "verdict-anon"/);
+    expect(route).toMatch(/distinct_id: "trial-stood"/);
     expect(route).toMatch(/\$process_person_profile: false/);
     expect(route).toMatch(/\$geoip_disable: true/);
     expect(route).toMatch(/\$ip: "0\.0\.0\.0"/);
   });
 
   it("answers before it counts, and only in production", () => {
-    expect(route).toMatch(/after\(\(\) => recordVerdict/);
+    expect(route).toMatch(/after\(\(\) => recordTrial/);
     expect(route).toMatch(/VERCEL_ENV === "production"/);
     // POST, so a crawler prefetching links cannot inflate the score.
     expect(route).toMatch(/export async function POST/);
     expect(route).not.toMatch(/export async function GET/);
   });
 
-  it("fires from the verdict exactly where the consented event fires", () => {
+  // The whole function, dispatch included — slicing only up to the dispatch
+  // call (as an earlier draft did) can never see whether dispatch is present,
+  // unconditional, or actually placed after the try/catch, which is exactly
+  // what the next two tests need to assert.
+  const handleBegin = landing.slice(
+    landing.indexOf("function handleBegin()"),
+    landing.indexOf("return (", landing.indexOf("function handleBegin()")),
+  );
+
+  it("fires from stepping into the Law, exactly where the consented event fires", () => {
+    // Both counters must agree about what a trial is, or the greatest() in
+    // the fetch compares different things.
+    expect(handleBegin.length, "could not isolate handleBegin").toBeGreaterThan(0);
+    expect(handleBegin).toMatch(/trackGameStarted/);
+    expect(handleBegin).toMatch(/sendBeacon\?\.\(`\/api\/trial-count\?locale=\$\{locale\}`\)/);
+  });
+
+  it("never lets the counter block or break the transition into the test", () => {
     /*
-     * Same effect, same once-per-mount guard, same !returning gate — the two
-     * counters must agree about what a verdict is, or the greatest() in the
-     * fetch compares different things.
+     * sendBeacon is fire-and-forget, but the surrounding try/catch is what
+     * guarantees a localStorage throw (private mode, quota) can't stop the
+     * reader from reaching the Law — and dispatch has to be the last line,
+     * unconditional, outside the try, so counting failure is never load-
+     * bearing for the transition it is merely counting.
      */
-    const effect = verdict.slice(
-      verdict.indexOf("if (!hasTracked.current && !returning)"),
-      verdict.indexOf("}, [state.answers"),
-    );
-    expect(effect.length, "could not isolate the tracking effect").toBeGreaterThan(0);
-    expect(effect).toMatch(/trackVerdictReached/);
-    expect(effect).toMatch(/sendBeacon\?\.\(`\/api\/verdict-count\?locale=\$\{locale\}`\)/);
+    const tryAt = handleBegin.indexOf("try {");
+    const dispatchAt = handleBegin.indexOf("dispatch({ type: \"START_GAME\" });");
+    expect(tryAt, "no try/catch around the beacon").toBeGreaterThan(-1);
+    expect(dispatchAt, "dispatch is missing from handleBegin").toBeGreaterThan(-1);
+    expect(dispatchAt, "dispatch fires before the counter is even attempted").toBeGreaterThan(tryAt);
+    // dispatch is the last statement in the function — nothing after it can
+    // make the transition conditional on how counting went.
+    const afterDispatch = handleBegin.slice(dispatchAt + "dispatch({ type: \"START_GAME\" });".length);
+    expect(afterDispatch.trim(), "something runs after dispatch, inside handleBegin").toBe("}");
   });
 
   it("counts a reader once, across reloads and retakes", () => {
     /*
-     * The once-per-mount ref and the !returning gate both die with the mount:
-     * a reload at the verdict (graceReached is still false there) or a retake
-     * fired the beacon again for the same reader. The homepage reads this
-     * number back as people, and the consented twin is distinct-counted in
-     * the same query — so the anonymous side dedupes with a device-lifetime
-     * marker instead, one that clearSession() must never touch.
+     * The homepage reads this number back as people, and the consented twin
+     * is distinct-counted in the same query — so the anonymous side dedupes
+     * with a device-lifetime marker instead, one that clearSession() must
+     * never touch.
      */
-    const effect = verdict.slice(
-      verdict.indexOf("if (!hasTracked.current && !returning)"),
-      verdict.indexOf("}, [state.answers"),
-    );
-    expect(effect).toMatch(/localStorage\.getItem\(VERDICT_COUNTED_KEY\) === null/);
-    expect(effect).toMatch(/localStorage\.setItem\(VERDICT_COUNTED_KEY, "1"\)/);
+    expect(handleBegin).toMatch(/localStorage\.getItem\(TRIAL_COUNTED_KEY\) === null/);
+    expect(handleBegin).toMatch(/localStorage\.setItem\(TRIAL_COUNTED_KEY, "1"\)/);
     // Outside the session record: retaking clears gospel-test-session wholesale,
     // and the marker surviving that is the entire point.
     const session = strip(read("src", "lib", "test-session-storage.ts"));
-    expect(session).not.toMatch(/gospel-verdict-counted/);
+    expect(session).not.toMatch(/gospel-trial-counted/);
   });
 
-  it("records the locale the test was taken in, not the browser's", () => {
+  it("removed the old verdict-triggered beacon rather than leaving two", () => {
+    // The redefinition moved the beacon, it did not duplicate it — a stray
+    // second beacon at the verdict would double-count every reader who
+    // finishes, and drift the two counters' definitions apart again.
+    const verdictScreen = strip(read("src", "components", "verdict-screen.tsx"));
+    expect(verdictScreen, "the old anon beacon is still in verdict-screen.tsx").not.toMatch(
+      /sendBeacon|VERDICT_COUNTED_KEY|verdict-count/,
+    );
+    expect(verdictScreen, "VerdictScreen still takes a locale prop it no longer uses").not.toMatch(
+      /locale/,
+    );
+  });
+
+  it("records the locale the trial was stood under, not the browser's", () => {
     // The beacon carries the route locale; Accept-Language is only the
     // fallback for beacons without the param. Anonymous POSTs cannot be
     // trusted, so the param is validated against the two locales that exist.
@@ -476,8 +488,8 @@ describe("the anonymous counter", () => {
     // Consented history is bigger early; the anonymous counter overtakes and
     // stays ahead. Either alone is wrong in a different direction.
     expect(stats).toMatch(/greatest\(/);
-    expect(stats).toMatch(/verdict_reached_anon/);
-    expect(stats).toMatch(/count\(distinct if\(event = 'verdict_reached', distinct_id, null\)\)/);
+    expect(stats).toMatch(/trial_stood_anon/);
+    expect(stats).toMatch(/count\(distinct if\(event = 'game_started', distinct_id, null\)\)/);
   });
 });
 
@@ -543,19 +555,19 @@ describe("the count's plumbing", () => {
   it("logs every fallback instead of failing silently", () => {
     /*
      * Found the hard way: a missing key and a real PostHog outage both render
-     * as the same day-granular estimate forever, and nothing on the homepage
-     * tells you which. verdict-count/route.ts already logs both its failure
-     * branches (see go-links.test.ts's "does not treat a refused capture as a
-     * recorded scan") — this pins the same discipline here, one console.warn
-     * per branch that can produce a null.
+     * as "the band is gone" with no way to tell which from the homepage alone.
+     * trial-count/route.ts already logs both its failure branches (see
+     * go-links.test.ts's "does not treat a refused capture as a recorded
+     * scan") — this pins the same discipline here, one console.warn per
+     * branch that can produce a null.
      */
     // Each branch's own message, not proximity to *a* console.warn — a
     // window-based match here would count the catch block's warn as
     // satisfying the branch above it once the two are close enough in the
     // source, which is exactly the false pass a first draft of this test hit.
-    expect(stats).toMatch(/console\.warn\("\[test-stats\] falling back to the estimate: no POSTHOG_PERSONAL_API_KEY configured"\)/);
-    expect(stats).toMatch(/console\.warn\(`\[test-stats\] falling back to the estimate: PostHog answered \$\{response\.status\}`\)/);
-    expect(stats).toMatch(/console\.warn\("\[test-stats\] falling back to the estimate: HogQL answer did not parse as a number"\)/);
-    expect(stats).toMatch(/catch \(error\) \{\s*console\.warn\("\[test-stats\] falling back to the estimate:", error\)/);
+    expect(stats).toMatch(/console\.warn\("\[test-stats\] no count: no POSTHOG_PERSONAL_API_KEY configured"\)/);
+    expect(stats).toMatch(/console\.warn\(`\[test-stats\] no count: PostHog answered \$\{response\.status\}`\)/);
+    expect(stats).toMatch(/console\.warn\("\[test-stats\] no count: HogQL answer did not parse as a number"\)/);
+    expect(stats).toMatch(/catch \(error\) \{\s*console\.warn\("\[test-stats\] no count:", error\)/);
   });
 });

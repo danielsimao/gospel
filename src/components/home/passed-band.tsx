@@ -5,7 +5,6 @@ import Link from "next/link";
 import { BandSpine } from "@/components/home/band-spine";
 import { BandTexture } from "@/components/home/band-texture";
 import { Button, ButtonArrow } from "@/components/ui/button";
-import { estimateTestTakerCount } from "@/lib/test-stats";
 import type { Locale } from "@/lib/i18n";
 
 interface PassedBandProps {
@@ -23,11 +22,13 @@ interface PassedBandProps {
     whoCta: string;
     testCta: string;
   };
-  /** Readers who reached the verdict, or null when neither counter can
-      answer — in which case the modelled estimate stands in. Both are floors:
-      consent-gating hides decliners, and the anonymous counter only reaches
-      back to the day it shipped. */
-  count: number | null;
+  /** Readers who stood trial — counted from stepping into the Law, not from
+      finishing it (James 2:10: one admission convicts, same as all six). A
+      floor, not a total: consent-gating hides decliners, and the anonymous
+      counter only reaches back to the day it shipped. Real only — the caller
+      (home-shell) skips rendering this band entirely when neither counter can
+      answer, rather than pass a fabricated stand-in number. */
+  count: number;
 }
 
 /*
@@ -97,11 +98,10 @@ function revealedRatio(rect: DOMRect, viewportHeight: number): number {
  * The red side is built to feel live, because a score nobody is keeping is
  * just typography: it counts up when the band enters the viewport, wears the
  * test page's own "ao vivo" pulse, and keeps ticking upward slowly while the
- * reader lingers. When no real count is available the modelled estimate
- * stands in (see lib/test-stats) — a rate, like the death counter, with the
- * real number taking over as the counters accumulate. The gold side arrives
- * only after the red stops climbing: gold arriving late, after the Law has
- * finished, is the site's own grammar.
+ * reader lingers. When no real count is available this band does not render
+ * at all (see home-shell's `testTakerCount !== null` gate) — no modelled
+ * stand-in, ever. The gold side arrives only after the red stops climbing:
+ * gold arriving late, after the Law has finished, is the site's own grammar.
  */
 export function PassedBand({ locale, messages, count }: PassedBandProps) {
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -124,27 +124,16 @@ export function PassedBand({ locale, messages, count }: PassedBandProps) {
   const [passVisible, setPassVisible] = useState(true);
 
   /*
-   * The real count when there is one. The model only when there is not.
-   *
-   * This was `Math.max(count ?? 0, estimateTestTakerCount())`, added to stop
-   * the score going backwards if PostHog answered lower than the model. It did
-   * stop that, and in exchange it guaranteed the opposite failure: the model
-   * grows 35/day unconditionally, so the real number could never surface until
-   * it out-ran a figure that keeps running away from it. On 2026-08-07, with
-   * the key finally configured and PostHog answering, the homepage still
-   * published 1,845 — the model, to the digit — because max() discarded the
-   * truth every hour. A number that can never be true is worse than a number
-   * that can go down.
-   *
-   * Owner's call, and the right one for this band: it wears a pulsing "live"
-   * badge, and liveness is the thing it trades on. A real number that moves is
-   * the point; a modelled one that only ever climbs is a prop. Slight
-   * over-count is accepted deliberately — the anonymous counter dedupes per
-   * device, not per person.
-   *
-   * Day-granular on both sides, so server and client still agree at hydration.
+   * Always the real count — never a fabricated stand-in. This band used to
+   * fall back to a modelled estimate (`count ?? estimateTestTakerCount()`,
+   * and before that `Math.max(count ?? 0, estimate)`, which discarded a real
+   * lower count in PostHog's favour and once published a made-up 1,845 for a
+   * day straight). Both versions showed a number that looked live but wasn't
+   * true. Killed outright: home-shell now skips this component completely
+   * when there is no real count, so every number this band ever shows is one
+   * that actually happened.
    */
-  const target = count ?? estimateTestTakerCount();
+  const target = count;
   const formatter = new Intl.NumberFormat(locale === "pt" ? "pt-PT" : "en-US");
 
   /*

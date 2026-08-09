@@ -9,24 +9,11 @@ import { splitConfession, type ConfessionTone } from "@/lib/confession";
 import { ScrollCue } from "@/components/shared/scroll-cue";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { TestMessages } from "@/lib/types";
-import type { Locale } from "@/lib/i18n";
 
 interface VerdictScreenProps {
   messages: { title: string };
   testMessages: TestMessages;
-  locale: Locale;
 }
-
-/**
- * Set once, never cleared — not even by a retake. The homepage reads the
- * anonymous counter back as readers, not verdicts ("N chumbaram"), and the
- * consented twin is deduped by distinct_id in the same query; without this
- * marker a reload at the verdict (graceReached still false, so `returning`
- * cannot catch it) or a retake fired the beacon again and counted one reader
- * twice. Deliberately outside the test session storage, whose whole record
- * is erased by clearSession() on every retake link.
- */
-const VERDICT_COUNTED_KEY = "gospel-verdict-counted";
 
 /*
  * The sentence, delivered one beat at a time.
@@ -100,7 +87,6 @@ const CONFESSION_PLAIN = "text-white/55";
 export function VerdictScreen({
   messages,
   testMessages,
-  locale,
 }: VerdictScreenProps) {
   const state = useGameState();
   const dispatch = useGameDispatch();
@@ -244,31 +230,8 @@ export function VerdictScreen({
         (a) => a.answer === "justify",
       ).length;
       trackVerdictReached(totalHonest, totalJustify, durationMs);
-
-      /*
-       * The anonymous twin, for the homepage's score band. The consented event
-       * above misses every reader who declined the banner, so the band's
-       * denominator would be wrong by exactly the decline rate. sendBeacon
-       * because the answer is never read and must never delay the verdict;
-       * guarded by the once-per-mount ref, by VERDICT_COUNTED_KEY across
-       * mounts (see its comment), and by the route itself outside production.
-       * The locale rides in the URL because the route otherwise only has
-       * Accept-Language, which records the browser's tongue, not the Law the
-       * reader was actually convicted under. A reader without sendBeacon or
-       * localStorage is a missed count, not an error — the number is a floor
-       * by design.
-       */
-      try {
-        if (localStorage.getItem(VERDICT_COUNTED_KEY) === null) {
-          navigator.sendBeacon?.(`/api/verdict-count?locale=${locale}`);
-          localStorage.setItem(VERDICT_COUNTED_KEY, "1");
-        }
-      } catch {
-        // Counting is never worth breaking the verdict for.
-      }
     }
-
-  }, [state.answers, durationMs, returning, locale]);
+  }, [state.answers, durationMs, returning]);
 
   // Forward moves are a dispatch. The shell watches the phase and stamps the
   // history entry, so back still works without the screen knowing about URLs.
