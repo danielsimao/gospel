@@ -32,7 +32,7 @@ const prompts = read("docs", "graphics", "PROMPTS.md");
 
 describe("what is served, and what is not", () => {
   it("ships both formats for everything the pages reference", () => {
-    for (const name of ["tally", "paper", "fingerprint"]) {
+    for (const name of ["tally", "paper", "fingerprint", "dock"]) {
       for (const ext of ["avif", "webp"]) {
         expect(
           existsSync(join(ROOT, "public", "graphics", `${name}.${ext}`)),
@@ -76,10 +76,13 @@ describe("what is served, and what is not", () => {
     // The two .jpg plates are counted too: satori decodes neither AVIF nor
     // WebP, so each OG surface that wants a photograph ships a third copy of
     // it. Left out of this total, they were weight the budget could not see.
-    const total = ["tally", "paper", "fingerprint", "door-decision"].flatMap((n) => [`${n}.avif`, `${n}.webp`])
+    const total = ["tally", "paper", "fingerprint", "door-decision", "dock"].flatMap((n) => [`${n}.avif`, `${n}.webp`])
       .concat("door.jpg", "fingerprint.jpg")
       .reduce((sum, f) => sum + kb("public", "graphics", f), 0);
-    expect(total, `served graphics total ${total.toFixed(0)} KB`).toBeLessThan(500);
+    // Was 500 before the dock (grace Movement I): +146KB for a genuinely new
+    // asset. Movements III and IV cost nothing here — they reuse covers/
+    // already counted in the topic-cover budget, not duplicated in this one.
+    expect(total, `served graphics total ${total.toFixed(0)} KB`).toBeLessThan(650);
   });
 });
 
@@ -326,6 +329,67 @@ describe("the band textures stay backgrounds", () => {
   });
 });
 
+describe("grace's non-hinge movements", () => {
+  const grace = strip(read("src", "components", "grace-screen.tsx"));
+
+  it("ships the dock, and only for Movement I", () => {
+    expect(grace).toMatch(/url\(\/graphics\/dock\.avif\)/);
+    // Single-use, same discipline as the courtroom shaft and the decision
+    // door — a background this specific belongs to one screen.
+    for (const name of ["home-shell", "verdict-screen", "invitation-screen", "grace-record"]) {
+      expect(
+        strip(read("src", "components", `${name}.tsx`)),
+        `${name} grew the dock`,
+      ).not.toMatch(/dock\.avif/);
+    }
+  });
+
+  it("keeps the turn as the one full-strength hinge — I, III and IV stay dimmed", () => {
+    /*
+     * Giving every movement the courtroom's own full-bleed treatment would
+     * flatten the one moment that treatment exists to mark. I, III and IV
+     * are atmosphere: radial-masked, low-opacity, same idiom as the
+     * homepage's band textures — never the turn's unmasked full-bleed cover.
+     */
+    const maskCount = grace.match(/maskImage: "radial-gradient/g)?.length ?? 0;
+    expect(maskCount, "expected exactly 3 masked movement backgrounds").toBe(3);
+    expect(grace).toMatch(/opacity: 0\.16,\s*\n\s*maskImage/);
+  });
+
+  it("colours Movement I red and Movements III/IV gold, never the reverse", () => {
+    // Still the Law in Movement I (see that section's own doc comment) —
+    // gold there would spend grace's colour before the turn has happened.
+    const movementI = grace.slice(grace.indexOf('data-reveal="0"'), grace.indexOf('data-reveal="1"'));
+    expect(movementI).toMatch(/rgba\(239,68,68,0\.35\)/);
+    expect(movementI).not.toMatch(/rgba\(212,168,67/);
+
+    const movementIII = grace.slice(grace.indexOf('data-reveal="2"'), grace.indexOf('data-reveal="3"'));
+    const movementIV = grace.slice(grace.indexOf('data-reveal="3"'), grace.indexOf('data-reveal="4"'));
+    for (const movement of [movementIII, movementIV]) {
+      expect(movement).toMatch(/rgba\(212,168,67,0\.35\)/);
+      expect(movement).not.toMatch(/rgba\(239,68,68/);
+    }
+  });
+
+  it("reuses who-is-jesus and what-is-repentance rather than regenerating", () => {
+    // The doctrinal claim in Movement III (the payer's resurrection) and
+    // Movement IV (repentance) is identical to what those two topic covers
+    // already argue — a deliberate cross-reference, not a new asset.
+    expect(grace).toMatch(/url\(\/graphics\/covers\/who-is-jesus\.avif\)/);
+    expect(grace).toMatch(/url\(\/graphics\/covers\/what-is-repentance\.avif\)/);
+  });
+
+  it("never takes a click, and carries no meaning a reader needs", () => {
+    for (const dataReveal of ['data-reveal="0"', 'data-reveal="2"', 'data-reveal="3"']) {
+      const start = grace.indexOf(dataReveal);
+      const sectionEnd = grace.indexOf("</section>", start);
+      const section = grace.slice(start, sectionEnd);
+      expect(section, `${dataReveal} background is missing aria-hidden`).toMatch(/aria-hidden="true"/);
+      expect(section, `${dataReveal} background is missing pointer-events-none`).toMatch(/pointer-events-none/);
+    }
+  });
+});
+
 describe("the /test share plate", () => {
   it("reads the image from disk rather than fetching it", () => {
     /*
@@ -377,7 +441,7 @@ describe("every asset keeps its prompt", () => {
   });
 
   it("names the assets that shipped", () => {
-    for (const name of ["tally", "dots", "fingerprint", "stone", "door", "door-decision", "paper", "courtroom", "who-is-jesus", "am-i-a-good-person", "does-god-exist", "world"]) {
+    for (const name of ["tally", "dots", "fingerprint", "stone", "door", "door-decision", "paper", "courtroom", "who-is-jesus", "am-i-a-good-person", "does-god-exist", "world", "dock"]) {
       expect(prompts.toLowerCase(), `${name} has no prompt on record`).toContain(name);
     }
   });
