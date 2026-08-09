@@ -5,6 +5,7 @@ import Link from "next/link";
 import { m, AnimatePresence } from "framer-motion";
 import * as Sentry from "@sentry/nextjs";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
+import { BandTexture } from "@/components/shared/band-texture";
 import { Landing } from "@/components/landing";
 import { QuestionCard } from "@/components/question-card";
 import { VerdictScreen } from "@/components/verdict-screen";
@@ -311,6 +312,15 @@ export function GameShell({ messages, locale }: GameShellProps) {
     <main className="relative min-h-dvh overflow-x-clip bg-[#060404] flex flex-col">
       {/* Radial vignette */}
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
+
+      {/*
+       * Landing only, never carried past it: the field of many is the reader
+       * joining everyone else about to answer the same question. Once the Law
+       * starts (phase "playing") the screen goes back to plain black — this
+       * texture answering the wrong question at the verdict or the grace
+       * screen would read as scenery, not argument.
+       */}
+      {state.phase === "landing" && <BandTexture texture="dots" priority />}
 
       {/*
        * The only way out of the Law, and now the only thing at the top of it.

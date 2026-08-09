@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { BandSpine } from "@/components/home/band-spine";
-import { BandTexture } from "@/components/home/band-texture";
+import { BandTexture } from "@/components/shared/band-texture";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import type { Locale } from "@/lib/i18n";
 

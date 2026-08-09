@@ -62,9 +62,9 @@ Style: photographic, high contrast, not illustration. Send it darker and more co
 
 ## 2 · A multidão — the field of many
 
-**Ships as:** parked in `docs/graphics/assets/dots.avif` — removed from the questions band because its meaning (many, one exception) is the score band's argument, not a topic list's. Candidate for the /test landing; needs approval and a re-measure before serving.
+**Ships as:** `public/graphics/dots.avif` + `.webp` — the /test landing, 12% opacity, no gold point. Previously removed from the questions band because its meaning (many, one exception) was the score band's argument, not a topic list's; that same reasoning bars the gold point here too — landing is the step before the Law, and METHOD.md's rule ("gold does not appear during the Law") is stricter than the old meaning-mismatch.
 
-**Where it goes:** behind the questions band, or as the score band's alternative backdrop. The one gold point is drawn in code.
+**Where it goes:** behind the self-rating question on the /test landing screen (`game-shell.tsx`, gated to `state.phase === "landing"`) — the reader joining the many others about to answer the same question, with no verdict claim made about any of them yet. No gold point is drawn in code here, unlike the score band's own use of this same idea.
 
 **▼ COPY FROM HERE ▼**
 

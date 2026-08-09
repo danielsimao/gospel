@@ -17,7 +17,8 @@ const strip = (s: string) =>
   s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
 const kb = (...p: string[]) => statSync(join(ROOT, ...p)).size / 1024;
 
-const texture = strip(read("src", "components", "home", "band-texture.tsx"));
+const texture = strip(read("src", "components", "shared", "band-texture.tsx"));
+const gameShell = strip(read("src", "components", "game-shell.tsx"));
 const testOg = strip(read("src", "app", "[locale]", "(immersive)", "test", "opengraph-image.tsx"));
 const invitation = strip(read("src", "components", "invitation-screen.tsx"));
 const storyOg = strip(read("src", "app", "[locale]", "(content)", "testimony", "story", "route.tsx"));
@@ -32,7 +33,7 @@ const prompts = read("docs", "graphics", "PROMPTS.md");
 
 describe("what is served, and what is not", () => {
   it("ships both formats for everything the pages reference", () => {
-    for (const name of ["tally", "paper", "fingerprint"]) {
+    for (const name of ["tally", "paper", "fingerprint", "dots"]) {
       for (const ext of ["avif", "webp"]) {
         expect(
           existsSync(join(ROOT, "public", "graphics", `${name}.${ext}`)),
@@ -46,12 +47,14 @@ describe("what is served, and what is not", () => {
 
   it("keeps parked assets out of public", () => {
     /*
-     * The stone is print-only; the dots are a candidate without an
-     * approved placement — their meaning belonged to the score band. Parked
-     * beside their prompts, not served: an unreferenced file in public/ is an
-     * invitation for the next caller to wire it without re-measuring.
+     * The stone is print-only, with no placement that has earned it yet.
+     * Parked beside its prompt, not served: an unreferenced file in public/
+     * is an invitation for the next caller to wire it without re-measuring.
+     * (The dots were parked here too, for the same reason, until the /test
+     * landing earned them — see "appears exactly where its meaning is"
+     * below.)
      */
-    for (const name of ["stone", "dots"]) {
+    for (const name of ["stone"]) {
       expect(
         existsSync(join(ROOT, "public", "graphics", `${name}.avif`)),
         `${name} is served but has no approved placement`,
@@ -71,15 +74,21 @@ describe("what is served, and what is not", () => {
   });
 
   it("keeps the served set small", () => {
-    // These sit behind content below the fold. A texture that costs more than
-    // the page it decorates has stopped being a background.
+    // Most of these sit behind content below the fold. A texture that costs
+    // more than the page it decorates has stopped being a background. The
+    // dots are the one exception to "below the fold" (see the eager-loading
+    // test above) and the reason this ceiling moved from 500 to 700: 172 KB
+    // for the first screen of the highest-traffic route in the app is a real
+    // cost, carried deliberately rather than raised without comment — if this
+    // set grows again, re-measure the actual page weight before just lifting
+    // the number a second time.
     // The two .jpg plates are counted too: satori decodes neither AVIF nor
     // WebP, so each OG surface that wants a photograph ships a third copy of
     // it. Left out of this total, they were weight the budget could not see.
-    const total = ["tally", "paper", "fingerprint", "door-decision"].flatMap((n) => [`${n}.avif`, `${n}.webp`])
+    const total = ["tally", "paper", "fingerprint", "door-decision", "dots"].flatMap((n) => [`${n}.avif`, `${n}.webp`])
       .concat("door.jpg", "fingerprint.jpg")
       .reduce((sum, f) => sum + kb("public", "graphics", f), 0);
-    expect(total, `served graphics total ${total.toFixed(0)} KB`).toBeLessThan(500);
+    expect(total, `served graphics total ${total.toFixed(0)} KB`).toBeLessThan(700);
   });
 });
 
@@ -266,13 +275,31 @@ describe("the topic-page section-progress bar", () => {
 });
 
 describe("the band textures stay backgrounds", () => {
-  it("never loads eagerly, and never takes a click", () => {
-    // Below the fold by construction, and carrying no meaning a reader needs.
-    expect(texture).toMatch(/loading="lazy"/);
+  it("stays lazy by default, and never takes a click", () => {
+    // Below the fold by construction for every band caller, and carrying no
+    // meaning a reader needs. `priority` is the one documented exception —
+    // see the eager-loading test below — not a second default.
+    expect(texture).toMatch(/loading=\{priority \? "eager" : "lazy"\}/);
+    expect(texture).toMatch(/priority = false/);
     expect(texture).toMatch(/decoding="async"/);
     expect(texture).toMatch(/aria-hidden="true"/);
     expect(texture).toMatch(/pointer-events-none/);
     expect(texture).toMatch(/alt=""/);
+  });
+
+  it("loads eagerly only where the texture IS the first screen's background", () => {
+    /*
+     * The /test landing dots are not below the fold — they are the
+     * background of the first thing the whole flow paints. Lazy-loading a
+     * screen's own background is the failure mode the attribute exists to
+     * prevent, not a case of it doing its job; topic-cover-card.tsx's first
+     * hub row already sets this precedent for exactly this reason.
+     */
+    expect(gameShell).toMatch(/<BandTexture texture="dots" priority \/>/);
+    // Every other caller stays on the lazy default — priority is not a knob
+    // to reach for casually.
+    const passed = strip(read("src", "components", "home", "passed-band.tsx"));
+    expect(passed).not.toMatch(/priority/);
   });
 
   it("fades out before its own edges", () => {
@@ -293,6 +320,7 @@ describe("the band textures stay backgrounds", () => {
      * with the pleas it sits under.
      */
     expect(texture).toMatch(/tally: \{ opacity: "0\.16"/);
+    expect(texture).toMatch(/dots: \{ opacity: "0\.12"/);
     const record = strip(read("src", "components", "grace-record.tsx"));
     expect(record).toMatch(/opacity-\[0\.07\]/);
     expect(record).toMatch(/opacity-\[0\.09\]/);
@@ -300,11 +328,15 @@ describe("the band textures stay backgrounds", () => {
 
   it("appears exactly where its meaning is, and nowhere else", () => {
     /*
-     * The owner's rule, learned the hard way: the dots sat behind the
+     * The owner's rule, learned the hard way: the dots once sat behind the
      * questions band because they looked good there, and their meaning —
      * many, one exception — had nothing to do with a list of learn topics.
-     * Every placement now matches image to argument: tally marks behind a
-     * score, a fingerprint pressed into the reader's own charge sheet.
+     * Every placement matches image to argument: tally marks behind a score,
+     * a fingerprint pressed into the reader's own charge sheet, and now the
+     * dots behind the /test landing question — many, with no gold point,
+     * because "one exception" is the score band's claim and no verdict has
+     * happened yet for this reader. METHOD.md is the harder rule anyway:
+     * gold never appears before the Law, and landing is the step before it.
      */
     const passed = strip(read("src", "components", "home", "passed-band.tsx"));
     expect(passed).toMatch(/<BandTexture texture="tally"/);
@@ -322,6 +354,19 @@ describe("the band textures stay backgrounds", () => {
         strip(read("src", "components", "home", `${name}.tsx`)),
         `${name} grew a texture nobody approved`,
       ).not.toMatch(/BandTexture|graphics\//);
+    }
+    // Gated to the landing phase alone, not to the Landing component itself —
+    // BandTexture bleeds past a narrow reading column, so it hangs off
+    // game-shell's full-bleed <main>, exactly where the radial vignette does.
+    expect(gameShell).toMatch(/state\.phase === "landing" && <BandTexture texture="dots"/);
+    // Never leaks past landing onto the screens that carry the actual Law
+    // and its verdict — a texture there would compete with the one thing
+    // those screens are for.
+    for (const name of ["question-card", "examination-ledger", "verdict-screen", "grace-screen", "invitation-screen"]) {
+      expect(
+        strip(read("src", "components", `${name}.tsx`)),
+        `${name} grew the landing's dots texture`,
+      ).not.toMatch(/texture="dots"/);
     }
   });
 });
