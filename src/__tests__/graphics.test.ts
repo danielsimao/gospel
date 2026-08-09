@@ -303,11 +303,17 @@ describe("the band textures stay backgrounds", () => {
      * The owner's rule, learned the hard way: the dots sat behind the
      * questions band because they looked good there, and their meaning —
      * many, one exception — had nothing to do with a list of learn topics.
-     * Every placement now matches image to argument: tally marks behind a
-     * score, a fingerprint pressed into the reader's own charge sheet.
+     * Every placement now matches image to argument: a fingerprint pressed
+     * into the reader's own charge sheet, on the grace record.
+     *
+     * The tally texture's own placement behind the score band was retired in
+     * favour of a full-bleed red glow (see passed-band.tsx's own comment) —
+     * pinned here as its absence, so a reversion doesn't silently bring the
+     * old texture back alongside the new colour treatment.
      */
     const passed = strip(read("src", "components", "home", "passed-band.tsx"));
-    expect(passed).toMatch(/<BandTexture texture="tally"/);
+    expect(passed, "the retired tally texture is back").not.toMatch(/<BandTexture/);
+    expect(passed, "the full-bleed glow is gone").toMatch(/radial-gradient\(ellipse 70% 55% at 50% 0%/);
     const record = strip(read("src", "components", "grace-record.tsx"));
     expect(record).toMatch(/fingerprint\.avif/);
     expect(record).toMatch(/paper\.avif/);

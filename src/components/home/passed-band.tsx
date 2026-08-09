@@ -3,7 +3,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { BandSpine } from "@/components/home/band-spine";
-import { BandTexture } from "@/components/home/band-texture";
 import { VerdictLedger } from "@/components/home/verdict-ledger";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import type { VerdictRow } from "@/lib/test-stats";
@@ -303,12 +302,38 @@ export function PassedBand({ locale, messages, count, verdicts }: PassedBandProp
   }, [target, locale]);
 
   return (
-    <div ref={rootRef} className="relative mt-14 w-full max-w-md text-left sm:max-w-2xl">
-      {/* Dimmed under the ledger, where the strokes otherwise land at the
-          weight of the row rules and a texture that means "counting" sits
-          behind something already doing the counting. The scoreline keeps the
-          value measured for it. */}
-      <BandTexture texture="tally" opacity={showLedger ? "0.07" : undefined} />
+    /*
+     * DESIGN PROTOTYPE — full-bleed courtroom atmosphere, replacing the tally
+     * texture. Breaks out to the viewport edge by cancelling the ancestor
+     * section's own px-4/sm:px-6 with a matching negative margin and
+     * calc()-widened box — not the more common left-1/2 + w-screen trick,
+     * which fights this section's `flex items-center`: an explicit 100vw
+     * width gets cross-axis-centered as a unit by the flex parent BEFORE the
+     * `left` offset is even applied, and the two shifts don't cancel, so the
+     * content ended up rendered off-screen (measured: a 624px column at
+     * x=1104 in a 1440px viewport). This version only touches width/margin,
+     * which flex handles the way a normal block would.
+     *
+     * The colour is a red glow with no hard edge — it fades to alpha 0 well
+     * before the gold row and the CTA, so the reader visibly leaves the room
+     * the Law tried them in before grace or the door appears. Not yet
+     * reviewed against the doctrine's colour rule (red/gold reserved for the
+     * verdict itself, never spent as chrome) — flagging for the owner rather
+     * than deciding it here.
+     */
+    <div className="relative -mx-4 mt-14 w-[calc(100%+2rem)] overflow-hidden sm:-mx-6 sm:w-[calc(100%+3rem)]">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 55% at 50% 0%, rgba(153,27,27,0.17), rgba(6,4,4,0) 62%)",
+        }}
+      />
+      <div
+        ref={rootRef}
+        className="relative mx-auto w-full max-w-md px-4 py-12 text-left sm:max-w-2xl sm:px-6 sm:py-16"
+      >
       <div className="relative">
       <BandSpine label={messages.eyebrow} />
 
@@ -440,6 +465,7 @@ export function PassedBand({ locale, messages, count, verdicts }: PassedBandProp
         >
           {messages.testCta}
         </Link>
+      </div>
       </div>
       </div>
     </div>
