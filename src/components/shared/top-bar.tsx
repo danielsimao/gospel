@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSelectedLayoutSegment } from "next/navigation";
 import {
   trackTopBarLearnClicked,
   trackTopBarTestClicked,
@@ -23,6 +24,20 @@ interface TopBarProps {
   blogEnabled: boolean;
   messages: TopBarMessages;
 }
+
+/**
+ * Where the reader already is, in the vocabulary the footer's locale switch
+ * already uses for the same job: brighter and bolder than its neighbours.
+ * `aria-current="page"` carries it to a screen reader, which is the part a
+ * colour cannot, and it needs no new string in either locale.
+ *
+ * Still a link, unlike the locale switch's current side. A nav link is a door
+ * (see the note below), and the door to the page you are on is how you get back
+ * to the top of it — this marks the reader's position without taking the
+ * control away.
+ */
+const navLinkClass = (current: boolean) =>
+  `transition-colors ${current ? "font-semibold text-white" : "text-white/60 hover:text-white/85"}`;
 
 /**
  * The same three links for everyone, on every page.
@@ -52,9 +67,14 @@ interface TopBarProps {
  * is discipleship, and it is already offered to everyone by the footer and by
  * the homepage's content band, so nothing is hidden by leaving it here.
  *
- * Still a client component, but only for the click tracking — the markup no
- * longer depends on anything the browser knows, so it renders identically on
- * the server and never changes after hydration.
+ * Still a client component, but only for the click tracking and for marking the
+ * current page — the markup depends on nothing the browser knows, so it renders
+ * identically on the server and never changes after hydration. The current-page
+ * mark is not the gating returning either: it varies by PAGE, which every reader
+ * on every device sees the same way and can read off the address bar, not by
+ * reader. The three defects above were all consequences of varying by reader.
+ * Measured on the built site: the server HTML for /en/learn already carries the
+ * `aria-current="page"`, and /en carries none.
  *
  * `blogEnabled` is not that gating returning. It is a build-time flag, the same
  * for every reader on every device, resolved on the server and passed in — so
@@ -64,6 +84,25 @@ interface TopBarProps {
  * part of the site this month. See lib/flags.ts.
  */
 export function TopBar({ locale, learnLabel, blogLabel, blogEnabled, messages }: TopBarProps) {
+  /*
+   * The active section, read off the router tree rather than the URL: this bar
+   * is rendered by `[locale]/(content)/layout.tsx`, so the segment one level
+   * below it is exactly "which of these is the reader in" — `learn` on
+   * /en/learn AND on /en/learn/[slug], `blog` on both of its levels, null on
+   * the section index.
+   *
+   * Not `usePathname`, which would mean matching a locale-prefixed string and
+   * would be wrong on the homepage: proxy.ts REWRITES a bare `/` to `/{locale}`,
+   * so the server renders the locale path while the browser's pathname stays
+   * `/` — the hydration mismatch its own docs warn about. The segment comes
+   * from the tree the server sent, so both renders agree.
+   *
+   * `test` is deliberately absent from the comparison rather than missing from
+   * it: /test is the immersive group, which mounts no top bar at all, so that
+   * link is never the page the reader is on.
+   */
+  const segment = useSelectedLayoutSegment();
+
   return (
     <header className="print-hide relative z-10 flex items-center justify-between px-4 pt-4 sm:px-6 sm:pt-5">
       {/*
@@ -112,14 +151,15 @@ export function TopBar({ locale, learnLabel, blogLabel, blogEnabled, messages }:
         <Link
           href={`/${locale}/test`}
           onClick={() => trackTopBarTestClicked()}
-          className="text-white/60 transition-colors hover:text-white/85"
+          className={navLinkClass(false)}
         >
           {messages.testLabel}
         </Link>
         <Link
           href={`/${locale}/learn`}
           onClick={() => trackTopBarLearnClicked()}
-          className="text-white/60 transition-colors hover:text-white/85"
+          aria-current={segment === "learn" ? "page" : undefined}
+          className={navLinkClass(segment === "learn")}
         >
           {learnLabel}
         </Link>
@@ -127,7 +167,8 @@ export function TopBar({ locale, learnLabel, blogLabel, blogEnabled, messages }:
           <Link
             href={`/${locale}/blog`}
             onClick={() => trackTopBarBlogClicked()}
-            className="text-white/60 transition-colors hover:text-white/85"
+            aria-current={segment === "blog" ? "page" : undefined}
+            className={navLinkClass(segment === "blog")}
           >
             {blogLabel}
           </Link>
