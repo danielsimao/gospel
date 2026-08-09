@@ -665,14 +665,58 @@ describe("the ledger", () => {
     expect(ledger).not.toMatch(/from-red-400\/50/);
   });
 
-  it("names a city only once there is a crowd to hide in", async () => {
+  it("names a city only once there is a crowd of distinct visitors to hide in", async () => {
     /*
      * k-anonymity, and the reason cities are allowed here at all. "Someone in
      * Óbidos failed, 3 minutes ago" is a sentence everyone in Óbidos can
      * resolve to a person; "Portugal" is not. The threshold is computed from
      * the data rather than from a population table, so a city earns its name.
+     *
+     * Sliced to the `crowded` CTE itself rather than matched anywhere in the
+     * file — a bare `toMatch` on the fixed fragments below would also pass
+     * if they appeared in an unrelated comment, or in the membership check
+     * instead of the grouping. Isolating the CTE's own text is as close as a
+     * static source-text test can get to pinning where the logic actually
+     * lives, short of executing the query against ClickHouse.
      */
-    expect(stats).toMatch(/having count\(\) >= \$\{LEDGER_CITY_MIN\}/);
+    const crowdedStart = stats.indexOf("crowded as (");
+    const crowdedEnd = stats.indexOf("select timestamp, country, country_code,");
+    expect(crowdedStart, "could not find the crowded CTE's start").toBeGreaterThan(-1);
+    expect(crowdedEnd, "could not find the crowded CTE's end anchor").toBeGreaterThan(-1);
+    expect(crowdedEnd, "the crowded CTE's end anchor sits before its start").toBeGreaterThan(crowdedStart);
+    const crowded = stats.slice(crowdedStart, crowdedEnd);
+    /*
+     * `count(distinct distinct_id)`, not `count()` — the query used to count
+     * raw verdict rows per city, so one reader retaking the test
+     * LEDGER_CITY_MIN times from the same city could name it alone. A repeat
+     * visitor is not a crowd; this pins that the threshold counts distinct
+     * visitors, not rows.
+     */
+    expect(crowded).toMatch(/having count\(distinct distinct_id\) >= \$\{LEDGER_CITY_MIN\}/);
+    expect(crowded, "the crowd threshold counts rows again, not distinct visitors").not.toMatch(
+      /having count\(\) >= \$\{LEDGER_CITY_MIN\}/,
+    );
+    /*
+     * Grouped on (country, city), not city alone — GeoIP's city names are
+     * not globally unique (more than one Springfield exists), so a bare city
+     * grouping let a crowd in one country's Springfield name a different
+     * country's Springfield too. The membership check has to use the same
+     * tuple, or the two could disagree about which city a row means.
+     *
+     * The country NAME, not `country_code`, and pinned as a regression: an
+     * earlier version of this fix keyed on `country_code`, which the query
+     * coalesces to `''` when GeoIP has a country name but no alpha-2 code —
+     * so two different real countries missing a code could still pool their
+     * crowds through the shared blank. `country` has no such fallback (the
+     * query's own `where` clause requires it non-empty already).
+     */
+    expect(crowded).toMatch(/group by country, city/);
+    expect(crowded, "keyed on country_code again, which can blank-collapse").not.toMatch(
+      /country_code/,
+    );
+    expect(stats).toMatch(
+      /if\(\(country, city\) in \(select country, city from crowded\), city, ''\) as city/,
+    );
     expect(LEDGER_CITY_MIN).toBeGreaterThanOrEqual(5);
     // The query blanks the city itself, so a blanked one arrives here as an
     // empty string and the row falls back to its country alone.

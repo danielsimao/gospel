@@ -144,13 +144,34 @@ export interface VerdictRow {
 export const LEDGER_WINDOW_DAYS = 30;
 
 /**
- * How many verdicts a city needs before the ledger will name it.
+ * How many distinct `distinct_id`s a city needs before the ledger will name
+ * it — devices/browsers, not verified individual people (the same limit the
+ * aggregate count above accepts: one person on two devices counts as two).
  *
  * k-anonymity, and it is the whole reason cities are allowed here at all.
  * "Someone in Óbidos failed, 3 minutes ago" is a sentence everyone in Óbidos
  * can resolve to a person; "Portugal" is not. The threshold is computed from
  * the data rather than from a population table, so a city earns its name by
  * having a crowd to hide in — and as traffic grows, more cities do.
+ *
+ * Counted by `distinct_id`, not by row: the query used to count raw
+ * `verdict_reached` rows per city, so one reader retaking the test
+ * LEDGER_CITY_MIN times from the same city could single-handedly name it —
+ * a repeat visitor is not a crowd. Fixed by counting distinct `distinct_id`s
+ * in the `crowded` CTE itself, not by the separate output-row dedup below
+ * (which only decides which rows the ledger shows, after the naming decision
+ * has already been made).
+ *
+ * Also keyed on (country, city), not city alone — GeoIP's city names are not
+ * globally unique (there is more than one Springfield), and a bare city
+ * grouping let a crowd in one country's Springfield name a different
+ * country's Springfield too. Keyed on the country NAME rather than its
+ * alpha-2 code deliberately: `country_code` is coalesced to `''` when GeoIP
+ * has a country name but no code, and grouping on a value that can collapse
+ * to the same blank for two different real countries reopens exactly the
+ * collision this key exists to prevent. `country` has no such fallback — the
+ * query's own `where` clause already requires it non-empty for every row
+ * that reaches this CTE.
  */
 export const LEDGER_CITY_MIN = 5;
 
@@ -211,17 +232,38 @@ export async function fetchRecentVerdicts(): Promise<VerdictRow[]> {
             kind: "HogQLQuery",
             /*
              * `crowded` is the k-anonymity pass: a city is named only once
-             * LEDGER_CITY_MIN verdicts have come from it, and every other row
-             * falls back to its country. The empty string rather than null
-             * throughout, so a missing city cannot turn the `if` into a
-             * nullable comparison and take the whole row with it.
+             * LEDGER_CITY_MIN distinct `distinct_id`s have stood trial from
+             * it, and every other row falls back to its country.
              *
-             * distinct_id is selected but never returned — it exists so one
-             * reader who reloads the verdict five times cannot fill the
-             * ledger on their own, which would render five verdicts as five
-             * people. Deduped in TypeScript rather than with LIMIT BY: the
-             * query is the part that cannot be run locally, so it stays as
-             * ordinary as possible.
+             * Keyed on (country, city), not city alone — a bare city
+             * grouping let two different countries' identically-named cities
+             * (e.g. two "Springfield"s) pool their counts, so a handful of
+             * people in one country's Springfield could name the OTHER
+             * country's Springfield too, for a reader who was never near a
+             * crowd there. The membership check below uses the same tuple, or
+             * the two could disagree about which city a row actually means.
+             * The country NAME, not `country_code`: the code is coalesced to
+             * `''` when GeoIP has no alpha-2 for a country it does name, and
+             * a key that can go blank for two different real countries would
+             * let their Springfields pool right back together through the
+             * gap. `country` is guaranteed non-empty here by the `where`
+             * clause below.
+             *
+             * `count(distinct distinct_id)`, not `count()` — a bare row count
+             * let one reader who retook the test LEDGER_CITY_MIN times name
+             * their own city alone, which is not a crowd. The empty string
+             * rather than null throughout, so a missing city cannot turn the
+             * `if` into a nullable comparison and take the whole row with it.
+             *
+             * distinct_id is also selected in the final query but never
+             * returned to the client — it exists so one reader who reloads
+             * the verdict five times cannot fill the ledger on their own,
+             * which would render five verdicts as five people. That dedup is
+             * separate from (and downstream of) the crowd check above: it
+             * only decides which ROWS the ledger shows, after `crowded` has
+             * already decided which cities get named. Deduped in TypeScript
+             * rather than with LIMIT BY: the query is the part that cannot be
+             * run locally, so it stays as ordinary as possible.
              */
             query:
               "with recent as (" +
@@ -235,11 +277,12 @@ export async function fetchRecentVerdicts(): Promise<VerdictRow[]> {
               `and timestamp > now() - interval ${LEDGER_WINDOW_DAYS} day ` +
               "and properties.$geoip_country_name != ''" +
               "), crowded as (" +
-              "select city from recent where city != '' " +
-              `group by city having count() >= ${LEDGER_CITY_MIN}` +
+              "select country, city from recent where city != '' " +
+              "group by country, city " +
+              `having count(distinct distinct_id) >= ${LEDGER_CITY_MIN}` +
               ") " +
               "select timestamp, country, country_code, " +
-              "if(city in (select city from crowded), city, '') as city, " +
+              "if((country, city) in (select country, city from crowded), city, '') as city, " +
               "distinct_id " +
               "from recent order by timestamp desc limit 60",
           },
