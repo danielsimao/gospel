@@ -60,6 +60,40 @@ Style: photographic, high contrast, not illustration. Send it darker and more co
 **▲ COPY TO HERE ▲**
 ---
 
+## 31 · O banco dos réus — the dock (grace, Movement I)
+
+**Ships as:** `public/graphics/dock.avif` + `.webp` — grace's Movement I ("Justice demands death"), dimmed background, red-tinted in code.
+
+**Where it goes:** behind grace's first movement — `problem?.headline` in `grace-screen.tsx`, the one movement still in the Law's colour ("Still red, because it is still the Law", see that section's own comment). Movements III and IV already have images (see §32, reusing who-is-jesus and what-is-repentance); this was the one movement with neither an image nor an existing topic cover to borrow, since no learn topic argues specifically "you stand accused and cannot pay." The dock is the plain legal term for where the accused stands — not a decorative choice, the same register as "the reader's own charge sheet" elsewhere on this site. Empty, so the reader supplies themselves, the same move the mirror cover (§9) makes for `am-i-a-good-person`. No gavel, no bench, no judge: those name the scene for someone watching it; this puts the reader inside it.
+
+**▼ COPY FROM HERE ▼**
+
+```
+Generate a new image. A photograph of a plain iron rail set into a bare stone floor, seen from directly behind it as if the viewer is standing right where the accused would stand, facing forward into a large empty stone room. The rail is old, plain and unornamented, a single waist-height bar, nothing ornamental, no gate, no hinges. The room ahead is bare and featureless, receding into deep shadow. Nobody is present, in front of the rail or behind it.
+
+Colour: near-black, #060404, fully desaturated and cold throughout. No colour cast of any kind — this asset carries no colour of its own; colour is added separately afterward.
+
+Composition: square, the rail crossing the lower third of the frame at chest height from this viewpoint, the empty room filling the rest, evenly dark with no vignette, no darker corners, no border or frame.
+
+Do not include: any text, any numerals, any people, hands, faces, silhouettes, judges, benches, chairs, ropes, chains, gavels, scales, crosses, doors, windows, or lens flare.
+
+Style: photographic, high contrast, sharply focused, architectural, not illustration, not a 3D render.
+```
+
+**▲ COPY TO HERE ▲**
+
+---
+
+## 32 · Movements III and IV — reused, not regenerated
+
+**Ships as:** no new files. `public/graphics/covers/who-is-jesus.avif`+`.webp` (§17) and `public/graphics/covers/what-is-repentance.avif`+`.webp` (§27), each dimmed and gold-tinted in code as a second placement behind grace's Movement III and IV respectively.
+
+**Where it goes, and why no new prompt:** Movement III names the payer — "That someone is Jesus Christ... lived the life you couldn't, died the death you deserved, and rose" — which is exactly the claim `who-is-jesus.avif`'s empty tomb already argues on its own topic page (§17's own text: "the one fact the topic's whole argument stands on"). Movement IV is the imperative — "Repent — turn from your sin" — which is `what-is-repentance.avif`'s own subject exactly (§27: "the turn itself... repentance is a change of direction rather than an emotion"). Both movements are already gold (post-turn, per METHOD.md), so unlike the dock this pair needed no new colour treatment, only a dimmed second use.
+
+This is a deliberate cross-reference, not the "second job" the house rule against reused decoration bars (see graphics.test.ts's own line, "the same texture nobody approved") — the doctrinal claim is identical in both places, not merely a visually convenient reuse. Precedent: §6/§8 already reuse one door photograph, recomposed, across two screens for the same reason (one world, two rooms). This pair reuses the same two files verbatim, at a different weight, because the topic-page cover and grace's movement are making the exact same argument rather than two different ones that happen to look similar.
+
+---
+
 ## 2 · A multidão — the field of many
 
 **Ships as:** parked in `docs/graphics/assets/dots.avif` — removed from the questions band because its meaning (many, one exception) is the score band's argument, not a topic list's. Candidate for the /test landing; needs approval and a re-measure before serving.
@@ -504,7 +538,7 @@ Style: photographic, high contrast, sharply focused, not illustration, not a 3D 
 
 ## 17 · A pedra removida — the stone rolled away (who-is-jesus)
 
-**Ships as:** `public/graphics/covers/who-is-jesus.avif` + `.webp` — replaces §11's files under the same names, so `TOPIC_COVERS` and the topic page are untouched.
+**Ships as:** `public/graphics/covers/who-is-jesus.avif` + `.webp` — replaces §11's files under the same names, so `TOPIC_COVERS` and the topic page are untouched. Second placement added in §32: the same files, dimmed and gold-tinted, behind grace's Movement III.
 
 **Where it goes:** the topic page for `who-is-jesus`, rescue band. §11's crook recomposed the line-icon faithfully, but a leaning stick answers the question with a prop. The empty tomb answers it with the claim — the one fact the topic's whole argument stands on (1 Cor 15:14) — and it speaks the site's existing grammar of stone and arriving light (§§6, 8, 12) without a figure, which the house rules bar in any case. The exclusions keep it a tomb and not a cave, a garden, or an Easter card: no light rays, no glow from within, no angels, no cloth, no dawn sky. The stone aside and the dark opening are the whole statement.
 
@@ -811,7 +845,7 @@ Style: photographic, high contrast, sharply focused, not illustration, not a 3D 
 
 ## 27 · A curva — the turn (what-is-repentance)
 
-**Ships as:** `public/graphics/covers/what-is-repentance.avif` + `.webp` — topic page cover, same treatment as §9.
+**Ships as:** `public/graphics/covers/what-is-repentance.avif` + `.webp` — topic page cover, same treatment as §9. Second placement added in §32: the same files, dimmed and gold-tinted, behind grace's Movement IV.
 
 **Where it goes:** the topic page for `what-is-repentance`, rescue band. The emblem is a reversing arrow (`Undo2`) and the recomposition is the turn itself, seen from above: a track that goes one way, doubles back hard, and leaves in the other direction. Deliberately not footprints — §15 has those, and this would read as the same asset. The track is bare because repentance is a change of direction rather than an emotion, which is the correction this topic exists to make: no tears, no kneeling figure, no altar.
 

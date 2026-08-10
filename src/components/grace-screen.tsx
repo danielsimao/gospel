@@ -664,17 +664,64 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(0)}
           data-reveal="0"
-          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] ${revealClass(0)}`}
+          className={`relative mx-[calc(50%-50vw)] flex min-h-[calc(100svh-0.75rem)] flex-col justify-center overflow-hidden px-5 pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] sm:px-6 ${revealClass(0)}`}
         >
-          <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-red-400/70">
-            {problem?.label}
-          </p>
-          <h2 className="mt-4 text-[25px] font-semibold leading-[1.22] tracking-[-0.024em] text-white/95 sm:text-[30px]">
-            {problem?.headline}
-          </h2>
-          <p className="mt-4 border-l border-red-500/30 pl-4 text-[14px] leading-relaxed text-white/55 sm:text-[15px]">
-            {problem?.subtitle}
-          </p>
+          {/*
+           * The dock, dimmed — the empty rail behind the reader's own
+           * imagined standing-there, not a scene to look at. Deliberately
+           * quieter than the turn's full-bleed courtroom below: that panel is
+           * the screen's one hinge, and giving every movement the same
+           * full-strength treatment would flatten it. Radial-masked and
+           * low-opacity like the homepage's band textures, red-tinted
+           * because this is still the Law (see this section's own doc
+           * comment above) — no gold here, docs/graphics/PROMPTS.md §31.
+           *
+           * Full-bleed width (the turn's own breakout, `mx-[calc(50%-50vw)]`)
+           * even though the treatment stays dim — measured on desktop at the
+           * narrow reading-column width and it read as a hard-edged box
+           * floating in black, the exact "panel the band is sitting in"
+           * failure band-texture.tsx's own comment warns about. Width fixes
+           * that; the dim mask is what still keeps it well short of the
+           * turn's own full-strength hero.
+           */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 overflow-hidden"
+            style={{
+              opacity: 0.16,
+              maskImage: "radial-gradient(ellipse at 50% 40%, black 30%, transparent 75%)",
+              WebkitMaskImage: "radial-gradient(ellipse at 50% 40%, black 30%, transparent 75%)",
+              backgroundImage:
+                "linear-gradient(rgba(239,68,68,0.35), rgba(239,68,68,0.35)), url(/graphics/dock.avif)",
+              backgroundSize: "cover, cover",
+              backgroundPosition: "center, center",
+              backgroundBlendMode: "color, normal",
+            }}
+          />
+          <div className="relative mx-auto w-full max-w-lg">
+            {/*
+             * text-shadow, contrast fix not decoration: this eyebrow's
+             * red-400/70 already sits under the 4.5:1 AA floor against pure
+             * black (measured 4.0:1) — the dock behind it pushes that as low
+             * as 2.35:1 at its brightest sampled point. A dark halo behind
+             * the glyphs holds contrast up regardless of what's behind them.
+             * Scoped to this section alone: the sitewide 4.0:1 baseline on
+             * every other eyebrow is a separate, pre-existing issue this PR
+             * doesn't own.
+             */}
+            <p
+              className="font-mono text-[9px] uppercase tracking-[2.6px] text-red-400/70"
+              style={{ textShadow: "0 1px 3px rgba(0,0,0,0.9)" }}
+            >
+              {problem?.label}
+            </p>
+            <h2 className="mt-4 text-[25px] font-semibold leading-[1.22] tracking-[-0.024em] text-white/95 sm:text-[30px]">
+              {problem?.headline}
+            </h2>
+            <p className="mt-4 border-l border-red-500/30 pl-4 text-[14px] leading-relaxed text-white/55 sm:text-[15px]">
+              {problem?.subtitle}
+            </p>
+          </div>
         </section>
 
         {/*
@@ -745,17 +792,48 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(2)}
           data-reveal="2"
-          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] ${revealClass(2)}`}
+          className={`relative mx-[calc(50%-50vw)] flex min-h-[calc(100svh-0.75rem)] flex-col justify-center overflow-hidden px-5 pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] sm:px-6 ${revealClass(2)}`}
         >
-          <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
-            {payer?.label}
-          </p>
-          <h2 className="mt-4 text-[25px] font-semibold leading-[1.22] tracking-[-0.024em] text-[#D4A843] sm:text-[30px]">
-            {payer?.headline}
-          </h2>
-          <p className="mt-4 border-l border-[#D4A843]/30 pl-4 text-[14px] leading-relaxed text-white/60 sm:text-[15px]">
-            {payer?.subtitle}
-          </p>
+          {/*
+           * Reused, not regenerated — the empty tomb already argues this
+           * exact claim on who-is-jesus's own topic page (§17): the
+           * resurrection is the credential that makes this someone the
+           * payer. Dimmed and radial-masked here rather than the full-
+           * strength framed treatment its topic page gives it — atmosphere,
+           * not a second cover. docs/graphics/PROMPTS.md §32. Full-bleed
+           * width for the same reason Movement I is — see its own comment.
+           */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 overflow-hidden"
+            style={{
+              opacity: 0.16,
+              maskImage: "radial-gradient(ellipse at 50% 40%, black 30%, transparent 75%)",
+              WebkitMaskImage: "radial-gradient(ellipse at 50% 40%, black 30%, transparent 75%)",
+              backgroundImage:
+                "linear-gradient(rgba(212,168,67,0.35), rgba(212,168,67,0.35)), url(/graphics/covers/who-is-jesus.avif)",
+              backgroundSize: "cover, cover",
+              backgroundPosition: "center, center",
+              backgroundBlendMode: "color, normal",
+            }}
+          />
+          <div className="relative mx-auto w-full max-w-lg">
+            {/* text-shadow, contrast fix: 5.4:1 against pure black but the
+                tomb's own rim-lit edge can reach bright enough locally to
+                drop that under 3:1. Same fix as Movement I's eyebrow. */}
+            <p
+              className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75"
+              style={{ textShadow: "0 1px 3px rgba(0,0,0,0.9)" }}
+            >
+              {payer?.label}
+            </p>
+            <h2 className="mt-4 text-[25px] font-semibold leading-[1.22] tracking-[-0.024em] text-[#D4A843] sm:text-[30px]">
+              {payer?.headline}
+            </h2>
+            <p className="mt-4 border-l border-[#D4A843]/30 pl-4 text-[14px] leading-relaxed text-white/60 sm:text-[15px]">
+              {payer?.subtitle}
+            </p>
+          </div>
         </section>
 
         {/* 5 · Movement IV — the response. The imperative, and it arrives last
@@ -763,17 +841,45 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(3)}
           data-reveal="3"
-          className={`flex min-h-[calc(100svh-0.75rem)] flex-col justify-center pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] ${revealClass(3)}`}
+          className={`relative mx-[calc(50%-50vw)] flex min-h-[calc(100svh-0.75rem)] flex-col justify-center overflow-hidden px-5 pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] sm:px-6 ${revealClass(3)}`}
         >
-          <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
-            {response?.label}
-          </p>
-          <h2 className="mt-4 text-[25px] font-semibold leading-[1.22] tracking-[-0.024em] text-[#D4A843] sm:text-[30px]">
-            {response?.headline}
-          </h2>
-          <p className="mt-4 border-l border-[#D4A843]/30 pl-4 text-[14px] leading-relaxed text-white/60 sm:text-[15px]">
-            {response?.subtitle}
-          </p>
+          {/*
+           * Reused, not regenerated — what-is-repentance's own turn (§27,
+           * the hairpin track) is this movement's exact subject: "Repent —
+           * turn from your sin." Same dimmed, radial-masked, full-bleed
+           * treatment as Movement III. docs/graphics/PROMPTS.md §32.
+           */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 overflow-hidden"
+            style={{
+              opacity: 0.16,
+              maskImage: "radial-gradient(ellipse at 50% 40%, black 30%, transparent 75%)",
+              WebkitMaskImage: "radial-gradient(ellipse at 50% 40%, black 30%, transparent 75%)",
+              backgroundImage:
+                "linear-gradient(rgba(212,168,67,0.35), rgba(212,168,67,0.35)), url(/graphics/covers/what-is-repentance.avif)",
+              backgroundSize: "cover, cover",
+              backgroundPosition: "center, center",
+              backgroundBlendMode: "color, normal",
+            }}
+          />
+          <div className="relative mx-auto w-full max-w-lg">
+            {/* text-shadow, contrast fix: same reasoning as Movement III's
+                eyebrow — the hairpin track's lit dust can read bright enough
+                locally to threaten AA against the gold at 75% opacity. */}
+            <p
+              className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75"
+              style={{ textShadow: "0 1px 3px rgba(0,0,0,0.9)" }}
+            >
+              {response?.label}
+            </p>
+            <h2 className="mt-4 text-[25px] font-semibold leading-[1.22] tracking-[-0.024em] text-[#D4A843] sm:text-[30px]">
+              {response?.headline}
+            </h2>
+            <p className="mt-4 border-l border-[#D4A843]/30 pl-4 text-[14px] leading-relaxed text-white/60 sm:text-[15px]">
+              {response?.subtitle}
+            </p>
+          </div>
         </section>
 
         {/* 6 · The promise. */}

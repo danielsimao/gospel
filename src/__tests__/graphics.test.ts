@@ -31,7 +31,7 @@ const prompts = read("docs", "graphics", "PROMPTS.md");
 
 describe("what is served, and what is not", () => {
   it("ships both formats for everything the pages reference", () => {
-    for (const name of ["paper", "fingerprint"]) {
+    for (const name of ["paper", "fingerprint", "dock"]) {
       for (const ext of ["avif", "webp"]) {
         expect(
           existsSync(join(ROOT, "public", "graphics", `${name}.${ext}`)),
@@ -88,14 +88,16 @@ describe("what is served, and what is not", () => {
     // courtroom (previously excluded from this total by oversight — it is
     // served, just referenced from a CSS url() rather than JSX) and the two
     // §31/§32 desktop-only companions (courtroom-wide, door-decision-wide)
-    // are counted here now. The cap moved from 500 to 620 to hold them:
-    // real added weight for a real desktop rendering fix, not drift. tally
+    // are counted here, alongside the dock (grace Movement I, +142KB for a
+    // genuinely new asset — Movements III and IV cost nothing here, they
+    // reuse covers/ already counted in the topic-cover budget). tally
     // dropped out of this list when its last caller was retired — see the
-    // parked-assets test above.
-    const total = ["paper", "fingerprint", "door-decision"].flatMap((n) => [`${n}.avif`, `${n}.webp`])
+    // parked-assets test above. The cap moved 500 -> 600 to hold all three
+    // additions: real weight from two real fixes, not drift.
+    const total = ["paper", "fingerprint", "door-decision", "dock"].flatMap((n) => [`${n}.avif`, `${n}.webp`])
       .concat("door.jpg", "fingerprint.jpg", "courtroom.avif", "courtroom-wide.avif", "door-decision-wide.avif", "door-decision-wide.webp")
       .reduce((sum, f) => sum + kb("public", "graphics", f), 0);
-    expect(total, `served graphics total ${total.toFixed(0)} KB`).toBeLessThan(620);
+    expect(total, `served graphics total ${total.toFixed(0)} KB`).toBeLessThan(600);
   });
 });
 
@@ -346,6 +348,101 @@ describe("each graphic stays where its meaning is", () => {
   });
 });
 
+describe("grace's non-hinge movements", () => {
+  const grace = strip(read("src", "components", "grace-screen.tsx"));
+
+  it("ships the dock, and only for Movement I", () => {
+    expect(grace).toMatch(/url\(\/graphics\/dock\.avif\)/);
+    // Single-use, same discipline as the courtroom shaft and the decision
+    // door — a background this specific belongs to one screen.
+    for (const name of ["home-shell", "verdict-screen", "invitation-screen", "grace-record"]) {
+      expect(
+        strip(read("src", "components", `${name}.tsx`)),
+        `${name} grew the dock`,
+      ).not.toMatch(/dock\.avif/);
+    }
+  });
+
+  it("keeps the turn as the one full-strength hinge — I, III and IV stay dimmed", () => {
+    /*
+     * Giving every movement the courtroom's own full-bleed treatment would
+     * flatten the one moment that treatment exists to mark. I, III and IV
+     * are atmosphere: radial-masked, low-opacity, same idiom as the
+     * homepage's band textures — never the turn's unmasked full-bleed cover.
+     */
+    const maskCount = grace.match(/maskImage: "radial-gradient/g)?.length ?? 0;
+    expect(maskCount, "expected exactly 3 masked movement backgrounds").toBe(3);
+    expect(grace).toMatch(/opacity: 0\.16,\s*\n\s*maskImage/);
+  });
+
+  it("colours Movement I red and Movements III/IV gold, never the reverse", () => {
+    // Still the Law in Movement I (see that section's own doc comment) —
+    // gold there would spend grace's colour before the turn has happened.
+    const movementI = grace.slice(grace.indexOf('data-reveal="0"'), grace.indexOf('data-reveal="1"'));
+    expect(movementI).toMatch(/rgba\(239,68,68,0\.35\)/);
+    expect(movementI).not.toMatch(/rgba\(212,168,67/);
+
+    const movementIII = grace.slice(grace.indexOf('data-reveal="2"'), grace.indexOf('data-reveal="3"'));
+    const movementIV = grace.slice(grace.indexOf('data-reveal="3"'), grace.indexOf('data-reveal="4"'));
+    for (const movement of [movementIII, movementIV]) {
+      expect(movement).toMatch(/rgba\(212,168,67,0\.35\)/);
+      expect(movement).not.toMatch(/rgba\(239,68,68/);
+    }
+  });
+
+  it("reuses who-is-jesus and what-is-repentance rather than regenerating", () => {
+    // The doctrinal claim in Movement III (the payer's resurrection) and
+    // Movement IV (repentance) is identical to what those two topic covers
+    // already argue — a deliberate cross-reference, not a new asset.
+    expect(grace).toMatch(/url\(\/graphics\/covers\/who-is-jesus\.avif\)/);
+    expect(grace).toMatch(/url\(\/graphics\/covers\/what-is-repentance\.avif\)/);
+  });
+
+  it("never takes a click, and carries no meaning a reader needs", () => {
+    for (const dataReveal of ['data-reveal="0"', 'data-reveal="2"', 'data-reveal="3"']) {
+      const start = grace.indexOf(dataReveal);
+      const sectionEnd = grace.indexOf("</section>", start);
+      const section = grace.slice(start, sectionEnd);
+      expect(section, `${dataReveal} background is missing aria-hidden`).toMatch(/aria-hidden="true"/);
+      expect(section, `${dataReveal} background is missing pointer-events-none`).toMatch(/pointer-events-none/);
+    }
+  });
+
+  it("bleeds full-width, not confined to the reading column", () => {
+    /*
+     * Measured on desktop: confined to the ~512px reading column, these
+     * backgrounds read as a hard-edged box floating in black — the "panel
+     * the band is sitting in" failure band-texture.tsx's own comment
+     * warns about. Same breakout the turn already uses.
+     */
+    for (const dataReveal of ['data-reveal="0"', 'data-reveal="2"', 'data-reveal="3"']) {
+      const start = grace.indexOf(dataReveal);
+      const sectionTag = grace.slice(start, grace.indexOf(">", start));
+      expect(sectionTag, `${dataReveal} lost its full-bleed breakout`).toMatch(/mx-\[calc\(50%-50vw\)\]/);
+    }
+  });
+
+  it("shields the eyebrow label against the brighter parts of its own background", () => {
+    /*
+     * Measured (canvas-rendered, not screenshot pixels): red-400/70 and
+     * gold/75 already sit near the 4.5:1 AA floor against pure black
+     * (4.0:1 and 5.4:1) before any image — a bright local point in these
+     * new backgrounds can push that well under 3:1. A text-shadow halo
+     * claws back real contrast without changing colour or size, which
+     * would be a sitewide design change well outside this PR.
+     */
+    for (const dataReveal of ['data-reveal="0"', 'data-reveal="2"', 'data-reveal="3"']) {
+      const start = grace.indexOf(dataReveal);
+      const sectionEnd = grace.indexOf("</section>", start);
+      const section = grace.slice(start, sectionEnd);
+      const eyebrowP = section.slice(section.indexOf("<p"), section.indexOf("</p>"));
+      expect(eyebrowP, `${dataReveal} eyebrow lost its contrast shadow`).toMatch(
+        /textShadow: "0 1px 3px rgba\(0,0,0,0\.9\)"/,
+      );
+    }
+  });
+});
+
 describe("the /test share plate", () => {
   it("reads the image from disk rather than fetching it", () => {
     /*
@@ -397,7 +494,7 @@ describe("every asset keeps its prompt", () => {
   });
 
   it("names the assets that shipped", () => {
-    for (const name of ["tally", "dots", "fingerprint", "stone", "door", "door-decision", "paper", "courtroom", "who-is-jesus", "am-i-a-good-person", "does-god-exist", "world"]) {
+    for (const name of ["tally", "dots", "fingerprint", "stone", "door", "door-decision", "paper", "courtroom", "who-is-jesus", "am-i-a-good-person", "does-god-exist", "world", "dock"]) {
       expect(prompts.toLowerCase(), `${name} has no prompt on record`).toContain(name);
     }
   });
