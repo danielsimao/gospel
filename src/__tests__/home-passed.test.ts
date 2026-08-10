@@ -849,6 +849,47 @@ describe("the ledger", () => {
     expect(stats).toMatch(/if \(!sql\) \{/);
   });
 
+  it("will not write a row without proof a trial was stood", () => {
+    /*
+     * The visitor id is client-supplied and proves nothing: before the
+     * token, anything that could POST could write rows, and five ids from
+     * one geolocated city clears the k-anonymity threshold and starts
+     * naming that city under verdicts nobody reached. The band's whole
+     * claim is that every row is a real verdict, so a forged row is worse
+     * here than a missing one. src/__tests__/verdict-token.test.ts pins
+     * what the token itself refuses; this pins that the route demands one.
+     */
+    const write = strip(read("src", "app", "api", "verdict", "route.ts"));
+    expect(write).toMatch(/redeemVerdictToken\(body\?\.token\)/);
+    // All three, and the nonce among them — a route that wrote on visitor id
+    // and geography alone is exactly the hole the token exists to close.
+    expect(write).toMatch(/if \(visitorId && nonce && countryCode\)/);
+    // One token, one row: the nonce carries the table's unique constraint,
+    // so a replayed token collides instead of writing a second time.
+    expect(write).toMatch(/on conflict \(nonce\) do nothing/);
+    // Same answer either way, so the route is not an oracle for probing
+    // what the ledger will accept.
+    expect(write).toMatch(/status: 204/);
+    expect(write, "the write route answers differently when it refuses").not.toMatch(
+      /status: 4\d\d/,
+    );
+    // POST only, so a crawler prefetching a URL cannot write a row.
+    expect(write).toMatch(/export async function POST/);
+    expect(write).not.toMatch(/export async function GET/);
+    // And never from a preview deployment, same as the counter next door.
+    expect(write).toMatch(/VERCEL_ENV === "production"/);
+  });
+
+  it("mints that proof when the reader steps into the Law", () => {
+    // Minted at the start and spent at the verdict — which is what makes the
+    // token's minimum age a claim about elapsed time a real trial takes.
+    const landing = strip(read("src", "components", "landing.tsx"));
+    expect(landing).toMatch(/requestVerdictToken\(\)/);
+    const analytics = strip(read("src", "lib", "analytics.ts"));
+    expect(analytics).toMatch(/sessionStorage\.removeItem\(VERDICT_TOKEN_KEY\)/);
+    expect(analytics).toMatch(/body: JSON\.stringify\(\{ visitorId, token \}\)/);
+  });
+
   it("reads from our own table, not PostHog's", () => {
     /*
      * The ledger used to run this same k-anonymity query as HogQL against

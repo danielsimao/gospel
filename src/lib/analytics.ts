@@ -127,26 +127,69 @@ export function trackVerdictReached(
 }
 
 /**
+ * Where the ledger's proof-of-trial lives between the two ends of the test.
+ *
+ * sessionStorage, not localStorage: a token is for the trial being stood
+ * right now, and one left behind in a tab from yesterday should expire with
+ * the session rather than sit there waiting to be spent. (The server's own
+ * MAX_AGE_MS is the real bound; this just keeps the client tidy.)
+ */
+const VERDICT_TOKEN_KEY = "gospel-verdict-token";
+
+/**
+ * Asks for the token that a verdict row will need, at the moment the reader
+ * steps into the Law. Fired from landing.tsx's handleBegin, beside the
+ * anonymous trial beacon.
+ *
+ * Failure is silent and total: no token means no row at the other end, which
+ * costs the ledger one entry and costs the reader nothing. The transition
+ * into the Law must never wait on this.
+ */
+export function requestVerdictToken() {
+  try {
+    fetch("/api/trial-token", { method: "POST" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (typeof data?.token === "string") {
+          sessionStorage.setItem(VERDICT_TOKEN_KEY, data.token);
+        }
+      })
+      .catch(() => {});
+  } catch {
+    // Analytics can never break the app.
+  }
+}
+
+/**
  * The score band's own row, written alongside `verdict_reached` rather than
  * instead of it — PostHog still gets the full event for every other kind of
  * analysis; this is only the ledger's read-side dependency being moved off
  * PostHog's query API (see api/verdict/route.ts and test-stats.ts's own
  * comments on why).
  *
- * `getDistinctId()` returns null until the PostHog client has been
- * initialised, which only happens once consent is granted (see
+ * Two things have to be true for a row to be written, and they guard
+ * different things. `getDistinctId()` returns null until the PostHog client
+ * has been initialised, which only happens once consent is granted (see
  * consent-banner.tsx) — the same trust boundary `trackVerdictReached` above
- * already crosses via `safeCapture`'s no-op-until-inited client. A reader who
- * declined the banner sends nothing here either.
+ * already crosses. The token is the server's own check that a trial was
+ * actually stood, because the visitor id is client-supplied and proves
+ * nothing on its own (src/lib/verdict-token.ts).
+ *
+ * The token is cleared as it is spent: the server enforces single use via
+ * the nonce's unique constraint, and holding on to a spent token client-side
+ * would only mean a retake silently writing nothing.
  */
 export function trackVerdictRow() {
   const visitorId = getDistinctId();
   if (!visitorId) return;
   try {
+    const token = sessionStorage.getItem(VERDICT_TOKEN_KEY);
+    if (!token) return;
+    sessionStorage.removeItem(VERDICT_TOKEN_KEY);
     fetch("/api/verdict", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ visitorId }),
+      body: JSON.stringify({ visitorId, token }),
       keepalive: true,
     }).catch(() => {});
   } catch {
