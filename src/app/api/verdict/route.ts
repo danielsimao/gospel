@@ -39,13 +39,28 @@ interface VerdictBody {
   token?: unknown;
 }
 
+/**
+ * PostHog's distinct ids are UUID-shaped; this is generous room around that
+ * and still refuses the megabyte string a valid-token caller could otherwise
+ * hand the database to store forever. Same idea for the token, whose own
+ * shape is fixed (`uuid.millis.base64url-hmac`) and nowhere near this.
+ */
+const MAX_FIELD_LENGTH = 200;
+
 export async function POST(request: NextRequest) {
   // Preview deployments must never write to the real ledger.
   if (sql && process.env.VERCEL_ENV === "production") {
     const body = (await request.json().catch(() => null)) as VerdictBody | null;
-    const visitorId = typeof body?.visitorId === "string" ? body.visitorId : "";
+    const visitorId =
+      typeof body?.visitorId === "string" && body.visitorId.length <= MAX_FIELD_LENGTH
+        ? body.visitorId
+        : "";
+    const token =
+      typeof body?.token === "string" && body.token.length <= MAX_FIELD_LENGTH
+        ? body.token
+        : "";
     // Spent below by the nonce's unique constraint, so one token is one row.
-    const nonce = redeemVerdictToken(body?.token);
+    const nonce = redeemVerdictToken(token);
     const { city, country: countryCode } = geolocation(request);
     if (visitorId && nonce && countryCode) {
       after(() => recordVerdict(visitorId, countryCode, city ?? "", nonce));

@@ -860,7 +860,10 @@ describe("the ledger", () => {
      * what the token itself refuses; this pins that the route demands one.
      */
     const write = strip(read("src", "app", "api", "verdict", "route.ts"));
-    expect(write).toMatch(/redeemVerdictToken\(body\?\.token\)/);
+    expect(write).toMatch(/redeemVerdictToken\(token\)/);
+    // Bounded before either value reaches the database — a valid-token caller
+    // could otherwise hand it a megabyte string to store forever.
+    expect(write).toMatch(/MAX_FIELD_LENGTH/);
     // All three, and the nonce among them — a route that wrote on visitor id
     // and geography alone is exactly the hole the token exists to close.
     expect(write).toMatch(/if \(visitorId && nonce && countryCode\)/);

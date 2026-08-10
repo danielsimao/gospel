@@ -22,10 +22,22 @@ import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
  *     token buys exactly one row and a replay collides instead of counting
  *     twice.
  *
- * None of this makes the ledger unforgeable by a determined attacker — they
- * can still mint, wait, and write, once per token. It makes fabricating a
- * crowd cost real time per fake row instead of a for-loop, which is the
- * difference that matters for a claim this band makes about real people.
+ * What this does NOT do, stated plainly because the first version of this
+ * comment got it wrong: it does not make fabricating a crowd cost time per
+ * fake row. Minting is unauthenticated and free, and tokens age
+ * CONCURRENTLY — five tokens minted in parallel are all redeemable after one
+ * shared 20-second wait, so clearing LEDGER_CITY_MIN still costs about ten
+ * requests and twenty seconds, not five separate trials. A thousand tokens
+ * cost the same twenty seconds.
+ *
+ * So this is a speed bump and a replay guard, not proof of trial completion.
+ * It closes the trivial version of the attack (a bare for-loop against
+ * /api/verdict) and makes each forged row cost a distinct token, which is
+ * worth having. The honest limit is that no token minted by a server for an
+ * untrusted client can prove a human took a test; only something scarce to
+ * the attacker (a rate limit on minting, keyed to something they cannot
+ * cheaply multiply) changes the economics. That control does not exist yet
+ * and is a deliberate open item, not an oversight.
  */
 
 /**
