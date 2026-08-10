@@ -6,7 +6,12 @@ import { m, AnimatePresence } from "framer-motion";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { SelfRating, type SelfRatingMessages } from "@/components/home/self-rating";
 import { Button, ButtonArrow } from "@/components/ui/button";
-import { trackGameStarted, trackSelfRating, trackSelfRatingChanged } from "@/lib/analytics";
+import {
+  requestVerdictToken,
+  trackGameStarted,
+  trackSelfRating,
+  trackSelfRatingChanged,
+} from "@/lib/analytics";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { Locale } from "@/lib/i18n";
 import type { SelfRating as SelfRatingValue } from "@/lib/types";
@@ -144,6 +149,16 @@ export function Landing({ messages, locale }: LandingProps) {
     } catch {
       // Counting is never worth breaking the transition for.
     }
+
+    /*
+     * The score band's ledger needs proof that a trial was actually stood
+     * before it will write a row at the other end, and this is the moment
+     * that proof is minted (src/lib/verdict-token.ts). Unguarded by
+     * TRIAL_COUNTED_KEY above, deliberately: that key makes the COUNT
+     * once-per-reader-ever, but a retake is a real second verdict and
+     * deserves its own token. Fire-and-forget, like everything else here.
+     */
+    requestVerdictToken();
 
     dispatch({ type: "START_GAME" });
   }

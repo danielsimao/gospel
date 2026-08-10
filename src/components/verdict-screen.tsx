@@ -4,7 +4,7 @@ import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { m } from "framer-motion";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { DeathCounter } from "@/components/eternity/death-counter";
-import { trackVerdictReached } from "@/lib/analytics";
+import { trackVerdictReached, trackVerdictRow } from "@/lib/analytics";
 import { splitConfession, type ConfessionTone } from "@/lib/confession";
 import { ScrollCue } from "@/components/shared/scroll-cue";
 import { EASE_OUT_STRONG } from "@/lib/motion";
@@ -230,6 +230,7 @@ export function VerdictScreen({
         (a) => a.answer === "justify",
       ).length;
       trackVerdictReached(totalHonest, totalJustify, durationMs);
+      trackVerdictRow();
     }
   }, [state.answers, durationMs, returning]);
 
