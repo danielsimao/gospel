@@ -631,6 +631,22 @@ export function HomeShell({
           </div>
 
           <div data-slot="journey-stage" data-stage="undecided">
+            <div className="relative flex w-full flex-col items-center">
+              {/* Same red already spent on this stage's own eyebrow rule and
+                  heading tint (StageSpine's tone="red"), just carried into a
+                  soft ambient wash instead of a hairline — the Law's colour
+                  for a reader who took the test and has not yet answered it.
+                  Same geometry and weight as committed's gold glow below,
+                  which is the one this was measured against. */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -inset-x-10 top-0 bottom-1/3"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at 50% 25%, rgba(239,68,68,0.08) 0%, transparent 65%)",
+                  filter: "blur(32px)",
+                }}
+              />
               {/* whatHappened carries the temporal mirror that sinceLine used
                   to hold — how long "later" has already lasted, stated once,
                   no pressure mechanics — folded into the result sentence. */}
@@ -647,16 +663,34 @@ export function HomeShell({
                   />
                 }
               />
-              <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
+              <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="relative mt-8">
                 <Button variant="gold" size="lg" mist>
                   {home.journeyStages.undecided.cta}
                   <ButtonArrow />
                 </Button>
               </Link>
+            </div>
           </div>
 
           <div data-slot="journey-stage" data-stage="thinking">
-            <div className="flex w-full max-w-md flex-col items-center">
+            <div className="relative flex w-full max-w-md flex-col items-center">
+              {/* Colourless on purpose. "thinking" makes no claim red or gold
+                  already carries elsewhere — this reader is neither still
+                  under judgment's own verdict nor across the line into grace,
+                  just weighing it. Same geometry as committed's and
+                  undecided's glow, at roughly the fraction of their weight
+                  StageSpine's own dim tone already carries against red/gold
+                  (0.16 vs 0.40 on the rule line — the same ratio here, off
+                  0.08). */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -inset-x-10 top-0 bottom-1/3"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at 50% 25%, rgba(255,255,255,0.03) 0%, transparent 65%)",
+                  filter: "blur(32px)",
+                }}
+              />
               <StageSpine
                 tone="dim"
                 eyebrow={home.journeyStages.thinking.eyebrow}

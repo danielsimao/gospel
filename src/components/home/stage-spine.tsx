@@ -2,9 +2,16 @@ import type { ReactNode } from "react";
 
 type Tone = "red" | "gold" | "dim";
 
-const TONE: Record<Tone, { rule: string; text: string }> = {
+const TONE: Record<Tone, { rule: string; text: string; heading?: string }> = {
   red: { rule: "bg-red-500/40", text: "text-red-400/80" },
-  gold: { rule: "bg-[#D4A843]/40", text: "text-[#D4A843]/80" },
+  /*
+   * `heading` only exists for gold, deliberately — the reason committed's
+   * heading gets its own colour and the other two stay plain white. Same
+   * gold, same glow as the decision screen's own committed line
+   * (invitation-screen.tsx), so a returning reader's two tellings of this
+   * event — there, then again here — read as one thing rather than two.
+   */
+  gold: { rule: "bg-[#D4A843]/40", text: "text-[#D4A843]/80", heading: "text-[#D4A843]" },
   dim: { rule: "bg-white/[0.16]", text: "text-white/60" },
 };
 
@@ -64,7 +71,18 @@ export function StageSpine({
         <span aria-hidden="true" className={`h-px w-6 ${t.rule}`} />
       </div>
 
-      <h2 className="mt-3 max-w-md text-balance text-center text-2xl font-bold leading-tight tracking-tight text-white/90 sm:mt-4 sm:text-3xl">
+      {/*
+       * Colour only, never size — every other stage keeps the exact same
+       * heading level and scale. This component exists because varying
+       * those across stages was the bug ("the states previously differed in
+       * heading level, control type and element count", see the file doc
+       * comment); a bigger committed heading would reopen it. Weight comes
+       * from colour and the glow alone.
+       */}
+      <h2
+        className={`mt-3 max-w-md text-balance text-center text-2xl font-bold leading-tight tracking-tight sm:mt-4 sm:text-3xl ${t.heading ?? "text-white/90"}`}
+        style={tone === "gold" ? { textShadow: "0 0 60px rgba(212,168,67,0.28)" } : undefined}
+      >
         {heading}
       </h2>
 
