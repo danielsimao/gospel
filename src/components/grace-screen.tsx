@@ -664,7 +664,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(0)}
           data-reveal="0"
-          className={`relative flex min-h-[calc(100svh-0.75rem)] flex-col justify-center pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] ${revealClass(0)}`}
+          className={`relative mx-[calc(50%-50vw)] flex min-h-[calc(100svh-0.75rem)] flex-col justify-center overflow-hidden px-5 pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] sm:px-6 ${revealClass(0)}`}
         >
           {/*
            * The dock, dimmed — the empty rail behind the reader's own
@@ -675,6 +675,14 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
            * low-opacity like the homepage's band textures, red-tinted
            * because this is still the Law (see this section's own doc
            * comment above) — no gold here, docs/graphics/PROMPTS.md §31.
+           *
+           * Full-bleed width (the turn's own breakout, `mx-[calc(50%-50vw)]`)
+           * even though the treatment stays dim — measured on desktop at the
+           * narrow reading-column width and it read as a hard-edged box
+           * floating in black, the exact "panel the band is sitting in"
+           * failure band-texture.tsx's own comment warns about. Width fixes
+           * that; the dim mask is what still keeps it well short of the
+           * turn's own full-strength hero.
            */}
           <div
             aria-hidden="true"
@@ -690,7 +698,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
               backgroundBlendMode: "color, normal",
             }}
           />
-          <div className="relative">
+          <div className="relative mx-auto w-full max-w-lg">
             <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-red-400/70">
               {problem?.label}
             </p>
@@ -746,7 +754,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(2)}
           data-reveal="2"
-          className={`relative flex min-h-[calc(100svh-0.75rem)] flex-col justify-center pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] ${revealClass(2)}`}
+          className={`relative mx-[calc(50%-50vw)] flex min-h-[calc(100svh-0.75rem)] flex-col justify-center overflow-hidden px-5 pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] sm:px-6 ${revealClass(2)}`}
         >
           {/*
            * Reused, not regenerated — the empty tomb already argues this
@@ -754,7 +762,8 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
            * resurrection is the credential that makes this someone the
            * payer. Dimmed and radial-masked here rather than the full-
            * strength framed treatment its topic page gives it — atmosphere,
-           * not a second cover. docs/graphics/PROMPTS.md §32.
+           * not a second cover. docs/graphics/PROMPTS.md §32. Full-bleed
+           * width for the same reason Movement I is — see its own comment.
            */}
           <div
             aria-hidden="true"
@@ -770,7 +779,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
               backgroundBlendMode: "color, normal",
             }}
           />
-          <div className="relative">
+          <div className="relative mx-auto w-full max-w-lg">
             <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
               {payer?.label}
             </p>
@@ -788,13 +797,13 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
         <section
           ref={setSectionRef(3)}
           data-reveal="3"
-          className={`relative flex min-h-[calc(100svh-0.75rem)] flex-col justify-center pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] ${revealClass(3)}`}
+          className={`relative mx-[calc(50%-50vw)] flex min-h-[calc(100svh-0.75rem)] flex-col justify-center overflow-hidden px-5 pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] sm:px-6 ${revealClass(3)}`}
         >
           {/*
            * Reused, not regenerated — what-is-repentance's own turn (§27,
            * the hairpin track) is this movement's exact subject: "Repent —
-           * turn from your sin." Same dimmed, radial-masked treatment as
-           * Movement III. docs/graphics/PROMPTS.md §32.
+           * turn from your sin." Same dimmed, radial-masked, full-bleed
+           * treatment as Movement III. docs/graphics/PROMPTS.md §32.
            */}
           <div
             aria-hidden="true"
@@ -810,7 +819,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
               backgroundBlendMode: "color, normal",
             }}
           />
-          <div className="relative">
+          <div className="relative mx-auto w-full max-w-lg">
             <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
               {response?.label}
             </p>
