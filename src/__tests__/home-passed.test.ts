@@ -1,6 +1,12 @@
 import { describe, it, expect, afterEach, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+
+// The ledger's own transport, mocked at the module boundary rather than at
+// `fetch`: it now reads from our own Postgres (see src/lib/db.ts) instead of
+// PostHog's HogQL endpoint, so there is no HTTP call left to stub.
+vi.mock("@/lib/db", () => ({ sql: vi.fn() }));
+import { sql } from "@/lib/db";
 import {
   fetchTestTakerCount,
   fetchRecentVerdicts,
@@ -596,9 +602,29 @@ describe("the count's plumbing", () => {
  * takes the band back.
  */
 describe("the ledger", () => {
-  const rowsFrom = (results: unknown[][]) => {
-    vi.stubEnv("POSTHOG_PERSONAL_API_KEY", "phx_test");
-    vi.stubGlobal("fetch", vi.fn(async () => ({ ok: true, json: async () => ({ results }) })));
+  // sql is nullable in db.ts (null without DATABASE_URL — see db.test.ts for
+  // that branch); this describe block's own mock always resolves it to a
+  // function, so the assertion is safe here specifically.
+  const mockSql = vi.mocked(sql)!;
+
+  /**
+   * Builds the row shape Neon's driver actually returns (objects keyed by
+   * column name, `created_at` as a real `Date`) from the same positional
+   * tuples the old PostHog-backed tests used, so most of the tests below
+   * changed only their transport, not their fixtures.
+   */
+  const rowsFrom = (
+    tuples: [string | Date, string, string, string, string][],
+  ) => {
+    mockSql.mockResolvedValueOnce(
+      tuples.map(([created_at, country, country_code, city, visitor_id]) => ({
+        created_at,
+        country,
+        country_code,
+        city,
+        visitor_id,
+      })),
+    );
     return fetchRecentVerdicts();
   };
 
@@ -680,21 +706,24 @@ describe("the ledger", () => {
      * lives, short of executing the query against ClickHouse.
      */
     const crowdedStart = stats.indexOf("crowded as (");
-    const crowdedEnd = stats.indexOf("select timestamp, country, country_code,");
+    // Not a bare indexOf: `recent`'s own select list starts with the same
+    // three columns, one CTE earlier — the un-anchored search found that
+    // occurrence instead of the final select's.
+    const crowdedEnd = stats.indexOf("select created_at, country, country_code,", crowdedStart);
     expect(crowdedStart, "could not find the crowded CTE's start").toBeGreaterThan(-1);
     expect(crowdedEnd, "could not find the crowded CTE's end anchor").toBeGreaterThan(-1);
     expect(crowdedEnd, "the crowded CTE's end anchor sits before its start").toBeGreaterThan(crowdedStart);
     const crowded = stats.slice(crowdedStart, crowdedEnd);
     /*
-     * `count(distinct distinct_id)`, not `count()` — the query used to count
+     * `count(distinct visitor_id)`, not `count(*)` — the query used to count
      * raw verdict rows per city, so one reader retaking the test
      * LEDGER_CITY_MIN times from the same city could name it alone. A repeat
      * visitor is not a crowd; this pins that the threshold counts distinct
      * visitors, not rows.
      */
-    expect(crowded).toMatch(/having count\(distinct distinct_id\) >= \$\{LEDGER_CITY_MIN\}/);
+    expect(crowded).toMatch(/having count\(distinct visitor_id\) >= \$\{LEDGER_CITY_MIN\}/);
     expect(crowded, "the crowd threshold counts rows again, not distinct visitors").not.toMatch(
-      /having count\(\) >= \$\{LEDGER_CITY_MIN\}/,
+      /having count\(\*\) >= \$\{LEDGER_CITY_MIN\}/,
     );
     /*
      * Grouped on (country, city), not city alone — GeoIP's city names are
@@ -702,20 +731,13 @@ describe("the ledger", () => {
      * grouping let a crowd in one country's Springfield name a different
      * country's Springfield too. The membership check has to use the same
      * tuple, or the two could disagree about which city a row means.
-     *
-     * The country NAME, not `country_code`, and pinned as a regression: an
-     * earlier version of this fix keyed on `country_code`, which the query
-     * coalesces to `''` when GeoIP has a country name but no alpha-2 code —
-     * so two different real countries missing a code could still pool their
-     * crowds through the shared blank. `country` has no such fallback (the
-     * query's own `where` clause requires it non-empty already).
      */
     expect(crowded).toMatch(/group by country, city/);
-    expect(crowded, "keyed on country_code again, which can blank-collapse").not.toMatch(
+    expect(crowded, "keyed on country_code, which can blank-collapse").not.toMatch(
       /country_code/,
     );
     expect(stats).toMatch(
-      /if\(\(country, city\) in \(select country, city from crowded\), city, ''\) as city/,
+      /case when city != '' and \(country, city\) in \(select country, city from crowded\)[\s\S]{0,20}then city else '' end as city/,
     );
     expect(LEDGER_CITY_MIN).toBeGreaterThanOrEqual(5);
     // The query blanks the city itself, so a blanked one arrives here as an
@@ -739,7 +761,7 @@ describe("the ledger", () => {
      */
     expect(ledger).toMatch(/Intl\.DisplayNames/);
     expect(ledger).toMatch(/type: "region"/);
-    expect(stats).toMatch(/properties\.\$geoip_country_code/);
+    expect(stats).toMatch(/select created_at, country, country_code,/);
     // Only a well-formed alpha-2 travels, so the component has one shape to
     // guard rather than whatever the property happened to hold.
     expect(stats).toMatch(/\/\^\[A-Z\]\{2\}\$\/\.test\(rawCode\)/);
@@ -775,23 +797,27 @@ describe("the ledger", () => {
     expect(Object.keys(rows[0]).sort()).toEqual(["at", "city", "country", "countryCode"]);
   });
 
-  it("reads a zone-less ClickHouse timestamp as UTC, not as local time", async () => {
+  it("takes Neon's own Date as-is, and rejects anything that isn't one", async () => {
     /*
-     * ClickHouse can answer "2026-08-09 12:34:56" — no T, no zone — and
-     * new Date() reads that as LOCAL time: right by accident on a UTC server
-     * and silently hours out anywhere else. An hours-wrong row is worse than a
-     * missing one, because the column it lands in is the argument.
+     * Neon's driver parses `timestamptz` into a real `Date` (unlike the
+     * HogQL endpoint this replaced, which answered a zone-less
+     * "2026-08-09 12:34:56" that `new Date()` would have silently misread as
+     * local time) — so the row just needs its `.toISOString()`, unambiguous
+     * by construction, no zone-guessing required.
      */
-    const rows = await rowsFrom([["2026-08-09 12:34:56", "Portugal", "PT", "", "a"]]);
+    const rows = await rowsFrom([
+      [new Date("2026-08-09T12:34:56.000Z"), "Portugal", "PT", "", "a"],
+    ]);
     expect(rows[0].at).toBe("2026-08-09T12:34:56.000Z");
-    // And a timestamp that cannot be parsed takes its own row out, quietly.
+    // A value that isn't a Date and doesn't parse as one takes its row out,
+    // quietly — a row whose time is a guess has no business in a ledger.
     expect(await rowsFrom([["not a date", "Portugal", "PT", "", "a"]])).toEqual([]);
   });
 
   it("asks for a bounded window and stops at the rows it shows", async () => {
-    expect(stats).toMatch(/interval \$\{LEDGER_WINDOW_DAYS\} day/);
+    expect(stats).toMatch(/interval '1 day' \* \$\{LEDGER_WINDOW_DAYS\}/);
     expect(LEDGER_WINDOW_DAYS).toBeGreaterThan(0);
-    const many = Array.from({ length: LEDGER_ROWS + 6 }, (_, i) => [
+    const many = Array.from({ length: LEDGER_ROWS + 6 }, (_, i): [string, string, string, string, string] => [
       `2026-08-09T1${i % 10}:00:00Z`,
       "Portugal",
       "PT",
@@ -802,57 +828,52 @@ describe("the ledger", () => {
   });
 
   it("turns every failure into no ledger, never a throw", async () => {
-    // Same contract as the count: the homepage must never break because an
-    // analytics vendor had a bad day. Here the cost of failing is smaller —
-    // the scoreline simply keeps the band.
-    vi.stubEnv("POSTHOG_PERSONAL_API_KEY", "phx_test");
+    // Same contract as the count: the homepage must never break because the
+    // database had a bad moment. Here the cost of failing is smaller — the
+    // scoreline simply keeps the band.
     for (const impl of [
-      async () => ({ ok: false, json: async () => ({}) }),
-      async () => ({ ok: true, json: async () => ({}) }),
-      async () => ({ ok: true, json: async () => ({ results: "not an array" }) }),
-      async () => ({ ok: true, json: async () => ({ results: [[null, null, null, null, null]] }) }),
-      async () => ({
-        ok: true,
-        json: async () => ({ results: [["2026-08-09T12:00:00Z", "", "", "", "a"]] }),
-      }),
-      async () => {
-        throw new Error("network");
-      },
+      () => Promise.reject(new Error("connection reset")),
+      () => Promise.resolve([{ created_at: null, country: null, country_code: null, city: null, visitor_id: null }]),
+      () => Promise.resolve([{ created_at: new Date(), country: "", country_code: "", city: "", visitor_id: "a" }]),
     ]) {
-      vi.stubGlobal("fetch", vi.fn(impl));
+      // biome-ignore lint/suspicious/noExplicitAny: exercising malformed rows on purpose
+      mockSql.mockImplementationOnce(impl as any);
       expect(await fetchRecentVerdicts()).toEqual([]);
     }
   });
 
-  it("asks for nothing when there is no key to ask with", async () => {
-    vi.stubEnv("POSTHOG_PERSONAL_API_KEY", "");
-    const fetchSpy = vi.fn();
-    vi.stubGlobal("fetch", fetchSpy);
-    expect(await fetchRecentVerdicts()).toEqual([]);
-    expect(fetchSpy).not.toHaveBeenCalled();
+  it("asks for nothing when there is no database to ask", async () => {
+    // sql is null (see src/lib/db.test.ts) whenever DATABASE_URL is not
+    // configured; the guard here is what keeps that a silent no-op rather
+    // than a crash on `null\`...\``.
+    expect(stats).toMatch(/if \(!sql\) \{/);
   });
 
-  it("reads the consented event, because it is the only one with a place in it", () => {
+  it("reads from our own table, not PostHog's", () => {
     /*
-     * The anonymous twin is captured with $geoip_disable and a zeroed IP on
-     * purpose — that decision predates this band and is pinned by "counts
-     * without anyone in the event" above. The ledger therefore shows a subset
-     * of the count beside it, and the honest consequence is that it can be
-     * empty while the count is large.
+     * The ledger used to run this same k-anonymity query as HogQL against
+     * PostHog's own query API, which intermittently answered 400 under real
+     * production traffic (traced via Vercel's runtime logs, replicated by
+     * hand — never a code defect, but a real reliability gap the homepage's
+     * own fail-safe was papering over more often than the data warranted).
+     * `verdict_reached` still reaches PostHog for every other analysis; only
+     * this read moved.
      */
-    expect(stats).toMatch(/where event = 'verdict_reached' /);
-    expect(stats, "the ledger reached for the counter that has no geography").not.toMatch(
-      /trial_stood_anon[\s\S]{0,200}geoip/,
+    expect(stats).toMatch(/from\s+verdicts/);
+    // fetchTestTakerCount above it still asks PostHog with a HogQLQuery, so
+    // this has to scope to fetchRecentVerdicts's own body rather than check
+    // the whole file.
+    const ledgerFnStart = stats.indexOf("export async function fetchRecentVerdicts");
+    expect(ledgerFnStart, "could not find fetchRecentVerdicts").toBeGreaterThan(-1);
+    expect(stats.slice(ledgerFnStart), "the ledger went back to querying PostHog").not.toMatch(
+      /HogQLQuery/,
     );
-    expect(stats).toMatch(/properties\.\$geoip_country_name/);
   });
 
   it("resolves on the server, like the count it sits under", () => {
-    // The personal key reads every event in the project; the component gets
-    // rows, not the means to fetch them.
+    // The component gets rows, not the means to fetch them.
     expect(page).toMatch(/fetchRecentVerdicts\(\)/);
-    expect(ledger).not.toMatch(/fetch\(|process\.env|POSTHOG/);
-    expect(stats).toMatch(/revalidate: 3600/);
+    expect(ledger).not.toMatch(/fetch\(|process\.env|POSTHOG|sql`/);
   });
 
   it("renders a date the cache cannot falsify, then lets the client say when", () => {

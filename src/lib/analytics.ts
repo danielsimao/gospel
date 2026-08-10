@@ -126,6 +126,34 @@ export function trackVerdictReached(
   });
 }
 
+/**
+ * The score band's own row, written alongside `verdict_reached` rather than
+ * instead of it — PostHog still gets the full event for every other kind of
+ * analysis; this is only the ledger's read-side dependency being moved off
+ * PostHog's query API (see api/verdict/route.ts and test-stats.ts's own
+ * comments on why).
+ *
+ * `getDistinctId()` returns null until the PostHog client has been
+ * initialised, which only happens once consent is granted (see
+ * consent-banner.tsx) — the same trust boundary `trackVerdictReached` above
+ * already crosses via `safeCapture`'s no-op-until-inited client. A reader who
+ * declined the banner sends nothing here either.
+ */
+export function trackVerdictRow() {
+  const visitorId = getDistinctId();
+  if (!visitorId) return;
+  try {
+    fetch("/api/verdict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ visitorId }),
+      keepalive: true,
+    }).catch(() => {});
+  } catch {
+    // Analytics can never break the app.
+  }
+}
+
 export function trackGraceViewed(timeSpent: number, scrollDepth: number) {
   safeCapture("grace_viewed", {
     time_spent_ms: timeSpent,

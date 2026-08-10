@@ -24,6 +24,8 @@
  * true by construction.
  */
 
+import { sql } from "@/lib/db";
+
 const POSTHOG_API_HOST = process.env.POSTHOG_API_HOST || "https://eu.posthog.com";
 const POSTHOG_PROJECT_ID = process.env.POSTHOG_PROJECT_ID || "221882";
 
@@ -179,137 +181,88 @@ export const LEDGER_CITY_MIN = 5;
 export const LEDGER_ROWS = 5;
 
 /**
- * ClickHouse can answer `2026-08-09 12:34:56` — no `T`, no zone — and
- * `new Date()` reads that as LOCAL time: right by accident on a UTC server,
- * silently hours out anywhere else. Normalised here so what reaches the client
- * is unambiguous, and rejected outright when it does not parse, because a row
- * whose time is a guess has no business in a ledger.
+ * Neon's driver already parses `timestamptz` into a real `Date` (unlike the
+ * ClickHouse HogQL endpoint this replaced, which answered a bare
+ * `2026-08-09 12:34:56` — no `T`, no zone — that `new Date()` would have
+ * silently misread as local time). Still rejected outright when it does not
+ * parse, because a row whose time is a guess has no business in a ledger.
  */
 function parseTimestamp(raw: unknown): string | null {
-  if (typeof raw !== "string" || !raw) return null;
-  const hasZone = /(?:Z|[+-]\d{2}:?\d{2})$/.test(raw);
-  const at = new Date(raw.replace(" ", "T") + (hasZone ? "" : "Z"));
+  const at = raw instanceof Date ? raw : new Date(typeof raw === "string" ? raw : Number.NaN);
   return Number.isNaN(at.getTime()) ? null : at.toISOString();
 }
 
 /**
  * The last few verdicts, as places and times — the rows above Jerusalem.
  *
- * Only the CONSENTED `verdict_reached` event can answer this — a row needs an
- * outcome and a place, and only a completed verdict has either. The aggregate
- * count above it counts from stepping into the Law (see fetchTestTakerCount),
- * so the ledger is necessarily a subset of it: some who stood trial finished,
- * and only they can appear here. `trial_stood_anon` (api/trial-count) is
- * captured with `$geoip_disable` and a zeroed IP on purpose — it knows how
- * many stood trial and deliberately not where — so it cannot and does not
- * feed this ledger; that decision is older than this band and is not reopened
- * here.
+ * Read from our own `verdicts` table (see db/migrations/0001_verdicts.sql
+ * and api/verdict/route.ts for the write side), not PostHog. It used to run
+ * this same k-anonymity query as HogQL against PostHog's own query API,
+ * which intermittently answered 400 under real production traffic — traced
+ * to Vercel's runtime logs, replicated by hand, never a code defect, but a
+ * real reliability gap: the homepage's own fail-safe (empty array, scoreline
+ * takes the band back) was firing far more often than the underlying data
+ * warranted. Moving the ledger's read onto a table this app owns removes the
+ * external dependency from the read path entirely; PostHog still gets the
+ * full `verdict_reached` event for every other kind of analysis.
+ *
+ * The aggregate count above it counts from stepping into the Law (see
+ * fetchTestTakerCount), so the ledger is necessarily a subset of it: some who
+ * stood trial finished, and only they can appear here.
  *
  * An empty array is a supported answer, not an error. The band falls back to
  * the scoreline, which argues the same thing with the number alone. Nothing
- * here is ever modelled or estimated, for either half of the band: an
- * invented row — a city nobody took the test in — would be fabricated
- * testimony, which is worse than an invented rate, and neither ships.
+ * here is ever modelled or estimated: an invented row — a city nobody took
+ * the test in — would be fabricated testimony, which is worse than an
+ * invented rate, and neither ships.
  */
 export async function fetchRecentVerdicts(): Promise<VerdictRow[]> {
-  const apiKey = process.env.POSTHOG_PERSONAL_API_KEY;
-  if (!apiKey) {
-    console.warn("[test-stats] no ledger: no POSTHOG_PERSONAL_API_KEY configured");
+  if (!sql) {
+    console.warn("[test-stats] no ledger: no DATABASE_URL configured");
     return [];
   }
 
   try {
-    const response = await fetch(
-      `${POSTHOG_API_HOST}/api/projects/${POSTHOG_PROJECT_ID}/query/`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          query: {
-            kind: "HogQLQuery",
-            /*
-             * `crowded` is the k-anonymity pass: a city is named only once
-             * LEDGER_CITY_MIN distinct `distinct_id`s have stood trial from
-             * it, and every other row falls back to its country.
-             *
-             * Keyed on (country, city), not city alone — a bare city
-             * grouping let two different countries' identically-named cities
-             * (e.g. two "Springfield"s) pool their counts, so a handful of
-             * people in one country's Springfield could name the OTHER
-             * country's Springfield too, for a reader who was never near a
-             * crowd there. The membership check below uses the same tuple, or
-             * the two could disagree about which city a row actually means.
-             * The country NAME, not `country_code`: the code is coalesced to
-             * `''` when GeoIP has no alpha-2 for a country it does name, and
-             * a key that can go blank for two different real countries would
-             * let their Springfields pool right back together through the
-             * gap. `country` is guaranteed non-empty here by the `where`
-             * clause below.
-             *
-             * `count(distinct distinct_id)`, not `count()` — a bare row count
-             * let one reader who retook the test LEDGER_CITY_MIN times name
-             * their own city alone, which is not a crowd. The empty string
-             * rather than null throughout, so a missing city cannot turn the
-             * `if` into a nullable comparison and take the whole row with it.
-             *
-             * distinct_id is also selected in the final query but never
-             * returned to the client — it exists so one reader who reloads
-             * the verdict five times cannot fill the ledger on their own,
-             * which would render five verdicts as five people. That dedup is
-             * separate from (and downstream of) the crowd check above: it
-             * only decides which ROWS the ledger shows, after `crowded` has
-             * already decided which cities get named. Deduped in TypeScript
-             * rather than with LIMIT BY: the query is the part that cannot be
-             * run locally, so it stays as ordinary as possible.
-             */
-            query:
-              "with recent as (" +
-              "select timestamp, " +
-              "properties.$geoip_country_name as country, " +
-              "coalesce(properties.$geoip_country_code, '') as country_code, " +
-              "coalesce(properties.$geoip_city_name, '') as city, " +
-              "distinct_id " +
-              "from events " +
-              "where event = 'verdict_reached' " +
-              `and timestamp > now() - interval ${LEDGER_WINDOW_DAYS} day ` +
-              "and properties.$geoip_country_name != ''" +
-              "), crowded as (" +
-              "select country, city from recent where city != '' " +
-              "group by country, city " +
-              `having count(distinct distinct_id) >= ${LEDGER_CITY_MIN}` +
-              ") " +
-              "select timestamp, country, country_code, " +
-              "if((country, city) in (select country, city from crowded), city, '') as city, " +
-              "distinct_id " +
-              "from recent order by timestamp desc limit 60",
-          },
-        }),
-        // The same hourly window the count rides on. A ledger an hour old is
-        // still true: the times are formatted from the timestamps on the
-        // client, so a stale page ages its own rows rather than lying about
-        // them.
-        next: { revalidate: 3600 },
-      },
-    );
-    if (!response.ok) {
-      console.warn(`[test-stats] no ledger: PostHog answered ${response.status}`);
-      return [];
-    }
-
-    const data = (await response.json()) as { results?: unknown[][] };
-    const results = Array.isArray(data.results) ? data.results : [];
+    /*
+     * `crowded` is the k-anonymity pass: a city is named only once
+     * LEDGER_CITY_MIN distinct visitors have stood trial from it, and every
+     * other row falls back to its country. Keyed on (country, city), not
+     * city alone, and on the country NAME rather than its code — same
+     * reasoning as the HogQL version this replaced (see this function's own
+     * prior comment in git history, or test-stats.ts's LEDGER_CITY_MIN doc).
+     *
+     * `count(distinct visitor_id)`, not `count(*)` — a bare row count let one
+     * reader who retook the test LEDGER_CITY_MIN times name their own city
+     * alone, which is not a crowd.
+     */
+    const results = await sql`
+      with recent as (
+        select created_at, country, country_code, city, visitor_id
+        from verdicts
+        where created_at > now() - (interval '1 day' * ${LEDGER_WINDOW_DAYS})
+      ), crowded as (
+        select country, city from recent where city != ''
+        group by country, city
+        having count(distinct visitor_id) >= ${LEDGER_CITY_MIN}
+      )
+      select created_at, country, country_code,
+        case when city != '' and (country, city) in (select country, city from crowded)
+          then city else '' end as city,
+        visitor_id
+      from recent
+      order by created_at desc
+      limit 60
+    `;
 
     const readers = new Set<string>();
     const rows: VerdictRow[] = [];
     for (const result of results) {
-      const at = parseTimestamp(result?.[0]);
-      const country = typeof result?.[1] === "string" ? result[1].trim() : "";
-      const rawCode = typeof result?.[2] === "string" ? result[2].trim().toUpperCase() : "";
-      const city = typeof result?.[3] === "string" ? result[3].trim() : "";
-      const reader = typeof result?.[4] === "string" ? result[4] : "";
+      const at = parseTimestamp(result.created_at);
+      const country = typeof result.country === "string" ? result.country.trim() : "";
+      const rawCode =
+        typeof result.country_code === "string" ? result.country_code.trim().toUpperCase() : "";
+      const city = typeof result.city === "string" ? result.city.trim() : "";
+      const reader = typeof result.visitor_id === "string" ? result.visitor_id : "";
       if (!at || !country) continue;
       if (reader) {
         if (readers.has(reader)) continue;
@@ -327,8 +280,8 @@ export async function fetchRecentVerdicts(): Promise<VerdictRow[]> {
     }
 
     // The operator's only view of what the homepage actually published, for
-    // the same reason the count logs its answer: a working key and a broken
-    // one otherwise look identical from outside.
+    // the same reason the count logs its answer: a working table and a
+    // broken one otherwise look identical from outside.
     console.info(`[test-stats] ledger: ${rows.length} of ${results.length} rows`);
     return rows;
   } catch (error) {
