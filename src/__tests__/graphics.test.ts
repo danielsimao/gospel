@@ -17,7 +17,6 @@ const strip = (s: string) =>
   s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
 const kb = (...p: string[]) => statSync(join(ROOT, ...p)).size / 1024;
 
-const texture = strip(read("src", "components", "home", "band-texture.tsx"));
 const testOg = strip(read("src", "app", "[locale]", "(immersive)", "test", "opengraph-image.tsx"));
 const invitation = strip(read("src", "components", "invitation-screen.tsx"));
 const storyOg = strip(read("src", "app", "[locale]", "(content)", "testimony", "story", "route.tsx"));
@@ -32,7 +31,7 @@ const prompts = read("docs", "graphics", "PROMPTS.md");
 
 describe("what is served, and what is not", () => {
   it("ships both formats for everything the pages reference", () => {
-    for (const name of ["tally", "paper", "fingerprint"]) {
+    for (const name of ["paper", "fingerprint"]) {
       for (const ext of ["avif", "webp"]) {
         expect(
           existsSync(join(ROOT, "public", "graphics", `${name}.${ext}`)),
@@ -40,18 +39,20 @@ describe("what is served, and what is not", () => {
         ).toBe(true);
       }
     }
-    expect(texture).toMatch(/type="image\/avif"/);
-    expect(texture).toMatch(/\.webp/);
   });
 
   it("keeps parked assets out of public", () => {
     /*
      * The stone is print-only; the dots are a candidate without an
-     * approved placement — their meaning belonged to the score band. Parked
-     * beside their prompts, not served: an unreferenced file in public/ is an
-     * invitation for the next caller to wire it without re-measuring.
+     * approved placement — their meaning belonged to the score band. The
+     * tally marks joined them when the score band's own texture was retired
+     * for the full-bleed red glow (see passed-band.tsx's own comment) — its
+     * last caller is gone, so it is parked rather than served unreferenced.
+     * Parked beside their prompts, not served: an unreferenced file in
+     * public/ is an invitation for the next caller to wire it without
+     * re-measuring.
      */
-    for (const name of ["stone", "dots"]) {
+    for (const name of ["stone", "dots", "tally"]) {
       expect(
         existsSync(join(ROOT, "public", "graphics", `${name}.avif`)),
         `${name} is served but has no approved placement`,
@@ -76,7 +77,7 @@ describe("what is served, and what is not", () => {
     // The two .jpg plates are counted too: satori decodes neither AVIF nor
     // WebP, so each OG surface that wants a photograph ships a third copy of
     // it. Left out of this total, they were weight the budget could not see.
-    const total = ["tally", "paper", "fingerprint", "door-decision"].flatMap((n) => [`${n}.avif`, `${n}.webp`])
+    const total = ["paper", "fingerprint", "door-decision"].flatMap((n) => [`${n}.avif`, `${n}.webp`])
       .concat("door.jpg", "fingerprint.jpg")
       .reduce((sum, f) => sum + kb("public", "graphics", f), 0);
     expect(total, `served graphics total ${total.toFixed(0)} KB`).toBeLessThan(500);
@@ -265,34 +266,13 @@ describe("the topic-page section-progress bar", () => {
   });
 });
 
-describe("the band textures stay backgrounds", () => {
-  it("never loads eagerly, and never takes a click", () => {
-    // Below the fold by construction, and carrying no meaning a reader needs.
-    expect(texture).toMatch(/loading="lazy"/);
-    expect(texture).toMatch(/decoding="async"/);
-    expect(texture).toMatch(/aria-hidden="true"/);
-    expect(texture).toMatch(/pointer-events-none/);
-    expect(texture).toMatch(/alt=""/);
-  });
-
-  it("fades out before its own edges", () => {
-    /*
-     * A rectangle of texture with visible corners reads as a panel the band
-     * sits in — the opposite of a background. The radial mask is the whole
-     * difference between atmosphere and a box.
-     */
-    expect(texture).toMatch(/maskImage: "radial-gradient/);
-    expect(texture).toMatch(/WebkitMaskImage: "radial-gradient/);
-  });
-
+describe("each graphic stays where its meaning is", () => {
   it("holds each graphic at the opacity it was measured at", () => {
     /*
-     * All tested in place, none guessed. The tally's bright strokes survive
-     * dimming — 16% reads as a wall, 28% fights the caption. On the record,
-     * the paper is 7% and the print 9%, because at 16% the print competed
-     * with the pleas it sits under.
+     * All tested in place, none guessed. On the record, the paper is 7% and
+     * the print 9%, because at 16% the print competed with the pleas it sits
+     * under.
      */
-    expect(texture).toMatch(/tally: \{ opacity: "0\.16"/);
     const record = strip(read("src", "components", "grace-record.tsx"));
     expect(record).toMatch(/opacity-\[0\.07\]/);
     expect(record).toMatch(/opacity-\[0\.09\]/);
