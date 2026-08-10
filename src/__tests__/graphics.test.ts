@@ -388,6 +388,40 @@ describe("grace's non-hinge movements", () => {
       expect(section, `${dataReveal} background is missing pointer-events-none`).toMatch(/pointer-events-none/);
     }
   });
+
+  it("bleeds full-width, not confined to the reading column", () => {
+    /*
+     * Measured on desktop: confined to the ~512px reading column, these
+     * backgrounds read as a hard-edged box floating in black — the "panel
+     * the band is sitting in" failure band-texture.tsx's own comment
+     * warns about. Same breakout the turn already uses.
+     */
+    for (const dataReveal of ['data-reveal="0"', 'data-reveal="2"', 'data-reveal="3"']) {
+      const start = grace.indexOf(dataReveal);
+      const sectionTag = grace.slice(start, grace.indexOf(">", start));
+      expect(sectionTag, `${dataReveal} lost its full-bleed breakout`).toMatch(/mx-\[calc\(50%-50vw\)\]/);
+    }
+  });
+
+  it("shields the eyebrow label against the brighter parts of its own background", () => {
+    /*
+     * Measured (canvas-rendered, not screenshot pixels): red-400/70 and
+     * gold/75 already sit near the 4.5:1 AA floor against pure black
+     * (4.0:1 and 5.4:1) before any image — a bright local point in these
+     * new backgrounds can push that well under 3:1. A text-shadow halo
+     * claws back real contrast without changing colour or size, which
+     * would be a sitewide design change well outside this PR.
+     */
+    for (const dataReveal of ['data-reveal="0"', 'data-reveal="2"', 'data-reveal="3"']) {
+      const start = grace.indexOf(dataReveal);
+      const sectionEnd = grace.indexOf("</section>", start);
+      const section = grace.slice(start, sectionEnd);
+      const eyebrowP = section.slice(section.indexOf("<p"), section.indexOf("</p>"));
+      expect(eyebrowP, `${dataReveal} eyebrow lost its contrast shadow`).toMatch(
+        /textShadow: "0 1px 3px rgba\(0,0,0,0\.9\)"/,
+      );
+    }
+  });
 });
 
 describe("the /test share plate", () => {

@@ -699,7 +699,20 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
             }}
           />
           <div className="relative mx-auto w-full max-w-lg">
-            <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-red-400/70">
+            {/*
+             * text-shadow, contrast fix not decoration: this eyebrow's
+             * red-400/70 already sits under the 4.5:1 AA floor against pure
+             * black (measured 4.0:1) — the dock behind it pushes that as low
+             * as 2.35:1 at its brightest sampled point. A dark halo behind
+             * the glyphs holds contrast up regardless of what's behind them.
+             * Scoped to this section alone: the sitewide 4.0:1 baseline on
+             * every other eyebrow is a separate, pre-existing issue this PR
+             * doesn't own.
+             */}
+            <p
+              className="font-mono text-[9px] uppercase tracking-[2.6px] text-red-400/70"
+              style={{ textShadow: "0 1px 3px rgba(0,0,0,0.9)" }}
+            >
               {problem?.label}
             </p>
             <h2 className="mt-4 text-[25px] font-semibold leading-[1.22] tracking-[-0.024em] text-white/95 sm:text-[30px]">
@@ -780,7 +793,13 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
             }}
           />
           <div className="relative mx-auto w-full max-w-lg">
-            <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
+            {/* text-shadow, contrast fix: 5.4:1 against pure black but the
+                tomb's own rim-lit edge can reach bright enough locally to
+                drop that under 3:1. Same fix as Movement I's eyebrow. */}
+            <p
+              className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75"
+              style={{ textShadow: "0 1px 3px rgba(0,0,0,0.9)" }}
+            >
               {payer?.label}
             </p>
             <h2 className="mt-4 text-[25px] font-semibold leading-[1.22] tracking-[-0.024em] text-[#D4A843] sm:text-[30px]">
@@ -820,7 +839,13 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
             }}
           />
           <div className="relative mx-auto w-full max-w-lg">
-            <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
+            {/* text-shadow, contrast fix: same reasoning as Movement III's
+                eyebrow — the hairpin track's lit dust can read bright enough
+                locally to threaten AA against the gold at 75% opacity. */}
+            <p
+              className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75"
+              style={{ textShadow: "0 1px 3px rgba(0,0,0,0.9)" }}
+            >
               {response?.label}
             </p>
             <h2 className="mt-4 text-[25px] font-semibold leading-[1.22] tracking-[-0.024em] text-[#D4A843] sm:text-[30px]">
