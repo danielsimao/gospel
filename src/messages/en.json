@@ -1528,6 +1528,8 @@
       "failedCaption": "failed",
       "passedCaption": "passed",
       "barCaption": "{n} stood trial · one walked free",
+      "ledgerPlace": "Jerusalem",
+      "ledgerWhen": "2,000 years ago",
       "liveBadge": "live",
       "whoCta": "Find out who",
       "testCta": "Take the test — see how you do"

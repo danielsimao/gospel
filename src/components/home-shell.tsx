@@ -27,6 +27,7 @@ import {
   trackHomeSecondaryClicked,
   trackHomeRetakeClicked,
 } from "@/lib/eternity-analytics";
+import type { VerdictRow } from "@/lib/test-stats";
 import type { HomeMessages, SelfRating as SelfRatingValue } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 
@@ -62,6 +63,10 @@ interface HomeShellProps {
       resolved on the server, because the key that can read it must never
       travel to a browser. */
   testTakerCount: number | null;
+  /** The ledger's rows — real, consented verdicts with a place on them.
+      Empty whenever PostHog cannot answer, which the band handles by falling
+      back to the scoreline rather than by inventing rows. */
+  recentVerdicts: VerdictRow[];
   latestPost?: {
     slug: string;
     title: string;
@@ -205,6 +210,7 @@ export function HomeShell({
   allTopicsLabel,
   allPostsLabel,
   testTakerCount,
+  recentVerdicts,
   latestPost,
 }: HomeShellProps) {
   const journey = useJourney(topicSlugs);
@@ -499,8 +505,23 @@ export function HomeShell({
            * logic. Its gold on a red screen has the verdict's own precedent.
            */}
           {/* Self-centred: the cue belongs to the page's axis, not the
-              lockup's — it points at the centred content below the fold. */}
-          <ScrollCue className="lg:self-center" />
+              lockup's — it points at the centred content below the fold.
+              self-center alone centres within the lockup's PADDED content
+              box, not the section's true axis — this div's lg:pl-10/xl:pl-20
+              (left padding only, no right) shifts that content box's own
+              midpoint right by half the padding. Measured at 1440px before
+              this fix: box x=744 w=32, centre 760, against the section's
+              true centre at 720 — 40px off.
+
+              The margin needed to cancel that is the FULL padding value, not
+              half of it: align-self:center distributes the container's free
+              space evenly around the item's margin box, so an explicit
+              (non-auto) margin only moves the final position by half of
+              itself — the other half comes back as the redistributed gap on
+              the other side. Confirmed by measurement: -ml-10 (-40px) at xl
+              only shifted the cue 20px (760→740), not 40px. -ml-20 (-80px,
+              matching pl-20 exactly) was needed to land it at true centre. */}
+          <ScrollCue className="lg:self-center lg:-ml-10 xl:-ml-20" />
         </div>
       </section>
 
@@ -610,6 +631,22 @@ export function HomeShell({
           </div>
 
           <div data-slot="journey-stage" data-stage="undecided">
+            <div className="relative flex w-full flex-col items-center">
+              {/* Same red already spent on this stage's own eyebrow rule and
+                  heading tint (StageSpine's tone="red"), just carried into a
+                  soft ambient wash instead of a hairline — the Law's colour
+                  for a reader who took the test and has not yet answered it.
+                  Same geometry and weight as committed's gold glow below,
+                  which is the one this was measured against. */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -inset-x-10 top-0 bottom-1/3"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at 50% 25%, rgba(239,68,68,0.08) 0%, transparent 65%)",
+                  filter: "blur(32px)",
+                }}
+              />
               {/* whatHappened carries the temporal mirror that sinceLine used
                   to hold — how long "later" has already lasted, stated once,
                   no pressure mechanics — folded into the result sentence. */}
@@ -626,16 +663,34 @@ export function HomeShell({
                   />
                 }
               />
-              <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="mt-8">
+              <Link href={`/${locale}/test`} onClick={() => trackHomeCtaClicked()} className="relative mt-8">
                 <Button variant="gold" size="lg" mist>
                   {home.journeyStages.undecided.cta}
                   <ButtonArrow />
                 </Button>
               </Link>
+            </div>
           </div>
 
           <div data-slot="journey-stage" data-stage="thinking">
-            <div className="flex w-full max-w-md flex-col items-center">
+            <div className="relative flex w-full max-w-md flex-col items-center">
+              {/* Colourless on purpose. "thinking" makes no claim red or gold
+                  already carries elsewhere — this reader is neither still
+                  under judgment's own verdict nor across the line into grace,
+                  just weighing it. Same geometry as committed's and
+                  undecided's glow, at roughly the fraction of their weight
+                  StageSpine's own dim tone already carries against red/gold
+                  (0.16 vs 0.40 on the rule line — the same ratio here, off
+                  0.08). */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -inset-x-10 top-0 bottom-1/3"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at 50% 25%, rgba(255,255,255,0.03) 0%, transparent 65%)",
+                  filter: "blur(32px)",
+                }}
+              />
               <StageSpine
                 tone="dim"
                 eyebrow={home.journeyStages.thinking.eyebrow}
@@ -849,7 +904,12 @@ export function HomeShell({
               testTakerCount is null when PostHog can't answer, and the band
               would rather not exist than publish a fabricated number. */}
           {testTakerCount !== null && (
-            <PassedBand locale={locale} messages={home.passedBand} count={testTakerCount} />
+            <PassedBand
+              locale={locale}
+              messages={home.passedBand}
+              count={testTakerCount}
+              verdicts={recentVerdicts}
+            />
           )}
 
           <QuestionsBand

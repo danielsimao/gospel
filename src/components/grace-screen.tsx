@@ -735,19 +735,44 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
          * `mx-[calc(50%-50vw)]` is this codebase's breakout idiom: a margin,
          * not a transform, because a transform here would collide with anything
          * framer animates on the same element.
+         *
+         * Two background layers, not one, swapped at `sm` rather than left to
+         * `cover` alone. `courtroom.avif` is portrait, generated and measured
+         * against a phone screen — at desktop widths `cover` has to scale it
+         * up by width alone, and a portrait source stretched to a landscape
+         * viewport blows the floor-light detail up several times past its
+         * composed size, into a blob overlapping the heading. `courtroom-wide
+         * .avif` is the same scene, generated natively landscape, so `cover`
+         * at desktop widths asks it for the crop it was actually composed for.
+         * Both are decoration (`aria-hidden`), so the swap costs nothing
+         * semantically; the gradients stay identical on both layers.
          */}
         <section
           ref={setSectionRef(1)}
           data-reveal="1"
-          className={`mx-[calc(50%-50vw)] flex min-h-[calc(100svh-0.75rem)] flex-col justify-center overflow-hidden px-5 pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] sm:px-6 ${revealClass(1)}`}
-          style={{
-            backgroundImage:
-              "linear-gradient(to bottom, rgba(239,68,68,0.07) 0%, rgba(212,168,67,0.10) 52%, transparent 100%), linear-gradient(to bottom, rgba(6,4,4,0.35) 0%, rgba(6,4,4,0.62) 100%), url(/graphics/courtroom.avif)",
-            backgroundSize: "cover, cover, cover",
-            backgroundPosition: "center, center, center bottom",
-          }}
+          className={`relative mx-[calc(50%-50vw)] flex min-h-[calc(100svh-0.75rem)] flex-col justify-center overflow-hidden px-5 pt-[8vh] pb-[calc(8vh+var(--grace-cue-band))] sm:px-6 ${revealClass(1)}`}
         >
-          <div className="mx-auto w-full max-w-lg">
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 sm:hidden"
+            style={{
+              backgroundImage:
+                "linear-gradient(to bottom, rgba(239,68,68,0.07) 0%, rgba(212,168,67,0.10) 52%, transparent 100%), linear-gradient(to bottom, rgba(6,4,4,0.35) 0%, rgba(6,4,4,0.62) 100%), url(/graphics/courtroom.avif)",
+              backgroundSize: "cover, cover, cover",
+              backgroundPosition: "center, center, center bottom",
+            }}
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 hidden sm:block"
+            style={{
+              backgroundImage:
+                "linear-gradient(to bottom, rgba(239,68,68,0.07) 0%, rgba(212,168,67,0.10) 52%, transparent 100%), linear-gradient(to bottom, rgba(6,4,4,0.35) 0%, rgba(6,4,4,0.62) 100%), url(/graphics/courtroom-wide.avif)",
+              backgroundSize: "cover, cover, cover",
+              backgroundPosition: "center, center, center",
+            }}
+          />
+          <div className="relative mx-auto w-full max-w-lg">
             <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
               {payment?.label}
             </p>
