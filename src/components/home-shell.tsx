@@ -27,6 +27,7 @@ import {
   trackHomeSecondaryClicked,
   trackHomeRetakeClicked,
 } from "@/lib/eternity-analytics";
+import type { VerdictRow } from "@/lib/test-stats";
 import type { HomeMessages, SelfRating as SelfRatingValue } from "@/lib/types";
 import type { Locale } from "@/lib/i18n";
 
@@ -62,6 +63,10 @@ interface HomeShellProps {
       resolved on the server, because the key that can read it must never
       travel to a browser. */
   testTakerCount: number | null;
+  /** The ledger's rows — real, consented verdicts with a place on them.
+      Empty whenever PostHog cannot answer, which the band handles by falling
+      back to the scoreline rather than by inventing rows. */
+  recentVerdicts: VerdictRow[];
   latestPost?: {
     slug: string;
     title: string;
@@ -205,6 +210,7 @@ export function HomeShell({
   allTopicsLabel,
   allPostsLabel,
   testTakerCount,
+  recentVerdicts,
   latestPost,
 }: HomeShellProps) {
   const journey = useJourney(topicSlugs);
@@ -864,7 +870,12 @@ export function HomeShell({
               testTakerCount is null when PostHog can't answer, and the band
               would rather not exist than publish a fabricated number. */}
           {testTakerCount !== null && (
-            <PassedBand locale={locale} messages={home.passedBand} count={testTakerCount} />
+            <PassedBand
+              locale={locale}
+              messages={home.passedBand}
+              count={testTakerCount}
+              verdicts={recentVerdicts}
+            />
           )}
 
           <QuestionsBand

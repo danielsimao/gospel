@@ -204,6 +204,12 @@ export interface HomeMessages {
     passedCaption: string;
     /** Under the verdict bar, with `{n}` for the live count. */
     barCaption: string;
+    /** The ledger's last line — the one row that needs no analytics. Its place
+        and its "2,000 years ago", which is the whole point of the format: the
+        rows above it are counted in minutes. The verdicts on every row reuse
+        failedCaption and passedCaption above. */
+    ledgerPlace: string;
+    ledgerWhen: string;
     whoCta: string;
     testCta: string;
   };
