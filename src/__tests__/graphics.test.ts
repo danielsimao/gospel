@@ -68,6 +68,13 @@ describe("what is served, and what is not", () => {
     expect(existsSync(join(ROOT, "public", "graphics", "courtroom.avif"))).toBe(true);
     const grace = strip(read("src", "components", "grace-screen.tsx"));
     expect(grace).toMatch(/url\(\/graphics\/courtroom\.avif\)/);
+    // Its desktop/tablet companion (§31): courtroom.avif is portrait, and
+    // `cover` at desktop widths blew its floor-light detail up into a blob
+    // overlapping the heading — caught live on a full run through /test at
+    // 1440px. courtroom-wide.avif is the same scene, composed natively
+    // landscape, swapped in at `sm` and up.
+    expect(existsSync(join(ROOT, "public", "graphics", "courtroom-wide.avif"))).toBe(true);
+    expect(grace).toMatch(/url\(\/graphics\/courtroom-wide\.avif\)/);
     expect(existsSync(join(ROOT, "public", "paper.avif")), "paper should live under graphics/").toBe(false);
   });
 
@@ -77,24 +84,34 @@ describe("what is served, and what is not", () => {
     // The two .jpg plates are counted too: satori decodes neither AVIF nor
     // WebP, so each OG surface that wants a photograph ships a third copy of
     // it. Left out of this total, they were weight the budget could not see.
+    //
+    // courtroom (previously excluded from this total by oversight — it is
+    // served, just referenced from a CSS url() rather than JSX) and the two
+    // §31/§32 desktop-only companions (courtroom-wide, door-decision-wide)
+    // are counted here now. The cap moved from 500 to 620 to hold them:
+    // real added weight for a real desktop rendering fix, not drift. tally
+    // dropped out of this list when its last caller was retired — see the
+    // parked-assets test above.
     const total = ["paper", "fingerprint", "door-decision"].flatMap((n) => [`${n}.avif`, `${n}.webp`])
-      .concat("door.jpg", "fingerprint.jpg")
+      .concat("door.jpg", "fingerprint.jpg", "courtroom.avif", "courtroom-wide.avif", "door-decision-wide.avif", "door-decision-wide.webp")
       .reduce((sum, f) => sum + kb("public", "graphics", f), 0);
-    expect(total, `served graphics total ${total.toFixed(0)} KB`).toBeLessThan(500);
+    expect(total, `served graphics total ${total.toFixed(0)} KB`).toBeLessThan(620);
   });
 });
 
 describe("the decision-screen door", () => {
-  it("ships both formats", () => {
-    for (const ext of ["avif", "webp"]) {
-      expect(
-        existsSync(join(ROOT, "public", "graphics", `door-decision.${ext}`)),
-        `graphics/door-decision.${ext} is missing`,
-      ).toBe(true);
+  it("ships both formats, mobile and desktop", () => {
+    for (const name of ["door-decision", "door-decision-wide"]) {
+      for (const ext of ["avif", "webp"]) {
+        expect(
+          existsSync(join(ROOT, "public", "graphics", `${name}.${ext}`)),
+          `graphics/${name}.${ext} is missing`,
+        ).toBe(true);
+      }
     }
   });
 
-  it("stays a background, at the opacity it was measured at", () => {
+  it("stays a background, at the opacity it was measured at, in both wrappers", () => {
     /*
      * Full-bleed with no scrim, unlike the courtroom shaft. The shaft's raw
      * opacity is higher (70%) but sits under two dark gradient layers, so its
@@ -102,25 +119,42 @@ describe("the decision-screen door", () => {
      * unscrimmed 7-16%. This has no scrim, so it is dimmed at the source
      * instead — 35%, screenshotted against 0.55 and 0.80 and chosen because
      * those two ran hotter than anything else in the set that isn't damped by
-     * a scrim on top of it.
+     * a scrim on top of it. Both wrappers — mobile's door-decision and
+     * desktop's door-decision-wide — carry the same opacity: only the source
+     * image and the responsive display class differ between them.
      */
-    const wrapper = invitation.match(
-      /<div aria-hidden="true" data-flow-graphic className="([^"]*)">/,
-    );
-    expect(wrapper, "the decision door's wrapper div was not found").not.toBeNull();
-    const className = wrapper?.[1] ?? "";
-    expect(className).toMatch(/pointer-events-none/);
-    expect(className).toMatch(/fixed inset-0/);
-    expect(className).toMatch(/opacity-\[0\.35\]/);
+    const wrappers = [...invitation.matchAll(
+      /<div aria-hidden="true" data-flow-graphic className="([^"]*)">/g,
+    )];
+    expect(wrappers, "expected exactly two door wrapper divs (mobile, desktop)").toHaveLength(2);
+    const [mobileClass, desktopClass] = wrappers.map((m) => m[1]);
+    for (const className of [mobileClass, desktopClass]) {
+      expect(className).toMatch(/pointer-events-none/);
+      expect(className).toMatch(/fixed inset-0/);
+      expect(className).toMatch(/opacity-\[0\.35\]/);
+    }
+    expect(mobileClass, "the mobile wrapper should hide at sm").toMatch(/sm:hidden/);
+    expect(desktopClass, "the desktop wrapper should stay hidden below sm").toMatch(/hidden/);
+    expect(desktopClass, "the desktop wrapper should show at sm").toMatch(/sm:block/);
 
-    const pictureStart = invitation.indexOf("<picture>", invitation.indexOf("data-flow-graphic"));
-    const pictureEnd = invitation.indexOf("</picture>", pictureStart) + "</picture>".length;
-    const picture = invitation.slice(pictureStart, pictureEnd);
-    expect(picture).toMatch(/door-decision\.avif/);
-    expect(picture).toMatch(/door-decision\.webp/);
-    expect(picture).toMatch(/loading="lazy"/);
-    expect(picture).toMatch(/decoding="async"/);
-    expect(picture).toMatch(/alt=""/);
+    const pictures: string[] = [];
+    let cursor = invitation.indexOf("data-flow-graphic");
+    for (let i = 0; i < 2; i++) {
+      const pictureStart = invitation.indexOf("<picture>", cursor);
+      const pictureEnd = invitation.indexOf("</picture>", pictureStart) + "</picture>".length;
+      pictures.push(invitation.slice(pictureStart, pictureEnd));
+      cursor = pictureEnd;
+    }
+    const [mobilePicture, desktopPicture] = pictures;
+    expect(mobilePicture).toMatch(/door-decision\.avif/);
+    expect(mobilePicture).toMatch(/door-decision\.webp/);
+    expect(desktopPicture).toMatch(/door-decision-wide\.avif/);
+    expect(desktopPicture).toMatch(/door-decision-wide\.webp/);
+    for (const picture of [mobilePicture, desktopPicture]) {
+      expect(picture).toMatch(/loading="lazy"/);
+      expect(picture).toMatch(/decoding="async"/);
+      expect(picture).toMatch(/alt=""/);
+    }
   });
 
   it("appears on the decision screen alone", () => {

@@ -505,8 +505,23 @@ export function HomeShell({
            * logic. Its gold on a red screen has the verdict's own precedent.
            */}
           {/* Self-centred: the cue belongs to the page's axis, not the
-              lockup's — it points at the centred content below the fold. */}
-          <ScrollCue className="lg:self-center" />
+              lockup's — it points at the centred content below the fold.
+              self-center alone centres within the lockup's PADDED content
+              box, not the section's true axis — this div's lg:pl-10/xl:pl-20
+              (left padding only, no right) shifts that content box's own
+              midpoint right by half the padding. Measured at 1440px before
+              this fix: box x=744 w=32, centre 760, against the section's
+              true centre at 720 — 40px off.
+
+              The margin needed to cancel that is the FULL padding value, not
+              half of it: align-self:center distributes the container's free
+              space evenly around the item's margin box, so an explicit
+              (non-auto) margin only moves the final position by half of
+              itself — the other half comes back as the redistributed gap on
+              the other side. Confirmed by measurement: -ml-10 (-40px) at xl
+              only shifted the cue 20px (760→740), not 40px. -ml-20 (-80px,
+              matching pl-20 exactly) was needed to land it at true centre. */}
+          <ScrollCue className="lg:self-center lg:-ml-10 xl:-ml-20" />
         </div>
       </section>
 

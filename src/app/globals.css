@@ -202,6 +202,43 @@
   100% { opacity: 0; r: 1; }
 }
 
+/*
+ * The consent reserve, made movable.
+ *
+ * The banner is fixed, so it occupies no space; the screens that anchor to the
+ * bottom edge reserve its measured height instead — `--consent-h`, published by
+ * components/shared/consent-banner.tsx and read by the home hero, the question
+ * card, the verdict and grace.
+ *
+ * The reserve appearing and disappearing MOVES those screens, and it used to do
+ * it in a single frame. Measured at 390x844 on the home hero, tapping Accept
+ * dropped the rate cards 29px and the scroll cue 60px instantly: the hero's flex
+ * spacers redistribute whatever the padding leaves, so half the released reserve
+ * lands under the cards and all of it under the cue. Arriving, the same jump ran
+ * in reverse a moment after hydration.
+ *
+ * A custom property cannot be transitioned until it is registered, so this
+ * declaration is what turns that jump into travel. The banner sets
+ * `--consent-h-timing` to whichever of its own curves it is moving on, so the
+ * content rises as the banner slides in and follows it down as it leaves,
+ * instead of teleporting past it. Default 0s: with no banner mounted nothing has
+ * asked for the move, and the reserve should simply be whatever it is.
+ *
+ * Where the API is unsupported the whole block is dropped and the reserve snaps,
+ * which is the behaviour this replaces — the banner detects the same support and
+ * keeps its old release timing there. `inherits: true` is load-bearing: every
+ * consumer is a descendant of <html>, which is where the value is written.
+ */
+@property --consent-h {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+html {
+  transition: --consent-h var(--consent-h-timing, 0s);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -231,6 +268,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* The consent reserve moves the page, so it is motion, and a reader who asked
+     for less of it gets the layout it settles at rather than the trip. framer's
+     reducedMotion="user" already drops the banner's own slide, so the banner and
+     the space it claims still change together — both at once, instantly. */
+  html {
+    transition: none;
+  }
   /* framer's MotionConfig reducedMotion="user" governs its own animations only;
      a CSS keyframe needs saying so here. The glow stays, it just stops breathing. */
   [data-slot="button"]::before {
