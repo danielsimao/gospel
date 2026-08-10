@@ -155,12 +155,21 @@ export function VerdictLedger({ locale, messages, rows }: VerdictLedgerProps) {
       </span>
 
       <ol ref={listRef} className="font-mono text-[12px] leading-tight">
-        {rows.map((row) => (
+        {rows.map((row, index) => (
           <li
             key={row.at}
             /* A shade heavier than the texture behind it, so the rules read as
-               the ledger's own structure rather than as more wall. */
-            className="flex items-baseline justify-between gap-4 border-b border-white/[0.12] py-2.5"
+               the ledger's own structure rather than as more wall.
+               The last of these rows drops its bottom rule because the gold
+               row below draws its own top border: the two stacked into a
+               double line at exactly the seam that is meant to be the
+               ledger's single gold one. Keyed off the index rather than a
+               `last:` variant — the gold row is itself the last <li> in this
+               <ol>, so :last-child matches IT, not the last verdict (measured:
+               the white rule was still painting at 1px). */
+            className={`flex items-baseline justify-between gap-4 py-2.5 ${
+              index === rows.length - 1 ? "" : "border-b border-white/[0.12]"
+            }`}
           >
             <span className="flex min-w-0 flex-col gap-0.5 sm:flex-row sm:items-baseline sm:gap-3">
               <span className="truncate text-white/75">{placeOf(row, locale)}</span>
