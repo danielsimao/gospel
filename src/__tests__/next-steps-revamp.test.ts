@@ -88,3 +88,28 @@ describe("the thinking track", () => {
     expect(comeBack, "the mortality line moved above the offer").toBeGreaterThan(learn);
   });
 });
+
+describe("the reflection chain", () => {
+  it("arms one question at a time and never gates the page", () => {
+    // The flow spent fifteen screens teaching one-thing-then-tap. A static
+    // list of three breaks that cadence at the moment retention matters.
+    expect(thinking, "the chain has no acknowledged cursor").toMatch(
+      /const \[acknowledged, setAcknowledged\] = useState\(0\)/,
+    );
+    expect(thinking, "questions are not buttons, so they cannot be armed").toMatch(
+      /<button[\s\S]*?onClick=\{\(\) => setAcknowledged\(i \+ 1\)\}/,
+    );
+    // Pending items stay readable to a screen reader -- dimmed, not hidden.
+    expect(thinking).toMatch(/aria-disabled=\{state !== "armed"\}/);
+    expect(thinking, "pending questions were removed from the DOM").not.toMatch(
+      /state === "pending" && null/,
+    );
+  });
+
+  it("carries a hint on the armed question, in both locales", () => {
+    expect(thinking).toMatch(/messages\.reflectionHint/);
+    for (const [name, msgs] of [["en", en], ["pt", pt]] as const) {
+      expect(msgs.nextSteps.trackB.reflectionHint, `${name} lost the hint`).toBeTruthy();
+    }
+  });
+});

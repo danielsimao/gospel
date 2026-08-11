@@ -23,6 +23,7 @@ interface TrackThinkingMessages {
   readingLinkLabel: string;
   learnLinkLabel: string;
   learnLeadIn: string;
+  reflectionHint: string;
   bands: { today: string };
   comeBack: string;
 }
@@ -48,6 +49,17 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
     return () => cancelAnimationFrame(id);
   }, []);
 
+  /*
+   * One question at a time.
+   *
+   * Deliberately NOT persisted. This is a reading-pace device, not progress:
+   * a returning reader who found three greyed-out lines with nothing armed
+   * would be worse off than one starting again. Keeping it in component state
+   * also means nothing here reads storage during render, which the page's
+   * pre-paint design depends on.
+   */
+  const [acknowledged, setAcknowledged] = useState(0);
+
   // One gentle rise per reflection, capped so the questions read in
   // sequence but never run past ~1s total (was 0.5 + i*0.3 — far too slow).
   const para = (i: number) => ({ duration: 0.7, delay: 0.15 + Math.min(i, 3) * 0.12, ease: EASE_OUT_STRONG });
@@ -66,18 +78,47 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
         {isFresh ? messages.acknowledgment : messages.acknowledgmentReturn}
       </m.h1>
 
-      <div className="mt-10 space-y-6">
-        {messages.reflections.map((question, i) => (
-          <m.div
-            key={i}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={para(i)}
-            className="border-l border-white/10 pl-5"
-          >
-            <p className="text-[15px] leading-relaxed text-white/60 sm:text-base italic">{question}</p>
-          </m.div>
-        ))}
+      {/*
+       * Nothing below this list is gated on it. A reader who ignores the chain
+       * entirely scrolls past to the same page — pending questions are dimmed
+       * and unfocusable, never hidden, so a screen reader can still read ahead.
+       */}
+      <div className="mt-10 space-y-2">
+        {messages.reflections.map((question, i) => {
+          const state = i < acknowledged ? "done" : i === acknowledged ? "armed" : "pending";
+          return (
+            <m.div
+              key={i}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={para(i)}
+            >
+              {/* A pending item cannot be clicked or tabbed to, so onClick
+                  needs no guard of its own — the condition could never be
+                  false. */}
+              <button
+                type="button"
+                onClick={() => setAcknowledged(i + 1)}
+                aria-disabled={state !== "armed"}
+                tabIndex={state === "armed" ? 0 : -1}
+                className={`block w-full border-l pl-5 text-left italic leading-relaxed transition-[opacity,font-size] duration-500 ease-[var(--ease-out-strong)] motion-reduce:transition-none ${
+                  state === "armed"
+                    ? "cursor-pointer border-white/10 text-[15px] text-white/60 sm:text-base"
+                    : state === "done"
+                      ? "cursor-default border-white/10 text-[13px] text-white/60 opacity-35"
+                      : "pointer-events-none border-white/10 text-[15px] text-white/60 opacity-20 sm:text-base"
+                }`}
+              >
+                {question}
+                {state === "armed" && (
+                  <span className="mt-2 block font-mono text-[9px] uppercase not-italic tracking-[2px] text-[#D4A843]/65">
+                    {messages.reflectionHint}
+                  </span>
+                )}
+              </button>
+            </m.div>
+          );
+        })}
       </div>
 
       {/* ── TODAY: one primary read + warm human secondary ── */}
