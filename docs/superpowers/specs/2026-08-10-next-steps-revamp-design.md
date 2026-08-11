@@ -81,14 +81,28 @@ follow-up triad. Demoting is hierarchy; removing would be doctrine.
 
 ### 3.2 Thinking track
 
-- **`Chat at needGod.net` is removed.** Three reasons: (i) needGod.net has no live
-  chat — no chat-widget script and no occurrence of the word on the page, only a
-  contact form and an intermittent livestream, so the label promises a person and
-  delivers a form; (ii) `talkUrl` is identical in both locales and needGod.net is
-  English-only, so a `tu`-form Portuguese reader is handed an English site at the one
-  moment they were promised a conversation; (iii) needGod.net opens by re-running the
-  Good Person Test — the argument this reader just answered "I want to think about it"
-  to. The footer keeps its needGod link.
+- **`Chat at needGod.net` is removed.** The rationale is narrower than an earlier draft
+  claimed, and the correction matters because it weakens one of the three reasons:
+
+  (i) **There is no chat on needGod.net.** No chat-widget script, no chat control on the
+  page. But an earlier draft said the site offers "only a contact form", and that is
+  **false** — it invites questions by Instagram message and Facebook message as well.
+  Those are real routes to a real person. What is accurate is narrower: the label says
+  *Chat at needGod.net*, and no chat exists at needGod.net; a reader who taps it gets a
+  page offering a form and two social handles.
+
+  (ii) `talkUrl` is identical in both locales and needGod.net has no Portuguese, so a
+  `tu`-form Portuguese reader is handed an English site at the one moment they were
+  promised a conversation. This reason is unaffected and is the strongest of the three.
+
+  (iii) needGod.net opens by re-running the Good Person Test — the argument this reader
+  just answered "I want to think about it" to.
+
+  Because (i) is weaker than stated, **O4 is a genuine ruling and not a formality.** A
+  defensible alternative is to keep the row for English only and relabel it honestly
+  ("Message someone at needGod.net"), and drop it for Portuguese. The recommendation is
+  still removal, on the strength of (ii) and (iii); the footer keeps its needGod link
+  either way.
 - **Learn takes that slot**, moving up from below the fold to secondary under John 3.
 - **The 7-day plan row is removed** from this track. John 3 is the reading ask; a
   second, larger reading ask splits it. The plan stays in the footer.
@@ -210,16 +224,23 @@ the footer is read cold.
 
 ## 5. The licensing gate
 
-### 5.1 The API path is dead
+### 5.1 The API path is not worth taking
 
-The YouVersion Platform API (launched April 2026) returns passage text, but its
-catalogue carries **neither of our translations**: 21 English Bibles with no NKJV and
-no Thomas Nelson imprint at all; 5 Portuguese Bibles, all Brazilian-tagged, with
-Sociedade Bíblica de Portugal absent as a publisher. No key registration changes this.
-API.Bible has the same ARC problem and additionally mandates FUMS usage-tracking
-beacons, wrong for a privacy-light site.
+An earlier draft said flatly that the API path was "dead" because the YouVersion
+Platform catalogue carried neither translation. **That overstated the evidence, and a
+second review pass caught it.** What is actually established: YouVersion's published
+partner list omits both Thomas Nelson and Sociedade Bíblica de Portugal, and a read of
+the public Bible directory surfaced 21 English versions without NKJV and 5 Portuguese
+versions without ARC. What is *not* established: catalogue absence proven by an
+authenticated query. The directory is dynamic, and YouVersion invites developers to ask
+publishers to add missing versions. Likely absent is not the same as proven absent.
 
-We do not need an API. The passage set is fixed and known at build time:
+Similarly, API.Bible's mandatory FUMS usage tracking is documented and is a genuine
+objection for a privacy-light site, but the claim that ARC is unavailable there is
+**unverified** — its catalogue also requires a key.
+
+None of this changes the decision, which is why the section is kept short. We do not
+need an API at all. The passage set is fixed and known at build time:
 
 | Day | Passage | Verses |
 |---|---|---|
@@ -239,39 +260,42 @@ Static text in the repo beats an API on every axis here: no key, no rate limit, 
 non-commercial covenant, no third-party runtime dependency, no request latency, works
 offline, reviewable in a diff.
 
-### 5.2 English clears the NKJV gratis allowance
+### 5.2 English probably clears the NKJV gratis allowance — but not by much, and not yet provably
 
 HarperCollins Christian Publishing's gratis-use guidelines require all of: no more than
 500 verses; Scripture not more than 25% of the total text; Scripture not more than 50%
 of an entire book; not a commentary or reference work; properly cited.
 
-**Two wordings of the book-extent condition are in circulation**, and it does not matter
-which binds us. The current HarperCollins page reads "not more than 50% of an entire
-book of the Bible"; the older formulation, still widely mirrored (StudyLight,
-Blue Letter Bible and most NKJV front matter), reads "do not amount to a complete book
-of the Bible". At 145 verses of John we clear both: it is neither a complete book nor
-half of one. The 500-verse and 25%-of-total-text conditions are identical in both
-versions and are independently confirmed.
+**Three wordings of the book-extent condition are in circulation**, and the differences
+between them are not ours to resolve. Thomas Nelson's own permissions page reads that
+Scripture must not "account for an entire book of the Bible"; the formulation mirrored
+on StudyLight, Blue Letter Bible and most NKJV front matter reads "do not amount to a
+complete book of the Bible"; a third reading, found on the HarperCollins permissions
+page, adds a 50% threshold. **We satisfy the strictest of the three**, so the spec
+relies on that and does not lean on the 16.5%-of-John figure as evidence of anything.
+The 500-verse and 25%-of-total-text conditions are common to all versions and
+independently confirmed.
 
-145 verses is 16.5% of John's 879, so the 50%-of-a-book test is met with room.
+**The book-extent condition.** 145 verses is neither a complete book of John (21
+chapters, 879 verses) nor half of one, so this condition is met under every circulating
+wording. The percentage is deliberately *not* offered as licensing evidence — see the
+note below.
 
-**The 500-verse test is tighter than the first draft implied, and this needs an
-actual count before Phase 2 ships.** That draft said 145 was "well under 500". It is —
-but the cap applies to *total* Scripture quoted in the work, and the app already quotes
-NKJV heavily. A scan of `en.json` finds **79 distinct verse references spanning roughly
-234 verses** across the test, verdict, grace, learn and blog. Added to 145, that is
-**≈379 of the 500** — three quarters of the allowance consumed, not a comfortable
-margin.
+**The 500-verse condition is the binding one, and we are closer to it than any earlier
+draft admitted.** The cap applies to total Scripture quoted in the work, not to what a
+feature adds. Counting distinct references across `src/messages/en.json` **and**
+`src/content/blog/posts.ts` — the blog was missed on the first count — gives **97
+distinct references spanning roughly 258 verses**. Adding the seven passages puts us at
+**≈403 of 500: about 80% of the allowance consumed.**
 
-That estimate is rough in both directions: some of those 79 are bare citations rather
-than quotations (which would lower it), and quoted text without an adjacent reference
-would not have been counted (which would raise it). Neither correction is small enough
-to ignore.
+That figure is an estimate in both directions. Some of the 97 are bare citations rather
+than quotations, which would lower it; quoted text with no adjacent reference was not
+counted, which would raise it. At 80% neither correction is small enough to wave away.
 
-**Required before Phase 2:** a real count of quoted NKJV verses, and test 8 (§9) raised
-to guard the *total* rather than only the passage files. If the true figure approaches
-500, the choice is to request written permission — which HarperCollins grants through a
-published form with a six-to-eight-week turnaround — or to drop a passage.
+**Required before Phase 2:** a real count of quoted NKJV verses, not an estimate, and
+test 8 (§9) guarding the site total. At this margin the honest move is probably to
+request written permission regardless — HarperCollins grants it through a published
+form with a six-to-eight-week turnaround, and having it removes the whole question.
 
 Required notice, verbatim:
 
@@ -284,20 +308,37 @@ owed regardless of this feature, and should not wait for Phase 2.
 
 ### 5.3 Portuguese does not clear, and there is no free substitute
 
-Sociedade Bíblica de Portugal's published EULA for biblia.pt permits redistribution of
-**at most 50 verses** for personal, non-commercial use — "até a um máximo de 50
-(cinquenta) versículos da Bíblia, considerado como exemplo de utilização justa".
-145 is nearly three times that. ARC (Portugal) is © 2001 Sociedade Bíblica de Portugal.
+**ARC ownership is confirmed from the publisher's own text:** "Tradução de João Ferreira
+de Almeida, Edição Revista e Corrigida. Copyright © 2001 Sociedade Bíblica de Portugal."
+145 verses of a © 2001 translation requires permission. That much is settled.
 
-The same clause carries a condition worth noting even though we exceed the allowance
-anyway: content shared under it must display a link back to the biblia.pt platform.
-Any permission we are granted may well repeat that requirement, so the reader component
+**The 50-verse allowance is less settled than an earlier draft claimed.** A version of
+biblia.pt's terms permits redistribution "até a um máximo de 50 (cinquenta) versículos
+da Bíblia, considerado como exemplo de utilização justa", with a requirement to link
+back to the platform, and names `l.fletcher@sociedade-biblica.pt` as the copyright
+contact. A second pass against the *current* terms page could not locate that clause and
+found only the general contact `info@sociedadebiblica.pt`. The clause may have been
+revised, or the wording may survive only in mirrors of an earlier version.
+
+This does not change the conclusion — permission is required because the text is under
+copyright, not because of any allowance we do or do not fall outside. It does change the
+action: **write to `info@sociedadebiblica.pt`**, the address SBP currently publishes,
+rather than to a named lawyer whose listing may be stale.
+
+If a permission is granted it may carry the link-back condition, so the reader component
 should be able to render a source link alongside the attribution notice.
 
-No modern, freely-licensed European-Portuguese translation exists as a fallback:
-public-domain Almeida editions (1819, 1848, 1911) are pre-orthographic-reform and read
-as archaic; Bíblia Livre and Almeida Corrigida Fiel are Brazilian; O Livro is
-Biblica-copyrighted and a dynamic paraphrase, a register mismatch with ARC.
+**No usable free fallback was found, though absence cannot be proven.** Searches of
+eBible's copyright directory, Wikisource and Domínio Público turned up nothing that
+qualifies: the public-domain Almeida editions (1819, 1848, 1911) are
+pre-orthographic-reform and read as archaic; Bíblia Livre, Bíblia Portuguesa Mundial and
+Almeida Corrigida Fiel are Brazilian; O Livro is Biblica-copyrighted and a dynamic
+paraphrase, a register mismatch with ARC. Bíblia Para Todos is genuinely modern European
+Portuguese but is SBP's own and carries no free licence.
+
+None of those sources is an exhaustive registry, so this is "none found after a
+reasonable search", not "none exists". It is enough to plan around and not enough to
+assert.
 
 **Action:** write to SBP (the biblia.pt terms name `l.fletcher@sociedade-biblica.pt`
 as the copyright contact).
@@ -557,3 +598,20 @@ changed:
 | `graphics.test.ts:96` misattributed | §9 corrected to line 104 |
 | Analytics wanted a day number the existing signature cannot carry | §8 adds two new events instead of overloading |
 | Passage data ownership, thinking-track props, missing-file behaviour all unspecified | §7 |
+
+### Second pass — the external claims
+
+The first two reviews were both scoped to the codebase, which left every licensing and
+catalogue claim resting on the same research pass that produced it. A third review
+attacked those specifically. It is the pass that found the most damaging errors, and the
+lesson is that the researcher should never be the only reviewer of its own research.
+
+| Finding | Fix |
+|---|---|
+| The 500-verse cap applies to the whole work; existing quotation must count. Independently reached here and confirmed there — and it found NKJV quotation in `src/content/blog/posts.ts` that the first count missed entirely | §5.2 recounted: 97 references, ~258 verses, ≈403 of 500 |
+| "The API path is dead" claimed catalogue absence as proven. The partner list omits both publishers, but that is not an authenticated catalogue query, and the directory is dynamic | §5.1 retitled and downgraded to "likely absent, not proven" |
+| The 50%-of-a-book test may not exist — Thomas Nelson's own page says "an entire book". Three wordings are in circulation | §5.2 now relies on the strictest wording and drops the 16.5% figure as evidence |
+| SBP's 50-verse clause could not be found on the current terms page, and the named lawyer contact is not what SBP currently publishes | §5.3 rewritten; the letter goes to `info@sociedadebiblica.pt`, and the argument rests on copyright rather than on the allowance |
+| "No free European-Portuguese translation exists" is an unprovable absolute | §5.3 downgraded to "none found after a reasonable search" |
+| "needGod.net offers only a contact form" is false — it invites Instagram and Facebook messages | §3.2 corrected; O4 reframed as a real ruling with a keep-and-relabel alternative |
+| API.Bible's ARC absence was asserted without a source | §5.1 marked unverified; the FUMS objection stands |
