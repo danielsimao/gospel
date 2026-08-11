@@ -260,7 +260,10 @@ export function TrackCommitted({
           type="button"
           onClick={() => setShareOpen((open) => !open)}
           aria-expanded={shareOpen}
-          aria-controls="next-steps-share"
+          // aria-controls only while the panel exists: it is unmounted when
+          // closed, and pointing at an id that is not in the document is a
+          // broken relationship rather than an absent one.
+          {...(shareOpen ? { "aria-controls": "next-steps-share" } : {})}
           className="group mt-2 flex min-h-[48px] w-full items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-left text-sm font-semibold text-white/70 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-[#D4A843]/35 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
         >
           <Share2 className="size-4 shrink-0 text-white/40" aria-hidden="true" />

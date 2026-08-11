@@ -13,6 +13,24 @@ import type { Locale } from "@/lib/i18n";
 
 const FRESH_WINDOW_MS = 60 * 60 * 1000;
 
+export type ReflectionState = "done" | "armed" | "pending";
+
+/**
+ * Which of the three states a reflection is in, given how many have been
+ * acknowledged.
+ *
+ * Exported and pure so the chain's actual rule can be tested. The rendering
+ * assertions around it only pin that the component still spells things the
+ * same way; they would pass just as happily if this derivation armed every
+ * item at once, or armed nothing after an acknowledgement. That gap was
+ * found in review, and this is the half that closes it.
+ */
+export function reflectionState(index: number, acknowledged: number): ReflectionState {
+  if (index < acknowledged) return "done";
+  if (index === acknowledged) return "armed";
+  return "pending";
+}
+
 interface TrackThinkingMessages {
   acknowledgment: string;
   acknowledgmentReturn: string;
@@ -83,11 +101,13 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
        * entirely scrolls past to the same page — pending questions are dimmed
        * and unfocusable, never hidden, so a screen reader can still read ahead.
        */}
-      <div className="mt-10 space-y-2">
+      {/* An ordered list, because it is one: a screen reader gets "2 of 3"
+          rather than three unrelated buttons. */}
+      <ol className="mt-10 space-y-2">
         {messages.reflections.map((question, i) => {
-          const state = i < acknowledged ? "done" : i === acknowledged ? "armed" : "pending";
+          const state = reflectionState(i, acknowledged);
           return (
-            <m.div
+            <m.li
               key={i}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -129,10 +149,10 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
                   </span>
                 )}
               </button>
-            </m.div>
+            </m.li>
           );
         })}
-      </div>
+      </ol>
 
       {/* ── TODAY: one primary read + warm human secondary ── */}
       <m.div

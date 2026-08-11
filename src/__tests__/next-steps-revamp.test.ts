@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { reflectionState } from "@/components/next-steps/track-thinking";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -56,7 +57,12 @@ describe("the committed track", () => {
     // It was roughly a third of the page, always open, while the reader was
     // being asked to read one chapter.
     expect(committed, "share is not behind a disclosure").toMatch(/aria-expanded=\{shareOpen\}/);
-    expect(committed).toMatch(/aria-controls="next-steps-share"/);
+    expect(committed).toMatch(/aria-controls": "next-steps-share/);
+    // Without this the block could be made permanently visible again and the
+    // two attribute assertions above would not notice.
+    expect(committed, "the share panel is no longer gated on shareOpen").toMatch(
+      /\{shareOpen && \(/,
+    );
   });
 });
 
@@ -195,5 +201,46 @@ describe("the reflection chain cannot be driven out of turn", () => {
     expect(thinking, "the click handler trusts CSS to keep it unreachable").toMatch(
       /if \(state !== "armed"\) return;/,
     );
+  });
+});
+
+describe("the reflection chain's actual rule", () => {
+  /*
+   * The assertions above pin how the component spells things. Review pointed
+   * out they would pass just as happily if the derivation armed every item at
+   * once, or armed nothing after an acknowledgement -- the behaviour the spec
+   * names was never exercised. This is that half, against the real function.
+   */
+  it("arms exactly one question, and it is the first unacknowledged one", () => {
+    for (let acknowledged = 0; acknowledged <= 3; acknowledged++) {
+      const states = [0, 1, 2].map((i) => reflectionState(i, acknowledged));
+      const armed = states.filter((s) => s === "armed");
+      // Once every question is acknowledged there is nothing left to arm.
+      expect(armed.length, `acknowledged=${acknowledged} armed ${armed.length}`).toBe(
+        acknowledged < 3 ? 1 : 0,
+      );
+      if (acknowledged < 3) {
+        expect(states.indexOf("armed"), "the armed one is not the first unacknowledged").toBe(
+          acknowledged,
+        );
+      }
+    }
+  });
+
+  it("advances by exactly one when a question is acknowledged", () => {
+    expect(reflectionState(0, 0)).toBe("armed");
+    expect(reflectionState(1, 0)).toBe("pending");
+    // Acknowledging the first arms the second and retires the first.
+    expect(reflectionState(0, 1)).toBe("done");
+    expect(reflectionState(1, 1)).toBe("armed");
+    expect(reflectionState(2, 1)).toBe("pending");
+  });
+
+  it("never reports a question as both done and pending", () => {
+    for (let a = 0; a <= 4; a++) {
+      for (let i = 0; i < 4; i++) {
+        expect(["done", "armed", "pending"]).toContain(reflectionState(i, a));
+      }
+    }
   });
 });

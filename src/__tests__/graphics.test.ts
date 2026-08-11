@@ -155,6 +155,20 @@ describe("the decision-screen door", () => {
         Number(committedOpacity![1]),
         "the door brightened past the 0.55 that was measured and rejected",
       ).toBeLessThan(0.55);
+      /*
+       * Both wrappers, not just whichever one a whole-file search happened to
+       * hit. Review caught that the transition contract was pinned against the
+       * file rather than against each responsive variant, so dropping the
+       * scale, the duration or the reduced-motion escape from mobile alone
+       * would have left every suite green.
+       */
+      expect(className, "the door no longer grows with the light").toMatch(/scale-\[1\.04\]/);
+      expect(className, "the door's change is not the length of the hold").toMatch(
+        /duration-\[2000ms\]/,
+      );
+      expect(className, "the door animates for a reader who asked for less motion").toMatch(
+        /motion-reduce:transition-none/,
+      );
     }
     expect(mobileClass, "the mobile wrapper should hide at sm").toMatch(/sm:hidden/);
     expect(desktopClass, "the desktop wrapper should stay hidden below sm").toMatch(/hidden/);
