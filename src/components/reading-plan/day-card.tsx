@@ -123,7 +123,6 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
             <div className="px-5 pb-5 sm:px-6 sm:pb-6">
               <a
                 href={messages.passageUrl}
-                target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-sm font-medium text-[#D4A843]/80 transition-colors hover:text-[#D4A843]"
               >

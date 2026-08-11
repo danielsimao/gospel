@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { m } from "framer-motion";
 import Link from "next/link";
 import { BookOpen, Compass } from "lucide-react";
-import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
+import { trackNextStepsActionClicked, trackScriptureOpened } from "@/lib/discipleship-analytics";
 import { BandHeader } from "./band-header";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { readJourney } from "@/lib/journey-storage";
@@ -174,9 +174,11 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
           <div className="mt-4">
             <a
               href={messages.readingLink}
-              target="_blank"
               rel="noopener noreferrer"
-              onClick={() => trackNextStepsActionClicked("read", "thinking")}
+              onClick={() => {
+                trackNextStepsActionClicked("read", "thinking");
+                trackScriptureOpened("next_steps_thinking", null, locale);
+              }}
             >
               <Button variant="gold" size="sm">
                 {messages.readingLinkLabel}

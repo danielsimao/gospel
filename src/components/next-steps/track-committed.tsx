@@ -9,7 +9,7 @@ import { SaveStoryImageButton } from "@/components/blog/save-story-image-button"
 import { BandHeader } from "./band-header";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { DayTicketBody, currentDay, type ReadingDay } from "@/components/shared/day-ticket";
-import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
+import { trackNextStepsActionClicked, trackScriptureOpened } from "@/lib/discipleship-analytics";
 import { readJourney } from "@/lib/journey-storage";
 import { useJourney } from "@/lib/use-journey";
 import { EASE_OUT_STRONG } from "@/lib/motion";
@@ -191,7 +191,10 @@ export function TrackCommitted({
             completed={readingDone}
           />
           <div className="mt-5 flex flex-wrap gap-2">
-            <a href={readHref} target="_blank" rel="noopener noreferrer" onClick={() => trackNextStepsActionClicked("read", "committed")}>
+            <a href={readHref} rel="noopener noreferrer" onClick={() => {
+              trackNextStepsActionClicked("read", "committed");
+              trackScriptureOpened("next_steps_committed", today ? readingDays.indexOf(today) + 1 : null, locale);
+            }}>
               <Button variant="gold" size="sm">
                 {readLabel}
                 <ButtonArrow />
