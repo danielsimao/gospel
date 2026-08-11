@@ -6,7 +6,7 @@ import Link from "next/link";
 import { DayCard } from "./day-card";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { subscribeToStorage } from "@/lib/client-storage";
-import { readProgress, markDayRead, getCompletedCount, clearReadingProgress } from "@/lib/reading-storage";
+import { readProgress, markDayRead, getCompletedCount, firstUnreadDay, clearReadingProgress } from "@/lib/reading-storage";
 import { trackReadingPlanViewed, trackReadingPlanDayCompleted, trackReadingPlanCompleted, trackReadingPlanLearnClicked, trackReadingPlanReset } from "@/lib/discipleship-analytics";
 import { useJourney } from "@/lib/use-journey";
 import { EASE_OUT_STRONG } from "@/lib/motion";
@@ -81,13 +81,8 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
   const completedCount = getCompletedCount(progress, totalDays);
   const allComplete = completedCount >= totalDays;
 
-  let currentDay = totalDays + 1;
-  for (let i = 1; i <= totalDays; i++) {
-    if (!progress[String(i)]) {
-      currentDay = i;
-      break;
-    }
-  }
+  // Shared with day-ticket rather than derived twice — see firstUnreadDay.
+  const currentDay = firstUnreadDay(progress, totalDays);
 
   const handleMarkRead = useCallback((day: number) => {
     const success = markDayRead(day);
