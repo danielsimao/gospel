@@ -22,8 +22,6 @@ interface TrackThinkingMessages {
   readingLink: string;
   readingLinkLabel: string;
   readingPlanLabel: string;
-  learnHeading: string;
-  learnBody: string;
   learnLinkLabel: string;
   bands: { today: string; deeper: string };
   talkLabel: string;

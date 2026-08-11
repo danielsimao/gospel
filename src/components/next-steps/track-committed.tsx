@@ -24,25 +24,17 @@ interface TrackCommittedMessages {
   readHeading: string;
   readPlanLabel: string;
   prayHeading: string;
-  prayBody: string;
   prayPrompt: string;
-  communityHeading: string;
-  communityBody: string;
-  communityLink: string;
   communityLinkLabel: string;
-  learnHeading: string;
-  learnBody: string;
   learnLinkLabel: string;
   shareHeading: string;
   shareMessage: string;
-  streetHeading: string;
-  streetBody: string;
   streetLinkLabel: string;
   storyButton: string;
   storyHint: string;
   storyCopyButton: string;
   storyCopied: string;
-  bands: { today: string; week: string; grow: string };
+  bands: { today: string; grow: string };
 }
 
 interface TrackCommittedProps {

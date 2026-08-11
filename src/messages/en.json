@@ -206,14 +206,8 @@
       "readHeading": "Read",
       "readPlanLabel": "Start the 7-day plan",
       "prayHeading": "Pray",
-      "prayBody": "Talk to God like a Father. He's listening.",
       "prayPrompt": "God, thank You for forgiving me. Help me to understand what You've done for me. Guide me as I read Your Word. Give me the courage to turn from sin and follow You. In Jesus' name, Amen.",
-      "communityHeading": "Find Community",
-      "communityBody": "You weren't meant to do this alone. Find a Bible-believing church where you can grow.",
-      "communityLink": "https://www.9marks.org/church-search/",
       "communityLinkLabel": "Find a Bible-believing church",
-      "learnHeading": "Learn",
-      "learnBody": "Explore the foundations of the faith — who Jesus is, what grace means, why the cross matters.",
       "learnLinkLabel": "Explore the foundations",
       "shareHeading": "Share Your Decision",
       "shareMessage": "I made a decision that changes everything. It started with this test:",
@@ -221,12 +215,9 @@
       "storyHint": "Post it to your Instagram story. The test link is already copied — paste it into a link sticker.",
       "storyCopyButton": "Copy test link for the sticker",
       "storyCopied": "Link copied — paste it into your story's link sticker.",
-      "streetHeading": "Take it to the street",
-      "streetBody": "Print a sheet of cards with the question and a code that opens the test. Leave one with a tip, hand one to a friend — the conversation starts itself.",
       "streetLinkLabel": "Print cards",
       "bands": {
         "today": "Today",
-        "week": "This week",
         "grow": "As you grow"
       }
     },
@@ -243,8 +234,6 @@
       "readingLink": "https://www.bible.com/bible/114/JHN.3.NKJV",
       "readingLinkLabel": "Read John 3",
       "readingPlanLabel": "7-day reading plan",
-      "learnHeading": "Want the foundations?",
-      "learnBody": "Short, honest explanations of the core questions — who Jesus claimed to be, why it matters, what grace is.",
       "learnLinkLabel": "Explore the topics",
       "bands": {
         "today": "Today",

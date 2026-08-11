@@ -206,14 +206,8 @@
       "readHeading": "Lê",
       "readPlanLabel": "Começar o plano de 7 dias",
       "prayHeading": "Ora",
-      "prayBody": "Fala com Deus como um Pai. Ele está a ouvir.",
       "prayPrompt": "Deus, obrigado por me perdoares. Ajuda-me a compreender o que fizeste por mim. Guia-me enquanto leio a Tua Palavra. Dá-me coragem para abandonar o pecado e seguir-Te. Em nome de Jesus, Amém.",
-      "communityHeading": "Encontra Comunidade",
-      "communityBody": "Não foste feito para fazer isto sozinho. Encontra uma igreja que crê na Bíblia onde possas crescer.",
-      "communityLink": "https://maps.app.goo.gl/NMMMdeJa5H5BR5Vp9",
       "communityLinkLabel": "Encontrar uma igreja bíblica",
-      "learnHeading": "Aprende",
-      "learnBody": "Explora os fundamentos da fé — quem é Jesus, o que significa a graça, porque é que a cruz importa.",
       "learnLinkLabel": "Explorar os fundamentos",
       "shareHeading": "Partilha a Tua Decisão",
       "shareMessage": "Tomei uma decisão que muda tudo. Começou com este teste:",
@@ -221,12 +215,9 @@
       "storyHint": "Publica-a na tua história do Instagram. O link do teste já está copiado — cola-o num autocolante de link.",
       "storyCopyButton": "Copiar link do teste para o autocolante",
       "storyCopied": "Link copiado — cola-o no autocolante de link da tua história.",
-      "streetHeading": "Leva-o para a rua",
-      "streetBody": "Imprime uma folha de cartões com a pergunta e um código que abre o teste. Deixa um com a gorjeta, dá um a um amigo — a conversa começa sozinha.",
       "streetLinkLabel": "Imprimir cartões",
       "bands": {
         "today": "Hoje",
-        "week": "Esta semana",
         "grow": "À medida que cresces"
       }
     },
@@ -243,8 +234,6 @@
       "readingLink": "https://www.bible.com/bible/212/JHN.3.ARC",
       "readingLinkLabel": "Ler João 3",
       "readingPlanLabel": "Plano de leitura de 7 dias",
-      "learnHeading": "Queres os fundamentos?",
-      "learnBody": "Explicações curtas e honestas sobre as perguntas essenciais — quem Jesus afirmou ser, porque é que importa, o que é a graça.",
       "learnLinkLabel": "Explorar os temas",
       "bands": {
         "today": "Hoje",
