@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { m } from "framer-motion";
 import Link from "next/link";
-import { BookOpen, HeartHandshake, Users, Compass, Printer } from "lucide-react";
+import { BookOpen, HeartHandshake, Users, Compass, Share2 } from "lucide-react";
 import { ShareButtons } from "@/components/share-buttons";
 import { SaveStoryImageButton } from "@/components/blog/save-story-image-button";
 import { BandHeader } from "./band-header";
@@ -29,7 +29,6 @@ interface TrackCommittedMessages {
   learnLinkLabel: string;
   shareHeading: string;
   shareMessage: string;
-  streetLinkLabel: string;
   storyButton: string;
   storyHint: string;
   storyCopyButton: string;
@@ -106,6 +105,11 @@ export function TrackCommitted({
     });
     return () => cancelAnimationFrame(id);
   }, []);
+
+  // The share block was about a third of the page, permanently open, while
+  // the reader was being asked to do one thing. It is still here; it just
+  // waits to be wanted.
+  const [shareOpen, setShareOpen] = useState(false);
 
   return (
     <>
@@ -199,21 +203,6 @@ export function TrackCommitted({
             {messages.prayPrompt}
           </blockquote>
         </div>
-
-        {/* Warm secondary — a person/community, not a loud card. Points at the
-            on-site explainer: we teach the gospel marks of a sound church
-            rather than recommending a specific church or directory. */}
-        {/* The shared pressable-row idiom: quiet card frame, 2px lift, arrow
-            slide — the move every pressable surface on the site now makes. */}
-        <Link
-          href={`/${locale}/find-a-church`}
-          onClick={() => trackNextStepsActionClicked("community", "committed")}
-          className="group mt-5 flex min-h-[48px] items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-sm font-semibold text-white/75 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-[#D4A843]/35 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-        >
-          <Users className="size-4 shrink-0 text-white/50" aria-hidden="true" />
-          <span className="flex-1">{messages.communityLinkLabel}</span>
-          <span aria-hidden="true" className="text-white/40 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
-        </Link>
       </m.div>
 
       {/* ── AS YOU GROW: quiet list + the one real graphic ── */}
@@ -228,6 +217,20 @@ export function TrackCommitted({
         {/* Hairline dividers traded for the quiet card rows the homepage
             wears — each one lifts, none of them shouts. */}
         <div className="flex flex-col gap-2">
+          {/* Warm secondary — a person/community, not a loud card. Points at the
+              on-site explainer: we teach the gospel marks of a sound church
+              rather than recommending a specific church or directory. */}
+          {/* The shared pressable-row idiom: quiet card frame, 2px lift, arrow
+              slide — the move every pressable surface on the site now makes. */}
+          <Link
+            href={`/${locale}/find-a-church`}
+            onClick={() => trackNextStepsActionClicked("community", "committed")}
+            className="group flex min-h-[48px] items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-sm font-semibold text-white/75 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-[#D4A843]/35 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+          >
+            <Users className="size-4 shrink-0 text-white/50" aria-hidden="true" />
+            <span className="flex-1">{messages.communityLinkLabel}</span>
+            <span aria-hidden="true" className="text-white/40 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
+          </Link>
           <Link
             href={`/${locale}/learn`}
             onClick={() => trackNextStepsActionClicked("learn", "committed")}
@@ -237,53 +240,57 @@ export function TrackCommitted({
             <span className="flex-1">{messages.learnLinkLabel}</span>
             <span aria-hidden="true" className="text-white/30 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
           </Link>
-          <Link
-            href={`/${locale}/cards`}
-            onClick={() => trackNextStepsActionClicked("cards", "committed")}
-            className="group flex min-h-[48px] items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-sm font-semibold text-white/70 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-white/25 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-          >
-            <Printer className="size-4 shrink-0 text-white/40" aria-hidden="true" />
-            <span className="flex-1">{messages.streetLinkLabel}</span>
-            <span aria-hidden="true" className="text-white/30 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
-          </Link>
         </div>
 
         {/* Share block — owns the one graphic on the page. */}
-        <div className="mt-8 rounded-xl border border-white/[0.08] bg-white/[0.015] p-5">
-          <ShareButtons
-            messages={{ ...shareMessages, prompt: messages.shareHeading, whatsappMessage: messages.shareMessage, telegramMessage: messages.shareMessage }}
-            locale={locale}
-            sharePath={`/${locale}/test`}
-            utmCampaign="testimony"
-            copyText={messages.shareMessage}
-          />
-          {/* Preview beside its button from sm, stacked below — the block
-              ends level instead of in a centred tower. */}
-          <div className="mt-8 text-center sm:flex sm:items-center sm:justify-center sm:gap-6 sm:text-left">
-            {/* The testimony story graphic, previewed inline (9:16, lazy so it
-                never competes for LCP). Reserved aspect box keeps CLS at 0. */}
-            <div className="mx-auto mb-4 w-full max-w-[190px] shrink-0 overflow-hidden rounded-xl border border-white/10 sm:mx-0 sm:mb-0 sm:max-w-[150px]">
-              <img
-                src={`/${locale}/testimony/story`}
-                alt=""
-                loading="lazy"
-                width={1080}
-                height={1920}
-                className="block h-auto w-full"
+        <button
+          type="button"
+          onClick={() => setShareOpen((open) => !open)}
+          aria-expanded={shareOpen}
+          aria-controls="next-steps-share"
+          className="group mt-2 flex min-h-[48px] w-full items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-left text-sm font-semibold text-white/70 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-[#D4A843]/35 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+        >
+          <Share2 className="size-4 shrink-0 text-white/40" aria-hidden="true" />
+          <span className="flex-1">{messages.shareHeading}</span>
+          <span aria-hidden="true" className="text-white/30">{shareOpen ? "−" : "+"}</span>
+        </button>
+        {shareOpen && (
+          <div id="next-steps-share" className="mt-2 rounded-xl border border-white/[0.08] bg-white/[0.015] p-5">
+            <ShareButtons
+              messages={{ ...shareMessages, prompt: messages.shareHeading, whatsappMessage: messages.shareMessage, telegramMessage: messages.shareMessage }}
+              locale={locale}
+              sharePath={`/${locale}/test`}
+              utmCampaign="testimony"
+              copyText={messages.shareMessage}
+            />
+            {/* Preview beside its button from sm, stacked below — the block
+                ends level instead of in a centred tower. */}
+            <div className="mt-8 text-center sm:flex sm:items-center sm:justify-center sm:gap-6 sm:text-left">
+              {/* The testimony story graphic, previewed inline (9:16, lazy so it
+                  never competes for LCP). Reserved aspect box keeps CLS at 0. */}
+              <div className="mx-auto mb-4 w-full max-w-[190px] shrink-0 overflow-hidden rounded-xl border border-white/10 sm:mx-0 sm:mb-0 sm:max-w-[150px]">
+                <img
+                  src={`/${locale}/testimony/story`}
+                  alt=""
+                  loading="lazy"
+                  width={1080}
+                  height={1920}
+                  className="block h-auto w-full"
+                />
+              </div>
+              <SaveStoryImageButton
+                locale={locale}
+                slug="testimony"
+                label={messages.storyButton}
+                hint={messages.storyHint}
+                copyLabel={messages.storyCopyButton}
+                copiedLabel={messages.storyCopied}
+                storyPath={`/${locale}/testimony/story`}
+                stickerPath={`/${locale}/test`}
               />
             </div>
-            <SaveStoryImageButton
-              locale={locale}
-              slug="testimony"
-              label={messages.storyButton}
-              hint={messages.storyHint}
-              copyLabel={messages.storyCopyButton}
-              copiedLabel={messages.storyCopied}
-              storyPath={`/${locale}/testimony/story`}
-              stickerPath={`/${locale}/test`}
-            />
           </div>
-        </div>
+        )}
       </m.div>
     </>
   );
