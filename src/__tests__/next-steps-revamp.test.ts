@@ -135,19 +135,33 @@ describe("reachability after the cuts", () => {
     expect(footer, "the needGod link left the footer too").toMatch(/needGodUrl/);
   });
 
-  it("credits the translations it quotes", () => {
-    // Thomas Nelson and Sociedade Bíblica de Portugal both require a notice,
-    // and the app carried none in either locale despite quoting both
-    // throughout. The exact English wording is the publisher's, not ours.
+  it("credits the translations it actually quotes, and says it once", () => {
+    /*
+     * The first version of this test pinned the Portuguese notice to
+     * Sociedade Bíblica de Portugal's ARC. The site does not use ARC: the
+     * Portuguese text is Almeida Corrigida Fiel, which belongs to Sociedade
+     * Bíblica Trinitariana do Brasil, and /about had been crediting it
+     * correctly all along. The footer was crediting the wrong publisher, on
+     * the same site, contradicting its own about page.
+     *
+     * So this pins the relationship rather than a string: whatever the notice
+     * says, the footer and /about must say the same thing. Two different
+     * copyright claims for one text is worse than one wrong claim.
+     */
     expect(footer, "the footer renders no translation credit").toMatch(
       /messages\.scriptureNotice/,
     );
-    expect(en.footer.scriptureNotice, "the NKJV notice is not the required wording").toBe(
-      "Scripture taken from the New King James Version\u00ae. Copyright \u00a9 1982 by Thomas Nelson. Used by permission. All rights reserved.",
-    );
-    expect(pt.footer.scriptureNotice, "the ARC credit is missing").toMatch(
-      /Sociedade B\u00edblica de Portugal/,
-    );
+    for (const [name, msgs] of [["en", en], ["pt", pt]] as const) {
+      expect(
+        msgs.footer.scriptureNotice,
+        `${name} footer notice disagrees with the one on /about`,
+      ).toBe(msgs.about.scriptureNote);
+    }
+    // The publishers' own names, so a translation cannot be swapped without
+    // the credit following it.
+    expect(en.footer.scriptureNotice).toMatch(/New King James Version/);
+    expect(pt.footer.scriptureNotice).toMatch(/Almeida Corrigida Fiel/);
+    expect(pt.footer.scriptureNotice).toMatch(/Trinitariana/);
   });
 
   it("has no locale keys left orphaned by the cuts", () => {

@@ -330,7 +330,60 @@ Required notice, verbatim:
 exists in either locale, despite the app already quoting NKJV throughout. Adding it is
 owed regardless of this feature, and should not wait for Phase 2.
 
-### 5.3 Portuguese does not clear, and there is no free substitute
+### 5.3 Portuguese — CORRECTED: the publisher was wrong, and it clears easily
+
+**Everything below this heading in earlier drafts was researched against the wrong
+translation.** The site does not use Sociedade Bíblica de Portugal's ARC. Its Portuguese
+text is **Almeida Corrigida Fiel (ACF)**, published by Sociedade Bíblica Trinitariana do
+Brasil with the Trinitarian Bible Society — which `pt.json`'s `about.scriptureNote` has
+credited correctly since long before this work. The evidence is unambiguous: `pt.json`
+uses the Brazilian `unigênito` six times and the European `unigénito` never.
+
+That was missed because the original survey grepped for the publishers and piped the
+result through `head -20`, which cut off before the line carrying the real credit. It is
+the failure `AGENTS.md` names — reading a truncated output and treating it as the whole.
+
+**ACF publishes a generous allowance**, verbatim from biblias.com.br/direitos-autorais
+(binding from 2025-11-25):
+
+> Este texto poderá ser reimpresso ou citado até 1.100 (mil e cem) versículos sem a
+> permissão da Sociedade Bíblica Trinitariana do Brasil (SBTB), desde que não formem um
+> livro completo da Bíblia, nem representem cinquenta por cento da obra que os esteja
+> mencionando.
+
+145 verses against 1,100, and John is 879 verses so it is not a complete book. **No
+permission is required.** The binding condition is the same one English has: Scripture
+must not reach 50% of the work quoting it.
+
+**Two things still need care.**
+
+The Trinitarian Bible Society's UK copyright FAQ says flatly *"May I post TBS material on
+my website? No, we do not allow this"*, with no verse allowance at all. SBTB is TBS's
+Brazilian branch rather than a separate licensee, so the two statements are not
+reconcilable on their face. The Brazilian term is the specific one for ACF and the one
+the site already relies on, but a short written confirmation to `sbtb@biblias.com.br` is
+cheap insurance before Phase 3 ships.
+
+There is no official machine-readable ACF. SBTB offers a web reader only; every mirror
+found (GitHub repos, bolls.life, e-Sword modules) redistributes the text without
+permission, and one even asserts a CC licence over text it does not own. **Passage JSON
+for Phase 3 must be produced from a licensed copy, not scraped from a mirror.**
+
+### 5.3.1 A content mismatch this uncovered, for the owner
+
+Three things disagree about which Portuguese Bible this site uses:
+
+- The quoted **text** is ACF (Brazilian orthography).
+- The reading links point to `bible.com/bible/212`, which is the **Brazilian** ARC
+  (Sociedade Bíblica do Brasil). European ARC is version **215**.
+- `docs/superpowers/plans/2026-07-16-content-runway-wave1.md` states the intended
+  convention is European orthography.
+
+So a European-Portuguese reader gets Brazilian scripture text, and a link to a third
+edition that matches neither. This is a content decision, not a licensing one, and it
+belongs to the owner. Nothing in Phase 1 changed it.
+
+### 5.3.2 Superseded — the original ARC analysis
 
 **ARC ownership is confirmed from the publisher's own text:** "Tradução de João Ferreira
 de Almeida, Edição Revista e Corrigida. Copyright © 2001 Sociedade Bíblica de Portugal."
@@ -373,15 +426,21 @@ allowance has not been counted. It should be, and the same letter should cover i
 
 ### 5.4 Consequence: the feature ships asymmetrically
 
-**Recommended — EN first, PT on permission.** English gets in-page reading; the
-Portuguese Read button keeps its bible.com link until SBP answers. The PT reader is no
-worse off than today. This requires the reader component to support a per-locale
-link-out mode, which it needs anyway as the permanent fallback.
+**Superseded by §5.3.** With ACF as the actual translation, both locales clear their
+publishers' allowances without asking anyone: English at ~183 verses against NKJV's 500,
+Portuguese at 145 against ACF's 1,100.
 
-Alternatives considered: waiting for SBP to ship both together (cleanest parity,
-unbounded delay, answer may be no); or moving wholesale to public-domain translations
-(removes all licence risk, costs the committed vocabulary the app is written in —
-`docs/METHOD.md`). Neither is recommended.
+**Revised recommendation: ship both locales together.** The asymmetry this section was
+built to manage does not exist. What remains is not a permission gate but two pieces of
+diligence, neither of which blocks design work:
+
+1. Written confirmation from SBTB, because TBS UK's blanket "no website posting" and
+   SBTB's 1,100-verse allowance cannot both be read literally (§5.3).
+2. A licensed source for the ACF passage text. There is no official machine-readable
+   edition, and the mirrors are not entitled to license what they host.
+
+The per-locale link-out mode in §7 stays regardless. It is the fallback if either piece
+of diligence goes badly, and it costs nothing to keep.
 
 ---
 
