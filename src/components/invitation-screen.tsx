@@ -377,7 +377,9 @@ export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
                 >
                   <Link href={`/${locale}/next-steps`} className="block">
                     <Button variant="gold" mist className="w-full sm:w-auto">
-                      {messages.nextSteps.cta}
+                      {invitationResponse === "committed"
+                        ? messages.nextSteps.ctaCommitted
+                        : messages.nextSteps.ctaThinking}
                       <ButtonArrow />
                     </Button>
                   </Link>

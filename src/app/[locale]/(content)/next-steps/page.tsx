@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildPageMetadata({
     locale,
     path: "/next-steps",
-    title: data.nextSteps.cta,
+    title: data.nextSteps.metaTitle,
     description: getNextStepsDescription(locale),
     robots: {
       index: false,
@@ -53,7 +53,7 @@ export default async function NextStepsPage({ params }: Props) {
   const webPageSchema = buildWebPageSchema({
     locale,
     path: "/next-steps",
-    title: data.nextSteps.cta,
+    title: data.nextSteps.metaTitle,
     description: getNextStepsDescription(locale),
   });
 

@@ -197,7 +197,9 @@
     "linkCopied": "Link copiado!"
   },
   "nextSteps": {
-    "cta": "E agora?",
+    "ctaCommitted": "O teu primeiro dia",
+    "ctaThinking": "Vale a pena pensar nisto",
+    "metaTitle": "Próximos passos",
     "dismissedReturn": "Mudaste de ideias? O plano de leitura está à tua espera — começa hoje.",
     "trackA": {
       "welcome": "Algo acabou de mudar.",

@@ -197,7 +197,9 @@
     "linkCopied": "Link copied!"
   },
   "nextSteps": {
-    "cta": "What now?",
+    "ctaCommitted": "Your first day",
+    "ctaThinking": "Things worth weighing",
+    "metaTitle": "Next steps",
     "dismissedReturn": "Changed your mind? The reading plan is waiting — start today.",
     "trackA": {
       "welcome": "Something just changed.",
