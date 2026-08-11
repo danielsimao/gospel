@@ -32,11 +32,44 @@ const SURFACES = [
 
 describe("scripture links keep the way back", () => {
   it("never opens a reading link in a new tab", () => {
+    /*
+     * Broader than the literal attribute, because review pointed out the
+     * literal is only one spelling of the mistake: a target set from a
+     * variable, a window.open, or rel="external" all reopen the same hole
+     * while a search for target="_blank" stays green.
+     */
     for (const [name, path] of SURFACES) {
-      expect(read(...path), `${name} opens in a new tab again`).not.toMatch(
-        /target="_blank"/,
+      const src = read(...path);
+      expect(src, `${name} opens in a new tab again`).not.toMatch(/target=/);
+      expect(src, `${name} opens a window instead of navigating`).not.toMatch(
+        /window\.open/,
+      );
+      expect(src, `${name} used rel="external" to reopen the hole`).not.toMatch(
+        /rel="[^"]*external/,
       );
     }
+  });
+
+  it("reports every scripture door it opens", () => {
+    // The point of same-tab is that the reader returns and marks the day read,
+    // and the plan is where that loop lives -- so the plan's own doors have to
+    // be instrumented, not just the two on /next-steps. Shipped without this,
+    // the comparison the event exists for could not be made where it matters.
+    const wired: [string, string[]][] = [
+      ["the committed track", ["src", "components", "next-steps", "track-committed.tsx"]],
+      ["the thinking track", ["src", "components", "next-steps", "track-thinking.tsx"]],
+      ["the reading plan", ["src", "components", "reading-plan", "reading-plan.tsx"]],
+    ];
+    for (const [name, path] of wired) {
+      expect(read(...path), `${name} opens Scripture without reporting it`).toMatch(
+        /trackScriptureOpened\(/,
+      );
+    }
+    // The day card takes the callback rather than owning the analytics.
+    expect(
+      read("src", "components", "reading-plan", "day-card.tsx"),
+      "the day card stopped reporting its passage link",
+    ).toMatch(/onClick=\{onOpenPassage\}/);
   });
 
   it("still sends the reader somewhere", () => {

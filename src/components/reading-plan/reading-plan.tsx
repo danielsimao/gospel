@@ -7,7 +7,7 @@ import { DayCard } from "./day-card";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { subscribeToStorage } from "@/lib/client-storage";
 import { readProgress, markDayRead, getCompletedCount, clearReadingProgress } from "@/lib/reading-storage";
-import { trackReadingPlanViewed, trackReadingPlanDayCompleted, trackReadingPlanCompleted, trackReadingPlanLearnClicked, trackReadingPlanReset } from "@/lib/discipleship-analytics";
+import { trackReadingPlanViewed, trackReadingPlanDayCompleted, trackReadingPlanCompleted, trackReadingPlanLearnClicked, trackReadingPlanReset, trackScriptureOpened } from "@/lib/discipleship-analytics";
 import { useJourney } from "@/lib/use-journey";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -166,6 +166,7 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
             markReadLabel={messages.markReadLabel}
             completedLabel={messages.completedLabel}
             onMarkRead={() => handleMarkRead(i + 1)}
+            onOpenPassage={() => trackScriptureOpened("reading_plan_day", i + 1, locale)}
           />
         ))}
       </div>
@@ -189,7 +190,12 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
         >
           <h2 className="text-2xl font-bold text-[#D4A843]">{messages.allCompleteHeading}</h2>
           <p className="mt-3 text-sm leading-relaxed text-white/60">{messages.allCompleteBody}</p>
-          <a href={messages.continueReadingLink} rel="noopener noreferrer" className="mt-4 inline-block">
+          <a
+            href={messages.continueReadingLink}
+            rel="noopener noreferrer"
+            onClick={() => trackScriptureOpened("reading_plan_continue", null, locale)}
+            className="mt-4 inline-block"
+          >
             <Button variant="gold" size="sm">
               {messages.continueReadingLabel}
               <ButtonArrow />
