@@ -16,6 +16,7 @@ const read = (...p: string[]) => readFileSync(join(ROOT, ...p), "utf8");
 const strip = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
 
 const committed = strip(read("src", "components", "next-steps", "track-committed.tsx"));
+const thinking = strip(read("src", "components", "next-steps", "track-thinking.tsx"));
 const en = JSON.parse(read("src", "messages", "en.json"));
 const pt = JSON.parse(read("src", "messages", "pt.json"));
 
@@ -56,5 +57,34 @@ describe("the committed track", () => {
     // being asked to read one chapter.
     expect(committed, "share is not behind a disclosure").toMatch(/aria-expanded=\{shareOpen\}/);
     expect(committed).toMatch(/aria-controls="next-steps-share"/);
+  });
+});
+
+describe("the thinking track", () => {
+  it("does not promise a chat that does not exist", () => {
+    // needGod.net has no chat control on the page -- it invites questions by
+    // form and by social message -- and it has no Portuguese, so a tu-form
+    // reader was being handed an English site at the moment they were
+    // promised a conversation. The footer keeps the link.
+    expect(thinking, "the needGod row came back").not.toMatch(/needgod/i);
+    expect(thinking, "the talk analytics action came back").not.toMatch(/"talk"/);
+  });
+
+  it("offers two destinations, not five", () => {
+    // John 3 is the reading ask; a seven-day plan alongside it splits the ask.
+    expect(thinking, "the reading-plan row came back").not.toMatch(/\/reading-plan/);
+    expect(thinking, "a band header with nothing under it came back").not.toMatch(
+      /bands\.deeper/,
+    );
+    expect(thinking, "learn is no longer offered").toMatch(/\/learn/);
+  });
+
+  it("keeps the mortality line at the end, after the offer", () => {
+    // A stake, not a lever -- it must never sit between a question and its
+    // answer (docs/METHOD.md).
+    const learn = thinking.indexOf("/learn");
+    const comeBack = thinking.indexOf("messages.comeBack");
+    expect(comeBack, "the closing line vanished").toBeGreaterThan(-1);
+    expect(comeBack, "the mortality line moved above the offer").toBeGreaterThan(learn);
   });
 });

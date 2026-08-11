@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { m } from "framer-motion";
 import Link from "next/link";
-import { BookOpen, MessageCircle, Compass, CalendarDays } from "lucide-react";
+import { BookOpen, Compass } from "lucide-react";
 import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
 import { BandHeader } from "./band-header";
 import { Button, ButtonArrow } from "@/components/ui/button";
@@ -21,12 +21,9 @@ interface TrackThinkingMessages {
   readingBody: string;
   readingLink: string;
   readingLinkLabel: string;
-  readingPlanLabel: string;
   learnLinkLabel: string;
-  bands: { today: string; deeper: string };
-  talkLabel: string;
-  talkLink: string;
-  talkUrl: string;
+  learnLeadIn: string;
+  bands: { today: string };
   comeBack: string;
 }
 
@@ -115,56 +112,26 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
           </div>
         </div>
 
-        {/* Warm secondary — a real conversation. Highest-value option for a
-            skeptic after reading, so it sits directly under the primary. */}
-        <div className="mt-5">
-          <p className="text-sm leading-relaxed text-white/60">{messages.talkLabel}</p>
-          {/* The shared pressable-row idiom — quiet card frame, 2px lift,
-              arrow slide. */}
-          <a
-            href={messages.talkUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackNextStepsActionClicked("talk", "thinking")}
-            className="group mt-2 flex min-h-[48px] items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-sm font-semibold text-white/75 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-[#D4A843]/35 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-          >
-            <MessageCircle className="size-4 shrink-0 text-white/50" aria-hidden="true" />
-            <span className="flex-1">{messages.talkLink}</span>
-            <span aria-hidden="true" className="text-white/40 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
-          </a>
-        </div>
-      </m.div>
-
-      {/* ── GOING DEEPER: quiet list ── */}
-      <m.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ ...band, delay: groupDelay + 0.25 }}
-        className="mt-12"
-      >
-        <BandHeader label={messages.bands.deeper} tone="dim" />
-
-        {/* The same quiet card rows the committed track wears. */}
-        <div className="flex flex-col gap-2">
-          <Link
-            href={`/${locale}/learn`}
-            onClick={() => trackNextStepsActionClicked("learn", "thinking")}
-            className="group flex min-h-[48px] items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-sm font-semibold text-white/70 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-white/25 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-          >
-            <Compass className="size-4 shrink-0 text-white/40" aria-hidden="true" />
-            <span className="flex-1">{messages.learnLinkLabel}</span>
-            <span aria-hidden="true" className="text-white/30 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
-          </Link>
-          <Link
-            href={`/${locale}/reading-plan`}
-            onClick={() => trackNextStepsActionClicked("reading_plan", "thinking")}
-            className="group flex min-h-[48px] items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-sm font-semibold text-white/70 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-white/25 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-          >
-            <CalendarDays className="size-4 shrink-0 text-white/40" aria-hidden="true" />
-            <span className="flex-1">{messages.readingPlanLabel}</span>
-            <span aria-hidden="true" className="text-white/30 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
-          </Link>
-        </div>
+        {/*
+         * Where the questions go.
+         *
+         * A "Chat at needGod.net" row sat here, and there is no chat at
+         * needGod.net — the page offers a form and two social handles, and no
+         * Portuguese at all, so a tu-form reader was handed an English site at
+         * the moment they had been promised a conversation. Learn is the
+         * honest version of the same intent: on-site, bilingual, and in this
+         * app's own voice. The footer keeps the needGod link.
+         */}
+        <p className="mt-5 text-sm leading-relaxed text-white/60">{messages.learnLeadIn}</p>
+        <Link
+          href={`/${locale}/learn`}
+          onClick={() => trackNextStepsActionClicked("learn", "thinking")}
+          className="group mt-2 flex min-h-[48px] items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-sm font-semibold text-white/75 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-[#D4A843]/35 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+        >
+          <Compass className="size-4 shrink-0 text-white/50" aria-hidden="true" />
+          <span className="flex-1">{messages.learnLinkLabel}</span>
+          <span aria-hidden="true" className="text-white/40 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
+        </Link>
       </m.div>
 
       {/* Closing beat — the mortality press. Plain text, no CTA. */}

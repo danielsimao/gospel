@@ -237,6 +237,7 @@
       "readingLinkLabel": "Read John 3",
       "readingPlanLabel": "7-day reading plan",
       "learnLinkLabel": "Explore the topics",
+      "learnLeadIn": "Still have questions? These are the ones people ask.",
       "bands": {
         "today": "Today",
         "deeper": "Going deeper"
