@@ -217,7 +217,6 @@
       "storyHint": "Post it to your Instagram story. The test link is already copied — paste it into a link sticker.",
       "storyCopyButton": "Copy test link for the sticker",
       "storyCopied": "Link copied — paste it into your story's link sticker.",
-      "streetLinkLabel": "Print cards",
       "bands": {
         "today": "Today",
         "grow": "As you grow"
@@ -236,16 +235,11 @@
       "readingBody": "Read John chapter 3 — today, not someday. It's a conversation between Jesus and a man who had questions just like yours.",
       "readingLink": "https://www.bible.com/bible/114/JHN.3.NKJV",
       "readingLinkLabel": "Read John 3",
-      "readingPlanLabel": "7-day reading plan",
       "learnLinkLabel": "Explore the topics",
       "learnLeadIn": "Still have questions? These are the ones people ask.",
       "bands": {
-        "today": "Today",
-        "deeper": "Going deeper"
+        "today": "Today"
       },
-      "talkLabel": "Want to talk to a real person about this?",
-      "talkLink": "Chat at needGod.net",
-      "talkUrl": "https://needgod.net/",
       "comeBack": "Come back to this — but don't shelve it. It's never too late while you're breathing. It's never safe to count on another chance."
     }
   },
@@ -1804,6 +1798,7 @@
     "readingPlanLink": "7-Day Reading Plan",
     "nextStepsLink": "Next Steps",
     "churchLink": "Find a Church",
+    "cardsLink": "Printable Cards",
     "livingWatersLink": "Are You a Good Person? — Living Waters",
     "livingWatersUrl": "https://livingwaters.com/are-you-a-good-person/",
     "needGodLink": "needGod.net",

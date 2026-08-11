@@ -16,6 +16,7 @@ interface FooterMessages {
   readingPlanLink: string;
   nextStepsLink: string;
   churchLink: string;
+  cardsLink: string;
   livingWatersLink: string;
   livingWatersUrl: string;
   needGodLink: string;
@@ -202,6 +203,18 @@ export function Footer({ messages, learnTopics, locale, facts = [], blogEnabled 
                 className="text-sm text-white/70 transition-colors hover:text-white/80"
               >
                 {messages.churchLink}
+              </Link>
+              {/* The committed track was the only internal link to /cards. It
+                  is noindex and off the sitemap, so this is reachability, not
+                  SEO — without a link the page exists only for people who
+                  guess the URL. Here rather than on a new believer's first
+                  day. */}
+              <Link
+                href={`/${locale}/cards`}
+                prefetch={false}
+                className="text-sm text-white/70 transition-colors hover:text-white/80"
+              >
+                {messages.cardsLink}
               </Link>
               <a
                 href={messages.livingWatersUrl}

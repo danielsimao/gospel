@@ -217,7 +217,6 @@
       "storyHint": "Publica-a na tua história do Instagram. O link do teste já está copiado — cola-o num autocolante de link.",
       "storyCopyButton": "Copiar link do teste para o autocolante",
       "storyCopied": "Link copiado — cola-o no autocolante de link da tua história.",
-      "streetLinkLabel": "Imprimir cartões",
       "bands": {
         "today": "Hoje",
         "grow": "À medida que cresces"
@@ -236,16 +235,11 @@
       "readingBody": "Lê João capítulo 3 — hoje, não um dia destes. É uma conversa entre Jesus e um homem que tinha perguntas como as tuas.",
       "readingLink": "https://www.bible.com/bible/212/JHN.3.ARC",
       "readingLinkLabel": "Ler João 3",
-      "readingPlanLabel": "Plano de leitura de 7 dias",
       "learnLinkLabel": "Explorar os temas",
       "learnLeadIn": "Ainda tens perguntas? Estas são as que as pessoas fazem.",
       "bands": {
-        "today": "Hoje",
-        "deeper": "Para ires mais fundo"
+        "today": "Hoje"
       },
-      "talkLabel": "Queres falar com uma pessoa real sobre isto?",
-      "talkLink": "Conversa em needGod.net",
-      "talkUrl": "https://needgod.net/",
       "comeBack": "Volta a isto — mas não o deixes na prateleira. Nunca é tarde demais enquanto respiras. Nunca é seguro contar com outra oportunidade."
     }
   },
@@ -1804,6 +1798,7 @@
     "readingPlanLink": "Plano de Leitura de 7 Dias",
     "nextStepsLink": "Próximos Passos",
     "churchLink": "Encontra uma Igreja",
+    "cardsLink": "Cartões para imprimir",
     "livingWatersLink": "És uma Boa Pessoa? — Living Waters",
     "livingWatersUrl": "https://livingwaters.com/are-you-a-good-person/",
     "needGodLink": "needGod.net",

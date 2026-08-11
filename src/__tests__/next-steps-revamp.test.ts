@@ -113,3 +113,33 @@ describe("the reflection chain", () => {
     }
   });
 });
+
+describe("reachability after the cuts", () => {
+  const footer = strip(read("src", "components", "shared", "footer.tsx"));
+
+  it("keeps /cards reachable now that the track no longer links it", () => {
+    // /cards is noindex and absent from the sitemap, so this is not an SEO
+    // question -- without an internal link the page is reachable only by
+    // typing the URL.
+    expect(footer, "/cards has no internal link anywhere").toMatch(/\/cards/);
+    expect(footer).toMatch(/messages\.cardsLink/);
+  });
+
+  it("keeps needGod in the footer after removing it from the track", () => {
+    expect(footer, "the needGod link left the footer too").toMatch(/needGodUrl/);
+  });
+
+  it("has no locale keys left orphaned by the cuts", () => {
+    for (const [name, msgs] of [["en", en], ["pt", pt]] as const) {
+      const a = msgs.nextSteps.trackA;
+      const b = msgs.nextSteps.trackB;
+      expect(a.streetLinkLabel, `${name} trackA.streetLinkLabel is orphaned`).toBeUndefined();
+      expect(b.talkLabel, `${name} trackB.talkLabel is orphaned`).toBeUndefined();
+      expect(b.talkLink, `${name} trackB.talkLink is orphaned`).toBeUndefined();
+      expect(b.talkUrl, `${name} trackB.talkUrl is orphaned`).toBeUndefined();
+      expect(b.readingPlanLabel, `${name} trackB.readingPlanLabel is orphaned`).toBeUndefined();
+      expect(b.bands.deeper, `${name} trackB.bands.deeper is orphaned`).toBeUndefined();
+      expect(msgs.footer.cardsLink, `${name} footer.cardsLink is missing`).toBeTruthy();
+    }
+  });
+});
