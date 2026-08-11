@@ -89,3 +89,29 @@ describe("the NKJV verse budget", () => {
     expect(verseSpan("John 20:1–31")).toBe(31);
   });
 });
+
+describe("the Portuguese reading links", () => {
+  it("send a reader in Portugal to the Portugal edition", () => {
+    /*
+     * The site quotes Almeida Corrigida Fiel, which YouVersion does not carry
+     * -- verified 2026-08-11, 17 Portuguese versions listed and no ACF -- so
+     * outbound links fall back to Almeida Revista e Corrigida. That fallback
+     * is forced and fine. What was not fine: it pointed at version 212, the
+     * BRAZILIAN ARC (Sociedade Bíblica do Brasil), on a tu-form site written
+     * for readers in Portugal. The Portugal edition is 215.
+     */
+    const pt = readFileSync(join(ROOT, "src", "messages", "pt.json"), "utf8");
+    expect(pt, "a reading link points at the Brazilian ARC again").not.toMatch(
+      /bible\.com\/bible\/212\//,
+    );
+    expect([...pt.matchAll(/bible\.com\/bible\/(\d+)\//g)].map((m) => m[1]))
+      .toEqual(Array(9).fill("215"));
+  });
+
+  it("keeps English on the translation it quotes", () => {
+    // English is the simple case: it quotes NKJV and links to NKJV (114).
+    const en = readFileSync(join(ROOT, "src", "messages", "en.json"), "utf8");
+    expect([...en.matchAll(/bible\.com\/bible\/(\d+)\//g)].map((m) => m[1]))
+      .toEqual(Array(9).fill("114"));
+  });
+});

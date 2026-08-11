@@ -46,10 +46,36 @@ modules) redistributes copyrighted text without permission, and at least one ass
 Creative Commons licence over text it does not own. Phase 3's passage JSON must be
 produced from a licensed copy. Ask SBTB about this in the same email.
 
-## Separately: a content mismatch, not a licensing one
+## Why Portuguese quotes ACF but links to ARC
 
-The Portuguese text is ACF (Brazilian orthography — `unigênito`), the reading links point
-to `bible.com/bible/212` which is the **Brazilian ARC**, and the repo's own content plan
-says the convention is European orthography. Three different answers to "which Portuguese
-Bible is this". A reader in Portugal currently gets Brazilian scripture and a link to an
-edition matching neither. That is the owner's call and nothing here changes it.
+This is deliberate, and it is worth writing down because it looks like an inconsistency
+until you know why.
+
+**Quoted text is ACF**, because that is the translation this site has chosen and because
+its 1,100-verse allowance is what makes in-page reading possible at all.
+
+**Outbound reading links are ARC**, because YouVersion does not carry ACF. Verified
+2026-08-11: bible.com lists 17 Portuguese versions and ACF is not among them. There is no
+way to send a reader to ACF on the platform the reading plan links to, so ARC is the
+closest available Almeida and the fallback is forced rather than chosen.
+
+**Corrected 2026-08-11: the fallback was pointing at the wrong ARC.** The nine reading
+links used `bible.com/bible/212`, which is Almeida Revista e Corrigida in **Brazilian**
+Portuguese (Sociedade Bíblica do Brasil). The European edition — Almeida Revista e
+Corrigida (Portugal), Sociedade Bíblica de Portugal — is version **215**. A `tu`-form
+site written for readers in Portugal was sending them to the Brazilian edition. All nine
+now point at 215, verified resolving.
+
+English is unaffected: it links to `bible.com/bible/114`, which is NKJV, the same
+translation it quotes. English is the simple case — quoted and linked translations match.
+
+## One thing still unresolved, for the owner
+
+The site's ACF text uses Brazilian orthography (`unigênito`, six occurrences; the European
+`unigénito`, none), while `docs/superpowers/plans/2026-07-16-content-runway-wave1.md`
+states the intended convention is European. ACF is Sociedade Bíblica Trinitariana **do
+Brasil**'s edition, so this is inherent to the translation rather than a typo — choosing
+ACF means accepting Brazilian spelling in quoted scripture on a European-Portuguese site.
+Worth confirming that trade is intended, since the alternative (ARC Portugal for quotes
+too) would drop the allowance from 1,100 verses to whatever SBP grants, which is the
+constraint that made this whole question hard in the first place.
