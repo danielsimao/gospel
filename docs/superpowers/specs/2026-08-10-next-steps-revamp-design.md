@@ -291,21 +291,35 @@ chapters, 879 verses) nor half of one, so this condition is met under every circ
 wording. The percentage is deliberately *not* offered as licensing evidence — see the
 note below.
 
-**The 500-verse condition is the binding one, and we are closer to it than any earlier
-draft admitted.** The cap applies to total Scripture quoted in the work, not to what a
-feature adds. Counting distinct references across `src/messages/en.json` **and**
-`src/content/blog/posts.ts` — the blog was missed on the first count — gives **97
-distinct references spanning roughly 258 verses**. Adding the seven passages puts us at
-**≈403 of 500: about 80% of the allowance consumed.**
+**The 500-verse condition applies to the whole work, not to what a feature adds** — and
+it has now been counted properly rather than estimated. Two earlier figures in this spec
+were wrong, both in the alarming direction, and the correction matters because the
+recommendation hung on it.
 
-That figure is an estimate in both directions. Some of the 97 are bare citations rather
-than quotations, which would lower it; quoted text with no adjacent reference was not
-counted, which would raise it. At 80% neither correction is small enough to wave away.
+| Measure | Verses | Method |
+|---|---|---|
+| Reproduced today | **≈38** | Quoted spans of 25+ characters, credited to the nearest reference within 400 characters, plus every `scripture` / `keyVerse` field |
+| Cited today | 221 | References with no quotation anywhere near them — "(Isaiah 59:2)" reproduces nothing |
+| Reading plan (Phase 2) | 145 | The seven passages |
+| **Honest total after Phase 2** | **≈183** | 37% of the allowance |
+| Pessimistic total | 404 | Every reference counted as if fully reproduced |
 
-**Required before Phase 2:** a real count of quoted NKJV verses, not an estimate, and
-test 8 (§9) guarding the site total. At this margin the honest move is probably to
-request written permission regardless — HarperCollins grants it through a published
-form with a six-to-eight-week turnaround, and having it removes the whole question.
+The first draft said 145 was "well under 500" without counting what was already there.
+The second counted **references** and reported ≈403 — but three quarters of those are
+bare citations, so it was measuring the wrong thing and overstated the problem by more
+than double. The real figure after Phase 2 is around **183 of 500**.
+
+The known bias runs one way: Scripture set without quotation marks would not be detected,
+so the true number is at or slightly above 38. Nothing plausible closes a 300-verse gap.
+
+**Consequence for the recommendation.** The margin is comfortable, not tight. Written
+permission from HarperCollins remains worth having — it is free, and it would also settle
+the 25%-of-total-text question that no arithmetic can — but the verse count does not force
+it, and Phase 2 is not blocked on it.
+
+`src/__tests__/scripture-budget.test.ts` now guards this mechanically, deliberately using
+the **pessimistic** count so it can never under-report: it fails if references-as-if-quoted
+plus the reading plan exceed 450. Today that reads 404.
 
 Required notice, verbatim:
 
