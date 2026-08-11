@@ -129,6 +129,21 @@ describe("reachability after the cuts", () => {
     expect(footer, "the needGod link left the footer too").toMatch(/needGodUrl/);
   });
 
+  it("credits the translations it quotes", () => {
+    // Thomas Nelson and Sociedade Bíblica de Portugal both require a notice,
+    // and the app carried none in either locale despite quoting both
+    // throughout. The exact English wording is the publisher's, not ours.
+    expect(footer, "the footer renders no translation credit").toMatch(
+      /messages\.scriptureNotice/,
+    );
+    expect(en.footer.scriptureNotice, "the NKJV notice is not the required wording").toBe(
+      "Scripture taken from the New King James Version\u00ae. Copyright \u00a9 1982 by Thomas Nelson. Used by permission. All rights reserved.",
+    );
+    expect(pt.footer.scriptureNotice, "the ARC credit is missing").toMatch(
+      /Sociedade B\u00edblica de Portugal/,
+    );
+  });
+
   it("has no locale keys left orphaned by the cuts", () => {
     for (const [name, msgs] of [["en", en], ["pt", pt]] as const) {
       const a = msgs.nextSteps.trackA;

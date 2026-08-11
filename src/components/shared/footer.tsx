@@ -27,6 +27,7 @@ interface FooterMessages {
   needHelpUrl: string;
   scripture: string;
   scriptureRef: string;
+  scriptureNotice: string;
 }
 
 interface LearnTopic {
@@ -273,6 +274,13 @@ export function Footer({ messages, learnTopics, locale, facts = [], blogEnabled 
         </p>
         <p className="mt-2 text-center font-mono text-[10px] uppercase tracking-widest text-[#D4A843]/70">
           {messages.scriptureRef}
+        </p>
+        {/* The credit both publishers require, and which this site owed from
+            the day it started quoting them. English is Thomas Nelson's exact
+            wording for the NKJV; Portuguese is the line Sociedade Bíblica de
+            Portugal prints with the ARC text. Neither is ours to reword. */}
+        <p className="mx-auto mt-3 max-w-prose text-center text-[11px] leading-relaxed text-white/35">
+          {messages.scriptureNotice}
         </p>
 
         {/* Bottom row */}
