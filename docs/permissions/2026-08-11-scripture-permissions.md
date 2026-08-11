@@ -69,13 +69,26 @@ now point at 215, verified resolving.
 English is unaffected: it links to `bible.com/bible/114`, which is NKJV, the same
 translation it quotes. English is the simple case — quoted and linked translations match.
 
-## One thing still unresolved, for the owner
+## Decided 2026-08-11: ACF stays, Brazilian orthography and all
 
 The site's ACF text uses Brazilian orthography (`unigênito`, six occurrences; the European
-`unigénito`, none), while `docs/superpowers/plans/2026-07-16-content-runway-wave1.md`
-states the intended convention is European. ACF is Sociedade Bíblica Trinitariana **do
-Brasil**'s edition, so this is inherent to the translation rather than a typo — choosing
-ACF means accepting Brazilian spelling in quoted scripture on a European-Portuguese site.
-Worth confirming that trade is intended, since the alternative (ARC Portugal for quotes
-too) would drop the allowance from 1,100 verses to whatever SBP grants, which is the
-constraint that made this whole question hard in the first place.
+`unigénito`, none), because ACF is Sociedade Bíblica Trinitariana **do Brasil**'s edition.
+That is inherent to the translation, not a typo, and it sits against
+`docs/superpowers/plans/2026-07-16-content-runway-wave1.md`, which states the intended
+convention is European orthography.
+
+**Owner ruling: ACF is fine.** The trade is accepted deliberately — Brazilian spelling in
+quoted scripture, in exchange for a 1,100-verse allowance that makes in-page reading
+possible without asking any publisher's permission. The alternative was ARC Portugal for
+quotes too, which would have replaced that allowance with whatever Sociedade Bíblica de
+Portugal grants, and SBP publishes no allowance at all beyond 50 verses.
+
+So the settled position, for anyone who finds this later and thinks it looks wrong:
+
+- **Quoted scripture: ACF.** Brazilian orthography is expected. Do not "correct"
+  `unigênito` to `unigénito` — that would misquote the translation the site credits.
+- **Reader-facing copy: European Portuguese, `tu`.** Unchanged; the method fixes this.
+- **Outbound reading links: ARC Portugal (215)**, because YouVersion has no ACF.
+
+The content-runway plan's European-orthography convention applies to the app's own prose,
+not to quoted scripture. Those are different things and only one of them is ours to spell.

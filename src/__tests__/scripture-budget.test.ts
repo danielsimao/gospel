@@ -115,3 +115,23 @@ describe("the Portuguese reading links", () => {
       .toEqual(Array(9).fill("114"));
   });
 });
+
+describe("the Portuguese scripture is quoted, not respelled", () => {
+  it("keeps ACF's own orthography in quoted text", () => {
+    /*
+     * Owner ruling 2026-08-11: ACF stays, Brazilian orthography and all. It is
+     * Sociedade Bíblica Trinitariana do Brasil's edition, and its spelling is
+     * the price of a 1,100-verse allowance that needs nobody's permission.
+     *
+     * This exists because "unigênito" looks like a typo on a European
+     * Portuguese site and a well-meaning pass would fix it -- which would
+     * misquote the translation the footer credits. The app's own prose stays
+     * European; quoted scripture is not ours to spell.
+     */
+    const pt = readFileSync(join(ROOT, "src", "messages", "pt.json"), "utf8");
+    expect(pt, "ACF's unigênito was respelled to the European form").not.toMatch(
+      /unigénito/,
+    );
+    expect(pt, "the ACF spelling vanished from quoted scripture").toMatch(/unigênito/);
+  });
+});
