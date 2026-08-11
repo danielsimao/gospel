@@ -93,15 +93,28 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={para(i)}
             >
-              {/* A pending item cannot be clicked or tabbed to, so onClick
-                  needs no guard of its own — the condition could never be
-                  false. */}
+              {/*
+               * The handler guards on state, and it has to.
+               *
+               * An earlier version relied on `pointer-events-none` plus
+               * `tabIndex={-1}` and claimed the condition could never be
+               * false. Both are wrong. A *done* item never had
+               * pointer-events-none at all, so clicking question one after
+               * reaching question three rewound the chain; and CSS pointer
+               * hit-testing is not consulted by programmatic `.click()`,
+               * voice control, or activation from the accessibility tree,
+               * so a pending item could be jumped to as well. `aria-disabled`
+               * announces a state; it does not enforce one.
+               */}
               <button
                 type="button"
-                onClick={() => setAcknowledged(i + 1)}
+                onClick={() => {
+                  if (state !== "armed") return;
+                  setAcknowledged(i + 1);
+                }}
                 aria-disabled={state !== "armed"}
                 tabIndex={state === "armed" ? 0 : -1}
-                className={`block w-full border-l pl-5 text-left italic leading-relaxed transition-[opacity,font-size] duration-500 ease-[var(--ease-out-strong)] motion-reduce:transition-none ${
+                className={`block w-full border-l pl-5 text-left italic leading-relaxed transition-opacity duration-500 ease-[var(--ease-out-strong)] motion-reduce:transition-none ${
                   state === "armed"
                     ? "cursor-pointer border-white/10 text-[15px] text-white/60 sm:text-base"
                     : state === "done"

@@ -113,6 +113,19 @@ export function TrackCommitted({
 
   return (
     <>
+      {/* The light the reader left, arriving with them. A CSS wash in the same
+          idiom as the decision screen's crossroads atmosphere — no asset, so
+          nothing here touches the flow-graphic budget. Adoption register, not
+          celebration: the courtroom stopped at the decision. */}
+      <div
+        aria-hidden="true"
+        data-dawn
+        className="pointer-events-none absolute inset-x-0 top-0 h-48"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 0%, rgba(212,168,67,0.13) 0%, transparent 68%)",
+        }}
+      />
       <m.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}

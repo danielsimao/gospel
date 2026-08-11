@@ -195,7 +195,23 @@ export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
        * data-flow-graphic rather than decoration-by-css: it needs the AVIF/
        * WebP pair, and the tests pin it to this screen and this screen only.
        */}
-      <div aria-hidden="true" data-flow-graphic className="pointer-events-none fixed inset-0 z-0 opacity-[0.35] sm:hidden">
+      {/*
+       * The door answers the commitment.
+       *
+       * It has sat here at 35% since it shipped and never responded to
+       * anything, which left the two-second hold as a screen where nothing
+       * happens rather than a beat. It now brightens and grows across exactly
+       * that hold — the same duration, so the light finishes arriving as the
+       * way on appears. Nothing announces it; the seam resolving to gold
+       * beside it does not announce itself either.
+       */}
+      <div
+        aria-hidden="true"
+        data-flow-graphic
+        className={`pointer-events-none fixed inset-0 z-0 transition-[opacity,transform] duration-[2000ms] ease-[var(--ease-out-strong)] motion-reduce:transition-none sm:hidden ${
+          committed ? "scale-[1.04] opacity-[0.5]" : "opacity-[0.35]"
+        }`}
+      >
         <picture>
           <source srcSet="/graphics/door-decision.avif" type="image/avif" />
           <img
@@ -207,7 +223,13 @@ export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
           />
         </picture>
       </div>
-      <div aria-hidden="true" data-flow-graphic className="pointer-events-none fixed inset-0 z-0 hidden opacity-[0.35] sm:block">
+      <div
+        aria-hidden="true"
+        data-flow-graphic
+        className={`pointer-events-none fixed inset-0 z-0 hidden transition-[opacity,transform] duration-[2000ms] ease-[var(--ease-out-strong)] motion-reduce:transition-none sm:block ${
+          committed ? "scale-[1.04] opacity-[0.5]" : "opacity-[0.35]"
+        }`}
+      >
         <picture>
           <source srcSet="/graphics/door-decision-wide.avif" type="image/avif" />
           <img

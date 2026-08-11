@@ -97,7 +97,7 @@ describe("the reflection chain", () => {
       /const \[acknowledged, setAcknowledged\] = useState\(0\)/,
     );
     expect(thinking, "questions are not buttons, so they cannot be armed").toMatch(
-      /<button[\s\S]*?onClick=\{\(\) => setAcknowledged\(i \+ 1\)\}/,
+      /<button[\s\S]*?setAcknowledged\(i \+ 1\)/,
     );
     // Pending items stay readable to a screen reader -- dimmed, not hidden.
     expect(thinking).toMatch(/aria-disabled=\{state !== "armed"\}/);
@@ -141,5 +141,44 @@ describe("reachability after the cuts", () => {
       expect(b.bands.deeper, `${name} trackB.bands.deeper is orphaned`).toBeUndefined();
       expect(msgs.footer.cardsLink, `${name} footer.cardsLink is missing`).toBeTruthy();
     }
+  });
+});
+
+describe("the transition into next steps", () => {
+  const invitation = strip(read("src", "components", "invitation-screen.tsx"));
+
+  it("lets the door respond to the commitment, over the length of the hold", () => {
+    // The door has sat behind this screen at 35% since it shipped and has
+    // never responded to anything. Nothing announces the change -- the seam's
+    // gold resolution does not announce itself either.
+    expect(invitation, "the door does not react to the answer").toMatch(
+      /committed \? "scale-\[1\.04\] opacity-\[0\.5\]" : "opacity-\[0\.35\]"/,
+    );
+    expect(invitation, "the door's change is not the length of the hold").toMatch(
+      /duration-\[2000ms\]/,
+    );
+  });
+
+  it("respects reduced motion on the door", () => {
+    expect(invitation).toMatch(/motion-reduce:transition-none/);
+  });
+
+  it("carries the light into the arrival", () => {
+    expect(committed, "the committed opener lost its dawn").toMatch(/data-dawn/);
+  });
+});
+
+describe("the reflection chain cannot be driven out of turn", () => {
+  it("guards the handler rather than trusting CSS and tabindex", () => {
+    /*
+     * Found in review: aria-disabled announces a state, it does not enforce
+     * one. A done item had no pointer-events-none at all, so clicking the
+     * first question after reaching the third rewound the chain; and pointer
+     * hit-testing is not consulted by .click(), voice control, or activation
+     * from the accessibility tree, so a pending item could be jumped to.
+     */
+    expect(thinking, "the click handler trusts CSS to keep it unreachable").toMatch(
+      /if \(state !== "armed"\) return;/,
+    );
   });
 });

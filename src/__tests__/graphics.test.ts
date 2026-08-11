@@ -125,15 +125,36 @@ describe("the decision-screen door", () => {
      * desktop's door-decision-wide — carry the same opacity: only the source
      * image and the responsive display class differ between them.
      */
+    /*
+     * The door now answers the commitment, so its opacity is a conditional
+     * rather than a constant and the wrapper carries a template literal. The
+     * measured value is unchanged where it was measured: 0.35 at rest, behind
+     * the question and three buttons.
+     *
+     * On a profession of faith it brightens to 0.5 across the hold. That is a
+     * different screen — one line of gold type, no buttons, nothing to read
+     * over the image — which is why it is allowed to go up at all. It is
+     * still pinned strictly below the 0.55 that was screenshotted and
+     * rejected as too hot, so "brighter afterwards" cannot quietly become
+     * "brighter than the value we already ruled out".
+     */
     const wrappers = [...invitation.matchAll(
-      /<div aria-hidden="true" data-flow-graphic className="([^"]*)">/g,
+      /data-flow-graphic\s+className=\{`([\s\S]*?)`\}/g,
     )];
     expect(wrappers, "expected exactly two door wrapper divs (mobile, desktop)").toHaveLength(2);
     const [mobileClass, desktopClass] = wrappers.map((m) => m[1]);
     for (const className of [mobileClass, desktopClass]) {
       expect(className).toMatch(/pointer-events-none/);
       expect(className).toMatch(/fixed inset-0/);
-      expect(className).toMatch(/opacity-\[0\.35\]/);
+      expect(className, "the resting opacity is no longer the measured 0.35").toMatch(
+        /opacity-\[0\.35\]/,
+      );
+      const committedOpacity = className.match(/committed \? "[^"]*opacity-\[([\d.]+)\]/);
+      expect(committedOpacity, "the committed branch no longer sets an opacity").not.toBeNull();
+      expect(
+        Number(committedOpacity![1]),
+        "the door brightened past the 0.55 that was measured and rejected",
+      ).toBeLessThan(0.55);
     }
     expect(mobileClass, "the mobile wrapper should hide at sm").toMatch(/sm:hidden/);
     expect(desktopClass, "the desktop wrapper should stay hidden below sm").toMatch(/hidden/);
