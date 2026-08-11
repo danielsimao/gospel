@@ -245,7 +245,35 @@ HarperCollins Christian Publishing's gratis-use guidelines require all of: no mo
 500 verses; Scripture not more than 25% of the total text; Scripture not more than 50%
 of an entire book; not a commentary or reference work; properly cited.
 
-145 verses is 16.5% of John's 879 and well under 500. Required notice, verbatim:
+**Two wordings of the book-extent condition are in circulation**, and it does not matter
+which binds us. The current HarperCollins page reads "not more than 50% of an entire
+book of the Bible"; the older formulation, still widely mirrored (StudyLight,
+Blue Letter Bible and most NKJV front matter), reads "do not amount to a complete book
+of the Bible". At 145 verses of John we clear both: it is neither a complete book nor
+half of one. The 500-verse and 25%-of-total-text conditions are identical in both
+versions and are independently confirmed.
+
+145 verses is 16.5% of John's 879, so the 50%-of-a-book test is met with room.
+
+**The 500-verse test is tighter than the first draft implied, and this needs an
+actual count before Phase 2 ships.** That draft said 145 was "well under 500". It is —
+but the cap applies to *total* Scripture quoted in the work, and the app already quotes
+NKJV heavily. A scan of `en.json` finds **79 distinct verse references spanning roughly
+234 verses** across the test, verdict, grace, learn and blog. Added to 145, that is
+**≈379 of the 500** — three quarters of the allowance consumed, not a comfortable
+margin.
+
+That estimate is rough in both directions: some of those 79 are bare citations rather
+than quotations (which would lower it), and quoted text without an adjacent reference
+would not have been counted (which would raise it). Neither correction is small enough
+to ignore.
+
+**Required before Phase 2:** a real count of quoted NKJV verses, and test 8 (§9) raised
+to guard the *total* rather than only the passage files. If the true figure approaches
+500, the choice is to request written permission — which HarperCollins grants through a
+published form with a six-to-eight-week turnaround — or to drop a passage.
+
+Required notice, verbatim:
 
 > Scripture taken from the New King James Version®. Copyright © 1982 by Thomas Nelson.
 > Used by permission. All rights reserved.
@@ -257,8 +285,14 @@ owed regardless of this feature, and should not wait for Phase 2.
 ### 5.3 Portuguese does not clear, and there is no free substitute
 
 Sociedade Bíblica de Portugal's published EULA for biblia.pt permits redistribution of
-**at most 50 verses** for personal, non-commercial use. 145 is nearly three times that.
-ARC (Portugal) is © 2001 Sociedade Bíblica de Portugal.
+**at most 50 verses** for personal, non-commercial use — "até a um máximo de 50
+(cinquenta) versículos da Bíblia, considerado como exemplo de utilização justa".
+145 is nearly three times that. ARC (Portugal) is © 2001 Sociedade Bíblica de Portugal.
+
+The same clause carries a condition worth noting even though we exceed the allowance
+anyway: content shared under it must display a link back to the biblia.pt platform.
+Any permission we are granted may well repeat that requirement, so the reader component
+should be able to render a source link alongside the attribution notice.
 
 No modern, freely-licensed European-Portuguese translation exists as a fallback:
 public-domain Almeida editions (1819, 1848, 1911) are pre-orthographic-reform and read
@@ -441,9 +475,12 @@ hidden a failure in this repo before (`AGENTS.md`).
    CLS regression, because the existing pre-paint tests cannot.
 7. **Phase 2 passage data:** verses present are contiguous and match `range`; the
    attribution notice string renders wherever `mode: "inline"` does.
-8. **Phase 2 verse budget:** total verses across all passage files sum to 145, so a
-   future addition that would breach the gratis allowance fails the build rather than
-   shipping. This turns a licensing constraint into a mechanical check.
+8. **Phase 2 verse budget — the whole work, not just the passage files.** The gratis cap
+   is 500 verses of NKJV across the entire site, and §5.2 estimates roughly 234 already
+   quoted before this feature adds 145. The test must therefore sum the passage files
+   *and* the verses quoted in `en.json`, and fail above an agreed ceiling well short of
+   500. This turns a licensing constraint into a mechanical check, and it is the test
+   that stops a future blog post from quietly breaching the allowance.
 
 ---
 
