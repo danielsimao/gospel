@@ -212,13 +212,23 @@ the footer is read cold.
 
 ## 4. Owner rulings required
 
-| # | Ruling | Default if unanswered |
+**Ruled 2026-08-11.** All four build decisions are settled; O5 is an action, not a build
+choice.
+
+| # | Ruling | Decision |
 |---|---|---|
-| O1 | Split `nextSteps.cta` per track (+ `metaTitle`, §3.3). Proposed EN: "Your first day" / "Things worth weighing". PT by the owner | Keep "What now?" for both; no metadata change needed; everything else proceeds |
-| O2 | Cut paragraph 1 of `trackA.whatHappened` — it recaps what the reader just did, the same restatement cut from grace's first beat on 2026-07-31 | Keep all three paragraphs |
-| O3 | Demote the church row from "Today" to "As you grow" | Demote (structural, low risk) |
-| O4 | Remove the needGod row (§3.2) | Remove |
-| O5 | Write to Sociedade Bíblica de Portugal (§5.3) — needed for existing quotation as well as this feature | Send the letter |
+| O1 | Split `nextSteps.cta` per track | **Split, EN as proposed.** `ctaCommitted` = "Your first day", `ctaThinking` = "Things worth weighing", plus `nextSteps.metaTitle` taking over `page.tsx:33` and `:56`. **PT strings are outstanding — see below** |
+| O2 | Cut paragraph 1 of `trackA.whatHappened` | **Cut.** The opener becomes what God did, then 2 Corinthians 5:17 |
+| O3 | Church row placement | **Demote to "As you grow"**, first in that list. Today becomes the chapter and the prayer |
+| O4 | The needGod row | **Remove.** Track B drops to John 3 and Learn. The footer keeps its needGod link |
+| O5 | Write to Sociedade Bíblica de Portugal | Outstanding, and owed for the ARC already shipped regardless of this work (§5.3) |
+
+**Outstanding on O1 and O2: the Portuguese.** Three new keys need PT strings
+(`ctaCommitted`, `ctaThinking`, `metaTitle`), and O2's cut needs the PT paragraph
+removed to match. Portuguese idiom belongs to the owner — `docs/METHOD.md` fixes `tu`
+throughout, and the repo's own copy-review skill explicitly does not rewrite PT. The
+plan will carry drafted PT marked for the owner's pass rather than shipping a missing
+key, since `validateMessages` runs on both locales and a gap fails the build.
 
 ---
 
