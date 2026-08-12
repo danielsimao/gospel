@@ -6,7 +6,7 @@ import {
   Geographies,
   Geography,
 } from "react-simple-maps";
-import { POPULATION_CENTERS, nextPingDelayMs } from "./map-constants";
+import { DEATH_CENTERS, nextPingDelayMs, pickWeighted } from "./map-constants";
 
 const GEO_URL = "/data/world-110m.json";
 
@@ -63,8 +63,9 @@ export const WorldMap = memo(function WorldMap() {
     const g = pulseGroupRef.current;
     if (!g) return;
 
-    const center =
-      POPULATION_CENTERS[Math.floor(Math.random() * POPULATION_CENTERS.length)];
+    // Weighted by the share of the world's deaths each place actually carries.
+    const center = pickWeighted(DEATH_CENTERS);
+    if (!center) return;
     const lng = center[0] + (Math.random() - 0.5) * 2;
     const lat = center[1] + (Math.random() - 0.5) * 2;
     const [x, y] = projectNaturalEarth(lng, lat);

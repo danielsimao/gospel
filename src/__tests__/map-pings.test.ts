@@ -1,7 +1,12 @@
 import { describe, it, expect, afterEach, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { MEAN_PING_GAP_MS, nextPingDelayMs } from "@/components/eternity/map-constants";
+import {
+  DEATH_CENTERS,
+  MEAN_PING_GAP_MS,
+  nextPingDelayMs,
+  pickWeighted,
+} from "@/components/eternity/map-constants";
 
 /**
  * The death pings' cadence.
@@ -113,6 +118,99 @@ describe("the rate the pings claim", () => {
   });
 });
 
+describe("where the deaths land", () => {
+  it("carries a coherent, normalised set of shares", () => {
+    expect(DEATH_CENTERS.length).toBeGreaterThan(60);
+    const total = DEATH_CENTERS.reduce((s, c) => s + c[2], 0);
+    // Rounded to 6dp in the generated file, so exact equality is not available.
+    expect(total).toBeCloseTo(1, 4);
+    for (const [lng, lat, share] of DEATH_CENTERS) {
+      expect(share).toBeGreaterThan(0);
+      expect(Math.abs(lng)).toBeLessThanOrEqual(180);
+      expect(Math.abs(lat)).toBeLessThanOrEqual(90);
+    }
+  });
+
+  it("reaches the countries the old hand-picked list had no point in", () => {
+    /*
+     * Ethiopia, the Philippines, Ukraine and Myanmar bury over two million
+     * people a year between them and had no point at all on the 44-city list.
+     * Asserted by coordinate box rather than by name, since the generated file
+     * carries the place name only as a trailing comment.
+     */
+    const near = (lng: number, lat: number) =>
+      DEATH_CENTERS.some(
+        (c) => Math.abs(c[0] - lng) < 2.5 && Math.abs(c[1] - lat) < 2.5,
+      );
+    expect(near(38.7, 9.0), "Addis Ababa").toBe(true);
+    expect(near(120.97, 14.6), "Manila").toBe(true);
+    expect(near(30.5, 50.43), "Kyiv").toBe(true);
+    expect(near(96.15, 16.8), "Yangon/Naypyidaw").toBe(true);
+  });
+
+  it("no longer gives Singapore as many deaths as Shanghai", () => {
+    /*
+     * The distortion this table exists to remove. Uniform selection gave both
+     * an identical share; by the sourced figures Shanghai's country buries
+     * roughly two hundred times as many people as Singapore's.
+     */
+    const at = (lng: number, lat: number) =>
+      DEATH_CENTERS.find(
+        (c) => Math.abs(c[0] - lng) < 0.5 && Math.abs(c[1] - lat) < 0.5,
+      );
+    const singapore = at(103.85, 1.35);
+    const shanghai = at(121.47, 31.23);
+    expect(singapore, "Singapore missing").toBeDefined();
+    expect(shanghai, "Shanghai missing").toBeDefined();
+    if (!singapore || !shanghai) return;
+    expect(shanghai[2] / singapore[2]).toBeGreaterThan(50);
+  });
+
+  it("picks in proportion to the shares, not uniformly", () => {
+    const rand = mulberry32(6620);
+    vi.spyOn(Math, "random").mockImplementation(rand);
+    const pool = [
+      [0, 0, 0.9],
+      [10, 10, 0.1],
+    ] as const;
+    let heavy = 0;
+    const N = 40_000;
+    for (let i = 0; i < N; i++) if (pickWeighted(pool)?.[0] === 0) heavy++;
+    expect(heavy / N).toBeGreaterThan(0.88);
+    expect(heavy / N).toBeLessThan(0.92);
+  });
+
+  it("renormalises over whatever pool it is handed", () => {
+    /*
+     * What lets the globe pass in only the centres facing the reader. A pool
+     * whose shares sum to 0.02 must still split 3:1 inside itself, not fall
+     * back to uniform or return nothing.
+     */
+    const rand = mulberry32(99);
+    vi.spyOn(Math, "random").mockImplementation(rand);
+    const pool = [
+      [0, 0, 0.015],
+      [10, 10, 0.005],
+    ] as const;
+    let heavy = 0;
+    const N = 40_000;
+    for (let i = 0; i < N; i++) if (pickWeighted(pool)?.[0] === 0) heavy++;
+    expect(heavy / N).toBeGreaterThan(0.73);
+    expect(heavy / N).toBeLessThan(0.77);
+  });
+
+  it("survives the degenerate pools the globe can hand it", () => {
+    expect(pickWeighted([])).toBeUndefined();
+    // A pool of zero-weight entries must still yield a place, not undefined.
+    const zeroed = [
+      [0, 0, 0],
+      [1, 1, 0],
+    ] as const;
+    expect(pickWeighted(zeroed)).toBeDefined();
+    expect(pickWeighted([[5, 5, 1]] as const)?.[0]).toBe(5);
+  });
+});
+
 describe("both surfaces draw their gaps, neither ticks", () => {
   const globe = strip(read("src", "components", "eternity", "death-globe.tsx"));
   const flat = strip(read("src", "components", "eternity", "world-map.tsx"));
@@ -121,6 +219,11 @@ describe("both surfaces draw their gaps, neither ticks", () => {
     for (const [name, src] of [["death-globe", globe], ["world-map", flat]] as const) {
       expect(src, `${name} still ticks on a fixed interval`).not.toMatch(/setInterval/);
       expect(src).toMatch(/nextPingDelayMs\(\)/);
+      // Neither surface may reach for an unweighted pick again.
+      expect(src, `${name} picks a place uniformly`).not.toMatch(
+        /Math\.floor\(Math\.random\(\) \* (pool|DEATH_CENTERS)/,
+      );
+      expect(src).toMatch(/pickWeighted\(/);
     }
   });
 

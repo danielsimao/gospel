@@ -2,7 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import createGlobe from "cobe";
-import { POPULATION_CENTERS, nextPingDelayMs } from "./map-constants";
+import {
+  DEATH_CENTERS,
+  type DeathCenter,
+  nextPingDelayMs,
+  pickWeighted,
+} from "./map-constants";
 import { WorldMap } from "./world-map";
 
 const PING_LIFE_MS = 2500;
@@ -23,9 +28,9 @@ function pingSize(ageMs: number): number {
 
 // Reduced motion (which Android also reports under battery saver / "remove
 // animations") disables auto-rotation — so instead of freezing wherever it
-// loaded, the globe parks facing the densest population hemisphere: a view
-// centered on ~32°E covers 37 of 44 population centers, so the death pings
-// still land where the reader can see them.
+// loaded, the globe parks facing the densest population hemisphere: the near
+// hemisphere at ~32°E holds 68 of the 81 centres and 87.7% of the world's
+// dying by weight, so the death pings still land where the reader can see them.
 const STATIC_VIEW_LNG = 32;
 // cobe's longitude→phi mapping, from its "rotate to location" example.
 const STATIC_PHI = Math.PI - ((STATIC_VIEW_LNG * Math.PI) / 180 - Math.PI / 2);
@@ -83,9 +88,9 @@ function centersInView(
   phi: number,
   theta: number,
   crop: Crop,
-): typeof POPULATION_CENTERS {
+): readonly DeathCenter[] {
   const centerLng = phiToCenterLng(phi);
-  return POPULATION_CENTERS.filter(([lng, lat]) => {
+  return DEATH_CENTERS.filter(([lng, lat]) => {
     const p = project(lng, lat, centerLng, theta);
     return (
       p.depth > MIN_DEPTH &&
@@ -98,9 +103,9 @@ function centersInView(
 }
 
 /** The handful of centres most squarely facing the viewer right now. */
-function mostFaceOn(phi: number, theta: number): typeof POPULATION_CENTERS {
+function mostFaceOn(phi: number, theta: number): readonly DeathCenter[] {
   const centerLng = phiToCenterLng(phi);
-  return [...POPULATION_CENTERS]
+  return [...DEATH_CENTERS]
     .sort(
       (a, b) =>
         project(b[0], b[1], centerLng, theta).depth -
@@ -111,9 +116,10 @@ function mostFaceOn(phi: number, theta: number): typeof POPULATION_CENTERS {
 
 /**
  * The homepage deaths visual as a 3D globe: slowly rotating, drag/touch to
- * spin, red pings averaging 1.8/sec at random population centers — arriving in
- * clumps and lulls rather than on a beat, see nextPingDelayMs. Falls back to
- * the flat WorldMap when WebGL is unavailable.
+ * spin, red pings averaging 1.8/sec — placed in proportion to where people
+ * actually die (see DEATH_CENTERS) and arriving in clumps and lulls rather than
+ * on a beat (see nextPingDelayMs). Falls back to the flat WorldMap when WebGL
+ * is unavailable.
  */
 interface DeathGlobeProps {
   /**
@@ -237,7 +243,14 @@ export function DeathGlobe({
        * that stops pinging reads as broken, so it never simply skips.
        */
       const pool = inView.length > 0 ? inView : mostFaceOn(livePhi, theta);
-      const center = pool[Math.floor(Math.random() * pool.length)];
+      /*
+       * Weighted within the pool, not uniform across it: the pool is already a
+       * slice of the world (what is facing the reader), so the shares are
+       * renormalised over just those places. Picking uniformly here would throw
+       * away the weighting the moment the globe cropped anything.
+       */
+      const center = pickWeighted(pool);
+      if (!center) return;
       pings.push({
         // POPULATION_CENTERS is [lng, lat]; cobe wants [lat, lng]. Jitter like the 2D map.
         location: [center[1] + (Math.random() - 0.5) * 2, center[0] + (Math.random() - 0.5) * 2],
