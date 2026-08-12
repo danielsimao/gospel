@@ -6,7 +6,7 @@ import {
   Geographies,
   Geography,
 } from "react-simple-maps";
-import { POPULATION_CENTERS } from "./map-constants";
+import { POPULATION_CENTERS, nextPingDelayMs } from "./map-constants";
 
 const GEO_URL = "/data/world-110m.json";
 
@@ -96,10 +96,14 @@ export const WorldMap = memo(function WorldMap() {
   }, []);
 
   useEffect(() => {
-    // 1.8 deaths/sec = 1 pulse every ~556ms
+    // 1.8 deaths/sec on average, drawn per-gap rather than ticked — the flat map
+    // is the WebGL fallback, so it carries the same cadence as the globe.
     addPulse();
-    const interval = setInterval(addPulse, 556);
-    return () => clearInterval(interval);
+    let timer = setTimeout(function tick() {
+      addPulse();
+      timer = setTimeout(tick, nextPingDelayMs());
+    }, nextPingDelayMs());
+    return () => clearTimeout(timer);
   }, [addPulse]);
 
   return (

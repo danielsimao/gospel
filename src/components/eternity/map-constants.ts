@@ -1,5 +1,37 @@
 export const GEO_URL = "/data/world-110m.json";
 
+/**
+ * 1.8 deaths/sec — the figure the page states in words (home-shell's RATE_CARDS:
+ * 1.8/sec, 108/min, 6,500/hr, 155,000/day). The pings illustrate that number, so
+ * this is the one thing here that must not drift from it.
+ */
+export const MEAN_PING_GAP_MS = 556;
+
+/**
+ * How long to wait before the next death.
+ *
+ * Deaths are a Poisson process: independent events at a constant average rate,
+ * with no memory of each other. The gaps between them are therefore
+ * exponentially distributed — mostly shorter than the mean, with a long tail of
+ * quiet. Simulated: median ~387ms against the ~556ms mean, 10% of gaps under
+ * 60ms, 1% over 2.5s. On screen that is clumps and lulls instead of a tick —
+ * with a 2.5s ping life the count alive at once wanders between 1 and ~12
+ * rather than sitting on 4-5.
+ *
+ * Both callers previously used setInterval, which is the one property real
+ * deaths certainly do not have: a perfectly even beat reads as a machine keeping
+ * time rather than as events happening to people. The rate is unchanged.
+ *
+ * `1 - Math.random()`, not `Math.random()`: Math.random() can return exactly 0,
+ * and -mean * log(0) is Infinity — a ping chain that schedules its next tick
+ * past the heat death of the universe and never fires again. Shifting the draw
+ * into (0, 1] makes that unreachable. Guarded in map-pings.test.ts, because it
+ * is exactly the kind of "redundant" -1 a later reader deletes.
+ */
+export function nextPingDelayMs(mean = MEAN_PING_GAP_MS): number {
+  return -mean * Math.log(1 - Math.random());
+}
+
 // [longitude, latitude] of major population centers for death pulse targeting
 export const POPULATION_CENTERS: [number, number][] = [
   // East Asia

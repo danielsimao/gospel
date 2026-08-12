@@ -2,11 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import createGlobe from "cobe";
-import { POPULATION_CENTERS } from "./map-constants";
+import { POPULATION_CENTERS, nextPingDelayMs } from "./map-constants";
 import { WorldMap } from "./world-map";
 
-// 1.8 deaths/sec — same cadence as the flat map's pulses.
-const PING_INTERVAL_MS = 556;
 const PING_LIFE_MS = 2500;
 const MAX_MARKER_SIZE = 0.09;
 
@@ -113,7 +111,8 @@ function mostFaceOn(phi: number, theta: number): typeof POPULATION_CENTERS {
 
 /**
  * The homepage deaths visual as a 3D globe: slowly rotating, drag/touch to
- * spin, one red ping per ~556ms at a random population center. Falls back to
+ * spin, red pings averaging 1.8/sec at random population centers — arriving in
+ * clumps and lulls rather than on a beat, see nextPingDelayMs. Falls back to
  * the flat WorldMap when WebGL is unavailable.
  */
 interface DeathGlobeProps {
@@ -183,7 +182,7 @@ export function DeathGlobe({
     let width = 0;
     let pings: Ping[] = [];
     let globe: ReturnType<typeof createGlobe> | null = null;
-    let pingTimer: ReturnType<typeof setInterval> | null = null;
+    let pingTimer: ReturnType<typeof setTimeout> | null = null;
     let rafId = 0;
     let visible = true;
 
@@ -246,6 +245,19 @@ export function DeathGlobe({
       });
     };
 
+    /*
+     * Self-rescheduling rather than setInterval, so each gap is drawn fresh from
+     * the exponential distribution (see nextPingDelayMs). The reschedule sits
+     * outside addPing deliberately: addPing returns early while the globe is
+     * off-screen or the tab is hidden, and the chain has to keep its own time
+     * through that — rescheduling inside would end the chain on the first
+     * skipped ping and the globe would come back from a background tab dead.
+     */
+    const tick = () => {
+      addPing();
+      pingTimer = setTimeout(tick, nextPingDelayMs());
+    };
+
     // cobe v2 runs its own render loop; we push phi + marker state each frame.
     const frame = () => {
       if (!globe) return;
@@ -288,8 +300,8 @@ export function DeathGlobe({
           markers: [],
         });
         canvas.style.opacity = "1";
-        pingTimer = setInterval(addPing, PING_INTERVAL_MS);
         addPing();
+        pingTimer = setTimeout(tick, nextPingDelayMs());
         rafId = requestAnimationFrame(frame);
       } catch {
         setWebglFailed(true);
@@ -298,7 +310,7 @@ export function DeathGlobe({
 
     const stop = () => {
       cancelAnimationFrame(rafId);
-      if (pingTimer) clearInterval(pingTimer);
+      if (pingTimer) clearTimeout(pingTimer);
       pingTimer = null;
       globe?.destroy();
       globe = null;
