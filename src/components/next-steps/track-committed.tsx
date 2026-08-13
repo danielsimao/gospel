@@ -113,17 +113,27 @@ export function TrackCommitted({
 
   return (
     <>
-      {/* The light the reader left, arriving with them. A CSS wash in the same
-          idiom as the decision screen's crossroads atmosphere — no asset, so
-          nothing here touches the flow-graphic budget. Adoption register, not
-          celebration: the courtroom stopped at the decision. */}
+      {/*
+       * The light the reader left, arriving with them. A CSS wash in the same
+       * idiom as the decision screen's crossroads atmosphere — no asset, so
+       * nothing here touches the flow-graphic budget. Adoption register, not
+       * celebration: the courtroom stopped at the decision.
+       *
+       * Fixed and full-bleed, not absolute inside the reading column. Anchored
+       * to the column it began at the top of the content area — which is the
+       * exact pixel the header ends, so the glow started with a hard horizontal
+       * edge under the chrome — and it inherited the column's width, so a wash
+       * meant to light the page was a 512px band down the middle of a 1512px
+       * viewport. The header is transparent and painted above this (z-10 over
+       * the shell's z-[1]), so running underneath it is what removes the seam.
+       */}
       <div
         aria-hidden="true"
         data-dawn
-        className="pointer-events-none absolute inset-x-0 top-0 h-48"
+        className="pointer-events-none fixed inset-x-0 top-0 h-64 sm:h-80"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 0%, rgba(212,168,67,0.13) 0%, transparent 68%)",
+            "radial-gradient(ellipse 120% 100% at 50% 0%, rgba(212,168,67,0.15) 0%, rgba(212,168,67,0.05) 45%, transparent 75%)",
         }}
       />
       <m.h1

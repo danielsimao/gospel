@@ -198,8 +198,21 @@ describe("the transition into next steps", () => {
     expect(invitation).toMatch(/motion-reduce:transition-none/);
   });
 
-  it("carries the light into the arrival", () => {
+  it("carries the light into the arrival, without a seam under the header", () => {
+    /*
+     * The dawn was absolute inside PageShell's reading column, so it began at
+     * the top of the content area — the exact pixel the header ends, measured
+     * at y=60 for both — and inherited the column's width, painting a 512px
+     * band down the middle of a 1512px viewport. Fixed and full-bleed runs it
+     * behind the transparent header instead, which is what removes the edge.
+     */
     expect(committed, "the committed opener lost its dawn").toMatch(/data-dawn/);
+    expect(committed, "the dawn went back inside the reading column").toMatch(
+      /data-dawn[\s\S]{0,120}fixed inset-x-0 top-0/,
+    );
+    expect(committed, "the dawn stopped being click-through").toMatch(
+      /data-dawn[\s\S]{0,120}pointer-events-none/,
+    );
   });
 });
 
