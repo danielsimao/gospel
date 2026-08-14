@@ -246,16 +246,20 @@ export function VerdictScreen({
        * The wash drains on the last beat, so the door arrives on ground that is
        * no longer red — everything since the landing screen has been.
        *
-       * On the document it is drained from the start, because isLastBeat is
-       * true from mount there. Correct rather than accidental: a re-reader is
-       * past the pressure the wash carries, and the record is not the sentence
-       * being passed a second time.
+       * The document does not drain it to 0, though isLastBeat is true from
+       * mount there too. A re-reader is past the pressure the sequence builds
+       * beat by beat, so the full wash would be wrong — but the document is
+       * still the verdict, not a neutral summary of it, and a fully drained
+       * background made the re-read screen look like it had left red behind
+       * entirely. 0.4 keeps the same judgment-red ellipse legible as
+       * atmosphere rather than pressure: present at a glance, not competing
+       * with the confession and count it sits behind.
        */}
       <div
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-1000 ease-[var(--ease-out-strong)] motion-reduce:transition-none"
         style={{
-          opacity: isLastBeat ? 0 : 1,
+          opacity: showAll ? 0.4 : isLastBeat ? 0 : 1,
           background:
             "radial-gradient(ellipse at 50% 50%, rgba(239,68,68,0.12) 0%, transparent 62%)",
         }}
@@ -465,6 +469,29 @@ export function VerdictScreen({
           </button>
         )}
       </div>
+
+      {/* The way on itself, not just a cue toward it — fixed to the viewport so
+          it is present in the very first frame of a re-entry, same string and
+          same gold as the in-flow button below it; both dispatch the same
+          handleBridgeClick. The in-flow button measures 34px below the fold at
+          390×844, so without this a returning reader has no way forward until
+          they scroll on faith. Reuses the consent-h + safe-area-inset-bottom
+          anchor the cue below already establishes.
+          Retires with the cue on the first scroll — see hasScrolled above:
+          once the reader is moving, the real button is one small scroll away
+          (34px), and a pill still floating over the record they are now
+          reading is chrome competing with the thing it was built to reveal. */}
+      {showAll && !hasScrolled && (
+        <div className="pointer-events-none fixed inset-x-0 bottom-[calc(7rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] z-20 flex justify-center px-7">
+          <button
+            type="button"
+            onClick={handleBridgeClick}
+            className="pointer-events-auto rounded-full border border-[#D4A843]/25 bg-[#060404]/85 px-5 py-2.5 text-[15px] font-medium tracking-[-0.01em] text-[#D4A843] shadow-[0_8px_32px_rgba(0,0,0,0.55)] backdrop-blur-sm outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[#D4A843]/70 sm:text-base"
+          >
+            {testMessages.verdict.bridgeButton}
+          </button>
+        </div>
+      )}
 
       {/* Fixed to the viewport, not the document: the button it points at is
           below the fold, so a cue positioned in the document would be below the
