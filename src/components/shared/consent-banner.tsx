@@ -24,16 +24,27 @@ const COPY = {
 } as const;
 
 /*
- * The banner's two curves, declared once and spent twice: framer moves the
- * banner with them, CSS moves the reserve the banner claims with them. That is
- * the whole mechanism — the content displaced by the banner has to travel on the
- * banner's own curve, or it arrives somewhere the banner is not — so the two
- * cannot be allowed to drift apart in separate declarations.
+ * The banner's curves. On entry, declared once and spent twice: framer moves
+ * the banner with ENTER and CSS moves the reserve on the same timing — content
+ * rising to meet a banner has to travel on the banner's own curve, or it
+ * arrives somewhere the banner is not. On exit the two part ways on purpose:
+ * see RESERVE_EXIT.
  */
 const ENTER = { duration: 0.3, ease: EASE_OUT_STRONG };
 // framer's "easeIn" written out, which is also CSS `ease-in`. Named by its
 // numbers so the CSS twin below can be generated rather than transcribed.
 const EXIT = { duration: 0.15, ease: [0.42, 0, 1, 1] as const };
+/*
+ * The reserve's own exit. The banner leaves fast — a dismissal should feel
+ * dismissed — but content following it down at 150ms reads as the page
+ * shifting under the reader. So the reserve settles on a longer ease-in-out
+ * instead: barely moving while the banner is still in flight, then gliding
+ * the rest of the way once it has gone. Safe in exactly one direction — the
+ * reserve may lag the banner (a briefly empty band at the bottom edge), it
+ * must never lead it (content arriving under a banner that has not left), so
+ * this curve has to stay behind EXIT's at every point.
+ */
+const RESERVE_EXIT = { duration: 0.5, ease: [0.45, 0, 0.55, 1] as const };
 
 const cssTiming = (motion: { duration: number; ease: readonly number[] }) =>
   `${Math.round(motion.duration * 1000)}ms cubic-bezier(${motion.ease.join(",")})`;
@@ -126,14 +137,16 @@ export function ConsentBanner() {
 
   function answer(value: "granted" | "denied") {
     // The reserve starts closing here, as the banner starts leaving — not when
-    // it has left. Shrinking on the exit's own curve, the content rides the
-    // banner down and is never uncovered before the banner has moved off it,
-    // which is what releasing it early used to cost. Where the property cannot
-    // be transitioned this does nothing and onExitComplete below drops it after
-    // the banner has gone, which is the old, jumping behaviour intact.
+    // it has left. It closes on RESERVE_EXIT, deliberately behind the banner
+    // the whole way, so the content settles into the vacated space instead of
+    // dropping with the banner — and is never under a banner that has not yet
+    // moved off, which is what releasing it early used to cost. Where the
+    // property cannot be transitioned this does nothing and onExitComplete
+    // below drops it after the banner has gone, which is the old, jumping
+    // behaviour intact.
     releasedRef.current = true;
     if (RESERVE_TRAVELS) {
-      document.documentElement.style.setProperty("--consent-h-timing", cssTiming(EXIT));
+      document.documentElement.style.setProperty("--consent-h-timing", cssTiming(RESERVE_EXIT));
       document.documentElement.style.setProperty("--consent-h", "0px");
     }
 
@@ -143,16 +156,26 @@ export function ConsentBanner() {
   }
 
   return (
-    /* The inline properties come off once the banner has gone. By then the
-       reserve has already travelled to 0px under `answer`, so this changes
+    /* The inline properties come off once both journeys are over: the banner's,
+       which AnimatePresence reports here, and — where it travels — the
+       reserve's longer one, which outlives the banner by RESERVE_EXIT minus
+       EXIT. By the time cleanup runs the reserve is at 0px, so it changes
        nothing on screen — it is the tidy-up, and the release itself where a
-       length cannot be transitioned. What it must not become again is
-       the release for everyone: clearing it outright the moment Accept is tapped
-       is a jump, and clearing it here is the same jump 150ms later. */
+       length cannot be transitioned. What it must not become again is the
+       release for everyone: clearing it outright the moment Accept is tapped
+       is a jump, and retiming a still-travelling transition to 0s is the same
+       jump 150ms later. */
     <AnimatePresence
       onExitComplete={() => {
-        document.documentElement.style.removeProperty("--consent-h");
-        document.documentElement.style.removeProperty("--consent-h-timing");
+        const cleanup = () => {
+          document.documentElement.style.removeProperty("--consent-h");
+          document.documentElement.style.removeProperty("--consent-h-timing");
+        };
+        if (RESERVE_TRAVELS) {
+          window.setTimeout(cleanup, (RESERVE_EXIT.duration - EXIT.duration) * 1000 + 100);
+        } else {
+          cleanup();
+        }
       }}
     >
       {visible && (
