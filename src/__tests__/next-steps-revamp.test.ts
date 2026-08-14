@@ -75,10 +75,24 @@ describe("the committed track's read card gets a mark-as-read control", () => {
   // writer reading-plan.tsx uses, not a second copy of that rule.
   it("marks the day through the shared writer, not a local write", () => {
     expect(committed, "markDayRead is not imported").toMatch(
-      /import \{ markDayRead \} from "@\/lib\/reading-storage"/,
+      /import \{ firstUnreadDay, markDayRead, readProgress \} from "@\/lib\/reading-storage"/,
     );
     expect(committed, "the button is not wired to markDayRead").toMatch(
       /if \(!markDayRead\(day\)\) return;/,
+    );
+  });
+
+  it("derives the day from storage at click time, not from the render", () => {
+    // The rendered readingDone can lag storage (another tab advancing the
+    // plan before the subscription lands), and the writer deliberately
+    // reports success for an already-read day -- so a stale `readingDone + 1`
+    // would fire completion analytics for a day this tap did not complete.
+    // Read fresh, the day handed to the writer is unread by construction.
+    expect(committed, "the handler derives the day from a stale snapshot").toMatch(
+      /const day = firstUnreadDay\(readProgress\(\), readingDays\.length\);/,
+    );
+    expect(committed, "the finished plan is not guarded before the write").toMatch(
+      /if \(day > readingDays\.length\) return;/,
     );
   });
 

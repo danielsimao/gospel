@@ -16,7 +16,7 @@ import {
 } from "@/lib/discipleship-analytics";
 import { readJourney } from "@/lib/journey-storage";
 import { useJourney } from "@/lib/use-journey";
-import { markDayRead } from "@/lib/reading-storage";
+import { firstUnreadDay, markDayRead, readProgress } from "@/lib/reading-storage";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { Locale } from "@/lib/i18n";
 
@@ -97,21 +97,27 @@ export function TrackCommitted({
 
   /*
    * Mirrors reading-plan.tsx's handleMarkRead: the shared, contiguity-guarded
-   * writer is the only thing allowed to touch progress, and it is what makes
-   * `readingDone + 1` safe to call "the current day" here at all. On success,
-   * useJourney's own storage subscription (not a local copy of progress)
-   * re-reads and re-renders this card on the next day — nothing here caches
-   * `readingDone` itself. A refused write (would-skip) does nothing, silently,
-   * same as the reading plan's own handler.
+   * writer is the only thing allowed to touch progress. The day is derived
+   * from storage AT CLICK TIME, not from the rendered `readingDone` — a
+   * snapshot can lag storage (another tab advancing the plan before the
+   * subscription lands), and marking a day that is already read "succeeds"
+   * by the writer's contract, which would fire completion analytics for a
+   * day this tap did not complete. Reading fresh, the day handed to the
+   * writer is unread by construction, so success can only mean this write.
+   * On success, useJourney's own storage subscription re-reads and
+   * re-renders this card on the next day. A refused write (would-skip, all
+   * done, private mode) does nothing, silently, same as the reading plan's
+   * own handler.
    */
   const handleMarkRead = useCallback(() => {
-    const day = readingDone + 1;
+    const day = firstUnreadDay(readProgress(), readingDays.length);
+    if (day > readingDays.length) return;
     if (!markDayRead(day)) return;
     if (day >= readingDays.length) {
       trackReadingPlanCompleted(locale);
     }
     trackReadingPlanDayCompleted(day, locale, "next_steps");
-  }, [readingDone, readingDays.length, locale]);
+  }, [readingDays.length, locale]);
 
   // SSR and first client render show the durable opener; if the visitor
   // arrived within an hour of responding, upgrade to the conversational
