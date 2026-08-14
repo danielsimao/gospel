@@ -18,6 +18,7 @@ const strip = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$
 
 const committed = strip(read("src", "components", "next-steps", "track-committed.tsx"));
 const thinking = strip(read("src", "components", "next-steps", "track-thinking.tsx"));
+const shareButtons = strip(read("src", "components", "share-buttons.tsx"));
 const readingPlan = strip(read("src", "components", "reading-plan", "reading-plan.tsx"));
 const discipleshipAnalytics = strip(read("src", "lib", "discipleship-analytics.ts"));
 const en = JSON.parse(read("src", "messages", "en.json"));
@@ -122,6 +123,64 @@ describe("the committed track's read card gets a mark-as-read control", () => {
       readingPlan,
       "reading-plan.tsx's own call site was not updated to pass its surface",
     ).toMatch(/trackReadingPlanDayCompleted\(day, locale, "reading_plan"\)/);
+  });
+});
+
+describe("the committed track's share section", () => {
+  it("collapses to one native Share button where the OS sheet is available", () => {
+    expect(committed, "ShareButtons is not asked for the exclusive native button").toMatch(
+      /nativeOnly/,
+    );
+  });
+
+  it("removed the Instagram story-image flow entirely", () => {
+    expect(committed, "SaveStoryImageButton is still used on this page").not.toMatch(
+      /SaveStoryImageButton/,
+    );
+    expect(committed, "the story preview image is still rendered").not.toMatch(
+      /testimony\/story/,
+    );
+    for (const [name, msgs] of [["en", en], ["pt", pt]] as const) {
+      const a = msgs.nextSteps.trackA;
+      expect(a.storyHint, `${name} trackA.storyHint is orphaned`).toBeUndefined();
+      expect(a.storyButton, `${name} trackA.storyButton is orphaned`).toBeUndefined();
+      expect(a.storyCopyButton, `${name} trackA.storyCopyButton is orphaned`).toBeUndefined();
+      expect(a.storyCopied, `${name} trackA.storyCopied is orphaned`).toBeUndefined();
+      // Both survive -- the heading and the shared message text are still used.
+      expect(a.shareHeading, `${name} lost shareHeading`).toBeTruthy();
+      expect(a.shareMessage, `${name} lost shareMessage`).toBeTruthy();
+    }
+  });
+
+  it("keeps analytics firing on a share action", () => {
+    expect(
+      committed,
+      "share actions no longer report to the next-steps funnel",
+    ).toMatch(/onShare=\{\(\) => trackNextStepsActionClicked\("share", "committed"\)\}/);
+  });
+});
+
+describe("share-buttons.tsx supports an exclusive native mode", () => {
+  it("hides WhatsApp/Telegram/copy once the native button is the only thing shown", () => {
+    expect(shareButtons, "showNativeOnly is not derived from the nativeOnly prop").toMatch(
+      /const showNativeOnly = nativeOnly && canNativeShare;/,
+    );
+    expect(
+      shareButtons,
+      "the WhatsApp/Telegram/copy row is not gated on showNativeOnly",
+    ).toMatch(/\{!showNativeOnly && \(/);
+  });
+
+  it("still falls back to WhatsApp/Telegram/copy when the Web Share API is unavailable", () => {
+    // canNativeShare itself is untouched by nativeOnly -- desktop still gets
+    // the three-button row because showNativeOnly can only be true alongside it.
+    expect(shareButtons).toMatch(/aria-label="Share on WhatsApp"/);
+    expect(shareButtons).toMatch(/aria-label="Share on Telegram"/);
+    expect(shareButtons).toMatch(/aria-label="Copy link"/);
+  });
+
+  it("reports share actions through the optional onShare callback", () => {
+    expect(shareButtons, "onShare is never invoked").toMatch(/onShare\?\.\("native"\)/);
   });
 });
 

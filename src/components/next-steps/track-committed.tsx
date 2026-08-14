@@ -5,7 +5,6 @@ import { m } from "framer-motion";
 import Link from "next/link";
 import { BookOpen, HeartHandshake, Users, Compass, Share2 } from "lucide-react";
 import { ShareButtons } from "@/components/share-buttons";
-import { SaveStoryImageButton } from "@/components/blog/save-story-image-button";
 import { BandHeader } from "./band-header";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { DayTicketBody, currentDay, type ReadingDay } from "@/components/shared/day-ticket";
@@ -35,10 +34,6 @@ interface TrackCommittedMessages {
   learnLinkLabel: string;
   shareHeading: string;
   shareMessage: string;
-  storyButton: string;
-  storyHint: string;
-  storyCopyButton: string;
-  storyCopied: string;
   bands: { today: string; grow: string };
 }
 
@@ -268,7 +263,7 @@ export function TrackCommitted({
         </div>
       </m.div>
 
-      {/* ── AS YOU GROW: quiet list + the one real graphic ── */}
+      {/* ── AS YOU GROW: quiet list + a share disclosure ── */}
       <m.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -305,7 +300,7 @@ export function TrackCommitted({
           </Link>
         </div>
 
-        {/* Share block — owns the one graphic on the page. */}
+        {/* Share block — collapsed by default, so it waits to be wanted. */}
         <button
           type="button"
           onClick={() => setShareOpen((open) => !open)}
@@ -322,39 +317,19 @@ export function TrackCommitted({
         </button>
         {shareOpen && (
           <div id="next-steps-share" className="mt-2 rounded-xl border border-white/[0.08] bg-white/[0.015] p-5">
+            {/* nativeOnly: on mobile the OS share sheet already covers
+                Instagram, WhatsApp, everything — a second, story-image-
+                specific flow beside it was the clutter the owner flagged.
+                Desktop (no Web Share API) keeps WhatsApp/Telegram/copy. */}
             <ShareButtons
               messages={{ ...shareMessages, prompt: messages.shareHeading, whatsappMessage: messages.shareMessage, telegramMessage: messages.shareMessage }}
               locale={locale}
               sharePath={`/${locale}/test`}
               utmCampaign="testimony"
               copyText={messages.shareMessage}
+              nativeOnly
+              onShare={() => trackNextStepsActionClicked("share", "committed")}
             />
-            {/* Preview beside its button from sm, stacked below — the block
-                ends level instead of in a centred tower. */}
-            <div className="mt-8 text-center sm:flex sm:items-center sm:justify-center sm:gap-6 sm:text-left">
-              {/* The testimony story graphic, previewed inline (9:16, lazy so it
-                  never competes for LCP). Reserved aspect box keeps CLS at 0. */}
-              <div className="mx-auto mb-4 w-full max-w-[190px] shrink-0 overflow-hidden rounded-xl border border-white/10 sm:mx-0 sm:mb-0 sm:max-w-[150px]">
-                <img
-                  src={`/${locale}/testimony/story`}
-                  alt=""
-                  loading="lazy"
-                  width={1080}
-                  height={1920}
-                  className="block h-auto w-full"
-                />
-              </div>
-              <SaveStoryImageButton
-                locale={locale}
-                slug="testimony"
-                label={messages.storyButton}
-                hint={messages.storyHint}
-                copyLabel={messages.storyCopyButton}
-                copiedLabel={messages.storyCopied}
-                storyPath={`/${locale}/testimony/story`}
-                stickerPath={`/${locale}/test`}
-              />
-            </div>
           </div>
         )}
       </m.div>
