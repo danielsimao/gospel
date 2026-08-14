@@ -18,6 +18,8 @@ const strip = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$
 
 const committed = strip(read("src", "components", "next-steps", "track-committed.tsx"));
 const thinking = strip(read("src", "components", "next-steps", "track-thinking.tsx"));
+const readingPlan = strip(read("src", "components", "reading-plan", "reading-plan.tsx"));
+const discipleshipAnalytics = strip(read("src", "lib", "discipleship-analytics.ts"));
 const en = JSON.parse(read("src", "messages", "en.json"));
 const pt = JSON.parse(read("src", "messages", "pt.json"));
 
@@ -63,6 +65,63 @@ describe("the committed track", () => {
     expect(committed, "the share panel is no longer gated on shareOpen").toMatch(
       /\{shareOpen && \(/,
     );
+  });
+});
+
+describe("the committed track's read card gets a mark-as-read control", () => {
+  // Opening the passage is not reading it (owner rule) -- the Read card
+  // needed its own explicit control, wired to the same contiguity-guarded
+  // writer reading-plan.tsx uses, not a second copy of that rule.
+  it("marks the day through the shared writer, not a local write", () => {
+    expect(committed, "markDayRead is not imported").toMatch(
+      /import \{ markDayRead \} from "@\/lib\/reading-storage"/,
+    );
+    expect(committed, "the button is not wired to markDayRead").toMatch(
+      /if \(!markDayRead\(day\)\) return;/,
+    );
+  });
+
+  it("only renders while there is a day left to mark", () => {
+    // `today` is null once the plan is finished, which is exactly when the
+    // card has already switched to the continue-reading state -- the mark
+    // button must not reappear there.
+    expect(committed, "the mark-read button always renders").toMatch(
+      /\{today && \(\s*<Button variant="gold" size="sm" onClick=\{handleMarkRead\}>/,
+    );
+  });
+
+  it("reuses the reading plan's own label, not new copy", () => {
+    expect(committed, "the button does not use readingLabels.markReadLabel").toMatch(
+      /\{readingLabels\.markReadLabel\}/,
+    );
+    for (const [name, msgs] of [["en", en], ["pt", pt]] as const) {
+      expect(msgs.readingPlan.markReadLabel, `${name} lost markReadLabel`).toBeTruthy();
+    }
+  });
+
+  it("fires the day-completed event tagged with the next_steps surface", () => {
+    expect(
+      committed,
+      "trackReadingPlanDayCompleted is not called with the next_steps surface",
+    ).toMatch(/trackReadingPlanDayCompleted\(day, locale, "next_steps"\)/);
+    expect(committed, "the plan-completed event is missing on the 7th day").toMatch(
+      /if \(day >= readingDays\.length\) \{\s*trackReadingPlanCompleted\(locale\);/,
+    );
+  });
+
+  it("carries a surface property so the two mark-read surfaces are distinguishable", () => {
+    expect(
+      discipleshipAnalytics,
+      "trackReadingPlanDayCompleted lost its surface parameter",
+    ).toMatch(/surface: "reading_plan" \| "next_steps"/);
+    expect(
+      discipleshipAnalytics,
+      "the event still fires without a surface property",
+    ).toMatch(/safeCapture\("reading_plan_day_completed", \{ day, locale, surface \}\)/);
+    expect(
+      readingPlan,
+      "reading-plan.tsx's own call site was not updated to pass its surface",
+    ).toMatch(/trackReadingPlanDayCompleted\(day, locale, "reading_plan"\)/);
   });
 });
 

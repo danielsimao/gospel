@@ -87,6 +87,10 @@ export default async function NextStepsPage({ params }: Props) {
           readDay: data.readingPlan.readDayLabel,
           continueLabel: data.readingPlan.continueReadingLabel,
           continueUrl: data.readingPlan.continueReadingLink,
+          /* Same string the reading plan's own day cards use — the surface
+             is different, the action is not, so the reader should not learn
+             a second phrase for it. */
+          markReadLabel: data.readingPlan.markReadLabel,
         }}
       />
     </>

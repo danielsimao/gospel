@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { m } from "framer-motion";
 import Link from "next/link";
 import { BookOpen, HeartHandshake, Users, Compass, Share2 } from "lucide-react";
@@ -9,9 +9,15 @@ import { SaveStoryImageButton } from "@/components/blog/save-story-image-button"
 import { BandHeader } from "./band-header";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { DayTicketBody, currentDay, type ReadingDay } from "@/components/shared/day-ticket";
-import { trackNextStepsActionClicked, trackScriptureOpened } from "@/lib/discipleship-analytics";
+import {
+  trackNextStepsActionClicked,
+  trackScriptureOpened,
+  trackReadingPlanDayCompleted,
+  trackReadingPlanCompleted,
+} from "@/lib/discipleship-analytics";
 import { readJourney } from "@/lib/journey-storage";
 import { useJourney } from "@/lib/use-journey";
+import { markDayRead } from "@/lib/reading-storage";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { Locale } from "@/lib/i18n";
 
@@ -50,6 +56,9 @@ interface TrackCommittedProps {
     readDay: string;
     continueLabel: string;
     continueUrl: string;
+    /** Reused from reading-plan.markReadLabel — the same action deserves the
+        same word, not a second phrase for one surface. */
+    markReadLabel: string;
   };
 }
 
@@ -90,6 +99,24 @@ export function TrackCommitted({
   const readLabel = today
     ? readingLabels.readDay.replace("{passage}", today.passage)
     : readingLabels.continueLabel;
+
+  /*
+   * Mirrors reading-plan.tsx's handleMarkRead: the shared, contiguity-guarded
+   * writer is the only thing allowed to touch progress, and it is what makes
+   * `readingDone + 1` safe to call "the current day" here at all. On success,
+   * useJourney's own storage subscription (not a local copy of progress)
+   * re-reads and re-renders this card on the next day — nothing here caches
+   * `readingDone` itself. A refused write (would-skip) does nothing, silently,
+   * same as the reading plan's own handler.
+   */
+  const handleMarkRead = useCallback(() => {
+    const day = readingDone + 1;
+    if (!markDayRead(day)) return;
+    if (day >= readingDays.length) {
+      trackReadingPlanCompleted(locale);
+    }
+    trackReadingPlanDayCompleted(day, locale, "next_steps");
+  }, [readingDone, readingDays.length, locale]);
 
   // SSR and first client render show the durable opener; if the visitor
   // arrived within an hour of responding, upgrade to the conversational
@@ -210,6 +237,16 @@ export function TrackCommitted({
                 <ButtonArrow />
               </Button>
             </a>
+            {/* Opening the passage is not reading it — this is the only
+                thing on the card that advances the day, and it only exists
+                while there is a day left to mark. Once the plan is finished
+                `today` is null and the card is already in the continue-
+                reading state above; nothing here should re-open that. */}
+            {today && (
+              <Button variant="gold" size="sm" onClick={handleMarkRead}>
+                {readingLabels.markReadLabel}
+              </Button>
+            )}
             <Link href={`/${locale}/reading-plan`} onClick={() => trackNextStepsActionClicked("reading_plan", "committed")}>
               <Button variant="ghost" size="sm">
                 {messages.readPlanLabel}

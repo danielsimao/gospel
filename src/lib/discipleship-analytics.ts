@@ -46,8 +46,12 @@ export function trackReadingPlanViewed(locale: string) {
   safeCapture("reading_plan_viewed", { locale });
 }
 
-export function trackReadingPlanDayCompleted(day: number, locale: string) {
-  safeCapture("reading_plan_day_completed", { day, locale });
+export function trackReadingPlanDayCompleted(
+  day: number,
+  locale: string,
+  surface: "reading_plan" | "next_steps",
+) {
+  safeCapture("reading_plan_day_completed", { day, locale, surface });
 }
 
 export function trackReadingPlanCompleted(locale: string) {

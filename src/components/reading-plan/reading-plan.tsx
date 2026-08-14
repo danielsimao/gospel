@@ -92,7 +92,7 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
     if (newCount >= totalDays) {
       trackReadingPlanCompleted(locale);
     }
-    trackReadingPlanDayCompleted(day, locale);
+    trackReadingPlanDayCompleted(day, locale, "reading_plan");
   }, [progress, totalDays, locale]);
 
   const progressLabel = messages.progressLabel
