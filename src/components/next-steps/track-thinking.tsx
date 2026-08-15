@@ -204,7 +204,7 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
               href={messages.readingLink}
               rel="noopener noreferrer"
               onClick={() => {
-                trackNextStepsActionClicked("read", "thinking");
+                trackNextStepsActionClicked("read", "thinking", true);
                 trackScriptureOpened("next_steps_thinking", null, locale);
               }}
             >

@@ -230,8 +230,14 @@ export function TrackCommitted({
           />
           <div className="mt-5 flex flex-wrap gap-2">
             <a href={readHref} rel="noopener noreferrer" onClick={() => {
-              trackNextStepsActionClicked("read", "committed");
-              trackScriptureOpened("next_steps_committed", today ? readingDays.indexOf(today) + 1 : null, locale);
+              trackNextStepsActionClicked("read", "committed", true);
+              // The day this link actually opens, which is the rendered one:
+              // `today` IS readingDays[readingDone], so the day is readingDone
+              // + 1 by construction. Deliberately not re-read from storage the
+              // way handleMarkRead is — that reports what was completed, this
+              // reports what was opened, and what was opened is whatever href
+              // this anchor was rendered with.
+              trackScriptureOpened("next_steps_committed", today ? readingDone + 1 : null, locale);
             }}>
               <Button variant="gold" size="sm">
                 {readLabel}

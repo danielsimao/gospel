@@ -4,11 +4,23 @@ export function trackNextStepsViewed(track: "committed" | "thinking", locale: st
   safeCapture("next_steps_viewed", { track, locale });
 }
 
+/**
+ * `leaving` marks the actions whose click is immediately followed by a same-tab
+ * navigation off the site — today only "read", which opens bible.com. Those get
+ * the beacon for the same reason trackScriptureOpened does; the rest stay on the
+ * default transport, since sendBeacon has a payload ceiling and no response and
+ * is the wrong default for events with no teardown to survive.
+ */
 export function trackNextStepsActionClicked(
   action: "read" | "pray" | "community" | "share" | "reading_plan" | "learn" | "talk" | "cards",
   track: "committed" | "thinking",
+  leaving = false,
 ) {
-  safeCapture("next_steps_action_clicked", { action, track });
+  safeCapture(
+    "next_steps_action_clicked",
+    { action, track },
+    leaving ? { transport: "sendBeacon" } : undefined,
+  );
 }
 
 /**

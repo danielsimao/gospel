@@ -464,6 +464,37 @@ describe("scripture-open analytics survive the same-tab handoff", () => {
       /safeCapture\("scripture_opened", \{ surface, day, locale \}, \{ transport: "sendBeacon" \}\)/,
     );
   });
+
+  it("carries the read action out on the same beacon, since it races the same teardown", () => {
+    // trackNextStepsActionClicked fires in the same onClick, one line above
+    // trackScriptureOpened, before the same external navigation -- it was
+    // left on the default transport when the beacon landed.
+    expect(
+      discipleshipAnalytics,
+      "the leaving actions lost their beacon transport",
+    ).toMatch(/leaving \? \{ transport: "sendBeacon" \} : undefined/);
+    // …and only where the click actually leaves the site. An internal Link
+    // navigation tears nothing down, and sendBeacon is the wrong default.
+    expect(committed, "the committed track's read link stopped flagging the exit").toMatch(
+      /trackNextStepsActionClicked\("read", "committed", true\)/,
+    );
+    expect(thinking, "the thinking track's read link stopped flagging the exit").toMatch(
+      /trackNextStepsActionClicked\("read", "thinking", true\)/,
+    );
+  });
+
+  it("reports the day the link was rendered with, not a rescan of the plan", () => {
+    // `today` IS readingDays[readingDone], so the opened day is readingDone + 1
+    // by construction -- an indexOf scan for a value already known by index.
+    // Deliberately the RENDERED day, unlike handleMarkRead's fresh read: this
+    // reports what the anchor opened, and the anchor's href is the rendered one.
+    expect(committed, "the opened day is derived by scanning for the day object").not.toMatch(
+      /readingDays\.indexOf\(today\)/,
+    );
+    expect(committed, "the opened day no longer matches the rendered href").toMatch(
+      /trackScriptureOpened\("next_steps_committed", today \? readingDone \+ 1 : null, locale\)/,
+    );
+  });
 });
 
 describe("the reflection chain keeps focus alive across an acknowledgement", () => {
