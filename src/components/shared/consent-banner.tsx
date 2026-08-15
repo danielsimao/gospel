@@ -45,6 +45,9 @@ const EXIT = { duration: 0.15, ease: [0.42, 0, 1, 1] as const };
  * this curve has to stay behind EXIT's at every point.
  */
 const RESERVE_EXIT = { duration: 0.5, ease: [0.45, 0, 0.55, 1] as const };
+// Slack on top of RESERVE_EXIT - EXIT before the cleanup timer fires, so it
+// runs after the reserve's transitionend rather than racing it.
+const CLEANUP_SLACK_MS = 100;
 
 const cssTiming = (motion: { duration: number; ease: readonly number[] }) =>
   `${Math.round(motion.duration * 1000)}ms cubic-bezier(${motion.ease.join(",")})`;
@@ -98,6 +101,12 @@ export function ConsentBanner() {
   // resize landing after that must not re-publish a height and re-open the space
   // behind a banner already on its way out.
   const releasedRef = useRef(false);
+  // The reserve's cleanup runs on a timer that outlives the banner itself
+  // (see onExitComplete below) — held here so an unmount inside that window
+  // (locale switch, route change, strict-mode's double-invoke in dev) can
+  // cancel it, rather than let it fire later against whatever banner instance
+  // happens to be mounted by then.
+  const cleanupTimerRef = useRef<number | null>(null);
   // A ref callback rather than an effect: the thing to react to is the banner
   // element existing, which is exactly when React calls this. Keyed off
   // `visible` instead, the effect would list a dependency it never reads.
@@ -128,6 +137,15 @@ export function ConsentBanner() {
   // bottom of every screen that reserves it.
   useEffect(() => {
     return () => {
+      // The cleanup timer below outlives the banner by design (RESERVE_EXIT
+      // runs longer than EXIT) — if this component unmounts before it fires,
+      // cancel it here. Left running, it would later call removeProperty on
+      // whatever banner happened to be mounted at that moment, deleting a
+      // height and timing that instance was still relying on.
+      if (cleanupTimerRef.current !== null) {
+        window.clearTimeout(cleanupTimerRef.current);
+        cleanupTimerRef.current = null;
+      }
       // Braces, not a concise body: removeProperty returns the old value, and
       // an effect cleanup that returns a string does not typecheck.
       document.documentElement.style.removeProperty("--consent-h");
@@ -168,11 +186,12 @@ export function ConsentBanner() {
     <AnimatePresence
       onExitComplete={() => {
         const cleanup = () => {
+          cleanupTimerRef.current = null;
           document.documentElement.style.removeProperty("--consent-h");
           document.documentElement.style.removeProperty("--consent-h-timing");
         };
         if (RESERVE_TRAVELS) {
-          window.setTimeout(cleanup, (RESERVE_EXIT.duration - EXIT.duration) * 1000 + 100);
+          cleanupTimerRef.current = window.setTimeout(cleanup, (RESERVE_EXIT.duration - EXIT.duration) * 1000 + CLEANUP_SLACK_MS);
         } else {
           cleanup();
         }
