@@ -106,8 +106,8 @@ describe("the flow's own walk-back is visible, and only where walking back is le
      * "Backwards" used to be a link at the bottom of grace's seventh viewport
      * plus an unlabelled browser gesture. The chip is the always-visible half
      * of the answer — but each absence is a rule: the Law is one-way
-     * (testimony, see UNDO_ANSWER), back from the verdict IS Exit, and the
-     * decision screen offers the decision and nothing beside it (below).
+     * (testimony, see UNDO_ANSWER), and back from the verdict IS Exit, so a
+     * second chip there would make the reader guess which "back" it meant.
      */
     const chip = shell.match(/\{state\.phase === "grace" && \([\s\S]*?<\/button>\s*\)\}/)?.[0] ?? "";
     expect(chip, "no grace-gated chip in the shell").toContain("backToVerdict");
@@ -115,6 +115,48 @@ describe("the flow's own walk-back is visible, and only where walking back is le
     // grace gate. A second chip on another phase would otherwise pass — the
     // absences above are the half of the rule a screenshot cannot pin.
     expect(shell.match(/backToVerdict/g)).toHaveLength(1);
+  });
+
+  it("shows the grace chip on the decision screen, while the decision is open", () => {
+    /*
+     * Owner ruling (2026-08-15): walking back from the decision, landing at
+     * the top of grace, is intended — so it is named rather than left to a
+     * gesture with nothing on screen to announce it. The rule this obeys is
+     * where the affordance lives, not whether it exists: it is shell edge
+     * chrome, in the same slot as grace's own chip, and never a fourth item in
+     * the choice stack (the screen itself is pinned bare further down).
+     */
+    const chip =
+      shell.match(/\{state\.phase === "invitation" &&[\s\S]*?<\/button>\s*\)\}/)?.[0] ?? "";
+    expect(chip, "no invitation-gated chip in the shell").toContain("backToGrace");
+    // Exclusivity, exactly as the verdict chip is pinned: one render site, and
+    // it is this one. The two chips share a position slot — right-3/top-3.5 —
+    // which is only safe because their phases cannot both be current.
+    expect(shell.match(/backToGrace/g)).toHaveLength(1);
+    expect(chip).toMatch(/right-3 top-3\.5/);
+    // The same guarded walk as grace's chip, not a second way back. A chip
+    // that called history.back() itself would skip the in-flight latch and
+    // reinstate the double-traversal that ejected readers from /test.
+    expect(chip).toMatch(/onClick=\{walkBack\}/);
+  });
+
+  it("takes the chip away the moment the response is recorded", () => {
+    /*
+     * A recorded response closes the book: BACK_TO_GRACE is refused by the
+     * reducer and the shell unwinds its pushed history entries, so a chip
+     * still up afterwards would be a labelled affordance that does nothing —
+     * the one failure worse than never having offered it. The gate therefore
+     * reads the response as well as the phase.
+     */
+    const gate =
+      shell.match(/\{state\.phase === "invitation" &&[^(]*\(/)?.[0] ?? "";
+    expect(gate, "the invitation chip is gated on the phase alone").toContain(
+      "invitationResponse",
+    );
+    const reducer = code(read("src", "lib", "game-reducer.ts"));
+    const backToGrace =
+      reducer.match(/case "BACK_TO_GRACE":[\s\S]*?\n {4}case /)?.[0] ?? "";
+    expect(backToGrace).toContain("state.invitationResponse");
   });
 
   it("walks back through one guarded path, shared with grace's own link", () => {
@@ -134,6 +176,10 @@ describe("the flow's own walk-back is visible, and only where walking back is le
     const walkBackFn = shell.match(/function walkBack\(\)[\s\S]*?\n {2}\}/)?.[0] ?? "";
     expect(walkBackFn).toContain("viaLinkRef.current = true");
     expect(walkBackFn).toContain("window.history.back()");
+    // One traversal site for the whole shell, now that two chips and grace's
+    // own link all want one. A second `history.back()` anywhere would be a
+    // second mechanism, unlatched and invisible to the popstate handler.
+    expect(shell.match(/history\.back\(\)/g)).toHaveLength(1);
   });
 
   it("sits above grace's tap surface, or it is decoration", () => {
@@ -150,15 +196,20 @@ describe("the flow's own walk-back is visible, and only where walking back is le
   });
 });
 
-describe("the decision screen offers the decision, and nothing beside it", () => {
-  it("renders no walk-back link", () => {
+describe("the decision's choice stack holds the decision, and nothing beside it", () => {
+  it("renders no walk-back of its own", () => {
     /*
-     * A "re-read grace" link used to sit beside the eyebrow. Leaving IS visible
-     * on this screen — it is the third response, "Not for me" — so the link was
-     * not carrying the method's requirement it claimed to; it was offering
-     * retreat at the moment of commitment, on the one screen whose whole design
-     * is a single choice. Back still works, and grace ends with its own
-     * walk-back one screen earlier.
+     * The rule is about place, not existence: the shell now shows a walk-back
+     * chip on this phase (above), and the owner sanctioned it as edge chrome —
+     * fixed at the top corner, in the slot grace's chip uses, outside the
+     * column the reader is reading.
+     *
+     * Inside the column nothing changes. A "re-read grace" link used to sit
+     * beside the eyebrow, and leaving IS already visible here — it is the third
+     * response, "Not for me" — so that link was not carrying the method's
+     * requirement it claimed to; it was offering retreat among the answers, on
+     * the one screen whose whole design is a single choice. A walk-back ranked
+     * with the three responses reads as a fourth one. Chrome does not.
      */
     expect(invitation).not.toMatch(/rereadGrace/);
     expect(invitation).not.toMatch(/onBack/);
@@ -167,7 +218,8 @@ describe("the decision screen offers the decision, and nothing beside it", () =>
   it("is not handed a way back by the shell", () => {
     // The prop is gone from the component, so passing one would not compile —
     // but the shell is where a future edit would try to reinstate it, and the
-    // grace screen's own onBack must survive that edit.
+    // grace screen's own onBack must survive that edit. The chip is not a way
+    // in: it renders beside <InvitationScreen …/>, never through it.
     const invitationCall = shell.match(/<InvitationScreen[\s\S]*?\/>/)?.[0] ?? "";
     expect(invitationCall, "InvitationScreen is not rendered here").toContain("messages");
     expect(invitationCall).not.toContain("onBack");

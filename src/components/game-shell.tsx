@@ -361,15 +361,31 @@ export function GameShell({ messages, locale }: GameShellProps) {
        * go back?" looked at the top of the screen and found only Exit, which
        * leaves the test entirely.
        *
-       * Grace only, and each absence is a rule rather than a gap. The landing
-       * and the questions get nothing because the Law is one-way — testimony
-       * is recorded, not editable (see UNDO_ANSWER's own guard). The verdict
-       * gets nothing because back from the verdict IS Exit — the baseline
-       * history entry leaves /test, and two chips saying different kinds of
-       * "back" at once would make the reader guess. The decision screen gets
-       * nothing because that screen offers the decision and nothing beside it
-       * (phase-handoff.test.ts pins the owner's reasoning); the browser
-       * gesture still walks back while the invitation is unanswered.
+       * Grace and the decision carry one; each absence elsewhere is a rule
+       * rather than a gap. The landing and the questions get nothing because
+       * the Law is one-way — testimony is recorded, not editable (see
+       * UNDO_ANSWER's own guard). The verdict gets nothing because back from
+       * the verdict IS Exit — the baseline history entry leaves /test, and two
+       * chips saying different kinds of "back" at once would make the reader
+       * guess.
+       *
+       * The decision screen's chip is owner-sanctioned (2026-08-15): walking
+       * back from the decision and landing at the top of grace is intended,
+       * so it may be named rather than left to a gesture nobody can see. What
+       * the rule now governs is WHERE it lives, not whether it exists — this
+       * is edge chrome naming a destination, never a control inside the choice
+       * stack. invitation-screen.tsx still carries no walk-back of its own and
+       * is not to acquire one: the three responses remain the only things on
+       * that screen a reader chooses between, and retreat must not stand among
+       * them.
+       *
+       * And it exists only while the invitation is unanswered. A recorded
+       * response closes the book — BACK_TO_GRACE is refused by the reducer and
+       * the shell unwinds its pushed entries — so a chip left up afterwards
+       * would be a labelled affordance that does nothing.
+       *
+       * One position slot for both, because the two phases are mutually
+       * exclusive and only ever one chip is up.
        *
        * Same one path as grace's own bottom link: mark the gesture as
        * link-driven, walk one real history entry, and let popstate dispatch —
@@ -387,6 +403,17 @@ export function GameShell({ messages, locale }: GameShellProps) {
         >
           <span aria-hidden="true">&larr;</span>
           <span>{messages.test.backToVerdict}</span>
+        </button>
+      )}
+
+      {state.phase === "invitation" && state.invitationResponse === null && (
+        <button
+          type="button"
+          onClick={walkBack}
+          className="fixed right-3 top-3.5 z-40 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/80 sm:right-4 sm:top-4 sm:text-[10px]"
+        >
+          <span aria-hidden="true">&larr;</span>
+          <span>{messages.test.backToGrace}</span>
         </button>
       )}
 
@@ -462,9 +489,10 @@ export function GameShell({ messages, locale }: GameShellProps) {
               />
             )}
 
-            {/* No onBack: the decision screen carries no walk-back link. The
-                browser gesture still works, and grace — one screen earlier —
-                ends with its own. */}
+            {/* No onBack, and that stays true now that the shell shows a chip
+                for this phase: the walk-back is edge chrome above the screen,
+                not a fourth thing inside the choice stack. The component is
+                never handed a way back to render among its own responses. */}
             {state.phase === "invitation" && (
               <InvitationScreen messages={messages} locale={locale} />
             )}
