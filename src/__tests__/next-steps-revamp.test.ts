@@ -21,6 +21,7 @@ const thinking = strip(read("src", "components", "next-steps", "track-thinking.t
 const shareButtons = strip(read("src", "components", "share-buttons.tsx"));
 const readingPlan = strip(read("src", "components", "reading-plan", "reading-plan.tsx"));
 const discipleshipAnalytics = strip(read("src", "lib", "discipleship-analytics.ts"));
+const posthogLib = strip(read("src", "lib", "posthog.ts"));
 const en = JSON.parse(read("src", "messages", "en.json"));
 const pt = JSON.parse(read("src", "messages", "pt.json"));
 
@@ -436,6 +437,31 @@ describe("the reading plan's own mark-read control", () => {
     // what has to pick the day, not the card that happened to render it.
     expect(readingPlan, "onMarkRead is bound to a per-card day again").toMatch(
       /onMarkRead=\{handleMarkRead\}/,
+    );
+  });
+});
+
+describe("scripture-open analytics survive the same-tab handoff", () => {
+  // Scripture links navigate same-tab now (scripture-links-same-tab.test.ts),
+  // and posthog-js's default XHR/fetch transport is an in-flight request the
+  // browser cancels on document teardown -- so the event that measures the
+  // whole reading-handoff funnel was exactly the one most likely to be
+  // dropped. sendBeacon survives teardown by design.
+  it("capture() accepts and forwards a transport override to the client", () => {
+    expect(posthogLib, "capture no longer takes a third options argument").toMatch(
+      /export function capture\(\s*event: string,\s*properties\?: Record<string, unknown>,\s*options\?: CaptureOptions,\s*\): void/,
+    );
+    expect(posthogLib, "capture stopped forwarding options to the underlying client").toMatch(
+      /client\?\.capture\(event, properties, options\)/,
+    );
+  });
+
+  it("trackScriptureOpened fires on sendBeacon so it survives the navigation it precedes", () => {
+    expect(
+      discipleshipAnalytics,
+      "trackScriptureOpened lost its sendBeacon transport",
+    ).toMatch(
+      /safeCapture\("scripture_opened", \{ surface, day, locale \}, \{ transport: "sendBeacon" \}\)/,
     );
   });
 });

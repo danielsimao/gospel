@@ -25,13 +25,18 @@ export function trackNextStepsActionClicked(
  *
  * `day` is the plan day being opened, or null where the link is not a plan day
  * (the thinking track's John 3, the continue-reading door past day seven).
+ *
+ * Fired from an onClick that immediately precedes a same-tab navigation to
+ * bible.com — the default transport is an in-flight request the browser
+ * cancels on teardown, so this is exactly the event most likely to be
+ * dropped. sendBeacon survives it.
  */
 export function trackScriptureOpened(
   surface: "next_steps_committed" | "next_steps_thinking" | "reading_plan_day" | "reading_plan_continue",
   day: number | null,
   locale: string,
 ) {
-  safeCapture("scripture_opened", { surface, day, locale });
+  safeCapture("scripture_opened", { surface, day, locale }, { transport: "sendBeacon" });
 }
 
 export function trackReadingPlanLearnClicked(locale: string) {
