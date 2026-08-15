@@ -277,8 +277,8 @@ export function Footer({ messages, learnTopics, locale, facts = [], blogEnabled 
         </p>
         {/* The credit both publishers require, and which this site owed from
             the day it started quoting them. English is Thomas Nelson's exact
-            wording for the NKJV; Portuguese is the line Sociedade Bíblica de
-            Portugal prints with the ARC text. Neither is ours to reword. */}
+            wording for the NKJV; Portuguese is Sociedade Bíblica Trinitariana
+            do Brasil's wording for the ACF text. Neither is ours to reword. */}
         <p className="mx-auto mt-3 max-w-prose text-center text-[11px] leading-relaxed text-white/35">
           {messages.scriptureNotice}
         </p>
