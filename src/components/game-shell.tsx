@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { X } from "lucide-react";
 import { m, AnimatePresence } from "framer-motion";
 import * as Sentry from "@sentry/nextjs";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
@@ -14,6 +15,7 @@ import {
   trackGameAbandoned,
   trackTestRestored,
   trackTestBack,
+  trackTestExit,
 } from "@/lib/analytics";
 import { QUESTION_CONFIGS, TOTAL_QUESTIONS } from "@/lib/questions";
 import { readSession } from "@/lib/test-session-storage";
@@ -46,6 +48,41 @@ export function GameShell({ messages, locale }: GameShellProps) {
   useEffect(() => {
     stateRef.current = state;
   });
+
+  /*
+   * The exit control's revealed label — see the chrome block below for why the
+   * first pointer tap only reveals.
+   */
+  const [exitRevealed, setExitRevealed] = useState(false);
+  useEffect(() => {
+    if (!exitRevealed) return;
+    function onPointerDown(event: PointerEvent) {
+      /*
+       * Matched by data-slot rather than by a ref to the element, and that is
+       * a fix rather than a preference. pointerdown runs BEFORE click, so a
+       * press on the control itself that this listener fails to recognise
+       * collapses the reveal a moment before the click arrives — and the click
+       * handler, seeing a collapsed control, re-reveals instead of navigating.
+       * The reader taps the X twice and stays exactly where they are. Measured:
+       * the second tap never left /test.
+       *
+       * `closest` also answers for the icon inside, which is what a thumb
+       * actually lands on; a containment test against a forwarded ref has to be
+       * right about both the ref and the SVG to get the same answer.
+       */
+      const target = event.target as Element | null;
+      if (target?.closest?.('[data-slot="test-exit"]')) return;
+      setExitRevealed(false);
+    }
+    /*
+     * Passive and non-capturing, and both matter: the tap that collapses this
+     * must still reach whatever it landed on. A capturing listener — or a
+     * backdrop element — would turn a label into a modal on screens whose
+     * entire interaction model is "the screen is one button".
+     */
+    document.addEventListener("pointerdown", onPointerDown, { passive: true });
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [exitRevealed]);
 
   /*
    * Restore a same-sitting session silently, with nothing asked.
@@ -123,9 +160,13 @@ export function GameShell({ messages, locale }: GameShellProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- the count is the trigger
   }, [state.answers.length]);
 
-  // Scroll to top on phase transitions so focus lands on the new content
+  // Scroll to top on phase transitions so focus lands on the new content, and
+  // close the exit's revealed label with it: it was opened against a screen
+  // the reader has now left, and a label that outlives its screen is a control
+  // in an unexplained state.
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+    setExitRevealed(false);
   }, [state.phase]);
 
   useEffect(() => {
@@ -335,23 +376,80 @@ export function GameShell({ messages, locale }: GameShellProps) {
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#060404_75%)]" />
 
       {/*
-       * The only way out of the Law, and now the only thing at the top of it.
+       * The way out, on the right, as an icon.
        *
-       * It used to sit at top-12 / sm:top-14 — under the sticky deaths strip —
-       * and translate up by the strip's own height (34px, 40px) once that strip
-       * retired at the verdict, so the two read as one thing leaving. With the
-       * strip gone there is nothing above it and nothing to retire, so it takes
-       * the position it previously only reached at the verdict: 48-34 = 14px,
-       * 56-40 = 16px, which is top-3.5 / sm:top-4. Same place the reader's eye
-       * already found it on the screens that mattered, and it no longer moves.
+       * It used to be a labelled pill on the LEFT — "← Sair" — which put it in
+       * back's position wearing back's glyph, and made it the identical twin of
+       * the walk-back chip below: same border, same size, same arrow, same y,
+       * the two of them differing only by which edge they clung to. On grace,
+       * tapping the wrong one of those costs the reader the entire flow.
+       *
+       * So the two are told apart by everything at once. Back keeps the arrow,
+       * the label and the left edge, because its whole value is naming where it
+       * goes. Leaving takes the right edge and an X, which is the vocabulary
+       * every reader already has for closing a layer — and honest here, because
+       * /test IS a layer: it is the (immersive) route group, over the site
+       * rather than in it.
+       *
+       * The vertical position is unchanged and was measured for a strip that no
+       * longer exists: top-3.5 / sm:top-4 is where this sat once the sticky
+       * deaths strip retired at the verdict (48-34, 56-40), which is where the
+       * reader's eye already found it on the screens that mattered.
+       *
+       * ── One tap reveals, the second leaves ──────────────────────────────
+       *
+       * A bare X is quieter than a labelled pill, and a quiet control on a
+       * screen whose whole surface is a button invites the exploratory tap. So
+       * the first pointer tap only reveals the word: nothing is lost, nothing
+       * navigates, and the reader reads what they are about to do before doing
+       * it. That is worth a tap because the thing on the other side of it is a
+       * ninety-second flow with no way back into the middle of it.
+       *
+       * Three rules make the reveal safe rather than modal:
+       *
+       *   1. It never swallows a tap. The collapse listener is passive and
+       *      non-capturing, so the tap that dismisses this also does its own
+       *      job — advancing a verdict beat, moving grace on a section. A
+       *      reveal that ate the gesture would be a modal on a tap-anywhere
+       *      screen, which is the seam defect this flow keeps paying for.
+       *   2. Nothing collapses it on a timer. Same reasoning that keeps the
+       *      verdict tap-advanced rather than timed: a control that vanishes
+       *      while it is being read is a control the reader must chase.
+       *   3. Keyboard and assistive tech skip the two-step entirely. The
+       *      element is a real <Link> with the exit as its accessible name, so
+       *      Enter navigates on the first press; `detail > 0` is what
+       *      identifies a genuine pointer click, and only that path reveals.
+       *      A touch-safety measure must not tax a screen reader.
        */}
       <Link
+          data-slot="test-exit"
           href={`/${locale}`}
           aria-label={messages.test.backLabel}
-          className="fixed left-3 top-3.5 z-40 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/80 sm:left-4 sm:top-4 sm:text-[10px]"
+          onClick={(event) => {
+            // A keyboard or AT activation reports detail 0 — that goes
+            // straight out, as rule 3 above.
+            if (event.detail > 0 && !exitRevealed) {
+              event.preventDefault();
+              setExitRevealed(true);
+              return;
+            }
+            trackTestExit(state.phase, locale);
+          }}
+          className="fixed right-3 top-3.5 z-40 flex items-center rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/80 sm:right-4 sm:top-4 sm:text-[10px]"
         >
-          <span aria-hidden="true">&larr;</span>
-          <span>{messages.test.backLabel}</span>
+          <X aria-hidden="true" className="size-3.5 sm:size-4" />
+          {/* aria-hidden and animated: the link is named by its aria-label, so
+              this span is purely visual and can appear from nothing without
+              changing what the control announces. max-width rather than
+              display, because width is animatable and `hidden` is not. */}
+          <span
+            aria-hidden="true"
+            className={`overflow-hidden whitespace-nowrap transition-all duration-300 ease-[var(--ease-out-strong)] motion-reduce:transition-none ${
+              exitRevealed ? "ml-1.5 max-w-24 opacity-100" : "ml-0 max-w-0 opacity-0"
+            }`}
+          >
+            {messages.test.backLabel}
+          </span>
         </Link>
 
       {/*
@@ -385,7 +483,15 @@ export function GameShell({ messages, locale }: GameShellProps) {
        * would be a labelled affordance that does nothing.
        *
        * One position slot for both, because the two phases are mutually
-       * exclusive and only ever one chip is up.
+       * exclusive and only ever one chip is up — the LEFT edge, which is where
+       * back belongs and where the reader's thumb already reaches for it. The
+       * exit gave that edge up to take the right one as an icon; see its own
+       * comment above for why the two must not look alike.
+       *
+       * Labelled, where the exit is not, and that asymmetry is the design
+       * rather than an inconsistency: this control's whole value is naming the
+       * destination — "Verdict", "Grace" — because the reader is choosing to
+       * go somewhere, not to close something.
        *
        * Same one path as grace's own bottom link: mark the gesture as
        * link-driven, walk one real history entry, and let popstate dispatch —
@@ -399,7 +505,7 @@ export function GameShell({ messages, locale }: GameShellProps) {
         <button
           type="button"
           onClick={walkBack}
-          className="fixed right-3 top-3.5 z-40 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/80 sm:right-4 sm:top-4 sm:text-[10px]"
+          className="fixed left-3 top-3.5 z-40 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/80 sm:left-4 sm:top-4 sm:text-[10px]"
         >
           <span aria-hidden="true">&larr;</span>
           <span>{messages.test.backToVerdict}</span>
@@ -410,7 +516,7 @@ export function GameShell({ messages, locale }: GameShellProps) {
         <button
           type="button"
           onClick={walkBack}
-          className="fixed right-3 top-3.5 z-40 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/80 sm:right-4 sm:top-4 sm:text-[10px]"
+          className="fixed left-3 top-3.5 z-40 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/80 sm:left-4 sm:top-4 sm:text-[10px]"
         >
           <span aria-hidden="true">&larr;</span>
           <span>{messages.test.backToGrace}</span>
@@ -485,7 +591,9 @@ export function GameShell({ messages, locale }: GameShellProps) {
                   touch: messages.test.verdict.advanceHintTouch,
                   pointer: messages.test.verdict.advanceHintPointer,
                 }}
-                onBack={walkBack}
+                /* No onBack, as on the decision screen: the walk-back is shell
+                   chrome for both phases now, and neither screen renders one
+                   among its own content. */
               />
             )}
 

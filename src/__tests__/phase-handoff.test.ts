@@ -130,10 +130,10 @@ describe("the flow's own walk-back is visible, and only where walking back is le
       shell.match(/\{state\.phase === "invitation" &&[\s\S]*?<\/button>\s*\)\}/)?.[0] ?? "";
     expect(chip, "no invitation-gated chip in the shell").toContain("backToGrace");
     // Exclusivity, exactly as the verdict chip is pinned: one render site, and
-    // it is this one. The two chips share a position slot — right-3/top-3.5 —
+    // it is this one. The two chips share a position slot — left-3/top-3.5 —
     // which is only safe because their phases cannot both be current.
     expect(shell.match(/backToGrace/g)).toHaveLength(1);
-    expect(chip).toMatch(/right-3 top-3\.5/);
+    expect(chip).toMatch(/left-3 top-3\.5/);
     // The same guarded walk as grace's chip, not a second way back. A chip
     // that called history.back() itself would skip the in-flight latch and
     // reinstate the double-traversal that ejected readers from /test.
@@ -170,7 +170,7 @@ describe("the flow's own walk-back is visible, and only where walking back is le
     expect(shell).toMatch(/function walkBack\(\)/);
     expect(shell).toMatch(/if \(backInFlightRef\.current\) return/);
     expect(shell).toMatch(/onClick=\{walkBack\}/);
-    expect(shell).toMatch(/onBack=\{walkBack\}/);
+    expect(shell).toMatch(/onClick=\{walkBack\}/);
     // The guarded path still marks the gesture link-driven and walks a real
     // history entry, so the browser stack and the reducer cannot disagree.
     const walkBackFn = shell.match(/function walkBack\(\)[\s\S]*?\n {2}\}/)?.[0] ?? "";
@@ -215,17 +215,115 @@ describe("the decision's choice stack holds the decision, and nothing beside it"
     expect(invitation).not.toMatch(/onBack/);
   });
 
-  it("is not handed a way back by the shell", () => {
-    // The prop is gone from the component, so passing one would not compile —
-    // but the shell is where a future edit would try to reinstate it, and the
-    // grace screen's own onBack must survive that edit. The chip is not a way
-    // in: it renders beside <InvitationScreen …/>, never through it.
+  it("is not handed a way back by the shell — and neither is grace", () => {
+    /*
+     * Both screens are now bare of walk-backs, which is a stronger rule than
+     * the one this replaced rather than a weaker one. Grace used to carry a
+     * "re-read the verdict" link beneath its Continue button; it went when the
+     * chip arrived, because two controls for one destination is one too many
+     * and a backward link directly under the forward CTA is retreat offered at
+     * the moment of going on — the same argument that stripped the decision
+     * screen, applied one screen earlier.
+     *
+     * The chip is not a way in for either: it renders beside these calls in the
+     * shell's own chrome, never through them.
+     */
     const invitationCall = shell.match(/<InvitationScreen[\s\S]*?\/>/)?.[0] ?? "";
     expect(invitationCall, "InvitationScreen is not rendered here").toContain("messages");
     expect(invitationCall).not.toContain("onBack");
-    // Grace keeps its walk-back to the verdict; this test must not pass simply
-    // because every onBack in the flow was deleted.
     const graceCall = shell.match(/<GraceScreen[\s\S]*?\/>/)?.[0] ?? "";
-    expect(graceCall).toContain("onBack");
+    expect(graceCall, "GraceScreen is not rendered here").toContain("advanceHint");
+    expect(graceCall).not.toContain("onBack");
+  });
+});
+
+describe("the exit and the walk-back cannot be mistaken for each other", () => {
+  /*
+   * They were identical twins: same pill, same border, same size, same arrow,
+   * same y, differing only by which edge they clung to — and on grace, tapping
+   * the wrong one costs the reader the whole flow. Worse, the exit held back's
+   * position AND back's glyph while the walk-back sat on the right.
+   *
+   * Now they differ on every axis at once: side, glyph, and whether they carry
+   * a word. Back is left, arrowed and labelled with its destination; the exit
+   * is right and an icon, which is the vocabulary for closing a layer — honest
+   * because /test IS one, the (immersive) route group over the site.
+   */
+  it("puts back on the left and the exit on the right", () => {
+    const exit = shell.match(/<Link[\s\S]*?<\/Link>/)?.[0] ?? "";
+    expect(exit, "the exit link is not the first Link in the shell").toContain("backLabel");
+    expect(exit).toMatch(/fixed right-3 top-3\.5/);
+    // Both chips, and nothing left on the right for them to collide with.
+    expect(shell.match(/fixed left-3 top-3\.5[^"]*/g) ?? []).toHaveLength(2);
+  });
+
+  it("gives the exit an icon where back gets an arrow and a word", () => {
+    const exit = shell.match(/<Link[\s\S]*?<\/Link>/)?.[0] ?? "";
+    expect(exit).toMatch(/<X\b/);
+    expect(exit, "the exit wears back's glyph again").not.toMatch(/&larr;/);
+    // The chips keep both, because naming the destination is their whole value.
+    expect(shell).toMatch(/&larr;<\/span>\s*<span>\{messages\.test\.backToVerdict\}/);
+    expect(shell).toMatch(/&larr;<\/span>\s*<span>\{messages\.test\.backToGrace\}/);
+  });
+
+  it("reveals the word on the first pointer tap, and leaves on the second", () => {
+    /*
+     * A bare icon on a screen whose whole surface is a button invites the
+     * exploratory tap, and the thing on the other side of it is a ninety-second
+     * flow with no way back into the middle. So the first pointer press only
+     * names the action.
+     */
+    const exit = shell.match(/<Link[\s\S]*?<\/Link>/)?.[0] ?? "";
+    expect(exit).toMatch(/event\.preventDefault\(\)/);
+    expect(exit).toMatch(/setExitRevealed\(true\)/);
+    // Rule 3: keyboard and AT skip the two-step. A keyboard activation reports
+    // detail 0, so only a real pointer click is held back — the link is named
+    // by aria-label and navigates on the first Enter.
+    expect(exit).toMatch(/event\.detail > 0/);
+    expect(exit).toMatch(/aria-label=\{messages\.test\.backLabel\}/);
+  });
+
+  it("never swallows the tap that dismisses it", () => {
+    /*
+     * Rule 1, and the one that decides whether this is a label or a modal. The
+     * collapse listener is passive and non-capturing, so the tap that closes
+     * the reveal still reaches whatever it landed on — advancing a verdict
+     * beat, moving grace a section. A backdrop element, or a capturing
+     * listener, would put a modal on a tap-anywhere screen: the exact seam
+     * defect grace's own tap surface exists to have fixed.
+     */
+    expect(shell).toMatch(/document\.addEventListener\("pointerdown", onPointerDown, \{ passive: true \}\)/);
+    /*
+     * And it recognises its own control by data-slot, not by a ref. pointerdown
+     * runs before click: a press on the X that this listener fails to place
+     * collapses the reveal a moment before the click lands, so the click
+     * handler sees a collapsed control and re-reveals instead of leaving. The
+     * reader taps twice and goes nowhere — measured, the second tap never left
+     * /test. `closest` also answers for the icon inside, which is what a thumb
+     * actually hits.
+     */
+    expect(shell).toMatch(/closest\?\.\('\[data-slot="test-exit"\]'\)/);
+    expect(shell).toMatch(/data-slot="test-exit"/);
+    expect(shell, "a capturing collapse listener eats the gesture").not.toMatch(
+      /"pointerdown"[^)]*capture: true/,
+    );
+    // Rule 2: nothing collapses it on a timer — same reasoning that keeps the
+    // verdict tap-advanced rather than timed.
+    const revealEffect =
+      shell.match(/if \(!exitRevealed\) return;[\s\S]*?\}, \[exitRevealed\]\)/)?.[0] ?? "";
+    expect(revealEffect, "the reveal effect moved").toContain("pointerdown");
+    expect(revealEffect).not.toMatch(/setTimeout/);
+  });
+
+  it("counts the exit, because nothing did", () => {
+    /*
+     * The exit is a client-side <Link>, so the document never unloads and
+     * `beforeunload` — the only abandonment hook in this shell — does not fire.
+     * Leaving produced no event at all, which is exactly the evidence needed to
+     * judge whether the reveal in front of it prevents accidents or merely
+     * costs every deliberate leaver a tap.
+     */
+    const exit = shell.match(/<Link[\s\S]*?<\/Link>/)?.[0] ?? "";
+    expect(exit).toMatch(/trackTestExit\(state\.phase, locale\)/);
   });
 });

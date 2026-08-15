@@ -564,7 +564,10 @@ describe("grace carries the verdict's gesture across the seam", () => {
     const withRecord = sections.filter((sec) => sec.includes("<GraceRecord"));
     expect(withRecord.length, "the record moved or was duplicated").toBe(1);
     expect(withRecord[0], "the way on is not with the record").toContain("handleContinue");
-    expect(withRecord[0], "the walk-back link is not with the record").toContain("onBack");
+    // The walk-back link that used to sit under the button is gone entirely —
+    // the shell's chip is the one control for that destination, and a backward
+    // link directly beneath the forward CTA was the worse-placed of the two.
+    expect(grace).not.toMatch(/onBack/);
     // …and nothing is left holding only a button.
     const buttonOnly = sections.filter(
       (sec) => sec.includes("handleContinue") && !sec.includes("<GraceRecord"),

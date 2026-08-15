@@ -33,7 +33,9 @@ interface GraceScreenProps {
        the announcement is a chevron rather than a word. The key still exists in
        both locales — orphaning a string is cheaper to undo than deleting one,
        and the owner's PT pass is open. */
-    rereadVerdict: string;
+    /* `grace.rereadVerdict` is deliberately absent too, and orphaned in both
+       locales rather than deleted — see the way-on section for why the link it
+       labelled went to the shell's chip. */
     record: React.ComponentProps<typeof GraceRecord>["messages"];
   };
   /** The six charge nouns, keyed by commandment. Passed in rather than read
@@ -51,8 +53,6 @@ interface GraceScreenProps {
    * five times — which is the entire point of showing it here.
    */
   advanceHint: { touch: string; pointer: string };
-  /** Walks back one history entry, so the browser stack and the reducer agree. */
-  onBack: () => void;
 }
 
 /*
@@ -88,9 +88,9 @@ interface GraceScreenProps {
  * and the tap only moves the viewport — it withholds nothing, which is the
  * distinction that matters here. Withholding is the Law's instrument.
  *
- * The surface retires at the last section, where the Continue button and the
- * walk-back link live: an invisible control over a real choice is the one place
- * this trade stops being worth it.
+ * The surface retires at the last section, where the Continue button lives: an
+ * invisible control over a real choice is the one place this trade stops being
+ * worth it.
  *
  * Cost, stated plainly: text cannot be selected on this screen while the
  * surface is up. There is nothing to copy and no link to reach in the argument,
@@ -155,7 +155,7 @@ const BEAT_SECTIONS = 4;
  */
 const SEED_THRESHOLD = 0.9;
 
-export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: GraceScreenProps) {
+export function GraceScreen({ messages, verdictLabels, advanceHint }: GraceScreenProps) {
   const dispatch = useGameDispatch();
   const state = useGameState();
   const startTime = useRef(0);
@@ -945,22 +945,29 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, onBack }: Gr
             messages={messages.record}
           />
 
+          {/*
+           * The way on, and nothing beside it.
+           *
+           * A "re-read the verdict" link used to sit under this button. It went
+           * when the shell grew a walk-back chip: two controls for one
+           * destination is one too many, and this was the worse-placed of them
+           * — a backward link directly beneath the forward CTA, offered at the
+           * moment the reader is deciding to go on. That is the argument that
+           * took the same link off the decision screen, applied one screen
+           * earlier.
+           *
+           * What it had going for it was context: it appeared exactly where the
+           * reader finishes their own record. The chip is ambient by comparison
+           * — but ambient and always visible beats contextual and seven
+           * viewports down, which is the complaint that started this work.
+           * `grace.rereadVerdict` stays in both locales, orphaned: undoing a
+           * deletion costs more than leaving a string unused.
+           */}
           <div ref={wayOnRef} className="mt-12 flex flex-col items-center">
             <Button variant="gold" mist onClick={handleContinue}>
               {messages.continueLabel}
               <ButtonArrow />
             </Button>
-
-            {/* Quiet walk-back — re-reading the verdict, not reopening it. Walks
-                one history entry back rather than dispatching directly, so the
-                browser stack and the reducer stay in agreement. */}
-            <button
-              type="button"
-              onClick={onBack}
-              className="mt-8 inline-flex min-h-[32px] items-center text-[11px] text-white/60 underline decoration-white/15 underline-offset-4 transition-colors hover:text-white/75"
-            >
-              {messages.rereadVerdict}
-            </button>
           </div>
         </section>
       </div>
