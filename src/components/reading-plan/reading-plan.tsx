@@ -84,16 +84,26 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
   // Shared with day-ticket rather than derived twice — see firstUnreadDay.
   const currentDay = firstUnreadDay(progress, totalDays);
 
-  const handleMarkRead = useCallback((day: number) => {
-    const success = markDayRead(day);
-    if (!success) return;
-    const updated = { ...progress, [String(day)]: true };
-    const newCount = getCompletedCount(updated, totalDays);
-    if (newCount >= totalDays) {
+  /*
+   * Mirrors track-committed.tsx's handleMarkRead: the day is derived from
+   * storage AT CLICK TIME, not from the rendered `progress` state, which can
+   * lag storage (another tab advancing the plan before the subscription
+   * lands). markDayRead reports success for an already-read day, so a stale
+   * day would fire completion analytics for a day this tap did not
+   * complete. Read fresh, the day handed to the writer is unread by
+   * construction, so success can only mean this write — and it is still the
+   * contiguous day the writer's own rule accepts, which is what matters if
+   * storage has moved on since this tab last synced.
+   */
+  const handleMarkRead = useCallback(() => {
+    const day = firstUnreadDay(readProgress(), totalDays);
+    if (day > totalDays) return;
+    if (!markDayRead(day)) return;
+    if (day >= totalDays) {
       trackReadingPlanCompleted(locale);
     }
     trackReadingPlanDayCompleted(day, locale, "reading_plan");
-  }, [progress, totalDays, locale]);
+  }, [totalDays, locale]);
 
   const progressLabel = messages.progressLabel
     .replace("{current}", String(Math.min(completedCount + 1, totalDays)))
@@ -160,7 +170,7 @@ export function ReadingPlan({ messages, locale }: ReadingPlanProps) {
             dayLabel={messages.dayLabel}
             markReadLabel={messages.markReadLabel}
             completedLabel={messages.completedLabel}
-            onMarkRead={() => handleMarkRead(i + 1)}
+            onMarkRead={handleMarkRead}
             onOpenPassage={() => trackScriptureOpened("reading_plan_day", i + 1, locale)}
           />
         ))}

@@ -403,3 +403,39 @@ describe("the reflection chain's actual rule", () => {
     }
   });
 });
+
+describe("the reading plan's own mark-read control", () => {
+  // Same bug as the committed track's fix above, on the other surface: a
+  // render-time `progress` snapshot can lag storage across tabs, and
+  // markDayRead "succeeds" (by contract) on an already-read day -- so a
+  // click could fire reading_plan_day_completed for a day this tap did not
+  // complete, and derive plan-completed from a stale count.
+  it("derives the day from storage at click time, not a spread of the stale render-time snapshot", () => {
+    expect(readingPlan, "the handler derives the day from a stale progress snapshot").toMatch(
+      /const day = firstUnreadDay\(readProgress\(\), totalDays\);/,
+    );
+    expect(
+      readingPlan,
+      "the handler still spreads the stale progress state into a new object",
+    ).not.toMatch(/\.\.\.progress, \[String\(day\)\]: true/);
+    expect(readingPlan, "the finished plan is not guarded before the write").toMatch(
+      /if \(day > totalDays\) return;/,
+    );
+  });
+
+  it("computes plan completion from the freshly-read day, not a stale count", () => {
+    expect(readingPlan, "completion no longer follows the fresh write").toMatch(
+      /if \(day >= totalDays\) \{\s*trackReadingPlanCompleted\(locale\);/,
+    );
+  });
+
+  it("hands DayCard's already-no-argument callback straight through, not a per-card bound day", () => {
+    // DayCard only ever renders the button on the one card isCurrent picks,
+    // so a day baked into the closure at render time is exactly the stale
+    // value the fix above removes -- the writer's own contiguity rule is
+    // what has to pick the day, not the card that happened to render it.
+    expect(readingPlan, "onMarkRead is bound to a per-card day again").toMatch(
+      /onMarkRead=\{handleMarkRead\}/,
+    );
+  });
+});
