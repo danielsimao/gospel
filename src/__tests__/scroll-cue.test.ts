@@ -656,13 +656,58 @@ describe("each screen cues the gesture it actually wants", () => {
      * sits at y=878. The full-screen click target does not exist in this mode —
      * deliberately — so without a cue a reader clicked and nothing happened.
      */
-    expect(verdict).toMatch(/showAll && !hasScrolled/);
+    expect(verdict).toMatch(/showAll && !bridgeInView/);
     expect(verdict).toMatch(/<ScrollCue\s*\/>/);
   });
 
-  it("retires the cue once the reader has scrolled", () => {
-    // A cue still pointing down after the control is on screen is noise.
-    expect(verdict).toMatch(/once:\s*true/);
+  it("retires the pill and the cue once the in-flow button is actually on screen, not once the reader has scrolled", () => {
+    /*
+     * `scroll`, `{ once: true }` was the old mechanism, and it only ever fired
+     * for a reader who scrolled — a viewport tall enough to hold the whole
+     * document without scrolling (a desktop browser, a short confession, a
+     * zoomed-out page) could never dispatch one, so the pill sat forever over
+     * a button already fully visible a few hundred pixels below it, and the
+     * cue pointed down at nothing.
+     *
+     * An IntersectionObserver on the in-flow button itself is watching the
+     * true condition both were compensating for — "is the button below the
+     * fold" — rather than a gesture that only sometimes implies it. Its first
+     * callback fires as soon as it starts observing, including when the
+     * target is already on screen, so a document that never scrolls retires
+     * both without a scroll ever occurring; the same observer covers the
+     * scrolling case when the button later crosses into view.
+     */
+    expect(verdict, "the scroll listener is back").not.toMatch(/once:\s*true/);
+    expect(verdict).toMatch(/const \[bridgeInView, setBridgeInView\] = useState\(false\)/);
+    expect(verdict).toMatch(/ref=\{bridgeRef\}/);
+    expect(verdict).toMatch(/new IntersectionObserver/);
+    expect(verdict).toMatch(/observer\.observe\(el\)/);
+    expect(verdict).toMatch(/\{ threshold: 0 \}/);
+    expect(verdict, "a margin would delay retirement past the button's true arrival").not.toMatch(
+      /rootMargin/,
+    );
+    expect(verdict).toMatch(/if \(entry\.isIntersecting\) setBridgeInView\(true\)/);
+    // Torn down on unmount and when showAll changes — the effect's own
+    // dependency array, not a separate guard.
+    expect(verdict).toMatch(/return \(\) => observer\.disconnect\(\)/);
+    const bridgeEffect = verdict.slice(
+      verdict.indexOf("const bridgeRef = useRef"),
+      verdict.indexOf("const advance = useCallback"),
+    );
+    expect(bridgeEffect.length, "could not isolate the bridge-visibility effect").toBeGreaterThan(0);
+    expect(bridgeEffect).toMatch(/\}, \[showAll\]\);/);
+  });
+
+  it("does not gate the pill and cue on a gesture that may never happen", () => {
+    // Both must retire off the SAME signal, together — never one without the
+    // other, and never a fixed-viewport pill left up once the cue is gone.
+    const pill = verdict.slice(
+      verdict.indexOf('bottom-[calc(7rem'),
+    );
+    expect(pill.slice(0, 80)).not.toMatch(/hasScrolled/);
+    const cueBlock = verdict.slice(verdict.indexOf('bottom-[calc(1.5rem'));
+    expect(cueBlock.slice(0, 80)).not.toMatch(/hasScrolled/);
+    expect(verdict, "the old scroll-based flag survives somewhere").not.toMatch(/hasScrolled/);
   });
 
   it("the beat sequence shows no scroll cue and no down arrow", () => {

@@ -135,26 +135,50 @@ export function VerdictScreen({
   const showAll = returning;
 
   /*
-   * The re-read document overflows, and its only way forward is at the bottom.
+   * The re-read document overflows, and its only way forward is at the bottom
+   * — but only sometimes. Measured at 390×844: the document is 1088px and the
+   * "Is there any hope?" button sits at y=878, 34px below the fold, invisible.
+   * The full-screen control does not exist in this mode (deliberately: see the
+   * affordance note below), so a reader who clicked expecting the sequence's
+   * behaviour got nothing at all, with no cue that scrolling was required.
+   * That is a dead end, not a design.
    *
-   * Measured at 390×844: the document is 1088px and the "Is there any hope?"
-   * button sits at y=878 — 34px below the fold, invisible. The full-screen
-   * control does not exist in this mode (deliberately: see the affordance note
-   * below), so a reader who clicked expecting the sequence's behaviour got
-   * nothing at all, with no cue that scrolling was required. That is a dead end,
-   * not a design.
+   * A fixed pill and a cue fix it, but only while it is true — and "the reader
+   * has scrolled" is not the same fact as "the button is visible". A tall
+   * desktop viewport, a short confession (the document's height tracks how
+   * many charges were admitted), or a zoomed-out page can fit the whole
+   * document without a scroll event ever firing, and a `scroll` listener never
+   * retires there: the pill sits forever over a button that is already in
+   * plain sight a few hundred pixels below it, duplicating it, and the cue
+   * points down at nothing.
    *
-   * A cue fixes it, but only while it is true. Once the reader has scrolled it
-   * would be pointing at a control they can already see, so it retires after the
-   * first movement. `once: true` on the listener, and it never runs at all in
-   * the sequence, where nothing scrolls.
+   * So this watches the button itself rather than a gesture that might reveal
+   * it. An IntersectionObserver's first callback fires as soon as it starts
+   * observing — including when the target is already on screen — so a
+   * document that never scrolls retires the pill and cue on its own, with no
+   * scroll required. The same observer covers the scrolling case unchanged:
+   * the callback fires again the moment the button crosses into view. One
+   * mechanism answers both viewports, so the two can no longer fall out of
+   * step with each other the way a scroll listener and a real layout could.
    */
-  const [hasScrolled, setHasScrolled] = useState(false);
+  const bridgeRef = useRef<HTMLButtonElement>(null);
+  const [bridgeInView, setBridgeInView] = useState(false);
   useEffect(() => {
     if (!showAll) return;
-    const onScroll = () => setHasScrolled(true);
-    window.addEventListener("scroll", onScroll, { passive: true, once: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    // No observer, no retirement — the pill and cue simply stay, which is
+    // the same "keep the affordance" default the sequence's own advance hint
+    // and grace's reveal effect fall back to when this API is unavailable.
+    if (typeof IntersectionObserver === "undefined") return;
+    const el = bridgeRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) if (entry.isIntersecting) setBridgeInView(true);
+      },
+      { threshold: 0 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
   }, [showAll]);
 
   const advance = useCallback(() => {
@@ -452,6 +476,7 @@ export function VerdictScreen({
         {showAll && (
           <button
             type="button"
+            ref={bridgeRef}
             onClick={handleBridgeClick}
             className="inline-flex flex-col items-center gap-4 rounded-lg px-4 py-2 outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-[#D4A843]/70"
           >
@@ -477,11 +502,15 @@ export function VerdictScreen({
           390×844, so without this a returning reader has no way forward until
           they scroll on faith. Reuses the consent-h + safe-area-inset-bottom
           anchor the cue below already establishes.
-          Retires with the cue on the first scroll — see hasScrolled above:
-          once the reader is moving, the real button is one small scroll away
-          (34px), and a pill still floating over the record they are now
-          reading is chrome competing with the thing it was built to reveal. */}
-      {showAll && !hasScrolled && (
+          Retires once the in-flow button is confirmed on screen — see
+          bridgeInView above. That covers both viewports the scroll listener
+          this replaced could not: a phone where the button is genuinely below
+          the fold at mount, and a tall desktop viewport where it never was,
+          so the observer's first callback fires immediately and the pill never
+          shows at all. Once the real button is visible, a pill still floating
+          over the record the reader is now reading is chrome competing with
+          the thing it was built to reveal. */}
+      {showAll && !bridgeInView && (
         <div className="pointer-events-none fixed inset-x-0 bottom-[calc(7rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] z-20 flex justify-center px-7">
           <button
             type="button"
@@ -493,10 +522,14 @@ export function VerdictScreen({
         </div>
       )}
 
-      {/* Fixed to the viewport, not the document: the button it points at is
-          below the fold, so a cue positioned in the document would be below the
-          fold with it. Retires on the first scroll — see hasScrolled above. */}
-      {showAll && !hasScrolled && (
+      {/* Fixed to the viewport, not the document: the button it points at can
+          be below the fold, so a cue positioned in the document would be below
+          the fold with it. On a viewport tall enough that the document never
+          scrolls, the button was never below anything — bridgeInView is true
+          from the observer's opening callback, before this ever has a chance
+          to render, so the cue never appears to point at nothing. Retires with
+          the pill, off the same signal — see bridgeInView above. */}
+      {showAll && !bridgeInView && (
         <div className="pointer-events-none fixed inset-x-0 bottom-[calc(1.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] z-20 flex justify-center">
           <ScrollCue />
         </div>
