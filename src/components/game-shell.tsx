@@ -332,6 +332,45 @@ export function GameShell({ messages, locale }: GameShellProps) {
           <span>{messages.test.backLabel}</span>
         </Link>
 
+      {/*
+       * The flow's own walk-back, visible — the seam the exit chip cannot
+       * cover. "Backwards" used to be a link at the bottom of grace's seventh
+       * viewport plus an unlabelled browser gesture; a reader wondering "can I
+       * go back?" looked at the top of the screen and found only Exit, which
+       * leaves the test entirely.
+       *
+       * Grace only, and each absence is a rule rather than a gap. The landing
+       * and the questions get nothing because the Law is one-way — testimony
+       * is recorded, not editable (see UNDO_ANSWER's own guard). The verdict
+       * gets nothing because back from the verdict IS Exit — the baseline
+       * history entry leaves /test, and two chips saying different kinds of
+       * "back" at once would make the reader guess. The decision screen gets
+       * nothing because that screen offers the decision and nothing beside it
+       * (phase-handoff.test.ts pins the owner's reasoning); the browser
+       * gesture still walks back while the invitation is unanswered.
+       *
+       * Same one path as grace's own bottom link: mark the gesture as
+       * link-driven, walk one real history entry, and let popstate dispatch —
+       * so the browser stack and the reducer cannot disagree.
+       *
+       * z-40, and that is load-bearing rather than styling: grace's tap
+       * surface is fixed at z-30, so anything lower is a chip that ignores
+       * every click for exactly as long as the surface is up.
+       */}
+      {state.phase === "grace" && (
+        <button
+          type="button"
+          onClick={() => {
+            viaLinkRef.current = true;
+            window.history.back();
+          }}
+          className="fixed right-3 top-3.5 z-40 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/80 sm:right-4 sm:top-4 sm:text-[10px]"
+        >
+          <span aria-hidden="true">&larr;</span>
+          <span>{messages.test.backToVerdict}</span>
+        </button>
+      )}
+
       {/* Just enough to clear the exit chip's top inset. This was pt-10 for the
           sticky deaths strip and pt-9 after it went, but the strip is what the
           space was for: with it gone the offset simply pushed the examination

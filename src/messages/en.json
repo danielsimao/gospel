@@ -38,6 +38,7 @@
     "seeVerdictLabel": "See verdict",
     "commandmentLabel": "Commandment",
     "backLabel": "Exit",
+    "backToVerdict": "Verdict",
     "changeAnswerLabel": "Change my answer",
     "verdictLabels": {
       "9th": "a liar",

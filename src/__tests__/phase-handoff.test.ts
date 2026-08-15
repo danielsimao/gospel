@@ -85,11 +85,52 @@ describe("a screen does not change what it is while it is leaving", () => {
     expect(verdict).not.toMatch(/const returning = state\.graceReached/);
   });
 
-  it("still gives a returning reader the whole document", () => {
-    // The fix must not turn the re-read back into a single gold question, which
-    // is the bug showAll exists to solve.
-    expect(verdict).toMatch(/const showAll = returning/);
+  it("still gives a returning reader the whole record", () => {
+    /*
+     * A returning reader mounts on the door beat, and the door beat IS the
+     * settled record: beats accumulate (`beatIndex >= i`) instead of replacing
+     * each other, so the re-read is the final frame of the forward pass rather
+     * than a second layout. The seed must not regress to 0 — that would open
+     * the re-read on a lone GUILTY with the record withheld, which is the bug
+     * the old `showAll` document existed to solve.
+     */
     expect(verdict).toMatch(/useState\(returning \? LAST_BEAT : 0\)/);
+    expect(verdict).toMatch(/beatIndex >= i/);
+    // One layout, by construction. A second rendering path for the re-read is
+    // how "back" came to land on a page the reader had never seen.
+    expect(verdict).not.toMatch(/showAll/);
+  });
+});
+
+describe("the flow's own walk-back is visible, and only where walking back is legal", () => {
+  it("the shell shows the verdict chip on grace, and on no other phase", () => {
+    /*
+     * "Backwards" used to be a link at the bottom of grace's seventh viewport
+     * plus an unlabelled browser gesture. The chip is the always-visible half
+     * of the answer — but each absence is a rule: the Law is one-way
+     * (testimony, see UNDO_ANSWER), back from the verdict IS Exit, and the
+     * decision screen offers the decision and nothing beside it (below).
+     */
+    const chip = shell.match(/\{state\.phase === "grace" && \([\s\S]*?<\/button>\s*\)\}/)?.[0] ?? "";
+    expect(chip, "no grace-gated chip in the shell").toContain("backToVerdict");
+    // One path shared with grace's own bottom link: mark the gesture as
+    // link-driven and walk a real history entry, so the browser stack and the
+    // reducer cannot disagree about where the reader is.
+    expect(chip).toContain("viaLinkRef.current = true");
+    expect(chip).toContain("window.history.back()");
+  });
+
+  it("sits above grace's tap surface, or it is decoration", () => {
+    /*
+     * Grace's tap surface is `fixed inset-0 z-30` for most of the visit. A
+     * chip below that answers no clicks for exactly as long as the reader
+     * might want it — the affordance would exist and not work, which is worse
+     * than its absence ever was.
+     */
+    const chip = shell.match(/\{state\.phase === "grace" && \([\s\S]*?<\/button>\s*\)\}/)?.[0] ?? "";
+    expect(chip).toMatch(/z-40/);
+    const grace = code(read("src", "components", "grace-screen.tsx"));
+    expect(grace).toMatch(/data-slot="grace-tap-surface"[\s\S]*?z-30/);
   });
 });
 

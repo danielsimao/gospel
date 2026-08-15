@@ -38,6 +38,7 @@
     "seeVerdictLabel": "Ver veredicto",
     "commandmentLabel": "Mandamento",
     "backLabel": "Sair",
+    "backToVerdict": "Veredicto",
     "changeAnswerLabel": "Mudar a minha resposta",
     "verdictLabels": {
       "9th": "um mentiroso",

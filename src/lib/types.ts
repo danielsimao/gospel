@@ -238,6 +238,9 @@ export interface TestMessages {
   seeVerdictLabel: string;
   commandmentLabel: string;
   backLabel: string;
+  /** The shell's walk-back chip on grace — one word, because it names a
+      destination the reader has already been to, not an action to explain. */
+  backToVerdict: string;
   changeAnswerLabel: string;
   verdictLabels: Record<string, string>;
   verdict: {
