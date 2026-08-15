@@ -39,20 +39,70 @@ const CEILING = 450;
 
 const BOOKS =
   "(?:[1-3]\\s)?(?:Genesis|Exodus|Leviticus|Numbers|Deuteronomy|Joshua|Judges|Ruth|Samuel|" +
-  "Kings|Chronicles|Ezra|Nehemiah|Esther|Job|Psalm|Psalms|Proverbs|Ecclesiastes|Isaiah|" +
+  "Kings|Chronicles|Ezra|Nehemiah|Esther|Job|Psalm|Psalms|Proverbs|Ecclesiastes|" +
+  "Song of Solomon|Isaiah|" +
   "Jeremiah|Lamentations|Ezekiel|Daniel|Hosea|Joel|Amos|Obadiah|Jonah|Micah|Nahum|" +
   "Habakkuk|Zephaniah|Haggai|Zechariah|Malachi|Matthew|Mark|Luke|John|Acts|Romans|" +
   "Corinthians|Galatians|Ephesians|Philippians|Colossians|Thessalonians|Timothy|Titus|" +
   "Philemon|Hebrews|James|Peter|Jude|Revelation)";
-const REFERENCE = new RegExp(`\\b${BOOKS}\\s+\\d+:\\d+(?:[-–]\\d+)?`, "g");
+/**
+ * A reference plus every comma/semicolon continuation glued to it: "John
+ * 3:16, 18" and "John 3:16; 4:5" are one match apiece, not one match that
+ * silently drops its own tail. A continuation segment is either a bare verse
+ * number (comma — same chapter as the segment before it) or a chapter:verse
+ * pair (semicolon — a new chapter, same book), each optionally its own dash
+ * range.
+ */
+const REFERENCE = new RegExp(
+  `\\b${BOOKS}\\s+\\d+:\\d+(?:[-–](?:\\d+:)?\\d+)?` +
+    `(?:[,;]\\s*(?:\\d+:)?\\d+(?:[-–](?:\\d+:)?\\d+)?)*`,
+  "g",
+);
 
-/** Verses a reference spans. "John 3:16" is one; "John 3:16-18" is three. */
+// Psalm 119 is the longest chapter in the Bible at 176 verses. There is no
+// per-book chapter-length table in this file, so a dash range that crosses a
+// chapter boundary — "John 3:16-4:2" — rounds every verse it cannot count
+// exactly (the rest of the starting chapter, and any whole chapter in
+// between) up to this ceiling instead of guessing. Overcounts a cross-chapter
+// range; never undercounts one.
+const MAX_CHAPTER_VERSES = 176;
+
+/** Verses a single chapter:verse segment spans, e.g. "John 3:16" (one),
+    "John 1:1-18" (eighteen, same chapter), or "John 3:16-4:2" (pessimistic,
+    see MAX_CHAPTER_VERSES — the dash's far side names a different chapter). */
 function verseSpan(reference: string): number {
-  const m = /(\d+):(\d+)(?:[-–](\d+))?$/.exec(reference);
+  const m = /(\d+):(\d+)(?:[-–](?:(\d+):)?(\d+))?$/.exec(reference);
   if (!m) return 1;
-  const first = Number(m[2]);
-  const last = m[3] ? Number(m[3]) : first;
-  return Math.max(1, last - first + 1);
+  const startVerse = Number(m[2]);
+  if (!m[4]) return 1;
+  const endVerse = Number(m[4]);
+  if (!m[3]) return Math.max(1, endVerse - startVerse + 1);
+  const startChapter = Number(m[1]);
+  const endChapter = Number(m[3]);
+  const spannedChapters = Math.max(0, endChapter - startChapter - 1);
+  return (
+    (MAX_CHAPTER_VERSES - startVerse + 1) + spannedChapters * MAX_CHAPTER_VERSES + endVerse
+  );
+}
+
+/** Sums a whole reference, continuations included. Each comma/semicolon
+    segment is handed to verseSpan on its own, with a bare verse number
+    ("18" after a comma) rewritten against the chapter the segment before it
+    was in — the continuation carries no book name to anchor a match on. */
+function referenceSpan(reference: string): number {
+  const segments = reference.split(/[,;]\s*/);
+  let currentChapter = "";
+  let total = 0;
+  for (const segment of segments) {
+    const hasChapter = segment.split(/[-–]/)[0].includes(":");
+    if (hasChapter) {
+      currentChapter = /(\d+):/.exec(segment)![1];
+      total += verseSpan(segment);
+    } else {
+      total += verseSpan(`${currentChapter}:${segment}`);
+    }
+  }
+  return total;
 }
 
 function englishSources(): string[] {
@@ -70,7 +120,7 @@ describe("the NKJV verse budget", () => {
       for (const m of source.matchAll(REFERENCE)) references.add(m[0]);
     }
 
-    const cited = [...references].reduce((n, r) => n + verseSpan(r), 0);
+    const cited = [...references].reduce((n, r) => n + referenceSpan(r), 0);
     const total = cited + READING_PLAN_VERSES;
 
     expect(
@@ -87,6 +137,30 @@ describe("the NKJV verse budget", () => {
     expect(verseSpan("John 3:16")).toBe(1);
     expect(verseSpan("John 1:1-18")).toBe(18);
     expect(verseSpan("John 20:1–31")).toBe(31);
+  });
+
+  it("counts every reference in a comma or semicolon list, not just the first", () => {
+    // "John 3:16, 18" and "John 3:16; 4:5" used to match only the leading
+    // "John 3:16" — the trailing "18" / "4:5" carry no book name of their
+    // own, so REFERENCE never saw them.
+    expect([..."Isaiah 40:6, 8".matchAll(REFERENCE)].map((m) => m[0])).toEqual([
+      "Isaiah 40:6, 8",
+    ]);
+    expect(referenceSpan("Isaiah 40:6, 8")).toBe(2);
+    expect(referenceSpan("John 3:16; 4:5")).toBe(2);
+    expect(referenceSpan("Psalm 23:1, 4-6")).toBe(4);
+  });
+
+  it("rounds a cross-chapter range up rather than reading it as one verse", () => {
+    // "John 3:16-4:2" used to match verseSpan's same-chapter pattern, which
+    // read the "2" after the second dash as a verse in chapter 3 and
+    // reported a span of one.
+    expect(verseSpan("John 3:16-4:2")).toBeGreaterThan(1);
+    expect(verseSpan("John 3:16-4:2")).toBe(MAX_CHAPTER_VERSES - 16 + 1 + 2);
+  });
+
+  it("recognises Song of Solomon", () => {
+    expect("Song of Solomon 2:1").toMatch(REFERENCE);
   });
 });
 
