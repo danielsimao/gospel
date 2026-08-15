@@ -118,9 +118,11 @@ describe("the scroll cue", () => {
   });
 
   it("still reaches the way out of a document with no sections", () => {
-    // The verdict's re-read document is built from divs and overflows by only
-    // 244px; one viewport of scroll clamps at the end, which is exactly enough
-    // to bring its forward control into view.
+    // The fallback's original caller — the verdict's re-read document, divs
+    // only, 244px of overflow — is gone (re-entry replays the sequence now).
+    // The clamp-at-the-end viewport scroll stays: advanceSection is a shared
+    // helper, and a caller whose sections are exhausted or absent must still
+    // move rather than silently eat the tap.
     expect(advance).toMatch(/window\.scrollBy/);
   });
 
@@ -652,25 +654,18 @@ describe("each screen cues the gesture it actually wants", () => {
 
   it("the verdict shows no scroll cue and no down arrow, because nothing scrolls", () => {
     /*
-     * The verdict advances by TAP on every beat, and the settled record —
-     * which is also what a reader walking back from grace mounts into — is
-     * built to fit one viewport, with the way on inside it. A down arrow is
-     * the page's own vocabulary for "scroll", pointed at a gesture that does
-     * nothing: readers reported trying to scroll the beats and getting
-     * nothing. The persistent "click anywhere, or press space" affordance is
-     * what belongs on this screen, and it stays.
+     * The verdict advances by TAP on every beat, one beat to a screen, and a
+     * reader walking back from grace replays the same sequence from the
+     * charge — there is no second layout with anything below the fold. A down
+     * arrow is the page's own vocabulary for "scroll", pointed at a gesture
+     * that does nothing: readers reported trying to scroll the beats and
+     * getting nothing. The persistent "click anywhere, or press space"
+     * affordance is what belongs on this screen, and it stays.
      *
-     * The cue and its arrow used to be legitimate here once — the re-read was
-     * a separate 1088px "document" layout whose only control sat below the
-     * fold at 390×844. One layout removed that: the settled record measures
-     * 844/844 at 390×844 in both locales, door on screen. At 320×568 with the
-     * consent banner up the container still exceeds the viewport by its own
-     * reserved padding — but the door sits at y=454, fully above the fold, so
-     * what scrolls is blank reserve, not the way on. If the RECORD ever grows
-     * past the fold again, the cue is not the fix — the content is the bug,
-     * because the whole screen advances on tap and a page that must be
-     * scrolled under a tap surface is grace's problem, solved with slop
-     * tracking this screen deliberately does not carry.
+     * The cue and its arrow were legitimate here once — the re-read used to
+     * be a separate 1088px "document" whose only control sat below the fold
+     * at 390×844. Replay-from-the-start (owner ruling, 2026-08-15) deleted
+     * that layout, and the cue's reason went with it.
      */
     expect(verdict).not.toMatch(/&darr;/);
     expect(verdict).not.toMatch(/ScrollCue/);

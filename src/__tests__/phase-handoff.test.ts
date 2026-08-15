@@ -68,37 +68,35 @@ describe("the phase hand-off does not swallow the first gesture", () => {
 describe("a screen does not change what it is while it is leaving", () => {
   it("reads graceReached once, at mount, not on every render", () => {
     /*
-     * `showAll` — the verdict's re-read layout — is derived from graceReached.
-     * Tapping the door dispatches SHOW_GRACE, which sets that flag true WHILE
-     * this screen is still playing its exit. Read live, the departing verdict
-     * re-rendered into document mode: measured at 390×844, one frame after the
-     * tap the whole record (GUILTY, the confession, the death count, the claim)
-     * slammed over the door and stayed ~115ms until grace mounted, with the
-     * document growing 844 → 1088 underneath it.
-     *
-     * The value cannot legitimately change mid-life — "did this reader arrive
-     * having already seen grace" is settled on arrival — and the shell keys each
-     * phase, so walking back remounts this component and asks again then.
+     * Tapping the door dispatches SHOW_GRACE, which sets graceReached true
+     * WHILE this screen is still playing its exit. When the re-read layout
+     * derived from a live read of it, the departing verdict re-rendered into
+     * that other mode over the door: measured at 390×844, ~115ms of the whole
+     * record slammed on top of the gold question until grace mounted. The
+     * layout no longer branches on the flag at all — only analytics do — but
+     * the mount-time read stays pinned: "did this reader arrive having
+     * already seen grace" is settled on arrival, and a live read is exactly
+     * how the mid-exit flip gets reintroduced by an innocent refactor.
      */
     expect(verdict).toMatch(/const \[returning\] = useState\(state\.graceReached\)/);
     // The live read is what caused it; it must not come back in either form.
     expect(verdict).not.toMatch(/const returning = state\.graceReached/);
   });
 
-  it("still gives a returning reader the whole record", () => {
+  it("replays the sequence from the charge for a returning reader", () => {
     /*
-     * A returning reader mounts on the door beat, and the door beat IS the
-     * settled record: beats accumulate (`beatIndex >= i`) instead of replacing
-     * each other, so the re-read is the final frame of the forward pass rather
-     * than a second layout. The seed must not regress to 0 — that would open
-     * the re-read on a lone GUILTY with the record withheld, which is the bug
-     * the old `showAll` document existed to solve.
+     * Owner ruling (2026-08-15): walking back means hearing the verdict again,
+     * from GUILTY, by the same taps — not consulting a transcript. Two other
+     * answers shipped briefly and were rejected: a separate `showAll` document
+     * (a layout the forward pass never showed, so "re-read" landed somewhere
+     * unfamiliar) and an accumulating stack whose settled frame doubled as the
+     * re-read (which re-staged the two-heroes failure and brightened the full
+     * red record under gold's arrival). Every arrival therefore seeds beat 0,
+     * unconditionally, and there is no second rendering path.
      */
-    expect(verdict).toMatch(/useState\(returning \? LAST_BEAT : 0\)/);
-    expect(verdict).toMatch(/beatIndex >= i/);
-    // One layout, by construction. A second rendering path for the re-read is
-    // how "back" came to land on a page the reader had never seen.
+    expect(verdict).toMatch(/const \[beatIndex, setBeatIndex\] = useState\(0\)/);
     expect(verdict).not.toMatch(/showAll/);
+    expect(verdict).not.toMatch(/LAST_BEAT : 0/);
   });
 });
 
@@ -113,11 +111,29 @@ describe("the flow's own walk-back is visible, and only where walking back is le
      */
     const chip = shell.match(/\{state\.phase === "grace" && \([\s\S]*?<\/button>\s*\)\}/)?.[0] ?? "";
     expect(chip, "no grace-gated chip in the shell").toContain("backToVerdict");
-    // One path shared with grace's own bottom link: mark the gesture as
-    // link-driven and walk a real history entry, so the browser stack and the
-    // reducer cannot disagree about where the reader is.
-    expect(chip).toContain("viaLinkRef.current = true");
-    expect(chip).toContain("window.history.back()");
+    // Exclusivity, not just existence: exactly one render site, inside the
+    // grace gate. A second chip on another phase would otherwise pass — the
+    // absences above are the half of the rule a screenshot cannot pin.
+    expect(shell.match(/backToVerdict/g)).toHaveLength(1);
+  });
+
+  it("walks back through one guarded path, shared with grace's own link", () => {
+    /*
+     * history.back() is asynchronous and the screen shows nothing until the
+     * popstate lands, so a second impatient press queued a second traversal —
+     * back past the verdict baseline and clean out of /test, from a control
+     * labelled "Verdict". One in-flight walk at a time; popstate clears the
+     * latch whatever entry it lands on.
+     */
+    expect(shell).toMatch(/function walkBack\(\)/);
+    expect(shell).toMatch(/if \(backInFlightRef\.current\) return/);
+    expect(shell).toMatch(/onClick=\{walkBack\}/);
+    expect(shell).toMatch(/onBack=\{walkBack\}/);
+    // The guarded path still marks the gesture link-driven and walks a real
+    // history entry, so the browser stack and the reducer cannot disagree.
+    const walkBackFn = shell.match(/function walkBack\(\)[\s\S]*?\n {2}\}/)?.[0] ?? "";
+    expect(walkBackFn).toContain("viaLinkRef.current = true");
+    expect(walkBackFn).toContain("window.history.back()");
   });
 
   it("sits above grace's tap surface, or it is decoration", () => {

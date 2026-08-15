@@ -169,6 +169,25 @@ export function GameShell({ messages, locale }: GameShellProps) {
   // state without pushing a new entry (a re-push would clobber the forward
   // stack and double-count depth). depthRef is owned by the handler here.
   const poppingRef = useRef(false);
+  /*
+   * One walk-back may be in flight at a time. history.back() is asynchronous
+   * and the screen visibly changes nothing until the popstate lands — an exit
+   * of 0.09s plus an entrance of 0.2s — so an impatient second tap on the chip
+   * or on grace's own link queued a SECOND traversal: back past the grace
+   * entry AND the verdict baseline, whose popstate carries no marker, which
+   * hands the navigation to the App Router. A control labelled "Verdict"
+   * ejected the reader from /test entirely. The flag swallows every press
+   * until the pending pop has arrived; popstate clears it whatever the pop
+   * turns out to be, so a swallowed foreign marker cannot wedge it shut.
+   */
+  const backInFlightRef = useRef(false);
+
+  function walkBack() {
+    if (backInFlightRef.current) return;
+    backInFlightRef.current = true;
+    viaLinkRef.current = true;
+    window.history.back();
+  }
 
   useEffect(() => {
     const prev = prevPhaseRef.current;
@@ -220,6 +239,9 @@ export function GameShell({ messages, locale }: GameShellProps) {
 
   useEffect(() => {
     function onPopState(e: PopStateEvent) {
+      // The traversal a link-driven walk-back was waiting on has arrived —
+      // whatever entry it landed on, the next press is a new gesture.
+      backInFlightRef.current = false;
       if (unwindingRef.current) {
         // Landing event of the post-response unwind: strip the marker so
         // the next back press exits the page.
@@ -360,10 +382,7 @@ export function GameShell({ messages, locale }: GameShellProps) {
       {state.phase === "grace" && (
         <button
           type="button"
-          onClick={() => {
-            viaLinkRef.current = true;
-            window.history.back();
-          }}
+          onClick={walkBack}
           className="fixed right-3 top-3.5 z-40 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/80 sm:right-4 sm:top-4 sm:text-[10px]"
         >
           <span aria-hidden="true">&larr;</span>
@@ -439,10 +458,7 @@ export function GameShell({ messages, locale }: GameShellProps) {
                   touch: messages.test.verdict.advanceHintTouch,
                   pointer: messages.test.verdict.advanceHintPointer,
                 }}
-                onBack={() => {
-                  viaLinkRef.current = true;
-                  window.history.back();
-                }}
+                onBack={walkBack}
               />
             )}
 
