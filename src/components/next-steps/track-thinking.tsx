@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { m } from "framer-motion";
 import Link from "next/link";
 import { BookOpen, Compass } from "lucide-react";
@@ -78,6 +78,30 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
    */
   const [acknowledged, setAcknowledged] = useState(0);
 
+  /*
+   * Where focus goes after an item is acknowledged.
+   *
+   * The armed item is the only chain item with tabIndex 0; acknowledging it
+   * flips its own tabIndex to -1 (it is now "done") while it still holds
+   * focus, so without this the next Tab restarts from the top of the
+   * document instead of continuing down the chain. `itemRefs` holds one
+   * button per reflection; `readLinkRef` is where focus goes once the chain
+   * is finished and there is no next item to arm — the primary CTA is the
+   * next actionable thing on the page.
+   */
+  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const readLinkRef = useRef<HTMLAnchorElement>(null);
+  useEffect(() => {
+    // Runs on mount too (acknowledged starts at 0); skip so a fresh page
+    // load never steals focus from wherever the reader actually is.
+    if (acknowledged === 0) return;
+    if (acknowledged < messages.reflections.length) {
+      itemRefs.current[acknowledged]?.focus();
+    } else {
+      readLinkRef.current?.focus();
+    }
+  }, [acknowledged, messages.reflections.length]);
+
   // One gentle rise per reflection, capped so the questions read in
   // sequence but never run past ~1s total (was 0.5 + i*0.3 — far too slow).
   const para = (i: number) => ({ duration: 0.7, delay: 0.15 + Math.min(i, 3) * 0.12, ease: EASE_OUT_STRONG });
@@ -127,6 +151,9 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
                * announces a state; it does not enforce one.
                */}
               <button
+                ref={(el) => {
+                  itemRefs.current[i] = el;
+                }}
                 type="button"
                 onClick={() => {
                   if (state !== "armed") return;
@@ -173,6 +200,7 @@ export function TrackThinking({ messages, locale }: TrackThinkingProps) {
           <p className="mt-2 text-[15px] leading-relaxed text-white/70">{messages.readingBody}</p>
           <div className="mt-4">
             <a
+              ref={readLinkRef}
               href={messages.readingLink}
               rel="noopener noreferrer"
               onClick={() => {

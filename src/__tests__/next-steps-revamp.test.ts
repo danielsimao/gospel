@@ -465,3 +465,34 @@ describe("scripture-open analytics survive the same-tab handoff", () => {
     );
   });
 });
+
+describe("the reflection chain keeps focus alive across an acknowledgement", () => {
+  // The armed item is the only one with tabIndex 0; acknowledging it flips
+  // its own tabIndex to -1 (it is now "done") while it still holds focus, so
+  // without an explicit move the next Tab restarted from the top of the
+  // document instead of continuing down the chain.
+  it("gives every chain item a ref so focus can be moved onto it", () => {
+    expect(thinking, "the chain items lost their per-item refs").toMatch(
+      /itemRefs\.current\[i\] = el;/,
+    );
+  });
+
+  it("moves focus to the newly armed item after acknowledging one", () => {
+    expect(thinking, "focus is not moved to the next armed item").toMatch(
+      /itemRefs\.current\[acknowledged\]\?\.focus\(\);/,
+    );
+  });
+
+  it("moves focus to the primary CTA once the chain is finished, not nowhere", () => {
+    expect(thinking, "the read link lost its ref").toMatch(/ref=\{readLinkRef\}/);
+    expect(thinking, "focus does not land anywhere once the chain completes").toMatch(
+      /readLinkRef\.current\?\.focus\(\);/,
+    );
+  });
+
+  it("never steals focus on first mount, before any acknowledgement", () => {
+    expect(thinking, "the focus effect no longer guards the initial render").toMatch(
+      /if \(acknowledged === 0\) return;/,
+    );
+  });
+});
