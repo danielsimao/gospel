@@ -435,7 +435,12 @@ export function GameShell({ messages, locale }: GameShellProps) {
             }
             trackTestExit(state.phase, locale);
           }}
-          className="fixed right-3 top-3.5 z-40 flex items-center rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/80 sm:right-4 sm:top-4 sm:text-[10px]"
+          /* p-2/size-3.5 and sm:p-2.5/sm:size-4 both resolve to a square at
+             rest (30px, 36px — the latter is shadcn's own icon-button size),
+             the shape their asymmetric px-2/py-1 predecessor never had.
+             Revealing the label grows the box rightward from that square,
+             same as any icon button that gains a badge. */
+          className="fixed right-3 top-3.5 z-40 flex items-center justify-center rounded-md border border-white/[0.06] bg-[#060404]/80 p-2 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/80 sm:right-4 sm:top-4 sm:p-2.5 sm:text-[10px]"
         >
           <X aria-hidden="true" className="size-3.5 sm:size-4" />
           {/* aria-hidden and animated: the link is named by its aria-label, so
