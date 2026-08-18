@@ -125,6 +125,16 @@ describe("the committed track's read card gets a mark-as-read control", () => {
     );
   });
 
+  it("stops inviting a finished reader to start the plan", () => {
+    // "Start the 7-day plan" is only true while there's a day left to
+    // start -- once `today` is null the primary button has already become
+    // the continue-reading door, and "start" is the wrong verb for a plan
+    // the reader just finished.
+    expect(committed, "the reading-plan link always renders").toMatch(
+      /\{today && \(\s*<Link href=\{`\/\$\{locale\}\/reading-plan`\}/,
+    );
+  });
+
   it("carries a surface property so the two mark-read surfaces are distinguishable", () => {
     expect(
       discipleshipAnalytics,

@@ -254,12 +254,18 @@ export function TrackCommitted({
                 {readingLabels.markReadLabel}
               </Button>
             )}
-            <Link href={`/${locale}/reading-plan`} onClick={() => trackNextStepsActionClicked("reading_plan", "committed")}>
-              <Button variant="ghost" size="sm">
-                {messages.readPlanLabel}
-                <ButtonArrow />
-              </Button>
-            </Link>
+            {/* "Start" is only true while there's a day left to start —
+                once the plan is finished the primary button above has
+                already become the continue-reading door, and inviting the
+                reader to start what they just finished is the wrong verb. */}
+            {today && (
+              <Link href={`/${locale}/reading-plan`} onClick={() => trackNextStepsActionClicked("reading_plan", "committed")}>
+                <Button variant="ghost" size="sm">
+                  {messages.readPlanLabel}
+                  <ButtonArrow />
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
 
