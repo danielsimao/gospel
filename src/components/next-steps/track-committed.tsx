@@ -1,17 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { m } from "framer-motion";
 import Link from "next/link";
-import { BookOpen, HeartHandshake, Users, Compass, Printer } from "lucide-react";
+import { BookOpen, HeartHandshake, Users, Compass, Share2 } from "lucide-react";
 import { ShareButtons } from "@/components/share-buttons";
-import { SaveStoryImageButton } from "@/components/blog/save-story-image-button";
 import { BandHeader } from "./band-header";
 import { Button, ButtonArrow } from "@/components/ui/button";
 import { DayTicketBody, currentDay, type ReadingDay } from "@/components/shared/day-ticket";
-import { trackNextStepsActionClicked } from "@/lib/discipleship-analytics";
+import {
+  trackNextStepsActionClicked,
+  trackScriptureOpened,
+  trackReadingPlanDayCompleted,
+  trackReadingPlanCompleted,
+} from "@/lib/discipleship-analytics";
 import { readJourney } from "@/lib/journey-storage";
 import { useJourney } from "@/lib/use-journey";
+import { firstUnreadDay, markDayRead, readProgress } from "@/lib/reading-storage";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { Locale } from "@/lib/i18n";
 
@@ -24,25 +29,12 @@ interface TrackCommittedMessages {
   readHeading: string;
   readPlanLabel: string;
   prayHeading: string;
-  prayBody: string;
   prayPrompt: string;
-  communityHeading: string;
-  communityBody: string;
-  communityLink: string;
   communityLinkLabel: string;
-  learnHeading: string;
-  learnBody: string;
   learnLinkLabel: string;
   shareHeading: string;
   shareMessage: string;
-  streetHeading: string;
-  streetBody: string;
-  streetLinkLabel: string;
-  storyButton: string;
-  storyHint: string;
-  storyCopyButton: string;
-  storyCopied: string;
-  bands: { today: string; week: string; grow: string };
+  bands: { today: string; grow: string };
 }
 
 interface TrackCommittedProps {
@@ -59,6 +51,9 @@ interface TrackCommittedProps {
     readDay: string;
     continueLabel: string;
     continueUrl: string;
+    /** Reused from reading-plan.markReadLabel — the same action deserves the
+        same word, not a second phrase for one surface. */
+    markReadLabel: string;
   };
 }
 
@@ -100,6 +95,30 @@ export function TrackCommitted({
     ? readingLabels.readDay.replace("{passage}", today.passage)
     : readingLabels.continueLabel;
 
+  /*
+   * Mirrors reading-plan.tsx's handleMarkRead: the shared, contiguity-guarded
+   * writer is the only thing allowed to touch progress. The day is derived
+   * from storage AT CLICK TIME, not from the rendered `readingDone` — a
+   * snapshot can lag storage (another tab advancing the plan before the
+   * subscription lands), and marking a day that is already read "succeeds"
+   * by the writer's contract, which would fire completion analytics for a
+   * day this tap did not complete. Reading fresh, the day handed to the
+   * writer is unread by construction, so success can only mean this write.
+   * On success, useJourney's own storage subscription re-reads and
+   * re-renders this card on the next day. A refused write (would-skip, all
+   * done, private mode) does nothing, silently, same as the reading plan's
+   * own handler.
+   */
+  const handleMarkRead = useCallback(() => {
+    const day = firstUnreadDay(readProgress(), readingDays.length);
+    if (day > readingDays.length) return;
+    if (!markDayRead(day)) return;
+    if (day >= readingDays.length) {
+      trackReadingPlanCompleted(locale);
+    }
+    trackReadingPlanDayCompleted(day, locale, "next_steps");
+  }, [readingDays.length, locale]);
+
   // SSR and first client render show the durable opener; if the visitor
   // arrived within an hour of responding, upgrade to the conversational
   // one post-mount (rAF-deferred — the repo lints synchronous setState
@@ -115,8 +134,36 @@ export function TrackCommitted({
     return () => cancelAnimationFrame(id);
   }, []);
 
+  // The share block was about a third of the page, permanently open, while
+  // the reader was being asked to do one thing. It is still here; it just
+  // waits to be wanted.
+  const [shareOpen, setShareOpen] = useState(false);
+
   return (
     <>
+      {/*
+       * The light the reader left, arriving with them. A CSS wash in the same
+       * idiom as the decision screen's crossroads atmosphere — no asset, so
+       * nothing here touches the flow-graphic budget. Adoption register, not
+       * celebration: the courtroom stopped at the decision.
+       *
+       * Fixed and full-bleed, not absolute inside the reading column. Anchored
+       * to the column it began at the top of the content area — which is the
+       * exact pixel the header ends, so the glow started with a hard horizontal
+       * edge under the chrome — and it inherited the column's width, so a wash
+       * meant to light the page was a 512px band down the middle of a 1512px
+       * viewport. The header is transparent and painted above this (z-10 over
+       * the shell's z-[1]), so running underneath it is what removes the seam.
+       */}
+      <div
+        aria-hidden="true"
+        data-dawn
+        className="pointer-events-none fixed inset-x-0 top-0 h-64 sm:h-80"
+        style={{
+          background:
+            "radial-gradient(ellipse 120% 100% at 50% 0%, rgba(212,168,67,0.15) 0%, rgba(212,168,67,0.05) 45%, transparent 75%)",
+        }}
+      />
       <m.h1
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -182,18 +229,43 @@ export function TrackCommitted({
             completed={readingDone}
           />
           <div className="mt-5 flex flex-wrap gap-2">
-            <a href={readHref} target="_blank" rel="noopener noreferrer" onClick={() => trackNextStepsActionClicked("read", "committed")}>
+            <a href={readHref} rel="noopener noreferrer" onClick={() => {
+              trackNextStepsActionClicked("read", "committed", true);
+              // The day this link actually opens, which is the rendered one:
+              // `today` IS readingDays[readingDone], so the day is readingDone
+              // + 1 by construction. Deliberately not re-read from storage the
+              // way handleMarkRead is — that reports what was completed, this
+              // reports what was opened, and what was opened is whatever href
+              // this anchor was rendered with.
+              trackScriptureOpened("next_steps_committed", today ? readingDone + 1 : null, locale);
+            }}>
               <Button variant="gold" size="sm">
                 {readLabel}
                 <ButtonArrow />
               </Button>
             </a>
-            <Link href={`/${locale}/reading-plan`} onClick={() => trackNextStepsActionClicked("reading_plan", "committed")}>
-              <Button variant="ghost" size="sm">
-                {messages.readPlanLabel}
-                <ButtonArrow />
+            {/* Opening the passage is not reading it — this is the only
+                thing on the card that advances the day, and it only exists
+                while there is a day left to mark. Once the plan is finished
+                `today` is null and the card is already in the continue-
+                reading state above; nothing here should re-open that. */}
+            {today && (
+              <Button variant="gold" size="sm" onClick={handleMarkRead}>
+                {readingLabels.markReadLabel}
               </Button>
-            </Link>
+            )}
+            {/* "Start" is only true while there's a day left to start —
+                once the plan is finished the primary button above has
+                already become the continue-reading door, and inviting the
+                reader to start what they just finished is the wrong verb. */}
+            {today && (
+              <Link href={`/${locale}/reading-plan`} onClick={() => trackNextStepsActionClicked("reading_plan", "committed")}>
+                <Button variant="ghost" size="sm">
+                  {messages.readPlanLabel}
+                  <ButtonArrow />
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
 
@@ -207,24 +279,9 @@ export function TrackCommitted({
             {messages.prayPrompt}
           </blockquote>
         </div>
-
-        {/* Warm secondary — a person/community, not a loud card. Points at the
-            on-site explainer: we teach the gospel marks of a sound church
-            rather than recommending a specific church or directory. */}
-        {/* The shared pressable-row idiom: quiet card frame, 2px lift, arrow
-            slide — the move every pressable surface on the site now makes. */}
-        <Link
-          href={`/${locale}/find-a-church`}
-          onClick={() => trackNextStepsActionClicked("community", "committed")}
-          className="group mt-5 flex min-h-[48px] items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-sm font-semibold text-white/75 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-[#D4A843]/35 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-        >
-          <Users className="size-4 shrink-0 text-white/50" aria-hidden="true" />
-          <span className="flex-1">{messages.communityLinkLabel}</span>
-          <span aria-hidden="true" className="text-white/40 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
-        </Link>
       </m.div>
 
-      {/* ── AS YOU GROW: quiet list + the one real graphic ── */}
+      {/* ── AS YOU GROW: quiet list + a share disclosure ── */}
       <m.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -236,6 +293,20 @@ export function TrackCommitted({
         {/* Hairline dividers traded for the quiet card rows the homepage
             wears — each one lifts, none of them shouts. */}
         <div className="flex flex-col gap-2">
+          {/* Warm secondary — a person/community, not a loud card. Points at the
+              on-site explainer: we teach the gospel marks of a sound church
+              rather than recommending a specific church or directory. */}
+          {/* The shared pressable-row idiom: quiet card frame, 2px lift, arrow
+              slide — the move every pressable surface on the site now makes. */}
+          <Link
+            href={`/${locale}/find-a-church`}
+            onClick={() => trackNextStepsActionClicked("community", "committed")}
+            className="group flex min-h-[48px] items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-sm font-semibold text-white/75 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-[#D4A843]/35 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+          >
+            <Users className="size-4 shrink-0 text-white/50" aria-hidden="true" />
+            <span className="flex-1">{messages.communityLinkLabel}</span>
+            <span aria-hidden="true" className="text-white/40 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
+          </Link>
           <Link
             href={`/${locale}/learn`}
             onClick={() => trackNextStepsActionClicked("learn", "committed")}
@@ -245,53 +316,40 @@ export function TrackCommitted({
             <span className="flex-1">{messages.learnLinkLabel}</span>
             <span aria-hidden="true" className="text-white/30 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
           </Link>
-          <Link
-            href={`/${locale}/cards`}
-            onClick={() => trackNextStepsActionClicked("cards", "committed")}
-            className="group flex min-h-[48px] items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-sm font-semibold text-white/70 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-white/25 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-          >
-            <Printer className="size-4 shrink-0 text-white/40" aria-hidden="true" />
-            <span className="flex-1">{messages.streetLinkLabel}</span>
-            <span aria-hidden="true" className="text-white/30 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none">&rarr;</span>
-          </Link>
         </div>
 
-        {/* Share block — owns the one graphic on the page. */}
-        <div className="mt-8 rounded-xl border border-white/[0.08] bg-white/[0.015] p-5">
-          <ShareButtons
-            messages={{ ...shareMessages, prompt: messages.shareHeading, whatsappMessage: messages.shareMessage, telegramMessage: messages.shareMessage }}
-            locale={locale}
-            sharePath={`/${locale}/test`}
-            utmCampaign="testimony"
-            copyText={messages.shareMessage}
-          />
-          {/* Preview beside its button from sm, stacked below — the block
-              ends level instead of in a centred tower. */}
-          <div className="mt-8 text-center sm:flex sm:items-center sm:justify-center sm:gap-6 sm:text-left">
-            {/* The testimony story graphic, previewed inline (9:16, lazy so it
-                never competes for LCP). Reserved aspect box keeps CLS at 0. */}
-            <div className="mx-auto mb-4 w-full max-w-[190px] shrink-0 overflow-hidden rounded-xl border border-white/10 sm:mx-0 sm:mb-0 sm:max-w-[150px]">
-              <img
-                src={`/${locale}/testimony/story`}
-                alt=""
-                loading="lazy"
-                width={1080}
-                height={1920}
-                className="block h-auto w-full"
-              />
-            </div>
-            <SaveStoryImageButton
+        {/* Share block — collapsed by default, so it waits to be wanted. */}
+        <button
+          type="button"
+          onClick={() => setShareOpen((open) => !open)}
+          aria-expanded={shareOpen}
+          // aria-controls only while the panel exists: it is unmounted when
+          // closed, and pointing at an id that is not in the document is a
+          // broken relationship rather than an absent one.
+          {...(shareOpen ? { "aria-controls": "next-steps-share" } : {})}
+          className="group mt-2 flex min-h-[48px] w-full items-center gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 text-left text-sm font-semibold text-white/70 transition-[color,border-color,background-color,transform] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-px hover:border-[#D4A843]/35 hover:bg-white/[0.045] hover:text-white motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+        >
+          <Share2 className="size-4 shrink-0 text-white/40" aria-hidden="true" />
+          <span className="flex-1">{messages.shareHeading}</span>
+          <span aria-hidden="true" className="text-white/30">{shareOpen ? "−" : "+"}</span>
+        </button>
+        {shareOpen && (
+          <div id="next-steps-share" className="mt-2 rounded-xl border border-white/[0.08] bg-white/[0.015] p-5">
+            {/* nativeOnly: on mobile the OS share sheet already covers
+                Instagram, WhatsApp, everything — a second, story-image-
+                specific flow beside it was the clutter the owner flagged.
+                Desktop (no Web Share API) keeps WhatsApp/Telegram/copy. */}
+            <ShareButtons
+              messages={{ ...shareMessages, prompt: messages.shareHeading, whatsappMessage: messages.shareMessage, telegramMessage: messages.shareMessage }}
               locale={locale}
-              slug="testimony"
-              label={messages.storyButton}
-              hint={messages.storyHint}
-              copyLabel={messages.storyCopyButton}
-              copiedLabel={messages.storyCopied}
-              storyPath={`/${locale}/testimony/story`}
-              stickerPath={`/${locale}/test`}
+              sharePath={`/${locale}/test`}
+              utmCampaign="testimony"
+              copyText={messages.shareMessage}
+              nativeOnly
+              onShare={() => trackNextStepsActionClicked("share", "committed")}
             />
           </div>
-        </div>
+        )}
       </m.div>
     </>
   );

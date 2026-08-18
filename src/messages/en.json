@@ -197,36 +197,24 @@
     "linkCopied": "Link copied!"
   },
   "nextSteps": {
-    "cta": "What now?",
+    "ctaCommitted": "Your first day",
+    "ctaThinking": "Things worth weighing",
+    "metaTitle": "Next Steps",
     "dismissedReturn": "Changed your mind? The reading plan is waiting — start today.",
     "trackA": {
       "welcome": "Something just changed.",
       "welcomeReturn": "The decision is made. This is how it takes root.",
-      "whatHappened": "You acknowledged that you've broken God's Law. And you've made the decision to repent — to turn from your sin — and to place your trust in Jesus Christ alone.\n\nIf you've genuinely repented and trusted in the Saviour, God has forgiven every sin you've ever committed and granted you eternal life. Not because you earned it — but because of what Christ did on the cross.\n\n\"Therefore, if anyone is in Christ, he is a new creation; old things have passed away; behold, all things have become new.\" — 2 Corinthians 5:17",
+      "whatHappened": "If you've genuinely repented and trusted in the Saviour, God has forgiven every sin you've ever committed and granted you eternal life. Not because you earned it — but because of what Christ did on the cross.\n\n\"Therefore, if anyone is in Christ, he is a new creation; old things have passed away; behold, all things have become new.\" — 2 Corinthians 5:17",
       "readHeading": "Read",
       "readPlanLabel": "Start the 7-day plan",
       "prayHeading": "Pray",
-      "prayBody": "Talk to God like a Father. He's listening.",
       "prayPrompt": "God, thank You for forgiving me. Help me to understand what You've done for me. Guide me as I read Your Word. Give me the courage to turn from sin and follow You. In Jesus' name, Amen.",
-      "communityHeading": "Find Community",
-      "communityBody": "You weren't meant to do this alone. Find a Bible-believing church where you can grow.",
-      "communityLink": "https://www.9marks.org/church-search/",
       "communityLinkLabel": "Find a Bible-believing church",
-      "learnHeading": "Learn",
-      "learnBody": "Explore the foundations of the faith — who Jesus is, what grace means, why the cross matters.",
       "learnLinkLabel": "Explore the foundations",
       "shareHeading": "Share Your Decision",
       "shareMessage": "I made a decision that changes everything. It started with this test:",
-      "storyButton": "Save a story image",
-      "storyHint": "Post it to your Instagram story. The test link is already copied — paste it into a link sticker.",
-      "storyCopyButton": "Copy test link for the sticker",
-      "storyCopied": "Link copied — paste it into your story's link sticker.",
-      "streetHeading": "Take it to the street",
-      "streetBody": "Print a sheet of cards with the question and a code that opens the test. Leave one with a tip, hand one to a friend — the conversation starts itself.",
-      "streetLinkLabel": "Print cards",
       "bands": {
         "today": "Today",
-        "week": "This week",
         "grow": "As you grow"
       }
     },
@@ -238,21 +226,16 @@
         "Have you ever considered that the discomfort you feel might be your conscience agreeing with God's standard?",
         "What would it take for you to investigate this further?"
       ],
+      "reflectionHint": "Tap when you've sat with it",
       "readingHeading": "One thing to read",
       "readingBody": "Read John chapter 3 — today, not someday. It's a conversation between Jesus and a man who had questions just like yours.",
       "readingLink": "https://www.bible.com/bible/114/JHN.3.NKJV",
       "readingLinkLabel": "Read John 3",
-      "readingPlanLabel": "7-day reading plan",
-      "learnHeading": "Want the foundations?",
-      "learnBody": "Short, honest explanations of the core questions — who Jesus claimed to be, why it matters, what grace is.",
       "learnLinkLabel": "Explore the topics",
+      "learnLeadIn": "Still have questions? These are the ones people ask.",
       "bands": {
-        "today": "Today",
-        "deeper": "Going deeper"
+        "today": "Today"
       },
-      "talkLabel": "Want to talk to a real person about this?",
-      "talkLink": "Chat at needGod.net",
-      "talkUrl": "https://needgod.net/",
       "comeBack": "Come back to this — but don't shelve it. It's never too late while you're breathing. It's never safe to count on another chance."
     }
   },
@@ -1535,14 +1518,14 @@
       "testCta": "Take the test — see how you do"
     },
     "facts": [
-      "56 million people die worldwide every year.",
-      "Heart disease kills 17.9 million people every year.",
+      "60 million people die worldwide every year.",
+      "Heart disease kills 19.8 million people every year.",
       "Every 43 seconds, someone dies by suicide.",
-      "More people have died today than live in most towns.",
+      "Nearly two people die every second, somewhere in the world.",
       "The average life expectancy is 73 years. Then what?",
-      "155,000 people who woke up yesterday didn't wake up today.",
-      "Cancer claims 10 million lives every year.",
-      "Road accidents kill 1.16 million people annually.",
+      "165,000 people who woke up yesterday didn't wake up today.",
+      "Cancer kills nearly 10 million people every year.",
+      "Road accidents kill 1.19 million people annually.",
       "You are not guaranteed tomorrow."
     ],
     "journey": {
@@ -1811,6 +1794,7 @@
     "readingPlanLink": "7-Day Reading Plan",
     "nextStepsLink": "Next Steps",
     "churchLink": "Find a Church",
+    "cardsLink": "Printable Cards",
     "livingWatersLink": "Are You a Good Person? — Living Waters",
     "livingWatersUrl": "https://livingwaters.com/are-you-a-good-person/",
     "needGodLink": "needGod.net",
@@ -1820,6 +1804,7 @@
     "needHelpLink": "Need help?",
     "needHelpUrl": "https://findahelpline.com/",
     "scripture": "For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.",
-    "scriptureRef": "John 3:16"
+    "scriptureRef": "John 3:16",
+    "scriptureNotice": "Scripture quotations are taken from the New King James Version®. Copyright © 1982 by Thomas Nelson. Used by permission. All rights reserved."
   }
 }

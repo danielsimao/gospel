@@ -353,7 +353,7 @@ export interface Messages {
       reader's only route on, and next-steps' own page throws without it. The
       optional marker bought nothing but an English fallback rendered over a
       Portuguese button. */
-  nextSteps: { cta: string; dismissedReturn: string };
+  nextSteps: { ctaCommitted: string; ctaThinking: string; metaTitle: string; dismissedReturn: string };
   /** Required because reading-plan's own page throws when it is absent, and an
       optional marker here left the two contracts disagreeing about the same
       key. Only the heading is modelled; the plan's page owns the rest. */

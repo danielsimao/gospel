@@ -25,9 +25,12 @@ interface DayCardProps {
   markReadLabel: string;
   completedLabel: string;
   onMarkRead: () => void;
+  /* Analytics stays with the parent, which owns the other reading events and
+     the locale. The card only reports that the door was used. */
+  onOpenPassage: () => void;
 }
 
-export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markReadLabel, completedLabel, onMarkRead }: DayCardProps) {
+export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markReadLabel, completedLabel, onMarkRead, onOpenPassage }: DayCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(isCurrent);
 
@@ -123,8 +126,8 @@ export function DayCard({ day, messages, isCompleted, isCurrent, dayLabel, markR
             <div className="px-5 pb-5 sm:px-6 sm:pb-6">
               <a
                 href={messages.passageUrl}
-                target="_blank"
                 rel="noopener noreferrer"
+                onClick={onOpenPassage}
                 className="inline-flex items-center text-sm font-medium text-[#D4A843]/80 transition-colors hover:text-[#D4A843]"
               >
                 {messages.passage} &rarr;

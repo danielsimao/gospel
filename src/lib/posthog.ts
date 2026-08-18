@@ -1,4 +1,4 @@
-import type { PostHog } from "posthog-js";
+import type { PostHog, CaptureOptions } from "posthog-js";
 
 /**
  * Set to "true" in localStorage, by hand, in whichever browser the owner tests
@@ -114,10 +114,24 @@ export function isPostHogInitialized(): boolean {
   return client !== null;
 }
 
-/** Safe capture — silently drops events until PostHog is initialized. */
-export function capture(event: string, properties?: Record<string, unknown>): void {
+/**
+ * Safe capture — silently drops events until PostHog is initialized.
+ *
+ * `options` exists for events that race a same-tab navigation (a Scripture
+ * link handing off to bible.com, say): the default XHR/fetch transport is an
+ * in-flight request the browser cancels on document teardown, so the event
+ * that measures the handoff is exactly the one most likely to be lost. Pass
+ * `{ transport: "sendBeacon" }` from those call sites only — sendBeacon
+ * survives teardown by design, but it has a payload size limit and no
+ * response, so it is the wrong default for ordinary events.
+ */
+export function capture(
+  event: string,
+  properties?: Record<string, unknown>,
+  options?: CaptureOptions,
+): void {
   try {
-    client?.capture(event, properties);
+    client?.capture(event, properties, options);
   } catch {
     // Analytics must never break the app
   }

@@ -125,15 +125,50 @@ describe("the decision-screen door", () => {
      * desktop's door-decision-wide — carry the same opacity: only the source
      * image and the responsive display class differ between them.
      */
+    /*
+     * The door now answers the commitment, so its opacity is a conditional
+     * rather than a constant and the wrapper carries a template literal. The
+     * measured value is unchanged where it was measured: 0.35 at rest, behind
+     * the question and three buttons.
+     *
+     * On a profession of faith it brightens to 0.5 across the hold. That is a
+     * different screen — one line of gold type, no buttons, nothing to read
+     * over the image — which is why it is allowed to go up at all. It is
+     * still pinned strictly below the 0.55 that was screenshotted and
+     * rejected as too hot, so "brighter afterwards" cannot quietly become
+     * "brighter than the value we already ruled out".
+     */
     const wrappers = [...invitation.matchAll(
-      /<div aria-hidden="true" data-flow-graphic className="([^"]*)">/g,
+      /data-flow-graphic\s+className=\{`([\s\S]*?)`\}/g,
     )];
     expect(wrappers, "expected exactly two door wrapper divs (mobile, desktop)").toHaveLength(2);
     const [mobileClass, desktopClass] = wrappers.map((m) => m[1]);
     for (const className of [mobileClass, desktopClass]) {
       expect(className).toMatch(/pointer-events-none/);
       expect(className).toMatch(/fixed inset-0/);
-      expect(className).toMatch(/opacity-\[0\.35\]/);
+      expect(className, "the resting opacity is no longer the measured 0.35").toMatch(
+        /opacity-\[0\.35\]/,
+      );
+      const committedOpacity = className.match(/committed \? "[^"]*opacity-\[([\d.]+)\]/);
+      expect(committedOpacity, "the committed branch no longer sets an opacity").not.toBeNull();
+      expect(
+        Number(committedOpacity![1]),
+        "the door brightened past the 0.55 that was measured and rejected",
+      ).toBeLessThan(0.55);
+      /*
+       * Both wrappers, not just whichever one a whole-file search happened to
+       * hit. Review caught that the transition contract was pinned against the
+       * file rather than against each responsive variant, so dropping the
+       * scale, the duration or the reduced-motion escape from mobile alone
+       * would have left every suite green.
+       */
+      expect(className, "the door no longer grows with the light").toMatch(/scale-\[1\.04\]/);
+      expect(className, "the door's change is not the length of the hold").toMatch(
+        /duration-\[2000ms\]/,
+      );
+      expect(className, "the door animates for a reader who asked for less motion").toMatch(
+        /motion-reduce:transition-none/,
+      );
     }
     expect(mobileClass, "the mobile wrapper should hide at sm").toMatch(/sm:hidden/);
     expect(desktopClass, "the desktop wrapper should stay hidden below sm").toMatch(/hidden/);
