@@ -137,10 +137,18 @@ export function QuestionCard({
      */
     <div className="grid flex-1 grid-rows-[auto_1fr] px-4 pt-2 pb-[calc(1.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] sm:px-6">
       {/* Row 1: Examination ledger — pinned to top; enters just behind the
-          card on phase entry (mounts once, not per question) */}
+          card on phase entry (mounts once, not per question).
+
+          Opacity only, where this used to slide in from y:-4. On the phone the
+          ledger's two pieces are `fixed` — the rail on the ceiling, the counter
+          in the left corner — and a transformed ancestor becomes the containing
+          block for a fixed descendant, which would hang both off this wrapper
+          instead of the viewport for the length of the animation. Opacity
+          creates a stacking context but no containing block, so the entry
+          survives the layout it now carries. */}
       <m.div
-        initial={{ opacity: 0, y: -4 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.35, delay: 0.05, ease: EASE_OUT_STRONG }}
       >
         <ExaminationLedger
