@@ -133,7 +133,9 @@ describe("the flow's own walk-back is visible, and only where walking back is le
     // it is this one. The two chips share a position slot — left-3/top-3.5 —
     // which is only safe because their phases cannot both be current.
     expect(shell.match(/backToGrace/g)).toHaveLength(1);
-    expect(chip).toMatch(/left-3 top-3\.5/);
+    // The slot is now the shared chassis plus the edge it holds; top-3.5 moved
+    // into EDGE_CHIP when the two controls stopped being styled separately.
+    expect(chip).toMatch(/\$\{EDGE_CHIP\} left-3/);
     // The same guarded walk as grace's chip, not a second way back. A chip
     // that called history.back() itself would skip the in-flight latch and
     // reinstate the double-traversal that ejected readers from /test.
@@ -190,7 +192,13 @@ describe("the flow's own walk-back is visible, and only where walking back is le
      * than its absence ever was.
      */
     const chip = shell.match(/\{state\.phase === "grace" && \([\s\S]*?<\/button>\s*\)\}/)?.[0] ?? "";
-    expect(chip).toMatch(/z-40/);
+    // The z lives on the shared chassis now, so the guard follows it there —
+    // and covers the exit at the same time, which sits over the same surface.
+    expect(chip).toMatch(/\$\{EDGE_CHIP\}/);
+    expect(
+      shell.match(/const EDGE_CHIP =\s*\n?\s*"([^"]*)"/)?.[1] ?? "",
+      "the edge chips dropped below grace's tap surface",
+    ).toContain("z-40");
     const grace = code(read("src", "components", "grace-screen.tsx"));
     expect(grace).toMatch(/data-slot="grace-tap-surface"[\s\S]*?z-30/);
   });
@@ -252,9 +260,41 @@ describe("the exit and the walk-back cannot be mistaken for each other", () => {
   it("puts back on the left and the exit on the right", () => {
     const exit = shell.match(/<Link[\s\S]*?<\/Link>/)?.[0] ?? "";
     expect(exit, "the exit link is not the first Link in the shell").toContain("backLabel");
-    expect(exit).toMatch(/fixed right-3 top-3\.5/);
+    expect(exit).toMatch(/\$\{EDGE_CHIP\} right-3/);
     // Both chips, and nothing left on the right for them to collide with.
-    expect(shell.match(/fixed left-3 top-3\.5[^"]*/g) ?? []).toHaveLength(2);
+    expect(shell.match(/\$\{EDGE_CHIP\} left-3/g) ?? []).toHaveLength(2);
+  });
+
+  it("builds both on one chassis, so neither can drift off the other's line", () => {
+    /*
+     * Telling the two apart is the rule above; sharing a chassis is what keeps
+     * them from telling on each other. Restyling the exit alone once left the
+     * walk-back on the old padding and the old fill — a 32px control beside a
+     * 22px one, in different colours, on the same line. So height, inset,
+     * radius, fill and type live in one string that both spread, and the only
+     * per-side classes are the edge and the padding their shapes demand.
+     */
+    const chassis = shell.match(/const EDGE_CHIP =\s*\n?\s*"([^"]*)"/)?.[1] ?? "";
+    expect(chassis, "EDGE_CHIP is gone; the two controls are styled apart again").toBeTruthy();
+    // The properties that have to agree for them to read as one system.
+    for (const property of ["top-3.5", "sm:top-4", "h-8", "sm:h-9", "rounded-md", "bg-white/[0.06]", "border-white/10"]) {
+      expect(chassis, `${property} left the shared chassis`).toContain(property);
+    }
+    // A height declared rather than left to padding: the exit is a square and
+    // the walk-back is a pill, so their horizontal padding cannot match and
+    // their heights must anyway.
+    expect(chassis, "the shared height went back to being padding-derived").not.toMatch(/\bpy-/);
+  });
+
+  it("keeps the exit square while it is only an icon", () => {
+    // px-2/py-1 gave a 32x22 rectangle. aspect-square against the chassis
+    // height is 32 and 36 exactly -- 36 being shadcn's own icon-button size --
+    // and the square is dropped only when the label is revealed, which is the
+    // one moment the box is meant to be wider than it is tall.
+    const exit = shell.match(/<Link[\s\S]*?<\/Link>/)?.[0] ?? "";
+    expect(exit, "the collapsed exit is no longer square").toMatch(
+      /exitRevealed \? "px-2\.5" : "aspect-square"/,
+    );
   });
 
   it("gives the exit an icon where back gets an arrow and a word", () => {

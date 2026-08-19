@@ -39,6 +39,36 @@ const PHASE_ORDER = ["landing", "playing", "verdict", "grace", "invitation"] as 
 // read the true stack index instead of guessing from the phase pair.
 const HISTORY_NONCE = Math.random().toString(36).slice(2);
 
+/*
+ * The chassis both edge controls are built on: the exit at the right, the
+ * walk-back at the left. One string because they were drifting apart a
+ * property at a time — restyling the exit alone left the walk-back on the old
+ * padding and the old fill, so they sat at different heights, in different
+ * colours, on the same line.
+ *
+ * Sharing a chassis is not the same as looking alike, which the comment on the
+ * exit below warns against for good reason: on grace, tapping the wrong one of
+ * these costs the reader the whole flow. What tells them apart is what they
+ * carry — an X against an arrow and a named destination — and which edge they
+ * hold. What they share is height, inset, radius, fill and type, which is what
+ * makes them read as two controls of one system rather than two accidents.
+ *
+ * The fill is light, not the page's own #060404. Measured behind these, the
+ * backdrop IS #060404 on every screen they sit on, so a dark fill painted the
+ * page onto the page and left the glyph held by a 6%-white hairline. shadcn's
+ * outline variant does the same thing on dark themes, for the same reason
+ * (`dark:bg-input/30`): on a dark ground a raised control reads by being
+ * lighter than what it sits on, not by repeating it. The blur is for the
+ * washes these cross at the verdict and grace, where the ground stops
+ * being flat.
+ *
+ * h-8/h-9 are declared rather than derived from padding: the exit's square and
+ * the walk-back's pill have different horizontal padding by nature, and a
+ * shared height is the one property that has to survive that.
+ */
+const EDGE_CHIP =
+  "fixed top-3.5 z-40 flex h-8 items-center rounded-md border border-white/10 bg-white/[0.06] font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/20 hover:bg-white/[0.10] hover:text-white/90 sm:top-4 sm:h-9 sm:text-[10px]";
+
 export function GameShell({ messages, locale }: GameShellProps) {
   const state = useGameState();
   const dispatch = useGameDispatch();
@@ -435,37 +465,14 @@ export function GameShell({ messages, locale }: GameShellProps) {
             }
             trackTestExit(state.phase, locale);
           }}
-          /* p-2/size-3.5 and sm:p-2.5/sm:size-4 both resolve to a square at
-             rest (30px, 36px — the latter is shadcn's own icon-button size),
-             the shape their asymmetric px-2/py-1 predecessor never had.
-             Revealing the label grows the box rightward from that square,
-             same as any icon button that gains a badge.
-
-             The fill is a light one, not the page's own #060404: measured
-             behind this control, the backdrop IS #060404 on every screen it
-             sits on, so a dark fill was a surface that rendered no surface —
-             a bare X held only by a 6%-white hairline. shadcn's outline
-             variant does the same thing on dark themes for the same reason
-             (`dark:bg-input/30`): on a dark ground a raised control reads by
-             being lighter than what it sits on, not by repeating it. The
-             backdrop-blur stays for the washes it crosses at the verdict and
-             grace, where the ground stops being flat.
-
-             ── Why the chrome is gated on the phone ────────────────────────
-             Squaring the box grew it 22px -> 32px, and at 390 wide that put
-             its corner on the questions' step bar: measured, bar top 45.5,
-             chip bottom 46, overlapping 9px across. The phone's top edge is
-             already carrying the step bar and the question count, and a
-             bordered box is the third thing in a strip that has room for two.
-             So the padding stays (the 32px tap target is the padding, not the
-             chrome) and only the paint comes off: the glyph then sits 8.5px
-             clear of the bar with nothing drawn near it. Revealing the label
-             brings the chrome back, because a word does need a ground to be
-             read against. From sm up there is room for all of it. */
-          className={`fixed right-3 top-3.5 z-40 flex items-center justify-center rounded-md border p-2 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:text-white/90 sm:right-4 sm:top-4 sm:border-white/10 sm:bg-white/[0.06] sm:p-2.5 sm:text-[10px] sm:hover:border-white/20 sm:hover:bg-white/[0.10] ${
-            exitRevealed
-              ? "border-white/10 bg-white/[0.06] hover:border-white/20 hover:bg-white/[0.10]"
-              : "border-transparent bg-transparent"
+          /* `aspect-square` against the chassis height, rather than padding
+             chosen to look square: 32px and 36px exactly, where the old
+             px-2/py-1 gave a 32x22 rectangle. 36 is shadcn's own icon-button
+             size. Revealing the label drops the square and lets the box grow
+             rightward on its padding, the way any icon button that gains a
+             badge does — the height never moves either way. */
+          className={`${EDGE_CHIP} right-3 justify-center sm:right-4 ${
+            exitRevealed ? "px-2.5" : "aspect-square"
           }`}
         >
           <X aria-hidden="true" className="size-3.5 sm:size-4" />
@@ -536,7 +543,7 @@ export function GameShell({ messages, locale }: GameShellProps) {
         <button
           type="button"
           onClick={walkBack}
-          className="fixed left-3 top-3.5 z-40 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/80 sm:left-4 sm:top-4 sm:text-[10px]"
+          className={`${EDGE_CHIP} left-3 gap-1 px-2.5 sm:left-4 sm:px-3`}
         >
           <span aria-hidden="true">&larr;</span>
           <span>{messages.test.backToVerdict}</span>
@@ -547,7 +554,7 @@ export function GameShell({ messages, locale }: GameShellProps) {
         <button
           type="button"
           onClick={walkBack}
-          className="fixed left-3 top-3.5 z-40 flex items-center gap-1 rounded-md border border-white/[0.06] bg-[#060404]/80 px-2 py-1 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/80 sm:left-4 sm:top-4 sm:text-[10px]"
+          className={`${EDGE_CHIP} left-3 gap-1 px-2.5 sm:left-4 sm:px-3`}
         >
           <span aria-hidden="true">&larr;</span>
           <span>{messages.test.backToGrace}</span>

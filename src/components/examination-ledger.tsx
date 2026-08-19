@@ -24,7 +24,20 @@ export function ExaminationLedger({
   const displayIndex = currentQuestion + 1;
 
   return (
-    <div className="flex flex-col items-center">
+    /*
+     * Inset on the phone to clear the edge chips, which share this line.
+     * Measured at 390 wide with the bar at its old full width: it ran to
+     * x=355 while the exit chip started at x=346 — nine pixels of the last
+     * step passing UNDER the control, eight and a half below it, which reads
+     * as the two touching however much vertical air is added.
+     *
+     * Padding rather than a narrower max-width, because the constraint is the
+     * chips' distance from the edge, not a number that happens to look right
+     * at 390: a 320-wide phone moves the chip inward by exactly as much as it
+     * moves the bar, and a fixed width would put the overlap straight back.
+     * From sm up the max-widths bind first and this does nothing.
+     */
+    <div className="flex flex-col items-center px-16 sm:px-0">
       <div className="mb-3 flex items-center gap-2">
         <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
           {testMessages.caseLabel}
