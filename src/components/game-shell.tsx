@@ -439,8 +439,34 @@ export function GameShell({ messages, locale }: GameShellProps) {
              rest (30px, 36px — the latter is shadcn's own icon-button size),
              the shape their asymmetric px-2/py-1 predecessor never had.
              Revealing the label grows the box rightward from that square,
-             same as any icon button that gains a badge. */
-          className="fixed right-3 top-3.5 z-40 flex items-center justify-center rounded-md border border-white/[0.06] bg-[#060404]/80 p-2 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/15 hover:text-white/80 sm:right-4 sm:top-4 sm:p-2.5 sm:text-[10px]"
+             same as any icon button that gains a badge.
+
+             The fill is a light one, not the page's own #060404: measured
+             behind this control, the backdrop IS #060404 on every screen it
+             sits on, so a dark fill was a surface that rendered no surface —
+             a bare X held only by a 6%-white hairline. shadcn's outline
+             variant does the same thing on dark themes for the same reason
+             (`dark:bg-input/30`): on a dark ground a raised control reads by
+             being lighter than what it sits on, not by repeating it. The
+             backdrop-blur stays for the washes it crosses at the verdict and
+             grace, where the ground stops being flat.
+
+             ── Why the chrome is gated on the phone ────────────────────────
+             Squaring the box grew it 22px -> 32px, and at 390 wide that put
+             its corner on the questions' step bar: measured, bar top 45.5,
+             chip bottom 46, overlapping 9px across. The phone's top edge is
+             already carrying the step bar and the question count, and a
+             bordered box is the third thing in a strip that has room for two.
+             So the padding stays (the 32px tap target is the padding, not the
+             chrome) and only the paint comes off: the glyph then sits 8.5px
+             clear of the bar with nothing drawn near it. Revealing the label
+             brings the chrome back, because a word does need a ground to be
+             read against. From sm up there is room for all of it. */
+          className={`fixed right-3 top-3.5 z-40 flex items-center justify-center rounded-md border p-2 font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:text-white/90 sm:right-4 sm:top-4 sm:border-white/10 sm:bg-white/[0.06] sm:p-2.5 sm:text-[10px] sm:hover:border-white/20 sm:hover:bg-white/[0.10] ${
+            exitRevealed
+              ? "border-white/10 bg-white/[0.06] hover:border-white/20 hover:bg-white/[0.10]"
+              : "border-transparent bg-transparent"
+          }`}
         >
           <X aria-hidden="true" className="size-3.5 sm:size-4" />
           {/* aria-hidden and animated: the link is named by its aria-label, so
