@@ -103,6 +103,45 @@ describe("gameReducer", () => {
       expect(state.phase).toBe("verdict");
       expect(state.completedAt).toBeGreaterThan(0);
     });
+
+    /*
+     * Reported from the field, and reproduced in a browser before this was
+     * written: answer question one, then spam the Next button. Eight clicks
+     * inside the transition took the reader to `currentQuestion: 6`, phase
+     * `verdict`, with ONE answer recorded and the screen reading GUILTY.
+     *
+     * The advance only ever checked the phase, so every extra click stepped
+     * over a question nobody had answered. ANSWER_QUESTION already refuses a
+     * second answer and SHOW_VERDICT already refuses an unfinished test; this
+     * was the one move in the flow with no such guard, which is why a fast
+     * thumb could skip the Law and still be handed its verdict.
+     *
+     * The guard belongs here rather than on the button: disabling a control
+     * during a transition leaves keyboard, voice and assistive activation to
+     * find the same hole, and the reducer is the only place every path passes
+     * through.
+     */
+    it("refuses to advance past a question that has not been answered", () => {
+      const playing = startGame();
+      const answered = gameReducer(playing, { type: "ANSWER_QUESTION", answer: "honest" });
+      const advanced = gameReducer(answered, { type: "ADVANCE_AFTER_FOLLOWUP" });
+      expect(advanced.currentQuestion).toBe(1);
+
+      // The second click of a spam, landing before question two is answered.
+      const again = gameReducer(advanced, { type: "ADVANCE_AFTER_FOLLOWUP" });
+      expect(again.currentQuestion, "an unanswered question was stepped over").toBe(1);
+      expect(again).toBe(advanced);
+    });
+
+    it("cannot be spammed into a verdict the testimony does not support", () => {
+      let state = gameReducer(startGame(), { type: "ANSWER_QUESTION", answer: "honest" });
+      for (let i = 0; i < 20; i++) {
+        state = gameReducer(state, { type: "ADVANCE_AFTER_FOLLOWUP" });
+      }
+      expect(state.phase, "one answer bought a verdict").toBe("playing");
+      expect(state.answers).toHaveLength(1);
+      expect(state.currentQuestion).toBe(1);
+    });
   });
 
   describe("phase transitions", () => {
