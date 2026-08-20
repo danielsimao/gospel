@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { m, AnimatePresence } from "framer-motion";
@@ -65,9 +65,15 @@ const HISTORY_NONCE = Math.random().toString(36).slice(2);
  * h-8/h-9 are declared rather than derived from padding: the exit's square and
  * the walk-back's pill have different horizontal padding by nature, and a
  * shared height is the one property that has to survive that.
+ *
+ * The top inset carries a safe-area term for the same reason the examination
+ * ledger's rail and counter do: these are fixed to the top edge, and on a
+ * home-screen install a bare 14px puts them under the status bar. It resolves
+ * to plain top-3.5 / sm:top-4 on every device without an inset, which is every
+ * device this can be measured on in a desktop browser.
  */
 const EDGE_CHIP =
-  "fixed top-3.5 z-40 flex h-8 items-center rounded-md border border-white/10 bg-white/[0.06] font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/20 hover:bg-white/[0.10] hover:text-white/90 sm:top-4 sm:h-9 sm:text-[10px]";
+  "fixed top-[calc(0.875rem+env(safe-area-inset-top))] z-40 flex h-8 items-center rounded-md border border-white/10 bg-white/[0.06] font-mono text-[9px] uppercase tracking-[2px] text-white/70 backdrop-blur-sm transition-colors hover:border-white/20 hover:bg-white/[0.10] hover:text-white/90 sm:top-[calc(1rem+env(safe-area-inset-top))] sm:h-9 sm:text-[10px]";
 
 export function GameShell({ messages, locale }: GameShellProps) {
   const state = useGameState();
@@ -252,6 +258,19 @@ export function GameShell({ messages, locale }: GameShellProps) {
    * turns out to be, so a swallowed foreign marker cannot wedge it shut.
    */
   const backInFlightRef = useRef(false);
+  /*
+   * The unwind below is the OTHER traversal in this component, and it has to
+   * queue behind a walk-back rather than stack on one.
+   *
+   * The chip and the three response buttons are gated on the same condition,
+   * so both are live at once on the decision screen. Tap "Grace", then answer
+   * before the pop lands — 0.29s of window — and the unwind fired
+   * `history.go(-depth)` on top of a `history.back()` that had not arrived:
+   * three entries travelled where two were meant to, past the verdict
+   * baseline and out of /test. Exactly the ejection the flag above was added
+   * to stop, through the one door that did not check it.
+   */
+  const pendingUnwindRef = useRef(false);
 
   function walkBack() {
     if (backInFlightRef.current) return;
@@ -259,6 +278,31 @@ export function GameShell({ messages, locale }: GameShellProps) {
     viaLinkRef.current = true;
     window.history.back();
   }
+
+  /*
+   * Back to the verdict baseline and strip our markers, so the next back press
+   * leaves /test. Reads depthRef at call time rather than closing over it,
+   * which is what makes deferring safe: by the time a deferred unwind runs,
+   * the pop it waited for has already corrected the depth.
+   */
+  const unwindToBaseline = useCallback(() => {
+    if (depthRef.current <= 0) return;
+    unwindingRef.current = true;
+    window.history.go(-depthRef.current);
+    depthRef.current = 0;
+  }, []);
+
+  // See the ref's use on the phase panel below for why this is a callback ref
+  // and why the first mount is skipped.
+  const firstPhaseMountRef = useRef(true);
+  const focusPhasePanel = useCallback((el: HTMLDivElement | null) => {
+    if (!el) return;
+    if (firstPhaseMountRef.current) {
+      firstPhaseMountRef.current = false;
+      return;
+    }
+    el.focus({ preventScroll: true });
+  }, []);
 
   useEffect(() => {
     const prev = prevPhaseRef.current;
@@ -317,6 +361,10 @@ export function GameShell({ messages, locale }: GameShellProps) {
         // Landing event of the post-response unwind: strip the marker so
         // the next back press exits the page.
         unwindingRef.current = false;
+        // Reset here too. This branch used to return without it, so a
+        // link-driven walk-back that ended in an unwind left the flag set and
+        // the NEXT genuine browser press reported itself as "link".
+        viaLinkRef.current = false;
         window.history.replaceState(
           { ...window.history.state, gospelTestPhase: undefined, n: undefined, i: undefined },
           "",
@@ -343,23 +391,37 @@ export function GameShell({ messages, locale }: GameShellProps) {
       const backward = i < depthRef.current;
       const forward = i > depthRef.current;
 
+      /*
+       * Depth mirrors where the BROWSER is, not what we chose to do about it.
+       * It used to be set only on the dispatching branches, so an entry we
+       * deliberately ignored — a recorded response refusing BACK_TO_GRACE,
+       * below — left depth one ahead of the stack it claims to measure, and
+       * the unwind that followed travelled one entry too far.
+       */
+      depthRef.current = i;
+
+      // A response recorded while a walk-back was still travelling. The pop it
+      // was waiting for has now landed and depth is accurate again, so the
+      // unwind can run in its own turn rather than on top of it.
+      if (pendingUnwindRef.current) {
+        pendingUnwindRef.current = false;
+        unwindToBaseline();
+        return;
+      }
+
       if (backward && target === "verdict" && phase === "grace") {
         trackTestBack("grace", "verdict", via);
-        depthRef.current = i;
         poppingRef.current = true;
         dispatch({ type: "BACK_TO_VERDICT" });
       } else if (backward && target === "grace" && phase === "invitation") {
         if (stateRef.current.invitationResponse) return; // recorded — inert
         trackTestBack("invitation", "grace", via);
-        depthRef.current = i;
         poppingRef.current = true;
         dispatch({ type: "BACK_TO_GRACE" });
       } else if (forward && target === "grace" && phase === "verdict") {
-        depthRef.current = i;
         poppingRef.current = true;
         dispatch({ type: "SHOW_GRACE" });
       } else if (forward && target === "invitation" && phase === "grace") {
-        depthRef.current = i;
         poppingRef.current = true;
         dispatch({ type: "SHOW_INVITATION" });
       }
@@ -367,7 +429,7 @@ export function GameShell({ messages, locale }: GameShellProps) {
     }
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
-  }, [dispatch]);
+  }, [dispatch, unwindToBaseline]);
 
   // Response recorded → unwind our pushed entries so hardware back exits.
   const responseRef = useRef(state.invitationResponse);
@@ -375,11 +437,15 @@ export function GameShell({ messages, locale }: GameShellProps) {
     const had = responseRef.current;
     responseRef.current = state.invitationResponse;
     if (!had && state.invitationResponse && depthRef.current > 0) {
-      unwindingRef.current = true;
-      window.history.go(-depthRef.current);
-      depthRef.current = 0;
+      // Queue behind a walk-back rather than stack on it — see
+      // pendingUnwindRef. popstate runs the unwind once the pop has landed.
+      if (backInFlightRef.current) {
+        pendingUnwindRef.current = true;
+        return;
+      }
+      unwindToBaseline();
     }
-  }, [state.invitationResponse]);
+  }, [state.invitationResponse, unwindToBaseline]);
 
   /*
    * `overflow-x-clip` on <main> below, never `overflow-x-hidden` — this is a
@@ -463,7 +529,10 @@ export function GameShell({ messages, locale }: GameShellProps) {
               setExitRevealed(true);
               return;
             }
-            trackTestExit(state.phase, locale);
+            // Revealed means this click is the second of a pointer's two
+            // steps; anything reaching here unrevealed skipped it by design
+            // (detail 0 — keyboard, voice, assistive tech).
+            trackTestExit(state.phase, locale, exitRevealed ? "revealed" : "direct");
           }}
           /* `aspect-square` against the chassis height, rather than padding
              chosen to look square: 32px and 36px exactly, where the old
@@ -596,7 +665,23 @@ export function GameShell({ messages, locale }: GameShellProps) {
              * to scroll, so nobody could feel it.
              */
             transition={{ duration: 0.2, ease: EASE_OUT_STRONG }}
-            className="flex flex-1 flex-col"
+            /*
+             * Focus follows the phase, or a keyboard reader loses their place
+             * on every move. Activating the walk-back chip by keyboard walked
+             * the phase correctly and then dropped activeElement to <body>,
+             * so the next Tab restarted at the top of the document — and the
+             * two chips this flow added exist to trigger exactly that move.
+             *
+             * A ref callback rather than the phase effect, because
+             * `mode="wait"` mounts the incoming screen only after the outgoing
+             * one has left: at effect time this element is still the old
+             * phase's, or nothing at all. `preventScroll` leaves the scroll
+             * reset to the effect that owns it, and the first mount is skipped
+             * so a cold arrival is never yanked out of the document's start.
+             */
+            ref={focusPhasePanel}
+            tabIndex={-1}
+            className="flex flex-1 flex-col outline-none"
           >
             {state.phase === "landing" && (
               <Landing messages={messages.landing} locale={locale} />

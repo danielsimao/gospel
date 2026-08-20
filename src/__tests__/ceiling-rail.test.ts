@@ -46,12 +46,45 @@ describe("the rail on the ceiling, on the phone only", () => {
   });
 
   it("puts the counter in the corner the rail vacates, on the exit's line", () => {
-    // left-3/top-3.5 and h-8 are the exit chip's own inset and height, so the
-    // two corners answer each other instead of merely both being present.
+    // left-3 and h-8 are the exit chip's own inset and height, so the two
+    // corners answer each other instead of merely both being present.
     expect(ledger, "the counter is no longer anchored opposite the exit").toMatch(
-      /fixed left-3 top-3\.5 z-40 flex h-8 items-center/,
+      /fixed left-3 top-\[calc\(0\.875rem\+env\(safe-area-inset-top\)\)\] z-40 flex h-8 items-center/,
     );
     expect(ledger, "the counter does not return to the flow at sm").toMatch(/sm:static/);
+  });
+
+  it("gives the counter the same safe-area term as the rail beside it", () => {
+    // The rail sits at the top edge and clears the notch; the counter sits
+    // 14px below the SAME edge. With a bare top-3.5 the rail cleared a status
+    // bar that the counter it belongs with slid under -- the defect this
+    // component's own comment describes fixing, left half-fixed.
+    const rail = ledger.slice(ledger.indexOf('role="progressbar"'));
+    expect(rail, "the rail lost its safe-area term").toMatch(
+      /top-\[env\(safe-area-inset-top\)\]/,
+    );
+    const counter = ledger.slice(0, ledger.indexOf('role="progressbar"'));
+    expect(counter, "the counter has no safe-area term").toMatch(
+      /env\(safe-area-inset-top\)/,
+    );
+  });
+
+  it("holds the active step still for a reader who asked for stillness", () => {
+    /*
+     * `MotionConfig reducedMotion="user"` neuters transform and layout
+     * animations, not opacity keyframes, so this glow kept pulsing under the
+     * preference -- forever, on a rail now pinned to the top of every phone
+     * screen in the flow. The hook has to be asked directly.
+     */
+    expect(ledger, "the ledger no longer reads the motion preference").toMatch(
+      /useReducedMotion/,
+    );
+    expect(ledger, "the pulsing glow ignores the preference again").toMatch(
+      /animate=\{reduceMotion \? \{ opacity: 1 \} : \{ opacity: \[0\.5, 1, 0\.5\] \}\}/,
+    );
+    expect(ledger, "the repeat survives under reduced motion").toMatch(
+      /reduceMotion\s*\?\s*\{ duration: 0 \}/,
+    );
   });
 
   it("squares the rail's ends on the phone and keeps them round at sm", () => {

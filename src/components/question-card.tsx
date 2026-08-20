@@ -220,7 +220,7 @@ export function QuestionCard({
                  * belongs to, and the eye goes straight past it to the question.
                  */}
                 <p className="font-mono text-[9.5px] uppercase tracking-[2.5px] text-white/45">
-                  <span className="text-red-400/75">{roman}</span>
+                  <span className="text-red-400/85">{roman}</span>
                   <span aria-hidden="true"> · </span>
                   {question.commandment}
                 </p>

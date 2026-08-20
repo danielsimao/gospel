@@ -211,7 +211,7 @@ export function Landing({ messages, locale }: LandingProps) {
         className="flex items-center gap-2"
       >
         <span className="h-px w-6 bg-red-500/40" />
-        <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
+        <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/85">
           {messages.label}
         </span>
         {/* The closing rule went with the centring. A pair of rules brackets a

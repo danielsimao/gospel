@@ -399,9 +399,16 @@ export function VerdictScreen({
             >
               &ldquo;{testMessages.verdict.scripture}&rdquo;
             </p>
-            {/* red-400/75 is the AA floor for text this size on #060404
-                (≈4.6:1). red-400/70 measures 4.1:1 and fails 1.4.3. */}
-            <p className="mt-3 font-mono text-[10px] uppercase tracking-[2px] text-red-400/75 sm:text-xs">
+            {/* red-400/85 over #060404 measures 5.29:1, clear of 1.4.3's 4.5
+                floor for text this size. The /75 this replaces was recorded
+                here as "≈4.6:1" and measured 4.29:1 — a FAILING value carried
+                by a comment asserting it passed. The arithmetic had been done
+                against Tailwind v3's red-400 (#f87171); this build is v4, where
+                the colour resolves to rgb(255,100,103) and every alpha lands
+                dimmer. Even the v3 figure was 4.46:1, so the ratio never
+                passed under either palette. Same class, same reason, on the
+                examination ledger, the landing eyebrow and the error page. */}
+            <p className="mt-3 font-mono text-[10px] uppercase tracking-[2px] text-red-400/85 sm:text-xs">
               {testMessages.verdict.scriptureRef}
             </p>
           </m.div>

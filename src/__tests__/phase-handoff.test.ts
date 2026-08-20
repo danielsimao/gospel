@@ -172,16 +172,110 @@ describe("the flow's own walk-back is visible, and only where walking back is le
     expect(shell).toMatch(/function walkBack\(\)/);
     expect(shell).toMatch(/if \(backInFlightRef\.current\) return/);
     expect(shell).toMatch(/onClick=\{walkBack\}/);
-    expect(shell).toMatch(/onClick=\{walkBack\}/);
+    /*
+     * Both halves, and this is the whole guard rather than a detail of it.
+     * Checking only that the flag is READ leaves either half deletable in
+     * silence: drop the arming line and the second tap sails through, drop the
+     * release and the chips die permanently after one use. Both mutations were
+     * applied to this file and left the entire suite green, which is what a
+     * pin that cannot fail looks like.
+     */
+    const walkBackFn = shell.match(/function walkBack\(\)[\s\S]*?\n {2}\}/)?.[0] ?? "";
+    expect(walkBackFn, "the latch is read but never armed").toContain(
+      "backInFlightRef.current = true",
+    );
+    const popStateFn = shell.match(/function onPopState\([\s\S]*?\n {4}\}/)?.[0] ?? "";
+    expect(popStateFn, "the latch is armed but never released").toContain(
+      "backInFlightRef.current = false",
+    );
     // The guarded path still marks the gesture link-driven and walks a real
     // history entry, so the browser stack and the reducer cannot disagree.
-    const walkBackFn = shell.match(/function walkBack\(\)[\s\S]*?\n {2}\}/)?.[0] ?? "";
     expect(walkBackFn).toContain("viaLinkRef.current = true");
     expect(walkBackFn).toContain("window.history.back()");
     // One traversal site for the whole shell, now that two chips and grace's
     // own link all want one. A second `history.back()` anywhere would be a
     // second mechanism, unlatched and invisible to the popstate handler.
     expect(shell.match(/history\.back\(\)/g)).toHaveLength(1);
+  });
+
+  it("queues the post-response unwind behind a walk-back instead of stacking on it", () => {
+    /*
+     * The other traversal in this shell. The walk-back chip and the three
+     * response buttons are gated on the same condition, so both are live on
+     * the decision screen: tap "Grace", answer inside the 0.29s before the pop
+     * lands, and `history.go(-depth)` went out on top of a `history.back()`
+     * that had not arrived — three entries travelled where two were meant to,
+     * past the verdict baseline and out of /test. The exact ejection the latch
+     * above exists to prevent, through the one door that never checked it.
+     */
+    const unwindEffect =
+      shell.match(/const had = responseRef\.current;[\s\S]*?\n {2}\}, \[state\.invitationResponse/)?.[0] ?? "";
+    expect(unwindEffect.length, "the response-unwind effect moved").toBeGreaterThan(0);
+    expect(unwindEffect, "the unwind no longer checks for a walk-back in flight").toContain(
+      "if (backInFlightRef.current)",
+    );
+    expect(unwindEffect, "the deferred unwind is never queued").toContain(
+      "pendingUnwindRef.current = true",
+    );
+    // …and popstate runs it once the pop has landed.
+    const popStateFn = shell.match(/function onPopState\([\s\S]*?\n {4}\}/)?.[0] ?? "";
+    expect(popStateFn, "a queued unwind is never run").toMatch(
+      /if \(pendingUnwindRef\.current\) \{\s*pendingUnwindRef\.current = false;\s*unwindToBaseline\(\);/,
+    );
+    // One place computes the distance, so the deferred path cannot drift from
+    // the immediate one.
+    expect(shell.match(/window\.history\.go\(/g), "more than one unwind site").toHaveLength(1);
+  });
+
+  it("keeps depth measuring the browser, not our dispatches", () => {
+    /*
+     * depthRef is the distance back to the verdict baseline, and the unwind
+     * multiplies it into a real traversal. It used to be assigned only on the
+     * branches that dispatched, so an entry we deliberately ignored — a
+     * recorded response refusing BACK_TO_GRACE — left depth one ahead of the
+     * stack it claims to measure, and the unwind that followed travelled one
+     * entry too far.
+     */
+    const popStateFn = shell.match(/function onPopState\([\s\S]*?\n {4}\}/)?.[0] ?? "";
+    // Assigned once, before any dispatch decision.
+    expect(popStateFn.match(/depthRef\.current = i;/g), "depth is set per-branch again").toHaveLength(1);
+    const beforeBranches = popStateFn.slice(0, popStateFn.indexOf("if (backward"));
+    expect(beforeBranches, "depth is synced after the branches, not before").toContain(
+      "depthRef.current = i;",
+    );
+  });
+
+  it("clears the link flag on the unwind's own landing too", () => {
+    // The unwinding branch returned before the reset below it, so a
+    // link-driven walk-back that ended in an unwind left the flag set and the
+    // NEXT genuine browser press reported itself as "link".
+    const popStateFn = shell.match(/function onPopState\([\s\S]*?\n {4}\}/)?.[0] ?? "";
+    const unwindBranch = popStateFn.slice(
+      popStateFn.indexOf("if (unwindingRef.current)"),
+      popStateFn.indexOf("const via ="),
+    );
+    expect(unwindBranch, "the unwind landing leaks viaLinkRef").toContain(
+      "viaLinkRef.current = false",
+    );
+  });
+
+  it("moves focus onto the screen the reader just walked to", () => {
+    /*
+     * Activating a walk-back chip by keyboard walked the phase correctly and
+     * dropped activeElement to <body>, so the next Tab restarted at the top of
+     * the document — and the two chips this flow adds exist to trigger exactly
+     * that move. A ref callback, not the phase effect: `mode="wait"` mounts the
+     * incoming screen only after the outgoing one has left.
+     */
+    expect(shell, "the phase panel is not focusable").toMatch(/tabIndex=\{-1\}/);
+    expect(shell, "nothing moves focus on a phase change").toMatch(/ref=\{focusPhasePanel\}/);
+    const focusFn = shell.match(/const focusPhasePanel = useCallback\([\s\S]*?\n {2}\}, \[\]\)/)?.[0] ?? "";
+    expect(focusFn, "focus scrolls the page it was told not to").toContain(
+      "focus({ preventScroll: true })",
+    );
+    expect(focusFn, "a cold arrival is yanked out of the document's start").toContain(
+      "firstPhaseMountRef.current",
+    );
   });
 
   it("sits above grace's tap surface, or it is decoration", () => {
@@ -277,9 +371,21 @@ describe("the exit and the walk-back cannot be mistaken for each other", () => {
     const chassis = shell.match(/const EDGE_CHIP =\s*\n?\s*"([^"]*)"/)?.[1] ?? "";
     expect(chassis, "EDGE_CHIP is gone; the two controls are styled apart again").toBeTruthy();
     // The properties that have to agree for them to read as one system.
-    for (const property of ["top-3.5", "sm:top-4", "h-8", "sm:h-9", "rounded-md", "bg-white/[0.06]", "border-white/10"]) {
+    for (const property of [
+      "top-[calc(0.875rem+env(safe-area-inset-top))]",
+      "sm:top-[calc(1rem+env(safe-area-inset-top))]",
+      "h-8",
+      "sm:h-9",
+      "rounded-md",
+      "bg-white/[0.06]",
+      "border-white/10",
+    ]) {
       expect(chassis, `${property} left the shared chassis`).toContain(property);
     }
+    // The chips are fixed to the top edge, so a bare inset puts them under the
+    // status bar on a home-screen install — the same reason the examination
+    // ledger's rail carries the term.
+    expect(chassis, "the chips lost their safe-area term").toContain("env(safe-area-inset-top)");
     // A height declared rather than left to padding: the exit is a square and
     // the walk-back is a pill, so their horizontal padding cannot match and
     // their heights must anyway.
@@ -364,6 +470,20 @@ describe("the exit and the walk-back cannot be mistaken for each other", () => {
      * costs every deliberate leaver a tap.
      */
     const exit = shell.match(/<Link[\s\S]*?<\/Link>/)?.[0] ?? "";
-    expect(exit).toMatch(/trackTestExit\(state\.phase, locale\)/);
+    expect(exit).toMatch(/trackTestExit\(state\.phase, locale, /);
+  });
+
+  it("says whether the exit went through the reveal or straight out", () => {
+    // The event's own doc comment promised this dimension while the payload
+    // carried only phase and locale — so every exit looked alike and the
+    // question the two-step exists to settle could not be asked of the data.
+    const exit = shell.match(/<Link[\s\S]*?<\/Link>/)?.[0] ?? "";
+    expect(exit, "the exit no longer reports which path it took").toMatch(
+      /trackTestExit\(state\.phase, locale, exitRevealed \? "revealed" : "direct"\)/,
+    );
+    const analytics = code(read("src", "lib", "analytics.ts"));
+    expect(analytics, "the event dropped the property again").toMatch(
+      /safeCapture\("test_exit", \{ phase, locale, via \}\)/,
+    );
   });
 });

@@ -1,6 +1,6 @@
 "use client";
 
-import { m } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import { TOTAL_QUESTIONS } from "@/lib/questions";
 import type { Answer, TestMessages } from "@/lib/types";
 
@@ -22,6 +22,9 @@ export function ExaminationLedger({
   testMessages,
 }: ExaminationLedgerProps) {
   const displayIndex = currentQuestion + 1;
+  // null before hydration resolves it, which reads as "not reduced" — the
+  // same default the config already applies.
+  const reduceMotion = useReducedMotion();
 
   return (
     /*
@@ -44,12 +47,18 @@ export function ExaminationLedger({
      */
     <div className="contents sm:flex sm:flex-col sm:items-center">
       {/* Left on the phone, on the exit's line and at its inset, so the two
-          corners answer each other. Back to centred and in flow from sm. */}
-      <div className="fixed left-3 top-3.5 z-40 flex h-8 items-center gap-2 sm:static sm:mb-3 sm:h-auto sm:justify-center">
-        <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
+          corners answer each other. Back to centred and in flow from sm.
+
+          The safe-area term matches the rail's: the rail sits at the very top
+          edge and has to clear a notch, and this sits 14px below the same
+          edge, so on a home-screen install it needs the same offset or it
+          slides under the status bar while the rail it belongs with does not.
+          Resolves to plain top-3.5 everywhere the inset is zero. */}
+      <div className="fixed left-3 top-[calc(0.875rem+env(safe-area-inset-top))] z-40 flex h-8 items-center gap-2 sm:static sm:mb-3 sm:h-auto sm:justify-center">
+        <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/85">
           {testMessages.caseLabel}
         </span>
-        <span className="font-mono text-[9px] tabular-nums text-red-400/75">
+        <span className="font-mono text-[9px] tabular-nums text-red-400/85">
           {String(displayIndex).padStart(2, "0")} /{" "}
           {String(TOTAL_QUESTIONS).padStart(2, "0")}
         </span>
@@ -95,8 +104,22 @@ export function ExaminationLedger({
                   aria-hidden="true"
                   className="absolute inset-0 rounded-none sm:rounded-full"
                   style={{ boxShadow: "0 0 10px rgba(255,255,255,0.55)" }}
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 2.2, ease: "easeInOut", repeat: Infinity }}
+                  /*
+                   * Held still for a reader who asked for stillness.
+                   * `MotionConfig reducedMotion="user"` covers transform and
+                   * layout animations, not opacity keyframes, so this glow
+                   * went on pulsing under the preference — and it pulses
+                   * forever, on a rail that is now pinned to the top edge of
+                   * every phone screen in the flow. Persistent ambient motion
+                   * is the case the preference exists for, so the hook is
+                   * asked directly rather than left to the config.
+                   */
+                  animate={reduceMotion ? { opacity: 1 } : { opacity: [0.5, 1, 0.5] }}
+                  transition={
+                    reduceMotion
+                      ? { duration: 0 }
+                      : { duration: 2.2, ease: "easeInOut", repeat: Infinity }
+                  }
                 />
               </div>
             );
