@@ -238,6 +238,13 @@ export interface TestMessages {
   seeVerdictLabel: string;
   commandmentLabel: string;
   backLabel: string;
+  /** The shell's walk-back chip on grace — one word, because it names a
+      destination the reader has already been to, not an action to explain. */
+  backToVerdict: string;
+  /** The same chip on the decision screen, while the invitation is still
+      unanswered — one word for the same reason, naming grace as somewhere the
+      reader has just been. */
+  backToGrace: string;
   changeAnswerLabel: string;
   verdictLabels: Record<string, string>;
   verdict: {

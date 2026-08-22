@@ -118,9 +118,11 @@ describe("the scroll cue", () => {
   });
 
   it("still reaches the way out of a document with no sections", () => {
-    // The verdict's re-read document is built from divs and overflows by only
-    // 244px; one viewport of scroll clamps at the end, which is exactly enough
-    // to bring its forward control into view.
+    // The fallback's original caller — the verdict's re-read document, divs
+    // only, 244px of overflow — is gone (re-entry replays the sequence now).
+    // The clamp-at-the-end viewport scroll stays: advanceSection is a shared
+    // helper, and a caller whose sections are exhausted or absent must still
+    // move rather than silently eat the tap.
     expect(advance).toMatch(/window\.scrollBy/);
   });
 
@@ -562,7 +564,10 @@ describe("grace carries the verdict's gesture across the seam", () => {
     const withRecord = sections.filter((sec) => sec.includes("<GraceRecord"));
     expect(withRecord.length, "the record moved or was duplicated").toBe(1);
     expect(withRecord[0], "the way on is not with the record").toContain("handleContinue");
-    expect(withRecord[0], "the walk-back link is not with the record").toContain("onBack");
+    // The walk-back link that used to sit under the button is gone entirely —
+    // the shell's chip is the one control for that destination, and a backward
+    // link directly beneath the forward CTA was the worse-placed of the two.
+    expect(grace).not.toMatch(/onBack/);
     // …and nothing is left holding only a button.
     const buttonOnly = sections.filter(
       (sec) => sec.includes("handleContinue") && !sec.includes("<GraceRecord"),
@@ -650,84 +655,22 @@ describe("each screen cues the gesture it actually wants", () => {
     expect(grace).not.toMatch(/rotate-45/);
   });
 
-  it("the verdict's re-read document shows the cue, because its way out is below the fold", () => {
+  it("the verdict shows no scroll cue and no down arrow, because nothing scrolls", () => {
     /*
-     * Measured at 390×844: the document is 1088px and its only forward control
-     * sits at y=878. The full-screen click target does not exist in this mode —
-     * deliberately — so without a cue a reader clicked and nothing happened.
-     */
-    expect(verdict).toMatch(/showAll && !bridgeInView/);
-    expect(verdict).toMatch(/<ScrollCue\s*\/>/);
-  });
-
-  it("retires the pill and the cue once the in-flow button is actually on screen, not once the reader has scrolled", () => {
-    /*
-     * `scroll`, `{ once: true }` was the old mechanism, and it only ever fired
-     * for a reader who scrolled — a viewport tall enough to hold the whole
-     * document without scrolling (a desktop browser, a short confession, a
-     * zoomed-out page) could never dispatch one, so the pill sat forever over
-     * a button already fully visible a few hundred pixels below it, and the
-     * cue pointed down at nothing.
-     *
-     * An IntersectionObserver on the in-flow button itself is watching the
-     * true condition both were compensating for — "is the button below the
-     * fold" — rather than a gesture that only sometimes implies it. Its first
-     * callback fires as soon as it starts observing, including when the
-     * target is already on screen, so a document that never scrolls retires
-     * both without a scroll ever occurring; the same observer covers the
-     * scrolling case when the button later crosses into view.
-     */
-    expect(verdict, "the scroll listener is back").not.toMatch(/once:\s*true/);
-    expect(verdict).toMatch(/const \[bridgeInView, setBridgeInView\] = useState\(false\)/);
-    expect(verdict).toMatch(/ref=\{bridgeRef\}/);
-    expect(verdict).toMatch(/new IntersectionObserver/);
-    expect(verdict).toMatch(/observer\.observe\(el\)/);
-    expect(verdict).toMatch(/\{ threshold: 0 \}/);
-    expect(verdict, "a margin would delay retirement past the button's true arrival").not.toMatch(
-      /rootMargin/,
-    );
-    expect(verdict).toMatch(/if \(entry\.isIntersecting\) setBridgeInView\(true\)/);
-    // Torn down on unmount and when showAll changes — the effect's own
-    // dependency array, not a separate guard.
-    expect(verdict).toMatch(/return \(\) => observer\.disconnect\(\)/);
-    const bridgeEffect = verdict.slice(
-      verdict.indexOf("const bridgeRef = useRef"),
-      verdict.indexOf("const advance = useCallback"),
-    );
-    expect(bridgeEffect.length, "could not isolate the bridge-visibility effect").toBeGreaterThan(0);
-    expect(bridgeEffect).toMatch(/\}, \[showAll\]\);/);
-  });
-
-  it("does not gate the pill and cue on a gesture that may never happen", () => {
-    // Both must retire off the SAME signal, together — never one without the
-    // other, and never a fixed-viewport pill left up once the cue is gone.
-    const pill = verdict.slice(
-      verdict.indexOf('bottom-[calc(7rem'),
-    );
-    expect(pill.slice(0, 80)).not.toMatch(/hasScrolled/);
-    const cueBlock = verdict.slice(verdict.indexOf('bottom-[calc(1.5rem'));
-    expect(cueBlock.slice(0, 80)).not.toMatch(/hasScrolled/);
-    expect(verdict, "the old scroll-based flag survives somewhere").not.toMatch(/hasScrolled/);
-  });
-
-  it("the beat sequence shows no scroll cue and no down arrow", () => {
-    /*
-     * The sequence advances by TAP and its document is exactly one viewport.
-     * A down arrow there is the page's own vocabulary for "scroll", pointed at
-     * a gesture that does nothing — readers reported trying to scroll and
+     * The verdict advances by TAP on every beat, one beat to a screen, and a
+     * reader walking back from grace replays the same sequence from the
+     * charge — there is no second layout with anything below the fold. A down
+     * arrow is the page's own vocabulary for "scroll", pointed at a gesture
+     * that does nothing: readers reported trying to scroll the beats and
      * getting nothing. The persistent "click anywhere, or press space"
-     * affordance is what belongs on those beats, and it stays.
+     * affordance is what belongs on this screen, and it stays.
      *
-     * The arrow survives inside the showAll button, where it is true.
+     * The cue and its arrow were legitimate here once — the re-read used to
+     * be a separate 1088px "document" whose only control sat below the fold
+     * at 390×844. Replay-from-the-start (owner ruling, 2026-08-15) deleted
+     * that layout, and the cue's reason went with it.
      */
-    const sequenceBlock = verdict.slice(
-      verdict.indexOf("{!showAll && ("),
-      verdict.indexOf("{showAll && ("),
-    );
-    expect(sequenceBlock.length, "could not isolate the sequence block").toBeGreaterThan(0);
-    expect(sequenceBlock).not.toMatch(/&darr;/);
-    expect(sequenceBlock).not.toMatch(/ScrollCue/);
-    // …and the arrow is still there for the document, which really does scroll.
-    expect(verdict.slice(verdict.indexOf("{showAll && ("))).toMatch(/&darr;/);
+    expect(verdict).not.toMatch(/&darr;/);
+    expect(verdict).not.toMatch(/ScrollCue/);
   });
 });

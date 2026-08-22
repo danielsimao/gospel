@@ -1,6 +1,6 @@
 "use client";
 
-import { m } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import { TOTAL_QUESTIONS } from "@/lib/questions";
 import type { Answer, TestMessages } from "@/lib/types";
 
@@ -22,14 +22,43 @@ export function ExaminationLedger({
   testMessages,
 }: ExaminationLedgerProps) {
   const displayIndex = currentQuestion + 1;
+  // null before hydration resolves it, which reads as "not reduced" — the
+  // same default the config already applies.
+  const reduceMotion = useReducedMotion();
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="mb-3 flex items-center gap-2">
-        <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/75">
+    /*
+     * Two layouts, because the phone and the desktop had two different
+     * problems — and only one of them was real.
+     *
+     * Measured at 1512: the bar is 384px wide, its six steps 59px each, and
+     * the nearest chip is 512px away. Nothing is cramped and nothing is close
+     * to colliding. Measured at 390: 230px of bar, 35px steps, and the last
+     * one passing nine pixels UNDER the exit. The desktop never had the
+     * problem the phone has.
+     *
+     * So the phone gets the rail on the ceiling — full bleed at the top edge,
+     * where there is no chip to clear and no centre to hold, which takes the
+     * steps to 63px, about what the desktop already had. The counter takes
+     * the corner the rail leaves empty, opposite the exit. From sm up the
+     * original centred ledger is untouched: widening it would buy nothing and
+     * a full-bleed rail across 1512 reads as browser chrome, six 250px blocks
+     * that stop measuring anything.
+     */
+    <div className="contents sm:flex sm:flex-col sm:items-center">
+      {/* Left on the phone, on the exit's line and at its inset, so the two
+          corners answer each other. Back to centred and in flow from sm.
+
+          The safe-area term matches the rail's: the rail sits at the very top
+          edge and has to clear a notch, and this sits 14px below the same
+          edge, so on a home-screen install it needs the same offset or it
+          slides under the status bar while the rail it belongs with does not.
+          Resolves to plain top-3.5 everywhere the inset is zero. */}
+      <div className="fixed left-3 top-[calc(0.875rem+env(safe-area-inset-top))] z-40 flex h-8 items-center gap-2 sm:static sm:mb-3 sm:h-auto sm:justify-center">
+        <span className="font-mono text-[9px] uppercase tracking-[3px] text-red-400/85">
           {testMessages.caseLabel}
         </span>
-        <span className="font-mono text-[9px] tabular-nums text-red-400/75">
+        <span className="font-mono text-[9px] tabular-nums text-red-400/85">
           {String(displayIndex).padStart(2, "0")} /{" "}
           {String(TOTAL_QUESTIONS).padStart(2, "0")}
         </span>
@@ -41,9 +70,16 @@ export function ExaminationLedger({
         aria-valuemax={TOTAL_QUESTIONS}
         aria-valuenow={answers.length}
         aria-label={testMessages.caseLabel}
-        // items-center so the taller active step grows from the centre line
-        // rather than pushing the row 1px taller and shifting the card.
-        className="flex h-[3px] w-full max-w-xs items-center gap-1 sm:max-w-sm sm:gap-1.5"
+        /*
+         * items-center so the taller active step grows from the centre line
+         * rather than pushing the row 1px taller and shifting the card.
+         *
+         * On the phone this is the ceiling rail: fixed to the top edge, full
+         * bleed, square-ended. `top-[env(safe-area-inset-top)]` rather than
+         * `top-0` because at top-0 a home-screen install puts it under the
+         * status bar. From sm it returns to the flow as the centred bar.
+         */
+        className="fixed inset-x-0 top-[env(safe-area-inset-top)] z-40 flex h-[3px] items-center gap-[2px] sm:static sm:z-auto sm:w-full sm:max-w-sm sm:gap-1.5"
       >
         {Array.from({ length: TOTAL_QUESTIONS }).map((_, i) => {
           const answered = answers[i];
@@ -63,13 +99,27 @@ export function ExaminationLedger({
            */
           if (isActive) {
             return (
-              <div key={i} className="relative h-[3px] flex-1 rounded-full bg-white/70">
+              <div key={i} className="relative h-[3px] flex-1 rounded-none bg-white/70 sm:rounded-full">
                 <m.div
                   aria-hidden="true"
-                  className="absolute inset-0 rounded-full"
+                  className="absolute inset-0 rounded-none sm:rounded-full"
                   style={{ boxShadow: "0 0 10px rgba(255,255,255,0.55)" }}
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 2.2, ease: "easeInOut", repeat: Infinity }}
+                  /*
+                   * Held still for a reader who asked for stillness.
+                   * `MotionConfig reducedMotion="user"` covers transform and
+                   * layout animations, not opacity keyframes, so this glow
+                   * went on pulsing under the preference — and it pulses
+                   * forever, on a rail that is now pinned to the top edge of
+                   * every phone screen in the flow. Persistent ambient motion
+                   * is the case the preference exists for, so the hook is
+                   * asked directly rather than left to the config.
+                   */
+                  animate={reduceMotion ? { opacity: 1 } : { opacity: [0.5, 1, 0.5] }}
+                  transition={
+                    reduceMotion
+                      ? { duration: 0 }
+                      : { duration: 2.2, ease: "easeInOut", repeat: Infinity }
+                  }
                 />
               </div>
             );
@@ -81,7 +131,7 @@ export function ExaminationLedger({
             return (
               <div
                 key={i}
-                className={`h-[2px] flex-1 self-center rounded-full bg-red-500 ${TRANSITION_CLASSES}`}
+                className={`h-[2px] flex-1 self-center rounded-none sm:rounded-full bg-red-500 ${TRANSITION_CLASSES}`}
               />
             );
           }
@@ -92,7 +142,7 @@ export function ExaminationLedger({
             return (
               <div
                 key={i}
-                className={`h-[2px] flex-1 self-center rounded-full ${TRANSITION_CLASSES}`}
+                className={`h-[2px] flex-1 self-center rounded-none sm:rounded-full ${TRANSITION_CLASSES}`}
                 style={{ backgroundImage: JUSTIFY_DASH_PATTERN }}
               />
             );
@@ -102,7 +152,7 @@ export function ExaminationLedger({
           return (
             <div
               key={i}
-              className={`h-[2px] flex-1 self-center rounded-full bg-white/[0.06] ${TRANSITION_CLASSES}`}
+              className={`h-[2px] flex-1 self-center rounded-none sm:rounded-full bg-white/[0.06] ${TRANSITION_CLASSES}`}
             />
           );
         })}

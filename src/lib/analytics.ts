@@ -5,6 +5,31 @@ export function trackTestBack(from: string, to: string, via: "link" | "browser")
 }
 
 /**
+ * Leaving the flow by the exit control, which until now produced no event at
+ * all: it is a client-side <Link>, so the document never unloads and
+ * `beforeunload` — the only abandonment hook — does not fire. Exits were
+ * therefore invisible, and the two-step reveal in front of this exists to
+ * prevent accidental ones. Without a count there is no way to know whether it
+ * helped or merely cost every deliberate leaver a tap, hence: the phase they
+ * left from, and whether the exit went through the reveal or straight out.
+ */
+export function trackTestExit(
+  phase: string,
+  locale: string,
+  /**
+   * "revealed" — a pointer exit that went through the two-step: one tap to
+   * name the action, a second to commit. "direct" — an activation that skips
+   * it by design, which is keyboard, voice and assistive tech (they report
+   * `detail: 0`, and taxing them with a confirmation step would be the wrong
+   * trade). Without this the event could not answer the question the two-step
+   * was built to settle, since every exit would look alike.
+   */
+  via: "revealed" | "direct",
+) {
+  safeCapture("test_exit", { phase, locale, via });
+}
+
+/**
  * A same-sitting session restored without asking. Replaces the two events the
  * resume dialog used to emit; the phase is what says whether readers are losing
  * their place mid-question or mid-argument.

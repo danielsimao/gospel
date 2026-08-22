@@ -104,6 +104,28 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
     case "ADVANCE_AFTER_FOLLOWUP": {
       if (state.phase !== "playing") return state;
+      /*
+       * Only off a question that has been answered.
+       *
+       * Answers are appended one per question, so `answers.length` is also the
+       * index of the first unanswered one: while it is greater than
+       * `currentQuestion` this question has testimony behind it, and while it
+       * is not, nothing has been said here yet. UNDO_ANSWER pops the last
+       * answer, which returns this to false in the same move.
+       *
+       * Without it, the advance checked only the phase — so a reader who
+       * answered question one and spam-tapped Next rode the extra clicks
+       * straight through the remaining questions: reproduced at eight clicks,
+       * landing on `currentQuestion: 6`, phase `verdict`, one answer recorded,
+       * the screen reading GUILTY. A verdict is the reader's own testimony
+       * read back to them; it cannot be reached over questions they never
+       * answered.
+       *
+       * Here rather than on the button because a disabled control during the
+       * transition leaves keyboard, voice and assistive activation to find the
+       * same hole. This is the move every path has to make.
+       */
+      if (state.answers.length <= state.currentQuestion) return state;
 
       const nextQuestion = state.currentQuestion + 1;
 
