@@ -16,6 +16,12 @@ export function trackHomeRetakeClicked() {
   safeCapture("home_retake_clicked");
 }
 
+/** The last-word band's door, kept apart from the hero CTA so the two test
+    entries on the page stay separable in the funnel. */
+export function trackHomeLastWordClicked() {
+  safeCapture("home_last_word_clicked", { destination: "test" });
+}
+
 export function trackTopBarLearnClicked() {
   safeCapture("top_bar_learn_clicked");
 }

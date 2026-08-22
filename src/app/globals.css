@@ -415,6 +415,31 @@ html[data-journey-stage="dismissed"] [data-slot="post-test-band"] {
 }
 
 /*
+ * The last word, for visitors only.
+ *
+ * The mortality statement at the foot of the page re-raises the stake for the
+ * one reader who scrolled past the question without answering it. The other
+ * four stages have already answered: the committed reader's courtroom is
+ * closed (adoption, not parole), and the dismissed reader is not to be sold
+ * to. So this is the visitor default taken back for every named stage —
+ * enumerated, never negated, exactly like the visitor journey block above, so
+ * an unrecognised stage degrades to the visitor's page rather than to a
+ * half-hidden one. Same source-order constraint as every reveal rule here:
+ * after the Tailwind import, and nothing else may set `display` on the
+ * wrapper.
+ */
+[data-slot="visitor-band"] {
+  display: contents;
+}
+
+html[data-journey-stage="undecided"] [data-slot="visitor-band"],
+html[data-journey-stage="committed"] [data-slot="visitor-band"],
+html[data-journey-stage="thinking"] [data-slot="visitor-band"],
+html[data-journey-stage="dismissed"] [data-slot="visitor-band"] {
+  display: none;
+}
+
+/*
  * One next-steps track, chosen before the first paint.
  *
  * The track lives in localStorage, so the server could only render a

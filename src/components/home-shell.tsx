@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { DeathCounter } from "@/components/eternity/death-counter";
+import { LastWordBand } from "@/components/home/last-word-band";
 import { LatestPostCard } from "@/components/home/latest-post-card";
 import { PassedBand } from "@/components/home/passed-band";
 import { QuestionsBand } from "@/components/home/questions-band";
@@ -784,6 +785,9 @@ export function HomeShell({
                * block is gone. The counter above and the crawl below both make
                * that point; a third statement of it in between was the page
                * repeating its premise instead of turning it on the reader.
+               * The line itself returned at the foot of the page as
+               * LastWordBand, with the turn written into it — a different job
+               * in the one region where mortality had gone quiet.
                */}
               <p className="mt-8 max-w-md text-center text-[15px] leading-relaxed tracking-wide text-white/60 sm:mt-10 sm:text-base">
                 {home.provocativeQuestion}
@@ -943,6 +947,20 @@ export function HomeShell({
             />
           )}
 
+          {/* The last word — see the component's own doc for why the 10/10
+              line lives at the foot of the page and not at the top where it
+              once was. Visitor-only via the reveal rules in globals.css,
+              riding the same pre-paint attribute as the stage blocks, so the
+              choice lands before first paint and nothing jumps. The wrapper
+              stays class-free for the reasons the stage wrappers are. */}
+          <div data-slot="visitor-band">
+            <LastWordBand
+              locale={locale}
+              heading={home.mortalityStat}
+              messages={home.lastWord}
+              cta={home.ctaButton}
+            />
+          </div>
 
         </div>
       </section>
