@@ -101,15 +101,23 @@ describe("the reserve travels rather than jumps", () => {
     expect(rule).toMatch(/var\(--consent-h-timing,\s*0s\)/);
   });
 
-  it("moves the reserve on the same curves it hands framer", () => {
+  it("moves the reserve on the banner's entry curve, and behind it on exit", () => {
     /*
-     * Two declarations of "150ms ease-in" is how the reserve and the banner
-     * start leaving at different rates, and the content lands somewhere the
-     * banner is not. So the curves are named once and the CSS twin is generated
-     * from the same numbers.
+     * On entry, two declarations of the same curve is how the reserve and the
+     * banner start moving at different rates, and the content lands somewhere
+     * the banner is not — so the curve is named once and the CSS twin is
+     * generated from the same numbers. On exit the reserve deliberately takes
+     * a LONGER curve than the banner: content lagging the departing banner is
+     * only an empty band at the bottom edge for a moment, but content leading
+     * it arrives under a banner that has not left. Slower is the only safe
+     * direction, so the durations are pinned in that order.
      */
     expect(bannerCode).toMatch(/const ENTER = \{ duration: [\d.]+, ease: EASE_OUT_STRONG \}/);
     expect(bannerCode).toMatch(/const EXIT = \{ duration: [\d.]+, ease: \[[\d., ]+\] as const \}/);
+    expect(bannerCode).toMatch(/const RESERVE_EXIT = \{ duration: [\d.]+, ease: \[[\d., ]+\] as const \}/);
+    const duration = (name: string) =>
+      Number(bannerCode.match(new RegExp(`const ${name} = \\{ duration: ([\\d.]+),`))?.[1]);
+    expect(duration("RESERVE_EXIT")).toBeGreaterThanOrEqual(duration("EXIT"));
     expect(bannerCode).toMatch(/cubic-bezier\(\$\{motion\.ease\.join\(","\)\}\)/);
     // …and framer is given those same objects, not literals beside them.
     expect(bannerCode).toMatch(/transition=\{ENTER\}/);
@@ -120,11 +128,21 @@ describe("the reserve travels rather than jumps", () => {
     // Not when it has left: 150ms of nothing, then a jump, is the jump.
     const answer = bannerCode.slice(bannerCode.indexOf("function answer("));
     expect(answer.length, "no single place where the answer is handled").toBeGreaterThan(0);
-    expect(answer).toMatch(/setProperty\(\s*["']--consent-h-timing["'],\s*cssTiming\(EXIT\)\s*\)/);
+    expect(answer).toMatch(/setProperty\(\s*["']--consent-h-timing["'],\s*cssTiming\(RESERVE_EXIT\)\s*\)/);
     expect(answer).toMatch(/setProperty\(\s*["']--consent-h["'],\s*["']0px["']\s*\)/);
     // Both buttons go through it, so Decline cannot keep the old jump.
     expect(bannerCode).toMatch(/onClick=\{\(\) => answer\("denied"\)\}/);
     expect(bannerCode).toMatch(/onClick=\{\(\) => answer\("granted"\)\}/);
+  });
+
+  it("waits for the reserve's longer journey before removing its timing", () => {
+    // onExitComplete fires when the BANNER has gone — 150ms in — while the
+    // reserve is still travelling on RESERVE_EXIT's clock. Removing
+    // --consent-h-timing at that moment retimes the in-flight transition to
+    // 0s, which is the original one-frame jump wearing a delay.
+    const exitComplete = bannerCode.slice(bannerCode.indexOf("onExitComplete"));
+    expect(exitComplete).toMatch(/RESERVE_TRAVELS/);
+    expect(exitComplete).toMatch(/setTimeout\(cleanup,\s*\(RESERVE_EXIT\.duration - EXIT\.duration\)/);
   });
 
   it("does not re-open the reserve behind a banner already leaving", () => {

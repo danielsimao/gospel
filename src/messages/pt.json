@@ -199,36 +199,24 @@
     "linkCopied": "Link copiado!"
   },
   "nextSteps": {
-    "cta": "E agora?",
+    "ctaCommitted": "O teu primeiro dia",
+    "ctaThinking": "Vale a pena pensar nisto",
+    "metaTitle": "Próximos Passos",
     "dismissedReturn": "Mudaste de ideias? O plano de leitura está à tua espera — começa hoje.",
     "trackA": {
       "welcome": "Algo acabou de mudar.",
       "welcomeReturn": "A decisão está tomada. É assim que ela cria raízes.",
-      "whatHappened": "Reconheceste que quebraste a Lei de Deus. E tomaste a decisão de te arrepender — de abandonar o teu pecado — e de colocar a tua confiança somente em Jesus Cristo.\n\nSe te arrependeste genuinamente e confiaste no Salvador, Deus perdoou todos os pecados que alguma vez cometeste e concedeu-te a vida eterna. Não porque o mereceste — mas por causa do que Cristo fez na cruz.\n\n\"Assim que, se alguém está em Cristo, nova criatura é; as coisas velhas já passaram; eis que tudo se fez novo.\" — 2 Coríntios 5:17",
+      "whatHappened": "Se te arrependeste genuinamente e confiaste no Salvador, Deus perdoou todos os pecados que alguma vez cometeste e concedeu-te a vida eterna. Não porque o mereceste — mas por causa do que Cristo fez na cruz.\n\n\"Assim que, se alguém está em Cristo, nova criatura é; as coisas velhas já passaram; eis que tudo se fez novo.\" — 2 Coríntios 5:17",
       "readHeading": "Lê",
       "readPlanLabel": "Começar o plano de 7 dias",
       "prayHeading": "Ora",
-      "prayBody": "Fala com Deus como um Pai. Ele está a ouvir.",
       "prayPrompt": "Deus, obrigado por me perdoares. Ajuda-me a compreender o que fizeste por mim. Guia-me enquanto leio a Tua Palavra. Dá-me coragem para abandonar o pecado e seguir-Te. Em nome de Jesus, Amém.",
-      "communityHeading": "Encontra Comunidade",
-      "communityBody": "Não foste feito para fazer isto sozinho. Encontra uma igreja que crê na Bíblia onde possas crescer.",
-      "communityLink": "https://maps.app.goo.gl/NMMMdeJa5H5BR5Vp9",
       "communityLinkLabel": "Encontrar uma igreja bíblica",
-      "learnHeading": "Aprende",
-      "learnBody": "Explora os fundamentos da fé — quem é Jesus, o que significa a graça, porque é que a cruz importa.",
       "learnLinkLabel": "Explorar os fundamentos",
       "shareHeading": "Partilha a Tua Decisão",
       "shareMessage": "Tomei uma decisão que muda tudo. Começou com este teste:",
-      "storyButton": "Guardar imagem para a história",
-      "storyHint": "Publica-a na tua história do Instagram. O link do teste já está copiado — cola-o num autocolante de link.",
-      "storyCopyButton": "Copiar link do teste para o autocolante",
-      "storyCopied": "Link copiado — cola-o no autocolante de link da tua história.",
-      "streetHeading": "Leva-o para a rua",
-      "streetBody": "Imprime uma folha de cartões com a pergunta e um código que abre o teste. Deixa um com a gorjeta, dá um a um amigo — a conversa começa sozinha.",
-      "streetLinkLabel": "Imprimir cartões",
       "bands": {
         "today": "Hoje",
-        "week": "Esta semana",
         "grow": "À medida que cresces"
       }
     },
@@ -240,21 +228,16 @@
         "Já consideraste que o desconforto que sentes pode ser a tua consciência a concordar com o padrão de Deus?",
         "O que seria preciso para investigares isto mais a fundo?"
       ],
+      "reflectionHint": "Toca quando tiveres pensado nisto",
       "readingHeading": "Uma coisa para ler",
       "readingBody": "Lê João capítulo 3 — hoje, não um dia destes. É uma conversa entre Jesus e um homem que tinha perguntas como as tuas.",
-      "readingLink": "https://www.bible.com/bible/212/JHN.3.ARC",
+      "readingLink": "https://www.bible.com/bible/215/JHN.3.ARC",
       "readingLinkLabel": "Ler João 3",
-      "readingPlanLabel": "Plano de leitura de 7 dias",
-      "learnHeading": "Queres os fundamentos?",
-      "learnBody": "Explicações curtas e honestas sobre as perguntas essenciais — quem Jesus afirmou ser, porque é que importa, o que é a graça.",
       "learnLinkLabel": "Explorar os temas",
+      "learnLeadIn": "Ainda tens perguntas? Estas são as que as pessoas fazem.",
       "bands": {
-        "today": "Hoje",
-        "deeper": "Para ires mais fundo"
+        "today": "Hoje"
       },
-      "talkLabel": "Queres falar com uma pessoa real sobre isto?",
-      "talkLink": "Conversa em needGod.net",
-      "talkUrl": "https://needgod.net/",
       "comeBack": "Volta a isto — mas não o deixes na prateleira. Nunca é tarde demais enquanto respiras. Nunca é seguro contar com outra oportunidade."
     }
   },
@@ -270,7 +253,7 @@
     "completedLabel": "Concluído",
     "allCompleteHeading": "Muito bem.",
     "allCompleteBody": "Terminaste o plano de 7 dias. Mas isto é apenas o começo — continua a ler, a orar e a crescer. O Evangelho de João tem 21 capítulos. Porque não continuar?",
-    "continueReadingLink": "https://www.bible.com/bible/212/JHN.8.ARC",
+    "continueReadingLink": "https://www.bible.com/bible/215/JHN.8.ARC",
     "continueReadingLabel": "Continuar a ler João",
     "deeperLabel": "Queres ir mais fundo?",
     "deeperLink": "Explora os fundamentos do que tens lido.",
@@ -285,7 +268,7 @@
       {
         "title": "O Princípio",
         "passage": "João 1:1-18",
-        "passageUrl": "https://www.bible.com/bible/212/JHN.1.ARC",
+        "passageUrl": "https://www.bible.com/bible/215/JHN.1.ARC",
         "keyVerse": "E o Verbo se fez carne, e habitou entre nós, e vimos a sua glória, como a glória do unigênito do Pai, cheio de graça e de verdade.",
         "keyVerseRef": "João 1:14",
         "reflection": "Antes de Jesus nascer em Belém, Ele existia eternamente como Deus. Não foi criado — foi o Criador que entrou na Sua criação. O mesmo Deus cuja Lei te condenou é o Deus que se fez homem para te salvar.",
@@ -294,7 +277,7 @@
       {
         "title": "Nascer de Novo",
         "passage": "João 3:1-21",
-        "passageUrl": "https://www.bible.com/bible/212/JHN.3.ARC",
+        "passageUrl": "https://www.bible.com/bible/215/JHN.3.ARC",
         "keyVerse": "Jesus respondeu, e disse-lhe: Na verdade, na verdade te digo que aquele que não nascer de novo, não pode ver o reino de Deus.",
         "keyVerseRef": "João 3:3",
         "reflection": "Nicodemos era um líder religioso — uma 'boa pessoa' por qualquer padrão. Mas Jesus disse-lhe que ser bom não era suficiente. Ele precisava de um começo completamente novo, e toda a gente precisa. Se confiaste em Cristo, foi isso que te aconteceu — nasceste de novo. Se ainda não confiaste, é exatamente isto que Jesus diz que tens de ter.",
@@ -303,7 +286,7 @@
       {
         "title": "Água Viva",
         "passage": "João 4:1-26",
-        "passageUrl": "https://www.bible.com/bible/212/JHN.4.ARC",
+        "passageUrl": "https://www.bible.com/bible/215/JHN.4.ARC",
         "keyVerse": "Jesus respondeu, e disse-lhe: Qualquer que beber desta água tornará a ter sede; Mas aquele que beber da água que eu lhe der nunca terá sede, porque a água que eu lhe der se fará nele uma fonte de água que salte para a vida eterna.",
         "keyVerseRef": "João 4:13-14",
         "reflection": "Jesus encontrou esta mulher no seu pior momento — envergonhada, sozinha, a evitar os outros. Não a condenou. Ofereceu-lhe algo que a satisfaria para sempre. Ele encontra-te da mesma forma — onde quer que estejas, como quer que te sintas.",
@@ -312,7 +295,7 @@
       {
         "title": "O Bom Pastor",
         "passage": "João 10:1-18",
-        "passageUrl": "https://www.bible.com/bible/212/JHN.10.ARC",
+        "passageUrl": "https://www.bible.com/bible/215/JHN.10.ARC",
         "keyVerse": "Eu sou o bom Pastor; o bom Pastor dá a sua vida pelas ovelhas.",
         "keyVerseRef": "João 10:11",
         "reflection": "Um mercenário foge quando o perigo vem. Mas Jesus — o Bom Pastor — voluntariamente deu a Sua vida. Ninguém a tirou d'Ele. Escolheu a cruz porque te escolheu a ti.",
@@ -321,7 +304,7 @@
       {
         "title": "O Caminho",
         "passage": "João 14:1-14",
-        "passageUrl": "https://www.bible.com/bible/212/JHN.14.ARC",
+        "passageUrl": "https://www.bible.com/bible/215/JHN.14.ARC",
         "keyVerse": "Disse-lhe Jesus: Eu sou o caminho, e a verdade e a vida; ninguém vem ao Pai, senão por mim.",
         "keyVerseRef": "João 14:6",
         "reflection": "Esta é a afirmação mais exclusiva e mais inclusiva alguma vez feita. Exclusiva — há apenas um caminho. Inclusiva — qualquer um pode segui-lo. Jesus não disse 'Eu mostro-te o caminho.' Disse 'Eu SOU o caminho.'",
@@ -330,7 +313,7 @@
       {
         "title": "A Videira",
         "passage": "João 15:1-17",
-        "passageUrl": "https://www.bible.com/bible/212/JHN.15.ARC",
+        "passageUrl": "https://www.bible.com/bible/215/JHN.15.ARC",
         "keyVerse": "Eu sou a videira, vós as varas; quem está em mim, e eu nele, esse dá muito fruto; porque sem mim nada podeis fazer.",
         "keyVerseRef": "João 15:5",
         "reflection": "A vida em Cristo não é sobre esforçares-te mais. É sobre permaneceres ligado. Um ramo não se esforça para produzir fruto — simplesmente fica ligado à videira. Se estás n'Ele, o teu trabalho é permanecer: fica perto, lê, ora, confia. Se ainda não estás, ouve o que Ele diz a seguir — sem Mim nada podeis fazer.",
@@ -339,7 +322,7 @@
       {
         "title": "Ressuscitado",
         "passage": "João 20:1-31",
-        "passageUrl": "https://www.bible.com/bible/212/JHN.20.ARC",
+        "passageUrl": "https://www.bible.com/bible/215/JHN.20.ARC",
         "keyVerse": "Disse-lhe Jesus: Porque me viste, Tomé, creste; bem-aventurados os que não viram e creram.",
         "keyVerseRef": "João 20:29",
         "reflection": "Tomé duvidou. Jesus não o rejeitou — apareceu-lhe. Se tens dúvidas, leva-as a Deus. Ele não tem medo das tuas perguntas. A ressurreição é o fundamento de tudo — se Jesus ressuscitou, então tudo o que Ele disse é verdade.",
@@ -1537,14 +1520,14 @@
       "testCta": "Faz o teste — vê como te sais"
     },
     "facts": [
-      "56 milhões de pessoas morrem em todo o mundo todos os anos.",
-      "As doenças cardíacas matam 17,9 milhões de pessoas por ano.",
+      "60 milhões de pessoas morrem em todo o mundo todos os anos.",
+      "As doenças cardíacas matam 19,8 milhões de pessoas por ano.",
       "A cada 43 segundos, alguém morre por suicídio.",
-      "Mais pessoas morreram hoje do que vivem na maioria das vilas.",
+      "No mundo, morrem quase duas pessoas a cada segundo.",
       "A esperança média de vida é 73 anos. E depois?",
-      "155.000 pessoas que acordaram ontem não acordaram hoje.",
-      "O cancro reclama 10 milhões de vidas por ano.",
-      "Acidentes rodoviários matam 1,16 milhões de pessoas anualmente.",
+      "165.000 pessoas que acordaram ontem não acordaram hoje.",
+      "O cancro mata quase 10 milhões de pessoas por ano.",
+      "Acidentes rodoviários matam 1,19 milhões de pessoas anualmente.",
       "Não tens o amanhã garantido."
     ],
     "journey": {
@@ -1813,6 +1796,7 @@
     "readingPlanLink": "Plano de Leitura de 7 Dias",
     "nextStepsLink": "Próximos Passos",
     "churchLink": "Encontra uma Igreja",
+    "cardsLink": "Cartões para Imprimir",
     "livingWatersLink": "És uma Boa Pessoa? — Living Waters",
     "livingWatersUrl": "https://livingwaters.com/are-you-a-good-person/",
     "needGodLink": "needGod.net",
@@ -1822,6 +1806,7 @@
     "needHelpLink": "Precisas de ajuda?",
     "needHelpUrl": "https://findahelpline.com/",
     "scripture": "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.",
-    "scriptureRef": "João 3:16"
+    "scriptureRef": "João 3:16",
+    "scriptureNotice": "Citações bíblicas extraídas de A Bíblia Sagrada — Almeida Corrigida Fiel (ACF), © 1994, 1995, 2007, 2011 Sociedade Bíblica Trinitariana do Brasil, Trinitarian Bible Society."
   }
 }

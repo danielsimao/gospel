@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildPageMetadata({
     locale,
     path: "/next-steps",
-    title: data.nextSteps.cta,
+    title: data.nextSteps.metaTitle,
     description: getNextStepsDescription(locale),
     robots: {
       index: false,
@@ -53,7 +53,7 @@ export default async function NextStepsPage({ params }: Props) {
   const webPageSchema = buildWebPageSchema({
     locale,
     path: "/next-steps",
-    title: data.nextSteps.cta,
+    title: data.nextSteps.metaTitle,
     description: getNextStepsDescription(locale),
   });
 
@@ -87,6 +87,10 @@ export default async function NextStepsPage({ params }: Props) {
           readDay: data.readingPlan.readDayLabel,
           continueLabel: data.readingPlan.continueReadingLabel,
           continueUrl: data.readingPlan.continueReadingLink,
+          /* Same string the reading plan's own day cards use — the surface
+             is different, the action is not, so the reader should not learn
+             a second phrase for it. */
+          markReadLabel: data.readingPlan.markReadLabel,
         }}
       />
     </>

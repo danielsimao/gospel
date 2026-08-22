@@ -1,0 +1,2308 @@
+{
+ "_source": "CIA World Factbook country profiles, via the public-domain factbook.json mirror (github.com/factbook/factbook.json). Figures are the Factbook's own 2025 estimates. That mirror's README states the CIA discontinued the World Factbook in Feb 2026, which would make this its final published vintage; that claim is the mirror's, not independently verified here. Fetched 2026-08-12. Regenerate by re-running the fetch in scripts/build-death-centers.mjs's header notes if a newer source becomes available.",
+ "_derived": "deaths = pop * cdr / 1000, computed here; the Factbook publishes the rate, not the absolute count.",
+ "_excluded": "European Union (an aggregate that double-counts its members) and entries with no published population or death rate (uninhabited or near-uninhabited territories).",
+ "_worldDeathsPerYear": 63198853,
+ "countries": [
+  {
+   "name": "India",
+   "gec": "south-asia_in",
+   "capital": "New Delhi",
+   "lng": 77.2,
+   "lat": 28.6,
+   "pop": 1419316933,
+   "cdr": 8.7,
+   "deaths": 12348057
+  },
+  {
+   "name": "China",
+   "gec": "east-n-southeast-asia_ch",
+   "capital": "Beijing",
+   "lng": 116.38,
+   "lat": 39.92,
+   "pop": 1407181209,
+   "cdr": 7.97,
+   "deaths": 11215234
+  },
+  {
+   "name": "United States",
+   "gec": "north-america_us",
+   "capital": "Washington, D.C.",
+   "lng": -77.03,
+   "lat": 38.88,
+   "pop": 338016259,
+   "cdr": 8.76,
+   "deaths": 2961022
+  },
+  {
+   "name": "Nigeria",
+   "gec": "africa_ni",
+   "capital": "Abuja",
+   "lng": 7.53,
+   "lat": 9.08,
+   "pop": 244344065,
+   "cdr": 9.42,
+   "deaths": 2301721
+  },
+  {
+   "name": "Russia",
+   "gec": "central-asia_rs",
+   "capital": "Moscow",
+   "lng": 37.6,
+   "lat": 55.75,
+   "pop": 140134279,
+   "cdr": 13.93,
+   "deaths": 1952071
+  },
+  {
+   "name": "Indonesia",
+   "gec": "east-n-southeast-asia_id",
+   "capital": "Jakarta",
+   "lng": 106.82,
+   "lat": -6.17,
+   "pop": 283587097,
+   "cdr": 6.82,
+   "deaths": 1934064
+  },
+  {
+   "name": "Brazil",
+   "gec": "south-america_br",
+   "capital": "Bras&iacute",
+   "lng": -47.92,
+   "lat": -15.78,
+   "pop": 221359387,
+   "cdr": 7.07,
+   "deaths": 1565011
+  },
+  {
+   "name": "Pakistan",
+   "gec": "south-asia_pk",
+   "capital": "Islamabad",
+   "lng": 73.05,
+   "lat": 33.68,
+   "pop": 257047044,
+   "cdr": 5.79,
+   "deaths": 1488302
+  },
+  {
+   "name": "Japan",
+   "gec": "east-n-southeast-asia_ja",
+   "capital": "Tokyo",
+   "lng": 139.75,
+   "lat": 35.68,
+   "pop": 123201945,
+   "cdr": 12.04,
+   "deaths": 1483351
+  },
+  {
+   "name": "Bangladesh",
+   "gec": "south-asia_bg",
+   "capital": "Dhaka",
+   "lng": 90.4,
+   "lat": 23.72,
+   "pop": 174370536,
+   "cdr": 6.05,
+   "deaths": 1054942
+  },
+  {
+   "name": "Germany",
+   "gec": "europe_gm",
+   "capital": "Berlin",
+   "lng": 13.4,
+   "lat": 52.52,
+   "pop": 84012284,
+   "cdr": 11.96,
+   "deaths": 1004787
+  },
+  {
+   "name": "DRC",
+   "gec": "africa_cg",
+   "capital": "Kinshasa",
+   "lng": 15.3,
+   "lat": -4.32,
+   "pop": 119038825,
+   "cdr": 7.37,
+   "deaths": 877316
+  },
+  {
+   "name": "Mexico",
+   "gec": "north-america_mx",
+   "capital": "Mexico City",
+   "lng": -99.13,
+   "lat": 19.43,
+   "pop": 130739927,
+   "cdr": 6.04,
+   "deaths": 789669
+  },
+  {
+   "name": "Philippines",
+   "gec": "east-n-southeast-asia_rp",
+   "capital": "Manila",
+   "lng": 120.97,
+   "lat": 14.6,
+   "pop": 118277063,
+   "cdr": 5.8,
+   "deaths": 686007
+  },
+  {
+   "name": "Italy",
+   "gec": "europe_it",
+   "capital": "Rome",
+   "lng": 12.48,
+   "lat": 41.9,
+   "pop": 60924851,
+   "cdr": 11.2,
+   "deaths": 682358
+  },
+  {
+   "name": "France",
+   "gec": "europe_fr",
+   "capital": "Paris",
+   "lng": 2.33,
+   "lat": 48.87,
+   "pop": 68512806,
+   "cdr": 9.91,
+   "deaths": 678962
+  },
+  {
+   "name": "Ethiopia",
+   "gec": "africa_et",
+   "capital": "Addis Ababa",
+   "lng": 38.7,
+   "lat": 9.03,
+   "pop": 121372632,
+   "cdr": 5.58,
+   "deaths": 677259
+  },
+  {
+   "name": "United Kingdom",
+   "gec": "europe_uk",
+   "capital": "London",
+   "lng": -0.08,
+   "lat": 51.5,
+   "pop": 68751311,
+   "cdr": 9.25,
+   "deaths": 635950
+  },
+  {
+   "name": "Ukraine",
+   "gec": "europe_up",
+   "capital": "Kyiv",
+   "lng": 30.52,
+   "lat": 50.43,
+   "pop": 35661826,
+   "cdr": 17.61,
+   "deaths": 628005
+  },
+  {
+   "name": "Vietnam",
+   "gec": "east-n-southeast-asia_vm",
+   "capital": "Hanoi",
+   "lng": 105.85,
+   "lat": 21.03,
+   "pop": 106688169,
+   "cdr": 5.81,
+   "deaths": 619858
+  },
+  {
+   "name": "Thailand",
+   "gec": "east-n-southeast-asia_th",
+   "capital": "Bangkok",
+   "lng": 100.52,
+   "lat": 13.75,
+   "pop": 70025248,
+   "cdr": 8.08,
+   "deaths": 565804
+  },
+  {
+   "name": "Turkey",
+   "gec": "middle-east_tu",
+   "capital": "Ankara",
+   "lng": 32.87,
+   "lat": 39.93,
+   "pop": 84625585,
+   "cdr": 6.19,
+   "deaths": 523832
+  },
+  {
+   "name": "Egypt",
+   "gec": "africa_eg",
+   "capital": "Cairo",
+   "lng": 31.25,
+   "lat": 30.05,
+   "pop": 112870457,
+   "cdr": 4.33,
+   "deaths": 488729
+  },
+  {
+   "name": "Spain",
+   "gec": "europe_sp",
+   "capital": "Madrid",
+   "lng": -3.68,
+   "lat": 40.4,
+   "pop": 47280433,
+   "cdr": 9.98,
+   "deaths": 471859
+  },
+  {
+   "name": "Poland",
+   "gec": "europe_pl",
+   "capital": "Warsaw",
+   "lng": 21.0,
+   "lat": 52.25,
+   "pop": 38746310,
+   "cdr": 11.56,
+   "deaths": 447907
+  },
+  {
+   "name": "Burma",
+   "gec": "east-n-southeast-asia_bm",
+   "capital": "Rangoon",
+   "lng": 96.17,
+   "lat": 16.8,
+   "pop": 57931718,
+   "cdr": 7.17,
+   "deaths": 415370
+  },
+  {
+   "name": "South Africa",
+   "gec": "africa_sf",
+   "capital": "Pretoria",
+   "lng": 28.22,
+   "lat": -25.7,
+   "pop": 61089926,
+   "cdr": 6.56,
+   "deaths": 400750
+  },
+  {
+   "name": "Iran",
+   "gec": "middle-east_ir",
+   "capital": "Tehran",
+   "lng": 51.42,
+   "lat": 35.7,
+   "pop": 89177357,
+   "cdr": 4.42,
+   "deaths": 394164
+  },
+  {
+   "name": "Argentina",
+   "gec": "south-america_ar",
+   "capital": "Buenos Aires",
+   "lng": -58.37,
+   "lat": -34.6,
+   "pop": 45418098,
+   "cdr": 7.94,
+   "deaths": 360620
+  },
+  {
+   "name": "South Korea",
+   "gec": "east-n-southeast-asia_ks",
+   "capital": "Seoul",
+   "lng": 126.98,
+   "lat": 37.55,
+   "pop": 51486343,
+   "cdr": 6.94,
+   "deaths": 357315
+  },
+  {
+   "name": "Colombia",
+   "gec": "south-america_co",
+   "capital": "Bogot&aacute",
+   "lng": -74.08,
+   "lat": 4.6,
+   "pop": 49842298,
+   "cdr": 6.96,
+   "deaths": 346902
+  },
+  {
+   "name": "Tanzania",
+   "gec": "africa_tz",
+   "capital": "Dodoma",
+   "lng": 39.28,
+   "lat": -6.8,
+   "pop": 69145464,
+   "cdr": 4.96,
+   "deaths": 342962
+  },
+  {
+   "name": "Peru",
+   "gec": "south-america_pe",
+   "capital": "Lima",
+   "lng": -77.05,
+   "lat": -12.05,
+   "pop": 32768614,
+   "cdr": 9.79,
+   "deaths": 320805
+  },
+  {
+   "name": "Mozambique",
+   "gec": "africa_mz",
+   "capital": "Maputo",
+   "lng": 32.58,
+   "lat": -25.95,
+   "pop": 34206144,
+   "cdr": 9.34,
+   "deaths": 319485
+  },
+  {
+   "name": "Canada",
+   "gec": "north-america_ca",
+   "capital": "Ottawa",
+   "lng": -75.7,
+   "lat": 45.42,
+   "pop": 39187155,
+   "cdr": 7.75,
+   "deaths": 303700
+  },
+  {
+   "name": "Sudan",
+   "gec": "africa_su",
+   "capital": "Khartoum",
+   "lng": 32.53,
+   "lat": 15.6,
+   "pop": 50467278,
+   "cdr": 6.0,
+   "deaths": 302804
+  },
+  {
+   "name": "Afghanistan",
+   "gec": "south-asia_af",
+   "capital": "Kabul",
+   "lng": 69.18,
+   "lat": 34.52,
+   "pop": 49474805,
+   "cdr": 5.79,
+   "deaths": 286459
+  },
+  {
+   "name": "Kenya",
+   "gec": "africa_ke",
+   "capital": "Nairobi",
+   "lng": 36.82,
+   "lat": -1.28,
+   "pop": 55751717,
+   "cdr": 4.72,
+   "deaths": 263148
+  },
+  {
+   "name": "Angola",
+   "gec": "africa_ao",
+   "capital": "Luanda",
+   "lng": 13.22,
+   "lat": -8.83,
+   "pop": 38984796,
+   "cdr": 6.73,
+   "deaths": 262368
+  },
+  {
+   "name": "Romania",
+   "gec": "europe_ro",
+   "capital": "Bucharest",
+   "lng": 26.1,
+   "lat": 44.43,
+   "pop": 18148155,
+   "cdr": 14.28,
+   "deaths": 259156
+  },
+  {
+   "name": "Niger",
+   "gec": "africa_ng",
+   "capital": "Niamey",
+   "lng": 2.12,
+   "lat": 13.52,
+   "pop": 27322555,
+   "cdr": 9.24,
+   "deaths": 252460
+  },
+  {
+   "name": "Morocco",
+   "gec": "africa_mo",
+   "capital": "Rabat",
+   "lng": -6.82,
+   "lat": 34.02,
+   "pop": 37387585,
+   "cdr": 6.66,
+   "deaths": 249001
+  },
+  {
+   "name": "North Korea",
+   "gec": "east-n-southeast-asia_kn",
+   "capital": "Pyongyang",
+   "lng": 125.75,
+   "lat": 39.02,
+   "pop": 26402841,
+   "cdr": 9.01,
+   "deaths": 237890
+  },
+  {
+   "name": "Uganda",
+   "gec": "africa_ug",
+   "capital": "Kampala",
+   "lng": 32.55,
+   "lat": 0.32,
+   "pop": 50863850,
+   "cdr": 4.61,
+   "deaths": 234482
+  },
+  {
+   "name": "Somalia",
+   "gec": "africa_so",
+   "capital": "Mogadishu",
+   "lng": 45.33,
+   "lat": 2.07,
+   "pop": 20324160,
+   "cdr": 11.22,
+   "deaths": 228037
+  },
+  {
+   "name": "C&ocirc;te d'Ivoire",
+   "gec": "africa_iv",
+   "capital": "Yamoussoukro",
+   "lng": -5.27,
+   "lat": 6.82,
+   "pop": 31855971,
+   "cdr": 6.93,
+   "deaths": 220762
+  },
+  {
+   "name": "Yemen",
+   "gec": "middle-east_ym",
+   "capital": "Sanaa",
+   "lng": 44.2,
+   "lat": 15.35,
+   "pop": 34505496,
+   "cdr": 6.21,
+   "deaths": 214279
+  },
+  {
+   "name": "Cameroon",
+   "gec": "africa_cm",
+   "capital": "Yaounde",
+   "lng": 11.52,
+   "lat": 3.87,
+   "pop": 31518954,
+   "cdr": 6.73,
+   "deaths": 212123
+  },
+  {
+   "name": "Algeria",
+   "gec": "africa_ag",
+   "capital": "Algiers",
+   "lng": 3.05,
+   "lat": 36.75,
+   "pop": 47735685,
+   "cdr": 4.39,
+   "deaths": 209560
+  },
+  {
+   "name": "Venezuela",
+   "gec": "south-america_ve",
+   "capital": "Caracas",
+   "lng": -66.87,
+   "lat": 10.48,
+   "pop": 31755435,
+   "cdr": 6.54,
+   "deaths": 207681
+  },
+  {
+   "name": "Ghana",
+   "gec": "africa_gh",
+   "capital": "Accra",
+   "lng": -0.22,
+   "lat": 5.55,
+   "pop": 35336133,
+   "cdr": 5.73,
+   "deaths": 202476
+  },
+  {
+   "name": "Malaysia",
+   "gec": "east-n-southeast-asia_my",
+   "capital": "Kuala Lumpur",
+   "lng": 101.7,
+   "lat": 3.17,
+   "pop": 34905275,
+   "cdr": 5.8,
+   "deaths": 202451
+  },
+  {
+   "name": "Taiwan",
+   "gec": "east-n-southeast-asia_tw",
+   "capital": "Taipei",
+   "lng": 121.52,
+   "lat": 25.03,
+   "pop": 23600776,
+   "cdr": 8.18,
+   "deaths": 193054
+  },
+  {
+   "name": "Australia",
+   "gec": "australia-oceania_as",
+   "capital": "Canberra",
+   "lng": 149.13,
+   "lat": -35.27,
+   "pop": 27490921,
+   "cdr": 6.81,
+   "deaths": 187213
+  },
+  {
+   "name": "Madagascar",
+   "gec": "africa_ma",
+   "capital": "Antananarivo",
+   "lng": 47.52,
+   "lat": -18.92,
+   "pop": 31345040,
+   "cdr": 5.95,
+   "deaths": 186503
+  },
+  {
+   "name": "Uzbekistan",
+   "gec": "central-asia_uz",
+   "capital": "Tashkent",
+   "lng": 69.25,
+   "lat": 41.32,
+   "pop": 37015151,
+   "cdr": 5.0,
+   "deaths": 185076
+  },
+  {
+   "name": "Mali",
+   "gec": "africa_ml",
+   "capital": "Bamako",
+   "lng": -8.0,
+   "lat": 12.65,
+   "pop": 22634423,
+   "cdr": 7.87,
+   "deaths": 178133
+  },
+  {
+   "name": "Nepal",
+   "gec": "south-asia_np",
+   "capital": "Kathmandu",
+   "lng": 85.32,
+   "lat": 27.72,
+   "pop": 31334402,
+   "cdr": 5.62,
+   "deaths": 176099
+  },
+  {
+   "name": "Netherlands",
+   "gec": "europe_nl",
+   "capital": "Amsterdam",
+   "lng": 4.92,
+   "lat": 52.35,
+   "pop": 17833885,
+   "cdr": 9.7,
+   "deaths": 172989
+  },
+  {
+   "name": "Chad",
+   "gec": "africa_cd",
+   "capital": "N'Djamena",
+   "lng": 15.03,
+   "lat": 12.1,
+   "pop": 19674004,
+   "cdr": 8.75,
+   "deaths": 172148
+  },
+  {
+   "name": "Burkina Faso",
+   "gec": "africa_uv",
+   "capital": "Ouagadougou",
+   "lng": -1.52,
+   "lat": 12.37,
+   "pop": 23490300,
+   "cdr": 7.24,
+   "deaths": 170070
+  },
+  {
+   "name": "Sri Lanka",
+   "gec": "south-asia_ce",
+   "capital": "Colombo",
+   "lng": 79.83,
+   "lat": 6.92,
+   "pop": 22050561,
+   "cdr": 7.65,
+   "deaths": 168687
+  },
+  {
+   "name": "Iraq",
+   "gec": "middle-east_iz",
+   "capital": "Baghdad",
+   "lng": 44.4,
+   "lat": 33.33,
+   "pop": 42917742,
+   "cdr": 3.86,
+   "deaths": 165662
+  },
+  {
+   "name": "Kazakhstan",
+   "gec": "central-asia_kz",
+   "capital": "Astana",
+   "lng": 71.42,
+   "lat": 51.17,
+   "pop": 20432662,
+   "cdr": 8.1,
+   "deaths": 165505
+  },
+  {
+   "name": "Hungary",
+   "gec": "europe_hu",
+   "capital": "Budapest",
+   "lng": 19.08,
+   "lat": 47.5,
+   "pop": 9855745,
+   "cdr": 14.41,
+   "deaths": 142021
+  },
+  {
+   "name": "Ecuador",
+   "gec": "south-america_ec",
+   "capital": "Quito",
+   "lng": -78.5,
+   "lat": -0.22,
+   "pop": 18479841,
+   "cdr": 7.12,
+   "deaths": 131576
+  },
+  {
+   "name": "Chile",
+   "gec": "south-america_ci",
+   "capital": "Santiago",
+   "lng": -70.67,
+   "lat": -33.45,
+   "pop": 19091343,
+   "cdr": 6.79,
+   "deaths": 129630
+  },
+  {
+   "name": "Saudi Arabia",
+   "gec": "middle-east_sa",
+   "capital": "Riyadh",
+   "lng": 46.7,
+   "lat": 24.65,
+   "pop": 36544431,
+   "cdr": 3.51,
+   "deaths": 128271
+  },
+  {
+   "name": "Czechia",
+   "gec": "europe_ez",
+   "capital": "Prague",
+   "lng": 14.47,
+   "lat": 50.08,
+   "pop": 10838703,
+   "cdr": 11.82,
+   "deaths": 128113
+  },
+  {
+   "name": "Greece",
+   "gec": "europe_gr",
+   "capital": "Athens",
+   "lng": 23.73,
+   "lat": 37.98,
+   "pop": 10424536,
+   "cdr": 11.99,
+   "deaths": 124990
+  },
+  {
+   "name": "Belarus",
+   "gec": "europe_bo",
+   "capital": "Minsk",
+   "lng": 27.57,
+   "lat": 53.9,
+   "pop": 9460972,
+   "cdr": 13.21,
+   "deaths": 124979
+  },
+  {
+   "name": "Cuba",
+   "gec": "central-america-n-caribbean_cu",
+   "capital": "Havana",
+   "lng": -82.35,
+   "lat": 23.12,
+   "pop": 10059519,
+   "cdr": 11.42,
+   "deaths": 114880
+  },
+  {
+   "name": "Belgium",
+   "gec": "europe_be",
+   "capital": "Brussels",
+   "lng": 4.58,
+   "lat": 51.4,
+   "pop": 11960170,
+   "cdr": 9.55,
+   "deaths": 114220
+  },
+  {
+   "name": "Benin",
+   "gec": "africa_bn",
+   "capital": "Porto-Novo",
+   "lng": 2.62,
+   "lat": 6.48,
+   "pop": 15186090,
+   "cdr": 7.45,
+   "deaths": 113136
+  },
+  {
+   "name": "Zimbabwe",
+   "gec": "africa_zi",
+   "capital": "Harare",
+   "lng": 31.03,
+   "lat": -17.82,
+   "pop": 17472752,
+   "cdr": 6.4,
+   "deaths": 111826
+  },
+  {
+   "name": "Portugal",
+   "gec": "europe_po",
+   "capital": "Lisbon",
+   "lng": -9.13,
+   "lat": 38.72,
+   "pop": 10194277,
+   "cdr": 10.92,
+   "deaths": 111322
+  },
+  {
+   "name": "Guinea",
+   "gec": "africa_gv",
+   "capital": "Conakry",
+   "lng": -13.7,
+   "lat": 9.5,
+   "pop": 14374590,
+   "cdr": 7.69,
+   "deaths": 110541
+  },
+  {
+   "name": "South Sudan",
+   "gec": "africa_od",
+   "capital": "Juba",
+   "lng": 31.62,
+   "lat": 4.85,
+   "pop": 12703714,
+   "cdr": 8.65,
+   "deaths": 109887
+  },
+  {
+   "name": "Zambia",
+   "gec": "africa_za",
+   "capital": "Lusaka",
+   "lng": 28.28,
+   "lat": -15.42,
+   "pop": 22021971,
+   "cdr": 4.91,
+   "deaths": 108128
+  },
+  {
+   "name": "Sweden",
+   "gec": "europe_sw",
+   "capital": "Stockholm",
+   "lng": 18.05,
+   "lat": 59.33,
+   "pop": 10643745,
+   "cdr": 9.63,
+   "deaths": 102499
+  },
+  {
+   "name": "Serbia",
+   "gec": "europe_ri",
+   "capital": "Belgrade",
+   "lng": 20.5,
+   "lat": 44.83,
+   "pop": 6652212,
+   "cdr": 14.66,
+   "deaths": 97521
+  },
+  {
+   "name": "Cambodia",
+   "gec": "east-n-southeast-asia_cb",
+   "capital": "Phnom Penh",
+   "lng": 104.92,
+   "lat": 11.55,
+   "pop": 17230333,
+   "cdr": 5.62,
+   "deaths": 96834
+  },
+  {
+   "name": "Syria",
+   "gec": "middle-east_sy",
+   "capital": "Damascus",
+   "lng": 36.3,
+   "lat": 33.5,
+   "pop": 24261882,
+   "cdr": 3.97,
+   "deaths": 96320
+  },
+  {
+   "name": "Bulgaria",
+   "gec": "europe_bu",
+   "capital": "Sofia",
+   "lng": 23.32,
+   "lat": 42.68,
+   "pop": 6737997,
+   "cdr": 14.18,
+   "deaths": 95545
+  },
+  {
+   "name": "Austria",
+   "gec": "europe_au",
+   "capital": "Vienna",
+   "lng": 16.37,
+   "lat": 48.2,
+   "pop": 9174390,
+   "cdr": 10.21,
+   "deaths": 93671
+  },
+  {
+   "name": "Senegal",
+   "gec": "africa_sg",
+   "capital": "Dakar",
+   "lng": -17.63,
+   "lat": 14.73,
+   "pop": 18847519,
+   "cdr": 4.85,
+   "deaths": 91410
+  },
+  {
+   "name": "Guatemala",
+   "gec": "central-america-n-caribbean_gt",
+   "capital": "Guatemala City",
+   "lng": -90.52,
+   "lat": 14.62,
+   "pop": 18255216,
+   "cdr": 4.99,
+   "deaths": 91094
+  },
+  {
+   "name": "Haiti",
+   "gec": "central-america-n-caribbean_ha",
+   "capital": "Port-au-Prince",
+   "lng": -72.33,
+   "lat": 18.53,
+   "pop": 11898812,
+   "cdr": 7.0,
+   "deaths": 83292
+  },
+  {
+   "name": "Sierra Leone",
+   "gec": "africa_sl",
+   "capital": "Freetown",
+   "lng": -13.23,
+   "lat": 8.48,
+   "pop": 9331203,
+   "cdr": 8.8,
+   "deaths": 82115
+  },
+  {
+   "name": "Malawi",
+   "gec": "africa_mi",
+   "capital": "Lilongwe",
+   "lng": 33.78,
+   "lat": -13.97,
+   "pop": 21763309,
+   "cdr": 3.57,
+   "deaths": 77695
+  },
+  {
+   "name": "Switzerland",
+   "gec": "europe_sz",
+   "capital": "Bern",
+   "lng": 7.47,
+   "lat": 46.92,
+   "pop": 8925741,
+   "cdr": 8.61,
+   "deaths": 76851
+  },
+  {
+   "name": "Tunisia",
+   "gec": "africa_ts",
+   "capital": "Tunis",
+   "lng": 10.18,
+   "lat": 36.8,
+   "pop": 11962995,
+   "cdr": 6.4,
+   "deaths": 76563
+  },
+  {
+   "name": "The Dominican",
+   "gec": "central-america-n-caribbean_dr",
+   "capital": "Santo Domingo",
+   "lng": -69.9,
+   "lat": 18.47,
+   "pop": 10899292,
+   "cdr": 6.97,
+   "deaths": 75968
+  },
+  {
+   "name": "Burundi",
+   "gec": "africa_by",
+   "capital": "Gitega",
+   "lng": 29.92,
+   "lat": -3.42,
+   "pop": 13590102,
+   "cdr": 5.51,
+   "deaths": 74881
+  },
+  {
+   "name": "Bolivia",
+   "gec": "south-america_bl",
+   "capital": "La Paz",
+   "lng": -68.15,
+   "lat": -16.5,
+   "pop": 12436103,
+   "cdr": 5.99,
+   "deaths": 74492
+  },
+  {
+   "name": "Azerbaijan",
+   "gec": "central-asia_aj",
+   "capital": "Baku",
+   "lng": 49.87,
+   "lat": 40.38,
+   "pop": 10694370,
+   "cdr": 6.44,
+   "deaths": 68872
+  },
+  {
+   "name": "Rwanda",
+   "gec": "africa_rw",
+   "capital": "Kigali",
+   "lng": 30.05,
+   "lat": -1.95,
+   "pop": 13623302,
+   "cdr": 4.87,
+   "deaths": 66345
+  },
+  {
+   "name": "Denmark",
+   "gec": "europe_da",
+   "capital": "Copenhagen",
+   "lng": 12.58,
+   "lat": 55.67,
+   "pop": 6051491,
+   "cdr": 10.56,
+   "deaths": 63904
+  },
+  {
+   "name": "none",
+   "gec": "africa_ct",
+   "capital": "Bangui",
+   "lng": 18.58,
+   "lat": 4.37,
+   "pop": 5750570,
+   "cdr": 11.04,
+   "deaths": 63486
+  },
+  {
+   "name": "Georgia",
+   "gec": "central-asia_gg",
+   "capital": "Tbilisi",
+   "lng": 44.83,
+   "lat": 41.68,
+   "pop": 4900961,
+   "cdr": 12.89,
+   "deaths": 63173
+  },
+  {
+   "name": "Slovakia",
+   "gec": "europe_lo",
+   "capital": "Bratislava",
+   "lng": 17.12,
+   "lat": 48.15,
+   "pop": 5563649,
+   "cdr": 11.18,
+   "deaths": 62202
+  },
+  {
+   "name": "Finland",
+   "gec": "europe_fi",
+   "capital": "Helsinki",
+   "lng": 24.93,
+   "lat": 60.17,
+   "pop": 5550449,
+   "cdr": 11.01,
+   "deaths": 61110
+  },
+  {
+   "name": "Hong Kong",
+   "gec": "east-n-southeast-asia_hk",
+   "capital": null,
+   "lng": null,
+   "lat": null,
+   "pop": 7305556,
+   "cdr": 8.16,
+   "deaths": 59613
+  },
+  {
+   "name": "Papua New Guinea",
+   "gec": "east-n-southeast-asia_pp",
+   "capital": "Port Moresby",
+   "lng": 147.18,
+   "lat": -9.45,
+   "pop": 10273996,
+   "cdr": 5.36,
+   "deaths": 55069
+  },
+  {
+   "name": "Croatia",
+   "gec": "europe_hr",
+   "capital": "Zagreb",
+   "lng": 16.0,
+   "lat": 45.8,
+   "pop": 4071208,
+   "cdr": 12.87,
+   "deaths": 52396
+  },
+  {
+   "name": "Moldova",
+   "gec": "europe_md",
+   "capital": "Chisinau in Romanian",
+   "lng": 28.85,
+   "lat": 47.0,
+   "pop": 3578930,
+   "cdr": 14.06,
+   "deaths": 50320
+  },
+  {
+   "name": "Laos",
+   "gec": "east-n-southeast-asia_la",
+   "capital": "Vientiane",
+   "lng": 102.6,
+   "lat": 17.97,
+   "pop": 7953556,
+   "cdr": 6.07,
+   "deaths": 48278
+  },
+  {
+   "name": "Norway",
+   "gec": "europe_no",
+   "capital": "Oslo",
+   "lng": 10.75,
+   "lat": 59.92,
+   "pop": 5509733,
+   "cdr": 8.6,
+   "deaths": 47384
+  },
+  {
+   "name": "Tajikistan",
+   "gec": "central-asia_ti",
+   "capital": "Dushanbe",
+   "lng": 68.77,
+   "lat": 38.55,
+   "pop": 10593876,
+   "cdr": 4.45,
+   "deaths": 47143
+  },
+  {
+   "name": "Honduras",
+   "gec": "central-america-n-caribbean_ho",
+   "capital": "Tegucigalpa",
+   "lng": -87.22,
+   "lat": 14.1,
+   "pop": 9529188,
+   "cdr": 4.9,
+   "deaths": 46693
+  },
+  {
+   "name": "Israel",
+   "gec": "middle-east_is",
+   "capital": "Jerusalem",
+   "lng": 35.23,
+   "lat": 31.77,
+   "pop": 9402617,
+   "cdr": 4.89,
+   "deaths": 45979
+  },
+  {
+   "name": "Liberia",
+   "gec": "africa_li",
+   "capital": "Monrovia",
+   "lng": -10.8,
+   "lat": 6.3,
+   "pop": 5563541,
+   "cdr": 8.17,
+   "deaths": 45454
+  },
+  {
+   "name": "Bosnia and Herzegovina",
+   "gec": "europe_bk",
+   "capital": "Sarajevo",
+   "lng": 18.42,
+   "lat": 43.87,
+   "pop": 3653499,
+   "cdr": 12.29,
+   "deaths": 44902
+  },
+  {
+   "name": "Togo",
+   "gec": "africa_to",
+   "capital": "Lome",
+   "lng": 1.22,
+   "lat": 6.12,
+   "pop": 9143439,
+   "cdr": 4.64,
+   "deaths": 42426
+  },
+  {
+   "name": "Eritrea",
+   "gec": "africa_er",
+   "capital": "Asmara",
+   "lng": 38.93,
+   "lat": 15.33,
+   "pop": 6416435,
+   "cdr": 6.43,
+   "deaths": 41258
+  },
+  {
+   "name": "Lithuania",
+   "gec": "europe_lh",
+   "capital": "Vilnius",
+   "lng": 25.32,
+   "lat": 54.68,
+   "pop": 2815687,
+   "cdr": 14.1,
+   "deaths": 39701
+  },
+  {
+   "name": "Jordan",
+   "gec": "middle-east_jo",
+   "capital": "Amman",
+   "lng": 35.93,
+   "lat": 31.95,
+   "pop": 11312507,
+   "cdr": 3.5,
+   "deaths": 39594
+  },
+  {
+   "name": "Ireland",
+   "gec": "europe_ei",
+   "capital": "Dublin",
+   "lng": -6.23,
+   "lat": 53.32,
+   "pop": 5233461,
+   "cdr": 7.43,
+   "deaths": 38885
+  },
+  {
+   "name": "Paraguay",
+   "gec": "south-america_pa",
+   "capital": "Asunci&oacute",
+   "lng": -57.67,
+   "lat": -25.27,
+   "pop": 7604044,
+   "cdr": 4.97,
+   "deaths": 37792
+  },
+  {
+   "name": "El Salvador",
+   "gec": "central-america-n-caribbean_es",
+   "capital": "San Salvador",
+   "lng": -89.2,
+   "lat": 13.7,
+   "pop": 6334723,
+   "cdr": 5.93,
+   "deaths": 37565
+  },
+  {
+   "name": "Kyrgyzstan",
+   "gec": "central-asia_kg",
+   "capital": "Bishkek",
+   "lng": 74.6,
+   "lat": 42.87,
+   "pop": 6219751,
+   "cdr": 5.99,
+   "deaths": 37256
+  },
+  {
+   "name": "New Zealand",
+   "gec": "australia-oceania_nz",
+   "capital": "Wellington",
+   "lng": 174.78,
+   "lat": -41.3,
+   "pop": 5161211,
+   "cdr": 6.93,
+   "deaths": 35767
+  },
+  {
+   "name": "Nicaragua",
+   "gec": "central-america-n-caribbean_nu",
+   "capital": "Managua",
+   "lng": -86.25,
+   "lat": 12.13,
+   "pop": 6739380,
+   "cdr": 5.14,
+   "deaths": 34640
+  },
+  {
+   "name": "Turkmenistan",
+   "gec": "central-asia_tx",
+   "capital": "Ashgabat",
+   "lng": 58.38,
+   "lat": 37.95,
+   "pop": 5744151,
+   "cdr": 5.99,
+   "deaths": 34407
+  },
+  {
+   "name": "Uruguay",
+   "gec": "south-america_uy",
+   "capital": "Montevideo",
+   "lng": -56.17,
+   "lat": -34.85,
+   "pop": 3449444,
+   "cdr": 9.88,
+   "deaths": 34081
+  },
+  {
+   "name": "Lebanon",
+   "gec": "middle-east_le",
+   "capital": "Beirut",
+   "lng": 35.5,
+   "lat": 33.87,
+   "pop": 5364482,
+   "cdr": 6.23,
+   "deaths": 33421
+  },
+  {
+   "name": "Puerto Rico",
+   "gec": "central-america-n-caribbean_rq",
+   "capital": "San Juan",
+   "lng": -66.12,
+   "lat": 18.47,
+   "pop": 2984841,
+   "cdr": 10.48,
+   "deaths": 31281
+  },
+  {
+   "name": "Armenia",
+   "gec": "central-asia_am",
+   "capital": "Yerevan",
+   "lng": 44.5,
+   "lat": 40.17,
+   "pop": 2963837,
+   "cdr": 9.6,
+   "deaths": 28453
+  },
+  {
+   "name": "Congo (Brazzaville)",
+   "gec": "africa_cf",
+   "capital": "Brazzaville",
+   "lng": 15.28,
+   "lat": -4.25,
+   "pop": 6097665,
+   "cdr": 4.64,
+   "deaths": 28293
+  },
+  {
+   "name": "Costa Rica",
+   "gec": "central-america-n-caribbean_cs",
+   "capital": "San Jos&eacute",
+   "lng": -84.08,
+   "lat": 9.93,
+   "pop": 5304932,
+   "cdr": 5.24,
+   "deaths": 27798
+  },
+  {
+   "name": "Latvia",
+   "gec": "europe_lg",
+   "capital": "Riga",
+   "lng": 24.1,
+   "lat": 56.95,
+   "pop": 1888439,
+   "cdr": 14.68,
+   "deaths": 27722
+  },
+  {
+   "name": "Mauritania",
+   "gec": "africa_mr",
+   "capital": "Nouakchott",
+   "lng": -15.97,
+   "lat": 18.07,
+   "pop": 5202109,
+   "cdr": 5.18,
+   "deaths": 26947
+  },
+  {
+   "name": "Singapore",
+   "gec": "east-n-southeast-asia_sn",
+   "capital": "Singapore",
+   "lng": 103.85,
+   "lat": 1.28,
+   "pop": 6080545,
+   "cdr": 4.38,
+   "deaths": 26633
+  },
+  {
+   "name": "Libya",
+   "gec": "africa_ly",
+   "capital": "Tripoli",
+   "lng": 13.17,
+   "lat": 32.88,
+   "pop": 7361263,
+   "cdr": 3.48,
+   "deaths": 25617
+  },
+  {
+   "name": "Panama",
+   "gec": "central-america-n-caribbean_pm",
+   "capital": "Panama City",
+   "lng": -79.53,
+   "lat": 8.97,
+   "pop": 4536008,
+   "cdr": 5.48,
+   "deaths": 24857
+  },
+  {
+   "name": "Slovenia",
+   "gec": "europe_si",
+   "capital": "Ljubljana",
+   "lng": 14.52,
+   "lat": 46.05,
+   "pop": 2097893,
+   "cdr": 11.2,
+   "deaths": 23496
+  },
+  {
+   "name": "Lesotho",
+   "gec": "africa_lt",
+   "capital": "Maseru",
+   "lng": 27.48,
+   "lat": -29.32,
+   "pop": 2222962,
+   "cdr": 10.2,
+   "deaths": 22674
+  },
+  {
+   "name": "Jamaica",
+   "gec": "central-america-n-caribbean_jm",
+   "capital": "Kingston",
+   "lng": -76.8,
+   "lat": 18.0,
+   "pop": 2938503,
+   "cdr": 7.37,
+   "deaths": 21657
+  },
+  {
+   "name": "North Macedonia",
+   "gec": "europe_mk",
+   "capital": "Skopje",
+   "lng": 21.43,
+   "lat": 42.0,
+   "pop": 2137556,
+   "cdr": 9.62,
+   "deaths": 20563
+  },
+  {
+   "name": "Albania",
+   "gec": "europe_al",
+   "capital": "Tirana",
+   "lng": 19.82,
+   "lat": 41.32,
+   "pop": 2551837,
+   "cdr": 7.9,
+   "deaths": 20160
+  },
+  {
+   "name": "Namibia",
+   "gec": "africa_wa",
+   "capital": "Windhoek",
+   "lng": 17.08,
+   "lat": -22.57,
+   "pop": 2852777,
+   "cdr": 6.36,
+   "deaths": 18144
+  },
+  {
+   "name": "Mongolia",
+   "gec": "east-n-southeast-asia_mg",
+   "capital": "Ulaanbaatar",
+   "lng": 106.92,
+   "lat": 47.92,
+   "pop": 3281676,
+   "cdr": 5.35,
+   "deaths": 17557
+  },
+  {
+   "name": "none",
+   "gec": "middle-east_ae",
+   "capital": "Abu Dhabi",
+   "lng": 54.37,
+   "lat": 24.47,
+   "pop": 10093593,
+   "cdr": 1.73,
+   "deaths": 17462
+  },
+  {
+   "name": "Botswana",
+   "gec": "africa_bc",
+   "capital": "Gaborone",
+   "lng": 25.9,
+   "lat": -24.63,
+   "pop": 2521534,
+   "cdr": 6.8,
+   "deaths": 17146
+  },
+  {
+   "name": "Estonia",
+   "gec": "europe_en",
+   "capital": "Tallinn",
+   "lng": 24.72,
+   "lat": 59.43,
+   "pop": 1340478,
+   "cdr": 12.57,
+   "deaths": 16850
+  },
+  {
+   "name": "Equatorial Guinea",
+   "gec": "africa_ek",
+   "capital": "Malabo",
+   "lng": 8.78,
+   "lat": 3.75,
+   "pop": 1795834,
+   "cdr": 8.81,
+   "deaths": 15821
+  },
+  {
+   "name": "Guinea-Bissau",
+   "gec": "africa_pu",
+   "capital": "Bissau",
+   "lng": -15.58,
+   "lat": 11.85,
+   "pop": 2132325,
+   "cdr": 6.99,
+   "deaths": 14905
+  },
+  {
+   "name": "The Gambia",
+   "gec": "africa_ga",
+   "capital": "Banjul",
+   "lng": -16.57,
+   "lat": 13.45,
+   "pop": 2523327,
+   "cdr": 5.53,
+   "deaths": 13954
+  },
+  {
+   "name": "Gabon",
+   "gec": "africa_gb",
+   "capital": "Libreville",
+   "lng": 9.45,
+   "lat": 0.38,
+   "pop": 2513738,
+   "cdr": 5.44,
+   "deaths": 13675
+  },
+  {
+   "name": "Kosovo",
+   "gec": "europe_kv",
+   "capital": "Pristina",
+   "lng": 21.17,
+   "lat": 42.67,
+   "pop": 1977093,
+   "cdr": 6.88,
+   "deaths": 13602
+  },
+  {
+   "name": "Oman",
+   "gec": "middle-east_mu",
+   "capital": "Muscat",
+   "lng": 58.58,
+   "lat": 23.62,
+   "pop": 3969824,
+   "cdr": 3.17,
+   "deaths": 12584
+  },
+  {
+   "name": "Trinidad and Tobago",
+   "gec": "central-america-n-caribbean_td",
+   "capital": "Port of Spain",
+   "lng": -61.52,
+   "lat": 10.65,
+   "pop": 1410170,
+   "cdr": 8.69,
+   "deaths": 12254
+  },
+  {
+   "name": "Mauritius",
+   "gec": "africa_mp",
+   "capital": "Port Louis",
+   "lng": 57.48,
+   "lat": -20.15,
+   "pop": 1311375,
+   "cdr": 9.14,
+   "deaths": 11986
+  },
+  {
+   "name": "West Bank",
+   "gec": "middle-east_we",
+   "capital": null,
+   "lng": null,
+   "lat": null,
+   "pop": 3310554,
+   "cdr": 3.2,
+   "deaths": 10594
+  },
+  {
+   "name": "Timor-Leste",
+   "gec": "east-n-southeast-asia_tt",
+   "capital": "Dili",
+   "lng": 125.6,
+   "lat": -8.58,
+   "pop": 1404785,
+   "cdr": 6.86,
+   "deaths": 9637
+  },
+  {
+   "name": "Cyprus",
+   "gec": "europe_cy",
+   "capital": "Nicosia",
+   "lng": 33.37,
+   "lat": 35.17,
+   "pop": 1332293,
+   "cdr": 7.11,
+   "deaths": 9473
+  },
+  {
+   "name": "Eswatini",
+   "gec": "africa_wz",
+   "capital": "Mbabane",
+   "lng": 31.13,
+   "lat": -26.32,
+   "pop": 1137268,
+   "cdr": 8.3,
+   "deaths": 9439
+  },
+  {
+   "name": "Kuwait",
+   "gec": "middle-east_ku",
+   "capital": "Kuwait City",
+   "lng": 47.97,
+   "lat": 29.37,
+   "pop": 3172511,
+   "cdr": 2.3,
+   "deaths": 7297
+  },
+  {
+   "name": "Djibouti",
+   "gec": "africa_dj",
+   "capital": "Djibouti",
+   "lng": 43.15,
+   "lat": 11.58,
+   "pop": 1013703,
+   "cdr": 7.0,
+   "deaths": 7096
+  },
+  {
+   "name": "Fiji",
+   "gec": "australia-oceania_fj",
+   "capital": "Suva",
+   "lng": 178.42,
+   "lat": -18.13,
+   "pop": 951611,
+   "cdr": 6.58,
+   "deaths": 6262
+  },
+  {
+   "name": "Montenegro",
+   "gec": "europe_mj",
+   "capital": "Podgorica",
+   "lng": 19.27,
+   "lat": 42.43,
+   "pop": 599849,
+   "cdr": 10.29,
+   "deaths": 6172
+  },
+  {
+   "name": "Gaza, Gaza Strip",
+   "gec": "middle-east_gz",
+   "capital": null,
+   "lng": null,
+   "lat": null,
+   "pop": 2184652,
+   "cdr": 2.77,
+   "deaths": 6051
+  },
+  {
+   "name": "Comoros",
+   "gec": "africa_cn",
+   "capital": "Moroni",
+   "lng": 43.23,
+   "lat": -11.7,
+   "pop": 911707,
+   "cdr": 6.38,
+   "deaths": 5817
+  },
+  {
+   "name": "Guyana",
+   "gec": "south-america_gy",
+   "capital": "Georgetown",
+   "lng": -58.15,
+   "lat": 6.8,
+   "pop": 794099,
+   "cdr": 7.05,
+   "deaths": 5598
+  },
+  {
+   "name": "Bhutan",
+   "gec": "south-asia_bt",
+   "capital": "Thimphu",
+   "lng": 89.63,
+   "lat": 27.47,
+   "pop": 892877,
+   "cdr": 5.75,
+   "deaths": 5134
+  },
+  {
+   "name": "Western Sahara",
+   "gec": "africa_wi",
+   "capital": null,
+   "lng": null,
+   "lat": null,
+   "pop": 652271,
+   "cdr": 7.7,
+   "deaths": 5022
+  },
+  {
+   "name": "Malta",
+   "gec": "europe_mt",
+   "capital": "Valletta",
+   "lng": 14.5,
+   "lat": 35.88,
+   "pop": 521828,
+   "cdr": 8.65,
+   "deaths": 4514
+  },
+  {
+   "name": "Bahrain",
+   "gec": "middle-east_ba",
+   "capital": "Manama",
+   "lng": 50.57,
+   "lat": 26.23,
+   "pop": 1566888,
+   "cdr": 2.86,
+   "deaths": 4481
+  },
+  {
+   "name": "Luxembourg",
+   "gec": "europe_lu",
+   "capital": "Luxembourg",
+   "lng": 6.12,
+   "lat": 49.6,
+   "pop": 671254,
+   "cdr": 6.66,
+   "deaths": 4471
+  },
+  {
+   "name": "Suriname",
+   "gec": "south-america_ns",
+   "capital": "Paramaribo",
+   "lng": -55.17,
+   "lat": 5.83,
+   "pop": 653605,
+   "cdr": 6.74,
+   "deaths": 4405
+  },
+  {
+   "name": "Qatar",
+   "gec": "middle-east_qa",
+   "capital": "Doha",
+   "lng": 51.53,
+   "lat": 25.28,
+   "pop": 2568426,
+   "cdr": 1.42,
+   "deaths": 3647
+  },
+  {
+   "name": "Barbados",
+   "gec": "central-america-n-caribbean_bb",
+   "capital": "Bridgetown",
+   "lng": -59.62,
+   "lat": 13.1,
+   "pop": 304139,
+   "cdr": 11.96,
+   "deaths": 3638
+  },
+  {
+   "name": "Cabo Verde",
+   "gec": "africa_cv",
+   "capital": "Praia",
+   "lng": -23.52,
+   "lat": 14.92,
+   "pop": 611014,
+   "cdr": 5.73,
+   "deaths": 3501
+  },
+  {
+   "name": "Macau",
+   "gec": "east-n-southeast-asia_mc",
+   "capital": null,
+   "lng": null,
+   "lat": null,
+   "pop": 644426,
+   "cdr": 5.02,
+   "deaths": 3235
+  },
+  {
+   "name": "Solomon Islands",
+   "gec": "australia-oceania_bp",
+   "capital": "Honiara",
+   "lng": 159.95,
+   "lat": -9.43,
+   "pop": 738774,
+   "cdr": 3.94,
+   "deaths": 2911
+  },
+  {
+   "name": "Iceland",
+   "gec": "europe_ic",
+   "capital": "Reykjavik",
+   "lng": -21.95,
+   "lat": 64.15,
+   "pop": 364036,
+   "cdr": 6.62,
+   "deaths": 2410
+  },
+  {
+   "name": "The Bahamas",
+   "gec": "central-america-n-caribbean_bf",
+   "capital": "Nassau",
+   "lng": -77.35,
+   "lat": 25.08,
+   "pop": 415306,
+   "cdr": 5.44,
+   "deaths": 2259
+  },
+  {
+   "name": "Belize",
+   "gec": "central-america-n-caribbean_bh",
+   "capital": "Belmopan",
+   "lng": -88.77,
+   "lat": 17.25,
+   "pop": 421960,
+   "cdr": 4.87,
+   "deaths": 2055
+  },
+  {
+   "name": "Brunei",
+   "gec": "east-n-southeast-asia_bx",
+   "capital": "Bandar Seri Begawan",
+   "lng": 114.93,
+   "lat": 4.88,
+   "pop": 491900,
+   "cdr": 3.96,
+   "deaths": 1948
+  },
+  {
+   "name": "New Caledonia",
+   "gec": "australia-oceania_nc",
+   "capital": "Noumea",
+   "lng": 166.45,
+   "lat": -22.27,
+   "pop": 307612,
+   "cdr": 6.0,
+   "deaths": 1846
+  },
+  {
+   "name": "French Polynesia",
+   "gec": "australia-oceania_fp",
+   "capital": "Papeete",
+   "lng": -149.57,
+   "lat": -17.53,
+   "pop": 305507,
+   "cdr": 5.84,
+   "deaths": 1784
+  },
+  {
+   "name": "Maldives",
+   "gec": "south-asia_mv",
+   "capital": "Mal&eacute",
+   "lng": 73.5,
+   "lat": 4.17,
+   "pop": 388858,
+   "cdr": 4.3,
+   "deaths": 1672
+  },
+  {
+   "name": "Saint Lucia",
+   "gec": "central-america-n-caribbean_st",
+   "capital": "Castries",
+   "lng": -61.0,
+   "lat": 14.0,
+   "pop": 168462,
+   "cdr": 8.41,
+   "deaths": 1417
+  },
+  {
+   "name": "Curacao",
+   "gec": "central-america-n-caribbean_uc",
+   "capital": "Willemstad",
+   "lng": -68.92,
+   "lat": 12.1,
+   "pop": 153289,
+   "cdr": 8.91,
+   "deaths": 1366
+  },
+  {
+   "name": "Sao Tome and Principe",
+   "gec": "africa_tp",
+   "capital": "Sao Tome",
+   "lng": 6.73,
+   "lat": 0.33,
+   "pop": 223561,
+   "cdr": 5.84,
+   "deaths": 1306
+  },
+  {
+   "name": "Vanuatu",
+   "gec": "australia-oceania_nh",
+   "capital": "Port-Vila",
+   "lng": 168.32,
+   "lat": -17.73,
+   "pop": 318007,
+   "cdr": 4.02,
+   "deaths": 1278
+  },
+  {
+   "name": "Samoa",
+   "gec": "australia-oceania_ws",
+   "capital": "Apia",
+   "lng": -171.77,
+   "lat": -13.82,
+   "pop": 210223,
+   "cdr": 5.41,
+   "deaths": 1137
+  },
+  {
+   "name": "Aruba",
+   "gec": "central-america-n-caribbean_aa",
+   "capital": "Oranjestad",
+   "lng": -70.03,
+   "lat": 12.52,
+   "pop": 125063,
+   "cdr": 8.85,
+   "deaths": 1107
+  },
+  {
+   "name": "Guam",
+   "gec": "australia-oceania_gq",
+   "capital": "Hagatna",
+   "lng": 144.73,
+   "lat": 13.47,
+   "pop": 169532,
+   "cdr": 6.18,
+   "deaths": 1048
+  },
+  {
+   "name": "Virgin Islands",
+   "gec": "central-america-n-caribbean_vq",
+   "capital": "Charlotte Amalie",
+   "lng": -64.93,
+   "lat": 18.35,
+   "pop": 103792,
+   "cdr": 9.43,
+   "deaths": 979
+  },
+  {
+   "name": "Grenada",
+   "gec": "central-america-n-caribbean_gj",
+   "capital": "Saint George's",
+   "lng": -61.75,
+   "lat": 12.05,
+   "pop": 114621,
+   "cdr": 8.41,
+   "deaths": 964
+  },
+  {
+   "name": "Isle of Man",
+   "gec": "europe_im",
+   "capital": "Douglas",
+   "lng": -4.48,
+   "lat": 54.15,
+   "pop": 92666,
+   "cdr": 10.2,
+   "deaths": 945
+  },
+  {
+   "name": "Jersey",
+   "gec": "europe_je",
+   "capital": "Saint Helier",
+   "lng": -2.1,
+   "lat": 49.18,
+   "pop": 103944,
+   "cdr": 7.8,
+   "deaths": 811
+  },
+  {
+   "name": "Kiribati",
+   "gec": "australia-oceania_kr",
+   "capital": "Tarawa",
+   "lng": 173.03,
+   "lat": 1.35,
+   "pop": 116545,
+   "cdr": 6.88,
+   "deaths": 802
+  },
+  {
+   "name": "Saint Vincent and the Grenadines",
+   "gec": "central-america-n-caribbean_vc",
+   "capital": "Kingstown",
+   "lng": -61.22,
+   "lat": 13.13,
+   "pop": 100647,
+   "cdr": 7.75,
+   "deaths": 780
+  },
+  {
+   "name": "Andorra",
+   "gec": "europe_an",
+   "capital": "Andorra la Vella",
+   "lng": 1.52,
+   "lat": 42.5,
+   "pop": 85370,
+   "cdr": 8.14,
+   "deaths": 695
+  },
+  {
+   "name": "Seychelles",
+   "gec": "africa_se",
+   "capital": "Victoria",
+   "lng": 55.45,
+   "lat": -4.62,
+   "pop": 98187,
+   "cdr": 7.02,
+   "deaths": 689
+  },
+  {
+   "name": "Bermuda",
+   "gec": "north-america_bd",
+   "capital": "Hamilton",
+   "lng": -64.78,
+   "lat": 32.28,
+   "pop": 72800,
+   "cdr": 9.4,
+   "deaths": 684
+  },
+  {
+   "name": "Guernsey",
+   "gec": "europe_gk",
+   "capital": "Saint Peter Port",
+   "lng": -2.53,
+   "lat": 49.45,
+   "pop": 67923,
+   "cdr": 9.19,
+   "deaths": 624
+  },
+  {
+   "name": "Dominica",
+   "gec": "central-america-n-caribbean_do",
+   "capital": "Roseau",
+   "lng": -61.4,
+   "lat": 15.3,
+   "pop": 74661,
+   "cdr": 8.15,
+   "deaths": 608
+  },
+  {
+   "name": "Antigua and Barbuda",
+   "gec": "central-america-n-caribbean_ac",
+   "capital": "Saint John's",
+   "lng": -61.85,
+   "lat": 17.12,
+   "pop": 102634,
+   "cdr": 5.77,
+   "deaths": 592
+  },
+  {
+   "name": "Greenland",
+   "gec": "north-america_gl",
+   "capital": "Nuuk",
+   "lng": -51.75,
+   "lat": 64.18,
+   "pop": 57751,
+   "cdr": 9.29,
+   "deaths": 537
+  },
+  {
+   "name": "Tonga",
+   "gec": "australia-oceania_tn",
+   "capital": "Nuku'alofa",
+   "lng": -175.2,
+   "lat": -21.13,
+   "pop": 104519,
+   "cdr": 4.98,
+   "deaths": 521
+  },
+  {
+   "name": "Faroe Islands",
+   "gec": "europe_fo",
+   "capital": "Torshavn",
+   "lng": -6.77,
+   "lat": 62.0,
+   "pop": 52933,
+   "cdr": 8.58,
+   "deaths": 454
+  },
+  {
+   "name": "none",
+   "gec": "australia-oceania_fm",
+   "capital": "Palikir",
+   "lng": 158.15,
+   "lat": 6.92,
+   "pop": 99603,
+   "cdr": 4.23,
+   "deaths": 421
+  },
+  {
+   "name": "Cayman Islands",
+   "gec": "central-america-n-caribbean_cj",
+   "capital": "George Town",
+   "lng": -81.38,
+   "lat": 19.3,
+   "pop": 66653,
+   "cdr": 6.24,
+   "deaths": 416
+  },
+  {
+   "name": "Saint Kitts and Nevis",
+   "gec": "central-america-n-caribbean_sc",
+   "capital": "Basseterre",
+   "lng": -62.72,
+   "lat": 17.3,
+   "pop": 55434,
+   "cdr": 7.43,
+   "deaths": 412
+  },
+  {
+   "name": "Monaco",
+   "gec": "europe_mn",
+   "capital": "Monaco",
+   "lng": 7.42,
+   "lat": 43.73,
+   "pop": 32047,
+   "cdr": 11.36,
+   "deaths": 364
+  },
+  {
+   "name": "Marshall Islands",
+   "gec": "australia-oceania_rm",
+   "capital": "Majuro",
+   "lng": 171.38,
+   "lat": 7.1,
+   "pop": 82011,
+   "cdr": 4.37,
+   "deaths": 358
+  },
+  {
+   "name": "Liechtenstein",
+   "gec": "europe_ls",
+   "capital": "Vaduz",
+   "lng": 9.52,
+   "lat": 47.13,
+   "pop": 40547,
+   "cdr": 8.24,
+   "deaths": 334
+  },
+  {
+   "name": "San Marino",
+   "gec": "europe_sm",
+   "capital": "San Marino",
+   "lng": 12.42,
+   "lat": 43.93,
+   "pop": 35291,
+   "cdr": 8.9,
+   "deaths": 314
+  },
+  {
+   "name": "Sint Maarten",
+   "gec": "central-america-n-caribbean_nn",
+   "capital": "Philipsburg",
+   "lng": -63.03,
+   "lat": 18.02,
+   "pop": 46738,
+   "cdr": 6.59,
+   "deaths": 308
+  },
+  {
+   "name": "Northern Mariana Islands",
+   "gec": "australia-oceania_cq",
+   "capital": "Saipan",
+   "lng": 145.75,
+   "lat": 15.2,
+   "pop": 51118,
+   "cdr": 5.91,
+   "deaths": 302
+  },
+  {
+   "name": "American Samoa",
+   "gec": "australia-oceania_aq",
+   "capital": "Pago Pago",
+   "lng": -170.7,
+   "lat": -14.27,
+   "pop": 43268,
+   "cdr": 6.4,
+   "deaths": 277
+  },
+  {
+   "name": "Gibraltar",
+   "gec": "europe_gi",
+   "capital": "Gibraltar",
+   "lng": -5.35,
+   "lat": 36.13,
+   "pop": 29733,
+   "cdr": 8.71,
+   "deaths": 259
+  },
+  {
+   "name": "British Virgin Islands",
+   "gec": "central-america-n-caribbean_vi",
+   "capital": "Road Town",
+   "lng": -64.62,
+   "lat": 18.42,
+   "pop": 40102,
+   "cdr": 5.58,
+   "deaths": 224
+  },
+  {
+   "name": "Turks and Caicos Islands",
+   "gec": "central-america-n-caribbean_tk",
+   "capital": "Grand Turk",
+   "lng": -71.13,
+   "lat": 21.47,
+   "pop": 60439,
+   "cdr": 3.59,
+   "deaths": 217
+  },
+  {
+   "name": "Palau",
+   "gec": "australia-oceania_ps",
+   "capital": "Ngerulmud",
+   "lng": 134.62,
+   "lat": 7.5,
+   "pop": 21947,
+   "cdr": 8.52,
+   "deaths": 187
+  },
+  {
+   "name": "Saint Martin",
+   "gec": "central-america-n-caribbean_rn",
+   "capital": "Marigot",
+   "lng": -63.08,
+   "lat": 18.07,
+   "pop": 33093,
+   "cdr": 4.83,
+   "deaths": 160
+  },
+  {
+   "name": "Wallis and Futuna",
+   "gec": "australia-oceania_wf",
+   "capital": "Mata-Utu",
+   "lng": -171.93,
+   "lat": -13.95,
+   "pop": 15998,
+   "cdr": 6.13,
+   "deaths": 98
+  },
+  {
+   "name": "Tuvalu",
+   "gec": "australia-oceania_tv",
+   "capital": "Funafuti",
+   "lng": 179.22,
+   "lat": -8.52,
+   "pop": 11824,
+   "cdr": 7.78,
+   "deaths": 92
+  },
+  {
+   "name": "Anguilla",
+   "gec": "central-america-n-caribbean_av",
+   "capital": "The Valley",
+   "lng": -63.05,
+   "lat": 18.22,
+   "pop": 19416,
+   "cdr": 4.76,
+   "deaths": 92
+  },
+  {
+   "name": "Cook Islands",
+   "gec": "australia-oceania_cw",
+   "capital": "Avarua",
+   "lng": -159.77,
+   "lat": -21.2,
+   "pop": 7592,
+   "cdr": 9.48,
+   "deaths": 72
+  },
+  {
+   "name": "Saint Barthelemy",
+   "gec": "central-america-n-caribbean_tb",
+   "capital": "Gustavia",
+   "lng": -62.85,
+   "lat": 17.88,
+   "pop": 7079,
+   "cdr": 9.75,
+   "deaths": 69
+  },
+  {
+   "name": "none",
+   "gec": "africa_sh",
+   "capital": "Jamestown",
+   "lng": -5.72,
+   "lat": -15.93,
+   "pop": 7943,
+   "cdr": 8.55,
+   "deaths": 68
+  },
+  {
+   "name": "Nauru",
+   "gec": "australia-oceania_nr",
+   "capital": "no official capital",
+   "lng": null,
+   "lat": null,
+   "pop": 9930,
+   "cdr": 6.55,
+   "deaths": 65
+  },
+  {
+   "name": "Saint Pierre and Miquelon",
+   "gec": "north-america_sb",
+   "capital": "Saint-Pierre",
+   "lng": -56.18,
+   "lat": 46.77,
+   "pop": 5070,
+   "cdr": 11.83,
+   "deaths": 60
+  },
+  {
+   "name": "Montserrat",
+   "gec": "central-america-n-caribbean_mh",
+   "capital": "Plymouth",
+   "lng": -62.22,
+   "lat": 16.7,
+   "pop": 5468,
+   "cdr": 6.18,
+   "deaths": 34
+  },
+  {
+   "name": "Cocos (Keeling) Islands",
+   "gec": "australia-oceania_ck",
+   "capital": "West Island",
+   "lng": 96.83,
+   "lat": -12.17,
+   "pop": 2021,
+   "cdr": 8.89,
+   "deaths": 18
+  },
+  {
+   "name": "Falkland Islands (Islas Malvinas)",
+   "gec": "south-america_fk",
+   "capital": "Stanley",
+   "lng": -57.85,
+   "lat": -51.7,
+   "pop": 3142,
+   "cdr": 4.9,
+   "deaths": 15
+  }
+ ]
+}

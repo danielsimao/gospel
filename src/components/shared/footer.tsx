@@ -16,6 +16,7 @@ interface FooterMessages {
   readingPlanLink: string;
   nextStepsLink: string;
   churchLink: string;
+  cardsLink: string;
   livingWatersLink: string;
   livingWatersUrl: string;
   needGodLink: string;
@@ -26,6 +27,7 @@ interface FooterMessages {
   needHelpUrl: string;
   scripture: string;
   scriptureRef: string;
+  scriptureNotice: string;
 }
 
 interface LearnTopic {
@@ -203,6 +205,18 @@ export function Footer({ messages, learnTopics, locale, facts = [], blogEnabled 
               >
                 {messages.churchLink}
               </Link>
+              {/* The committed track was the only internal link to /cards. It
+                  is noindex and off the sitemap, so this is reachability, not
+                  SEO — without a link the page exists only for people who
+                  guess the URL. Here rather than on a new believer's first
+                  day. */}
+              <Link
+                href={`/${locale}/cards`}
+                prefetch={false}
+                className="text-sm text-white/70 transition-colors hover:text-white/80"
+              >
+                {messages.cardsLink}
+              </Link>
               <a
                 href={messages.livingWatersUrl}
                 target="_blank"
@@ -260,6 +274,13 @@ export function Footer({ messages, learnTopics, locale, facts = [], blogEnabled 
         </p>
         <p className="mt-2 text-center font-mono text-[10px] uppercase tracking-widest text-[#D4A843]/70">
           {messages.scriptureRef}
+        </p>
+        {/* The credit both publishers require, and which this site owed from
+            the day it started quoting them. English is Thomas Nelson's exact
+            wording for the NKJV; Portuguese is Sociedade Bíblica Trinitariana
+            do Brasil's wording for the ACF text. Neither is ours to reword. */}
+        <p className="mx-auto mt-3 max-w-prose text-center text-[11px] leading-relaxed text-white/35">
+          {messages.scriptureNotice}
         </p>
 
         {/* Bottom row */}

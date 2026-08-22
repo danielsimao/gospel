@@ -6,7 +6,7 @@ import {
   Geographies,
   Geography,
 } from "react-simple-maps";
-import { POPULATION_CENTERS } from "./map-constants";
+import { DEATH_CENTERS, nextPingDelayMs, pickWeighted } from "./map-constants";
 
 const GEO_URL = "/data/world-110m.json";
 
@@ -63,8 +63,9 @@ export const WorldMap = memo(function WorldMap() {
     const g = pulseGroupRef.current;
     if (!g) return;
 
-    const center =
-      POPULATION_CENTERS[Math.floor(Math.random() * POPULATION_CENTERS.length)];
+    // Weighted by the share of the world's deaths each place actually carries.
+    const center = pickWeighted(DEATH_CENTERS);
+    if (!center) return;
     const lng = center[0] + (Math.random() - 0.5) * 2;
     const lat = center[1] + (Math.random() - 0.5) * 2;
     const [x, y] = projectNaturalEarth(lng, lat);
@@ -96,10 +97,14 @@ export const WorldMap = memo(function WorldMap() {
   }, []);
 
   useEffect(() => {
-    // 1.8 deaths/sec = 1 pulse every ~556ms
+    // 1.8 deaths/sec on average, drawn per-gap rather than ticked — the flat map
+    // is the WebGL fallback, so it carries the same cadence as the globe.
     addPulse();
-    const interval = setInterval(addPulse, 556);
-    return () => clearInterval(interval);
+    let timer = setTimeout(function tick() {
+      addPulse();
+      timer = setTimeout(tick, nextPingDelayMs());
+    }, nextPingDelayMs());
+    return () => clearTimeout(timer);
   }, [addPulse]);
 
   return (
