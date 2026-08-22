@@ -183,7 +183,19 @@ export interface JourneyStagesMessages {
 export interface HomeMessages {
   /** The stake, under the counter. No longer the heading — see home-shell. */
   provocativeQuestion: string;
+  /** The Living Waters statistic. Once the visitor block's eyebrow (removed as
+      a restatement — see home-shell), now the heading of the foot-of-page
+      LastWordBand. */
   mortalityStat: string;
+  /** The last-word band around that statistic: the personal turn and the
+      appointment. Its heading reuses `mortalityStat`; its door reuses
+      `ctaButton`. */
+  lastWord: {
+    eyebrow: string;
+    turn: string;
+    scripture: string;
+    scriptureRef: string;
+  };
   ctaButton: string;
   secondaryLink: string;
   /** The visitor h1, and the question the chips answer. */

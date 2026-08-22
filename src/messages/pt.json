@@ -1494,6 +1494,12 @@
   "home": {
     "provocativeQuestion": "Se morresses hoje, onde passarias a eternidade?",
     "mortalityStat": "10 / 10 pessoas vão morrer",
+    "lastWord": {
+      "eyebrow": "A estatística",
+      "turn": "O contador no topo desta página são os outros. Esta linha és tu.",
+      "scripture": "Aos homens está ordenado morrerem uma vez, vindo depois disso o juízo.",
+      "scriptureRef": "Hebreus 9:27"
+    },
     "ctaButton": "Faz o teste",
     "secondaryLink": "Tens perguntas primeiro? Sabe mais",
     "selfRatingQuestion": "És uma boa pessoa?",

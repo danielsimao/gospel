@@ -1494,6 +1494,12 @@
   "home": {
     "provocativeQuestion": "If you died today, where will you spend eternity?",
     "mortalityStat": "10 / 10 people will die",
+    "lastWord": {
+      "eyebrow": "The statistic",
+      "turn": "The counter at the top of this page is other people. This line is you.",
+      "scripture": "It is appointed for men to die once, but after this the judgment.",
+      "scriptureRef": "Hebrews 9:27"
+    },
     "ctaButton": "Take the test",
     "secondaryLink": "Have questions first? Learn more",
     "selfRatingQuestion": "Are you a good person?",
