@@ -76,6 +76,8 @@ export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
    * would otherwise wait two seconds to be shown the way on again.
    */
   const answeredAtMount = useRef(invitationResponse !== null);
+  /* Seeded from the state, so a remount over a recorded answer stays shut. */
+  const respondedRef = useRef(invitationResponse !== null);
   const [onwardReady, setOnwardReady] = useState(answeredAtMount.current);
 
   /* The choice arms when its entrance completes — see CHOICE_GUARD_MS. */
@@ -110,6 +112,18 @@ export function InvitationScreen({ messages, locale }: InvitationScreenProps) {
     // Belt to the pointer-events braces: covers focus-and-Enter during the
     // entrance and any tap that slips a frame past the class toggle.
     if (!choicesArmed) return;
+    /*
+     * The three buttons vanish once an answer exists, but that gate is a
+     * render-time condition and these two lines are not: a same-tick double
+     * activation — two buttons under two fingers, a double-fired pointer —
+     * runs this twice before React re-renders. The reducer refuses the second
+     * dispatch, but the analytics call and the durable journey write happen
+     * BEFORE it, so without a synchronous latch here the reader would be
+     * counted twice and their recorded answer overwritten by whichever
+     * button fired last. A ref, because state would not settle in time.
+     */
+    if (respondedRef.current) return;
+    respondedRef.current = true;
     const totalTime = Date.now() - state.startedAt;
     trackInvitationResponse(response, totalTime);
     saveInvitationResponse(response);

@@ -242,6 +242,37 @@ describe("gameReducer", () => {
       const state = gameReducer(playing, { type: "SET_INVITATION_RESPONSE", response: "committed" });
       expect(state).toBe(playing);
     });
+
+    /*
+     * One recording, and it is the reader's own.
+     *
+     * The three buttons vanish once a response exists, but that gate is a
+     * render-time condition: a same-tick double activation — two different
+     * buttons under two fingers, a double-fired pointer — runs the handler
+     * twice before React re-renders, and the second call would overwrite the
+     * first with a different answer. The same shape as ADVANCE_AFTER_FOLLOWUP,
+     * whose guard could not tell a repeat from a first move either, and it
+     * lives here for the same reason: keyboard, voice and assistive activation
+     * do not go through the button's visibility.
+     *
+     * This does not foreclose changing one's mind. That path exists and does
+     * not come through here — the homepage writes journey storage directly
+     * (home-shell.tsx, saveInvitationResponse("committed")) — and a future
+     * in-test revision should be its own explicit action rather than a second
+     * firing of a one-shot recording.
+     */
+    it("refuses a second response, so the first one recorded stands", () => {
+      let state = startGame();
+      state = answerAll(state, "honest");
+      state = gameReducer(state, { type: "SHOW_GRACE" });
+      state = gameReducer(state, { type: "SHOW_INVITATION" });
+      const recorded = gameReducer(state, { type: "SET_INVITATION_RESPONSE", response: "committed" });
+      expect(recorded.invitationResponse).toBe("committed");
+
+      const second = gameReducer(recorded, { type: "SET_INVITATION_RESPONSE", response: "dismissed" });
+      expect(second.invitationResponse, "a second tap overwrote the reader's answer").toBe("committed");
+      expect(second).toBe(recorded);
+    });
   });
 
   describe("SET_SELF_RATING", () => {

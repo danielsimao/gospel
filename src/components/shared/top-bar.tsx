@@ -148,8 +148,26 @@ export function TopBar({ locale, learnLabel, blogLabel, blogEnabled, messages }:
         aria-label={messages.brand}
         className="flex items-center gap-3.5 rounded-full border border-white/[0.08] bg-[#060404]/40 px-3.5 py-2 text-[13px] font-medium tracking-tight backdrop-blur-[10px] sm:gap-4 sm:px-4"
       >
+        {/*
+         * `?start=1` — this link says "Take the Test", so it has to deliver
+         * one. Within the 30-minute resume window the shell restores whatever
+         * phase was saved, and for a reader who finished that is the
+         * post-decision screen: an encouragement and a forward button, with no
+         * test on it and no way to start one. The nav was the only entrance
+         * carrying no intent, so a resume answered for it.
+         *
+         * Intent in the URL rather than a clearSession() in this handler,
+         * which is what the homepage's retake links do. Those are safe because
+         * they mean "again" unconditionally; this one is not. A ⌘-click or a
+         * middle-click fires the handler in THIS tab while the test opens in
+         * another, so a handler-side clear would wipe the session of the tab
+         * the reader is still sitting in. A query param travels with the
+         * navigation instead of firing beside it — and it is the same shape as
+         * the seeded /test/[rating] route, which already outranks a resume by
+         * arriving in the URL.
+         */}
         <Link
-          href={`/${locale}/test`}
+          href={`/${locale}/test?start=1`}
           onClick={() => trackTopBarTestClicked()}
           className={navLinkClass(false)}
         >

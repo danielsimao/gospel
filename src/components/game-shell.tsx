@@ -18,7 +18,7 @@ import {
   trackTestExit,
 } from "@/lib/analytics";
 import { QUESTION_CONFIGS, TOTAL_QUESTIONS } from "@/lib/questions";
-import { readSession } from "@/lib/test-session-storage";
+import { clearSession, readSession } from "@/lib/test-session-storage";
 import { markTestCompleted } from "@/lib/journey-storage";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import { useIsomorphicLayoutEffect } from "@/lib/use-isomorphic-layout-effect";
@@ -164,12 +164,60 @@ export function GameShell({ messages, locale }: GameShellProps) {
      * answer instead of asking for it again, and the reader begins the Law by
      * choosing to, from a screen that gave them a way to change their mind.
      */
+    /*
+     * `?start=1` is on the nav's "Take the Test" link (see top-bar). Without
+     * it, a reader who answered the decision and came back inside the
+     * thirty-minute window was restored onto the post-decision screen: an
+     * encouragement and a forward button, no test, no way to start one. The
+     * label promised something the page did not contain.
+     *
+     * Read AND consumed before anything below can return early, which is not
+     * a tidiness preference — it is the whole safety of the flag. A reader
+     * with no session yet (the common case: the nav is how a stranger starts)
+     * hit `if (!saved) return` and left `?start=1` in the address bar, where
+     * it stayed for the rest of the visit. It then fired on the next reload,
+     * by which time there WAS a session — so a reader who reached the verdict
+     * and whose phone locked came back to a cleared test and the landing
+     * screen. The flag existed to prevent exactly that loss and, consumed one
+     * `return` too late, caused it instead.
+     *
+     * Stripping is unconditional for the same reason: a seeded entry
+     * (`selfRating`, below) also has to leave a clean URL behind it.
+     */
+    let startRequested = false;
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      startRequested = url.searchParams.has("start");
+      if (startRequested) {
+        url.searchParams.delete("start");
+        window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
+      }
+    }
+
     if (state.selfRating) return;
 
     const saved = readSession();
     // The whole saved record, not a field-by-field copy. Transcribing it is
     // how graceBeatsRevealed went missing here in the first place.
     if (!saved) return;
+
+    /*
+     * An entrance that asked for the test outranks a resume of one already
+     * finished — but only past `playing`, and that is the point of the check.
+     * A reader mid-test who stepped away to read something is still IN the
+     * test: handing their answered questions back is what the link promised,
+     * and discarding them is not. The failure only ever involved sessions
+     * that were finished.
+     *
+     * Clearing is safe: what makes a reader "known" — completion, their
+     * recorded response — lives in journey storage under its own key, not in
+     * this one, so /next-steps still recognises them afterwards.
+     */
+    if (startRequested && saved.phase !== "playing") {
+      clearSession();
+      return;
+    }
+
     dispatch({ type: "RESUME_SESSION", session: saved });
     trackTestRestored(saved.phase, locale);
   }, [dispatch, locale, state.selfRating]);
