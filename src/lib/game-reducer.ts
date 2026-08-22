@@ -202,6 +202,24 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
     case "SET_INVITATION_RESPONSE":
       if (state.phase !== "invitation") return state;
+      /*
+       * One recording, and the first one stands.
+       *
+       * The three buttons disappear once a response exists, but that is a
+       * render-time gate: a same-tick double activation — two buttons under
+       * two fingers, a double-fired pointer — runs the handler twice before
+       * React re-renders, and the second call would overwrite the reader's
+       * answer with a different one. Same shape as ADVANCE_AFTER_FOLLOWUP,
+       * whose phase check likewise could not tell a repeat from a first move,
+       * and here for the same reason: keyboard, voice and assistive activation
+       * never consult a button's visibility.
+       *
+       * Not a bar on changing one's mind. That path does not come through
+       * here — the homepage writes journey storage directly — and an in-test
+       * revision, if it is ever wanted, should be its own action rather than a
+       * second firing of a one-shot recording.
+       */
+      if (state.invitationResponse) return state;
       return {
         ...state,
         invitationResponse: action.response,

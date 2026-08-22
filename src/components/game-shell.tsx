@@ -18,7 +18,7 @@ import {
   trackTestExit,
 } from "@/lib/analytics";
 import { QUESTION_CONFIGS, TOTAL_QUESTIONS } from "@/lib/questions";
-import { readSession } from "@/lib/test-session-storage";
+import { clearSession, readSession } from "@/lib/test-session-storage";
 import { markTestCompleted } from "@/lib/journey-storage";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import { useIsomorphicLayoutEffect } from "@/lib/use-isomorphic-layout-effect";
@@ -170,6 +170,43 @@ export function GameShell({ messages, locale }: GameShellProps) {
     // The whole saved record, not a field-by-field copy. Transcribing it is
     // how graceBeatsRevealed went missing here in the first place.
     if (!saved) return;
+
+    /*
+     * An entrance that asked for the test outranks a resume of one already
+     * finished.
+     *
+     * `?start=1` is on the nav's "Take the Test" link (see top-bar). Without
+     * it, a reader who answered the decision and came back inside the
+     * thirty-minute window was restored onto the post-decision screen: an
+     * encouragement and a forward button, no test, no way to start one. The
+     * label promised something the page did not contain.
+     *
+     * Only past `playing`, and that is the whole point of the check. A reader
+     * who is mid-test and stepped away to read something is still IN the test
+     * — handing their four answered questions back is what the link promised,
+     * and throwing them away is not. The failure only ever involved sessions
+     * that were finished.
+     *
+     * Clearing is safe: what makes a reader "known" — completion, their
+     * recorded response — lives in journey storage under its own key, not in
+     * this one, so /next-steps still recognises them afterwards.
+     *
+     * And the flag is consumed, not merely read. Left in the URL it would fire
+     * again on the next reload — a phone locking mid-question would then wipe
+     * the answers given since, which is the very loss this branch is written
+     * to avoid.
+     */
+    const startRequested = new URLSearchParams(window.location.search).has("start");
+    if (startRequested) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("start");
+      window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
+      if (saved.phase !== "playing") {
+        clearSession();
+        return;
+      }
+    }
+
     dispatch({ type: "RESUME_SESSION", session: saved });
     trackTestRestored(saved.phase, locale);
   }, [dispatch, locale, state.selfRating]);
