@@ -164,6 +164,36 @@ export function GameShell({ messages, locale }: GameShellProps) {
      * answer instead of asking for it again, and the reader begins the Law by
      * choosing to, from a screen that gave them a way to change their mind.
      */
+    /*
+     * `?start=1` is on the nav's "Take the Test" link (see top-bar). Without
+     * it, a reader who answered the decision and came back inside the
+     * thirty-minute window was restored onto the post-decision screen: an
+     * encouragement and a forward button, no test, no way to start one. The
+     * label promised something the page did not contain.
+     *
+     * Read AND consumed before anything below can return early, which is not
+     * a tidiness preference — it is the whole safety of the flag. A reader
+     * with no session yet (the common case: the nav is how a stranger starts)
+     * hit `if (!saved) return` and left `?start=1` in the address bar, where
+     * it stayed for the rest of the visit. It then fired on the next reload,
+     * by which time there WAS a session — so a reader who reached the verdict
+     * and whose phone locked came back to a cleared test and the landing
+     * screen. The flag existed to prevent exactly that loss and, consumed one
+     * `return` too late, caused it instead.
+     *
+     * Stripping is unconditional for the same reason: a seeded entry
+     * (`selfRating`, below) also has to leave a clean URL behind it.
+     */
+    let startRequested = false;
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      startRequested = url.searchParams.has("start");
+      if (startRequested) {
+        url.searchParams.delete("start");
+        window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
+      }
+    }
+
     if (state.selfRating) return;
 
     const saved = readSession();
@@ -173,38 +203,19 @@ export function GameShell({ messages, locale }: GameShellProps) {
 
     /*
      * An entrance that asked for the test outranks a resume of one already
-     * finished.
-     *
-     * `?start=1` is on the nav's "Take the Test" link (see top-bar). Without
-     * it, a reader who answered the decision and came back inside the
-     * thirty-minute window was restored onto the post-decision screen: an
-     * encouragement and a forward button, no test, no way to start one. The
-     * label promised something the page did not contain.
-     *
-     * Only past `playing`, and that is the whole point of the check. A reader
-     * who is mid-test and stepped away to read something is still IN the test
-     * — handing their four answered questions back is what the link promised,
-     * and throwing them away is not. The failure only ever involved sessions
+     * finished — but only past `playing`, and that is the point of the check.
+     * A reader mid-test who stepped away to read something is still IN the
+     * test: handing their answered questions back is what the link promised,
+     * and discarding them is not. The failure only ever involved sessions
      * that were finished.
      *
      * Clearing is safe: what makes a reader "known" — completion, their
      * recorded response — lives in journey storage under its own key, not in
      * this one, so /next-steps still recognises them afterwards.
-     *
-     * And the flag is consumed, not merely read. Left in the URL it would fire
-     * again on the next reload — a phone locking mid-question would then wipe
-     * the answers given since, which is the very loss this branch is written
-     * to avoid.
      */
-    const startRequested = new URLSearchParams(window.location.search).has("start");
-    if (startRequested) {
-      const url = new URL(window.location.href);
-      url.searchParams.delete("start");
-      window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
-      if (saved.phase !== "playing") {
-        clearSession();
-        return;
-      }
+    if (startRequested && saved.phase !== "playing") {
+      clearSession();
+      return;
     }
 
     dispatch({ type: "RESUME_SESSION", session: saved });

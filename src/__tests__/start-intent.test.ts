@@ -58,18 +58,48 @@ describe("the nav says what it wants", () => {
 describe("the shell honours the start request", () => {
   it("reads the flag from the URL and consumes it", () => {
     expect(shell, "the shell no longer reads the start flag").toMatch(
-      /new URLSearchParams\(window\.location\.search\)\.has\("start"\)/,
+      /url\.searchParams\.has\("start"\)/,
     );
     /*
      * Consumed, not merely read. Left in the URL the flag fires again on the
      * next reload — a phone locking mid-question would then throw away the
      * answers given since, which is the exact loss this feature exists to
      * avoid.
+     *
+     * Scoped to the consuming block, and that scoping is the assertion. An
+     * unscoped `replaceState` check passed against three unrelated calls the
+     * history machine already makes in this file — deleting the one line that
+     * writes the stripped URL back left every test in here green.
      */
-    expect(shell, "the start flag is left in the URL to fire again").toMatch(
-      /url\.searchParams\.delete\("start"\)/,
+    const consume = shell.slice(
+      shell.indexOf("let startRequested"),
+      shell.indexOf("if (state.selfRating) return;"),
     );
-    expect(shell).toMatch(/window\.history\.replaceState\(/);
+    expect(consume.length, "the start-flag block moved or vanished").toBeGreaterThan(0);
+    expect(consume, "the flag is deleted from the URL but never written back").toMatch(
+      /url\.searchParams\.delete\("start"\);[\s\S]*?window\.history\.replaceState\(/,
+    );
+  });
+
+  it("consumes the flag before any early return can skip it", () => {
+    /*
+     * The ordering IS the safety. Consumed after `if (!saved) return`, a
+     * stranger arriving from the nav — which is how strangers arrive — kept
+     * `?start=1` in the address bar for the whole visit. It then fired on the
+     * next reload, when a session DID exist: a reader who reached the verdict
+     * and whose phone locked came back to a cleared test and the landing
+     * screen. The flag exists to prevent that loss and, consumed one return
+     * too late, caused it.
+     */
+    const effect = shell.slice(shell.indexOf("if (restoredRef.current) return;"));
+    const consumeAt = effect.indexOf('url.searchParams.delete("start")');
+    expect(consumeAt, "the flag is no longer consumed in the restore effect").toBeGreaterThan(-1);
+    for (const earlyReturn of ["if (state.selfRating) return;", "if (!saved) return;"]) {
+      expect(
+        consumeAt,
+        `the flag is consumed after \`${earlyReturn}\`, which can skip it`,
+      ).toBeLessThan(effect.indexOf(earlyReturn));
+    }
   });
 
   it("only overrides a session that is no longer the test", () => {
@@ -80,18 +110,22 @@ describe("the shell honours the start request", () => {
      * the decision — makes the label a lie.
      */
     expect(shell, "a mid-test session is discarded by the nav link").toMatch(
-      /if \(saved\.phase !== "playing"\) \{\s*clearSession\(\);/,
+      /if \(startRequested && saved\.phase !== "playing"\) \{\s*clearSession\(\);/,
     );
   });
 
   it("leaves the resume path alone when nothing asked for a start", () => {
     // No flag, no change: a refresh, a locked phone or a restored tab still
     // resumes every phase, which is the whole point of keeping a session.
-    const effect = shell.slice(shell.indexOf("const saved = readSession()"));
-    const guarded = effect.slice(0, effect.indexOf("dispatch({ type: \"RESUME_SESSION\""));
-    expect(guarded, "clearing escaped the start-requested branch").toMatch(
-      /if \(startRequested\)/,
-    );
+    // Every clear in this file must be gated on the flag — an ungated one
+    // would empty the session of a reader who only refreshed.
+    const clears = shell.match(/clearSession\(\)/g) ?? [];
+    expect(clears, "clearSession is called somewhere new — check its gate").toHaveLength(1);
+    const beforeClear = shell.slice(0, shell.indexOf("clearSession()"));
+    expect(
+      beforeClear.lastIndexOf("if (startRequested"),
+      "clearing escaped the start-requested gate",
+    ).toBeGreaterThan(beforeClear.lastIndexOf("const saved = readSession()"));
     expect(shell).toMatch(/dispatch\(\{ type: "RESUME_SESSION", session: saved \}\)/);
   });
 });
