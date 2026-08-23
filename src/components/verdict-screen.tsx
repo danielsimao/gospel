@@ -4,7 +4,11 @@ import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { m } from "framer-motion";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { DeathCounter } from "@/components/eternity/death-counter";
-import { trackVerdictReached, trackVerdictRow } from "@/lib/analytics";
+import {
+  trackVerdictReached,
+  trackVerdictRow,
+  trackVerdictSwipe,
+} from "@/lib/analytics";
 import { splitConfession, type ConfessionTone } from "@/lib/confession";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import type { TestMessages } from "@/lib/types";
@@ -67,6 +71,30 @@ const BEATS = ["charge", "confession", "count", "claim", "door"] as const;
 type Beat = (typeof BEATS)[number];
 
 const LAST_BEAT = BEATS.length - 1;
+
+/*
+ * The beat dots at the bottom are the page-control idiom, and readers who know
+ * it try to swipe. Honoured — ruled by the owner (2026-08-23): a swipe LEFT
+ * advances exactly as a tap does, on every beat including the door (fifty
+ * pixels of deliberate travel is as much a decision as a tap); a swipe RIGHT
+ * does nothing, so back keeps its one contract — the walk-back above, which
+ * replays — and does not grow a second, quieter meaning that collides with the
+ * OS's own edge-swipe-for-history. Both directions are recorded (see
+ * trackVerdictSwipe) because a refused gesture is still testimony about what
+ * the reader expected.
+ *
+ * Recognised at release, never tracked under the finger. A surface that let
+ * the next beat follow the drag in would peek gold into the frame from the
+ * claim beat — and gold arrives once, as an event (docs/METHOD.md). So there
+ * is no onPointerMove here at all: finger down, finger up, decide.
+ *
+ * Between TAP_SLOP and SWIPE_MIN_PX is deliberately dead. A press that
+ * travelled past tap slop is not a tap, and one that did not reach the swipe
+ * threshold is not a swipe; a hesitant half-swipe right must not fall through
+ * to the trailing click and advance a reader who was reaching for back.
+ */
+const SWIPE_MIN_PX = 50;
+const TAP_SLOP = 10;
 
 /*
  * One class per tone, as a total map rather than a ternary. The distinction is
@@ -217,6 +245,81 @@ export function VerdictScreen({
     dispatch({ type: "SHOW_GRACE" });
   }
 
+  /*
+   * The tap stays on click; the swipe lives on pointerup. Keyboard and
+   * assistive tech activate a <button> through click — routing the tap through
+   * pointer geometry would strand exactly the readers the element is a real
+   * button for. What pointerup owns is the swipe, plus a suppression flag for
+   * the click a mouse still fires after a drag: browsers only swallow the
+   * click that ends a SCROLL drag, and nothing on this screen scrolls, so
+   * without the flag a mouse swipe advanced twice — once as the swipe, once as
+   * the click trailing it.
+   *
+   * The flag is cleared in two places, and the pointerdown one is the one that
+   * matters: after a touch swipe no click follows at all, and a flag left
+   * standing would swallow the reader's next honest tap.
+   *
+   * The guards are grace's tap surface guards (grace-screen.tsx), for grace's
+   * reasons: primary contact and primary button at both ends, the release
+   * matched to its press by pointerId, capture so a press cannot lift
+   * elsewhere and stay on record, and a cancelled press — the browser taking
+   * the gesture for itself — cleared rather than left to be measured against
+   * some later release. touch-pan-y on the button is what keeps the browser
+   * from taking the horizontal move at all: vertical stays the browser's
+   * (there is nothing to scroll, so it costs nothing), sideways is ours.
+   */
+  const pressRef = useRef<{ x: number; y: number; pointerId: number } | null>(null);
+  const suppressClickRef = useRef(false);
+
+  function handleSurfaceDown(event: React.PointerEvent<HTMLButtonElement>) {
+    suppressClickRef.current = false;
+    if (!event.isPrimary || event.button !== 0) return;
+    pressRef.current = { x: event.clientX, y: event.clientY, pointerId: event.pointerId };
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      // Capture is a belt to the guards below, not a requirement.
+    }
+  }
+
+  function handleSurfaceCancel(event: React.PointerEvent<HTMLButtonElement>) {
+    if (pressRef.current?.pointerId === event.pointerId) pressRef.current = null;
+  }
+
+  function handleSurfaceUp(event: React.PointerEvent<HTMLButtonElement>) {
+    if (!event.isPrimary || event.button !== 0) return;
+    const start = pressRef.current;
+    if (!start || start.pointerId !== event.pointerId) return;
+    pressRef.current = null;
+    const dx = event.clientX - start.x;
+    const dy = event.clientY - start.y;
+    const travelled = Math.hypot(dx, dy);
+    // A tap — the click that follows owns it.
+    if (travelled <= TAP_SLOP) return;
+    suppressClickRef.current = true;
+    // Travelled but not sideways enough, or more down than across: the dead
+    // zone. Suppressed above, advanced nowhere.
+    if (Math.abs(dx) < SWIPE_MIN_PX || Math.abs(dx) <= Math.abs(dy)) return;
+    trackVerdictSwipe(
+      dx < 0 ? "left" : "right",
+      beat,
+      Math.round((start.x / window.innerWidth) * 100) / 100,
+    );
+    if (dx < 0) {
+      if (isLastBeat) handleBridgeClick();
+      else advance();
+    }
+  }
+
+  function handleSurfaceClick() {
+    if (suppressClickRef.current) {
+      suppressClickRef.current = false;
+      return;
+    }
+    if (isLastBeat) handleBridgeClick();
+    else advance();
+  }
+
 
   return (
     <div className="relative flex flex-1 flex-col items-center justify-center px-7 pt-14 pb-[calc(5.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] sm:px-16 lg:px-28">
@@ -258,14 +361,17 @@ export function VerdictScreen({
       <button
         type="button"
         ref={doorRef}
-        onClick={isLastBeat ? handleBridgeClick : advance}
+        onClick={handleSurfaceClick}
+        onPointerDown={handleSurfaceDown}
+        onPointerUp={handleSurfaceUp}
+        onPointerCancel={handleSurfaceCancel}
         aria-label={isLastBeat ? undefined : testMessages.nextLabel}
         /* The focus ring is the screen edge because the control is the screen —
            that is honest rather than decorative. Thin and inset, though: at 2px
            full-bleed it read as a border the design had grown, not as a
            transient indicator. #D4A843 at 70% measures ~4.4:1 on #060404, past
            the 3:1 that 1.4.11 asks of a focus indicator. */
-        className="absolute inset-0 z-20 flex cursor-pointer items-center justify-center px-7 outline-none focus-visible:outline focus-visible:outline-1 focus-visible:-outline-offset-[6px] focus-visible:outline-[#D4A843]/70"
+        className="absolute inset-0 z-20 flex cursor-pointer touch-pan-y items-center justify-center px-7 outline-none focus-visible:outline focus-visible:outline-1 focus-visible:-outline-offset-[6px] focus-visible:outline-[#D4A843]/70"
       >
         {/*
          * The one gold thing in the flow, and now the gold is the words rather
