@@ -222,6 +222,32 @@ export function trackVerdictRow() {
   }
 }
 
+/**
+ * A horizontal swipe on the verdict surface — the direction that advances and
+ * the direction that is refused. Ruled by the owner (2026-08-23): left advances
+ * like a tap, right does nothing. A refused gesture is still a reader saying
+ * what they expected the screen to do, so both directions are recorded, with
+ * the beat they landed on.
+ *
+ * start_x_fraction is the Android question. Gesture navigation answers a swipe
+ * that begins at the screen edge with history back before the page ever sees
+ * it, and the verdict is the history baseline (game-shell.tsx) — back from
+ * here leaves /test entirely. Those swipes cannot be counted from inside the
+ * page; how tightly the delivered ones cluster toward the edges is the nearest
+ * measurable proxy for how often that ejection is happening just beyond them.
+ */
+export function trackVerdictSwipe(
+  direction: "left" | "right",
+  beat: string,
+  startXFraction: number,
+) {
+  safeCapture("verdict_swiped", {
+    direction,
+    beat,
+    start_x_fraction: startXFraction,
+  });
+}
+
 export function trackGraceViewed(timeSpent: number, scrollDepth: number) {
   safeCapture("grace_viewed", {
     time_spent_ms: timeSpent,
