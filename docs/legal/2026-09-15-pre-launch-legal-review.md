@@ -23,6 +23,47 @@ mostly does the right thing and then describes itself inaccurately.
 
 ---
 
+## Correction: the blog *is* live
+
+Recorded because the owner's understanding was that it is not, and the gap is
+entirely reasonable — the blog has no entrances, so from the site it does not
+exist.
+
+`BLOG_ENABLED` (`src/lib/flags.ts`) is off, and its own docstring is exact about
+what that means:
+
+> *"What this does NOT do, and the distinction is the whole point: `/blog` and
+> every published post still render, still carry their metadata, and stay in the
+> sitemap. **Four posts are indexed.**"*
+
+The flag hides three things: the header link, the footer link, and the
+homepage's latest-post card. It does not gate the routes. Confirming that:
+
+- `blog/page.tsx` and `blog/[slug]/page.tsx` call `notFound()` only for an
+  invalid locale or an unknown slug — never for the flag.
+- `src/app/sitemap.ts` emits `/blog` in both locales plus a row per post per
+  locale, and those loops are **not** wrapped in `BLOG_ENABLED`. Only the
+  `lastModified` stamp is flag-gated.
+- `src/app/robots.ts` disallows nothing, deliberately.
+
+So four posts are publicly reachable, in the submitted sitemap, and indexable:
+`the-final-whistle`, `the-headline-jesus-was-handed`, `humanitys-last-exam`,
+`dont-die-movement`. The other seven carry `draft: true`, are filtered out by
+`getPublishedPosts()`, and are genuinely not live — that part works.
+
+This is by design and the design is sound (an unlinked page costs no
+maintenance, and forfeiting the index position would buy nothing). It is worth
+writing down only because the blog is the site's most exposed content — dated
+commentary on a live war, and named living people — and it is the part most
+easily assumed to be private. **Nothing here needs fixing.** It needs knowing,
+because "we'll tidy the blog before launch" is not a plan that works on content
+Google already has.
+
+If any of it should genuinely not be public before the announcement, the lever
+is `draft: true` per post, plus a re-crawl request — not the flag.
+
+---
+
 ## Blockers — fix before announcing
 
 ### 1. "We do not use cookies" is probably false
@@ -283,10 +324,18 @@ Recorded so nobody re-audits these.
   `docs/data/deaths-by-country.json` itself. Exemplary.
 - **Map topology:** `public/data/world-110m.json` is Natural Earth-derived —
   public domain, no attribution required. Citing it anyway costs nothing.
-- **Blog sourcing:** posts cite news by headline and link, with original prose
-  around them. Facts are not copyrightable and headline-plus-link citation is
-  standard practice. No article bodies are reproduced. Commentary on public
-  figures (Messi, the Iran war) is neutral-to-sympathetic and non-defamatory.
+- **Blog sourcing** (and note it is live — see the correction above): posts
+  cite news by headline and link, with original prose around them. Facts are not
+  copyrightable and headline-plus-link citation is standard practice. No article
+  bodies are reproduced. Commentary on public figures (Messi, the Iran war) is
+  neutral-to-sympathetic and non-defamatory.
+- **`dont-die-movement` discusses a named living person's health**, which is
+  special-category data under GDPR Art 9. Defensible on two independent grounds:
+  Bryan Johnson manifestly made it public himself (Art 9(2)(e)) — the post
+  quotes his own announcement — and the piece is sourced commentary on a matter
+  of public interest, which Art 85 and Lei 58/2019 Art 24 protect. The treatment
+  is also explicitly respectful rather than mocking. Low risk; recorded so the
+  reasoning exists if it is ever questioned.
 - **Imagery:** every raster asset is AI-generated with prompts recorded in
   `docs/graphics/PROMPTS.md`. Two footnotes: confirm the generator's terms allow
   commercial/public use, and note that AI output may not attract copyright —
