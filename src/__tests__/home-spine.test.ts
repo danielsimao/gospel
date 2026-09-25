@@ -140,7 +140,25 @@ describe("the hero owns the first screen", () => {
      * viewport degrades to the old fixed gaps instead of collapsing to zero.
      * The column's flex-1 is what gives the spacers space to absorb.
      */
-    expect(shell).toMatch(/relative z-\[1\] flex w-full flex-1 flex-col items-center/);
+    expect(shell).toMatch(/relative z-\[1\] flex w-full max-h-\[\d+px\] flex-1 flex-col items-center/);
+    /*
+     * ...and the max-h is what stops them absorbing without limit. Measured at
+     * 1440x2200 an uncapped column handed the two spacers ~1610px to split, and
+     * the lockup, the rate cards and the cue read as three unrelated objects
+     * marooned in black. The cap has to live on the COLUMN, not the section:
+     * capping the section was tried, and at 1100px it left 989px of screen one
+     * for the stage block below, putting "Are you a good person?" on the first
+     * screen and destroying the split the test below this one defends.
+     */
+    const heroColumn = shell.match(/relative z-\[1\] flex w-full max-h-\[(\d+)px\]/);
+    expect(heroColumn, "the hero column lost its height cap").not.toBeNull();
+    expect(
+      // Optional chain, not heroColumn[1]: toBeNull above is a runtime check and
+      // narrows nothing for tsc. A miss here reaches Number(undefined) = NaN,
+      // which fails the comparison anyway.
+      Number(heroColumn?.[1]),
+      "the cap is below the hero's ~670px content floor at 1440px",
+    ).toBeGreaterThan(700);
     const spacers = shell.match(/aria-hidden="true" className="min-h-\S+ w-full flex-1[^"]*"/g) ?? [];
     expect(spacers.length, "the hero lost its distribution spacers").toBe(2);
     // The hero reserves the consent banner's height, or the cue sits exactly

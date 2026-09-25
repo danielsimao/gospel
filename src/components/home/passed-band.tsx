@@ -5,6 +5,7 @@ import Link from "next/link";
 import { BandSpine } from "@/components/home/band-spine";
 import { VerdictLedger } from "@/components/home/verdict-ledger";
 import { Button, ButtonArrow } from "@/components/ui/button";
+import { Dither } from "@/components/ui/dither";
 import type { VerdictRow } from "@/lib/test-stats";
 import type { Locale } from "@/lib/i18n";
 
@@ -330,6 +331,10 @@ export function PassedBand({ locale, messages, count, verdicts }: PassedBandProp
             "radial-gradient(ellipse 70% 55% at 50% 0%, rgba(153,27,27,0.17), rgba(6,4,4,0) 62%)",
         }}
       />
+      {/* Worst bander on the page: rgba(153,27,27,0.17) over #060404 peaks at
+          rgb(31,8,8), so green and blue cross only four integer values across
+          the whole ramp. See dither.tsx. */}
+      <Dither className="inset-0" />
       <div
         ref={rootRef}
         className="relative mx-auto w-full max-w-md px-4 py-12 text-left sm:max-w-2xl sm:px-6 sm:py-16"

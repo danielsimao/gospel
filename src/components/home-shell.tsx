@@ -14,6 +14,7 @@ import { ScrollCue } from "@/components/shared/scroll-cue";
 import { StageSpine } from "@/components/home/stage-spine";
 import { SelfRating } from "@/components/home/self-rating";
 import { Button, ButtonArrow } from "@/components/ui/button";
+import { Dither } from "@/components/ui/dither";
 import { useJourney } from "@/lib/use-journey";
 import { saveInvitationResponse } from "@/lib/journey-storage";
 import { clearSession } from "@/lib/test-session-storage";
@@ -337,6 +338,14 @@ export function HomeShell({
        * dvh tracks the collapsing URL bar and resizes the page under the
        * reader's thumb.
        *
+       * The section keeps the whole viewport. The COLUMN inside it is what got
+       * capped — see the max-h note on it below. Capping the section instead
+       * was tried and reverted: measured at 1440x2200 a 1100px section left
+       * 989px of screen one for the stage block below it, so "Are you a good
+       * person?" arrived on the first screen and the split this comment exists
+       * to defend was gone. Any section cap under 100svh does that; the cap had
+       * to move off the thing that owns the fold.
+       *
        * Two <section>s, deliberately, not one with an inner wrapper: the scroll
        * cue delegates to advanceSection, which moves to the next SECTION
        * boundary. The content section is that boundary, so a tap lands with the
@@ -368,7 +377,14 @@ export function HomeShell({
           className="pointer-events-none absolute -top-[2rem] left-1/2 -translate-x-1/2 sm:-top-[2.25rem] lg:left-auto lg:right-[-12rem] lg:top-[-6.25rem] lg:translate-x-0 xl:right-[-9rem] xl:top-[-7.25rem]"
         >
           <DeathGlobe
-            className="relative w-[32rem] sm:w-[26rem] lg:w-[40rem] xl:w-[46rem]"
+            // Desktop widths raised (40→46, 46→52) without touching the right
+            // offsets beside them. The sphere is cropped on its RIGHT edge, so
+            // holding `right` fixed and adding width spends all of it leftward,
+            // into view: at 1440/xl the visible arc goes ~592px wide to ~688px,
+            // and the globe reads as the ground the counter sits on rather than
+            // a detail in the corner. The offsets stay untouched because they
+            // are screenshot-measured against the scrims — see the note above.
+            className="relative w-[32rem] sm:w-[26rem] lg:w-[46rem] xl:w-[52rem]"
             // A quarter speed on desktop. Stopped, it stops being the thing it
             // is for; at full speed beside the question it pulls the eye off
             // the words. Slow enough to read as alive, not as movement.
@@ -407,7 +423,29 @@ export function HomeShell({
             the lockup rides the left scrim's solid ground — the gradient that
             exists precisely to hold type — while the globe answers from the
             right, instead of a centred stack floating between the two. */}
-        <div className="relative z-[1] flex w-full flex-1 flex-col items-center lg:items-start lg:pl-10 xl:pl-20">
+        {/*
+         * max-h caps how much the spacers can ever absorb. flex-1 alone had no
+         * ceiling: measured at 1440x2200 the content floor is ~670px, so the
+         * two spacers split ~1610px of leftover — ~805px each — and the lockup,
+         * the rate cards and the cue read as three unrelated objects marooned
+         * in black. Capped, the same viewport gives them ~430px to share, which
+         * is spacing rather than void, and the black that is left over sits
+         * BELOW the cue as the globe's own field instead of being pumped into
+         * the gaps between things that belong together.
+         *
+         * On the column, not the section, so the section still owns the whole
+         * viewport and nothing from screen two rides up into screen one — see
+         * the note above the section for the measurement that settled that.
+         *
+         * max-height, not height: the floor is not flat across the range. The
+         * counter is clamp(10rem,14.5vw,13rem), so the column needs ~670px at
+         * 1440 but ~622px at 1024, and a short landscape lg viewport (1024x500)
+         * is already shorter than either. A maximum never squeezes below the
+         * content; min-h-8/min-h-6 on the spacers still set the floor there,
+         * exactly as they did before. The section is overflow-hidden, so a
+         * fixed height would have lost the cue off the bottom edge silently.
+         */}
+        <div className="relative z-[1] flex w-full max-h-[1100px] flex-1 flex-col items-center lg:items-start lg:pl-10 xl:pl-20">
           {/* Label — the hero's eyebrow, wearing the page's spine idiom in the
               Law's colour: rule — TODAY — rule. It was a bare floating word;
               flanked, it opens the page the way every section below opens. */}
@@ -580,6 +618,10 @@ export function HomeShell({
                   filter: "blur(32px)",
                 }}
               />
+              {/* Same geometry as the glow above — the noise has to cover the
+                  banded area and stop there. See dither.tsx for why the ramp
+                  bands at all. */}
+              <Dither className="-inset-x-10 top-0 bottom-1/3" />
               <StageSpine
                 tone="gold"
                 eyebrow={home.journeyStages.committed.eyebrow}
@@ -648,6 +690,9 @@ export function HomeShell({
                   filter: "blur(32px)",
                 }}
               />
+              {/* This stage bands worst of the three on screen — five steps in
+                  green and blue. See dither.tsx. */}
+              <Dither className="-inset-x-10 top-0 bottom-1/3" />
               {/* whatHappened carries the temporal mirror that sinceLine used
                   to hold — how long "later" has already lasted, stated once,
                   no pressure mechanics — folded into the result sentence. */}
@@ -692,6 +737,10 @@ export function HomeShell({
                   filter: "blur(32px)",
                 }}
               />
+              {/* Mildest of the three — a neutral tint moves all three channels
+                  together, so it gets ~8 steps rather than five. Dithered on the
+                  same terms anyway; the ramp is the same shape. */}
+              <Dither className="-inset-x-10 top-0 bottom-1/3" />
               <StageSpine
                 tone="dim"
                 eyebrow={home.journeyStages.thinking.eyebrow}
