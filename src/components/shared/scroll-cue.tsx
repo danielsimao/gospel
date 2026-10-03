@@ -5,12 +5,12 @@ import { advanceSection } from "@/lib/advance-section";
 /**
  * "There is more below this" — and it answers a tap, not only a scroll.
  *
- * Two screens need it and they must not drift apart, because they are the same
- * promise made twice: grace opens with a full viewport and the argument beneath
- * it, and the verdict in re-read mode puts its only forward control 34px below
- * the fold. Both were measured as false bottoms at 390×844 — a section that
- * fills the viewport exactly, with nothing intruding, reads as the end of the
- * page.
+ * Built for two screens that both measured as false bottoms at 390×844 — a
+ * section that fills the viewport exactly, with nothing intruding, reads as the
+ * end of the page. Neither uses it now: the verdict's re-read document is gone,
+ * and grace is a beat sequence cued like the verdict, where a down arrow would
+ * point at a gesture the screen no longer works by. The homepage hero is where
+ * it lives, and the reasoning below holds there unchanged.
  *
  * Why it moves. Grace's cue used to be a static 10px mark. Static arrows are
  * routinely missed; motion is pre-attentive — the eye is drawn to it without

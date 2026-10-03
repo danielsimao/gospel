@@ -385,6 +385,13 @@ describe("each graphic stays where its meaning is", () => {
 
 describe("grace's non-hinge movements", () => {
   const grace = strip(read("src", "components", "grace-screen.tsx"));
+  /** One beat's markup. Grace renders one beat at a time now, each its own
+      `data-beat` frame; Movement I is beat 1, III is 3 and IV is 4. */
+  const beatOf = (n: number) => {
+    const start = grace.indexOf(`data-beat="${n}"`);
+    expect(start, `beat ${n} is missing`).toBeGreaterThan(-1);
+    return grace.slice(start, grace.indexOf("</m.section>", start));
+  };
 
   it("ships the dock, and only for Movement I", () => {
     expect(grace).toMatch(/url\(\/graphics\/dock\.avif\)/);
@@ -413,13 +420,11 @@ describe("grace's non-hinge movements", () => {
   it("colours Movement I red and Movements III/IV gold, never the reverse", () => {
     // Still the Law in Movement I (see that section's own doc comment) —
     // gold there would spend grace's colour before the turn has happened.
-    const movementI = grace.slice(grace.indexOf('data-reveal="0"'), grace.indexOf('data-reveal="1"'));
+    const movementI = beatOf(1);
     expect(movementI).toMatch(/rgba\(239,68,68,0\.35\)/);
     expect(movementI).not.toMatch(/rgba\(212,168,67/);
 
-    const movementIII = grace.slice(grace.indexOf('data-reveal="2"'), grace.indexOf('data-reveal="3"'));
-    const movementIV = grace.slice(grace.indexOf('data-reveal="3"'), grace.indexOf('data-reveal="4"'));
-    for (const movement of [movementIII, movementIV]) {
+    for (const movement of [beatOf(3), beatOf(4)]) {
       expect(movement).toMatch(/rgba\(212,168,67,0\.35\)/);
       expect(movement).not.toMatch(/rgba\(239,68,68/);
     }
@@ -434,27 +439,31 @@ describe("grace's non-hinge movements", () => {
   });
 
   it("never takes a click, and carries no meaning a reader needs", () => {
-    for (const dataReveal of ['data-reveal="0"', 'data-reveal="2"', 'data-reveal="3"']) {
-      const start = grace.indexOf(dataReveal);
-      const sectionEnd = grace.indexOf("</section>", start);
-      const section = grace.slice(start, sectionEnd);
-      expect(section, `${dataReveal} background is missing aria-hidden`).toMatch(/aria-hidden="true"/);
-      expect(section, `${dataReveal} background is missing pointer-events-none`).toMatch(/pointer-events-none/);
+    for (const n of [1, 3, 4]) {
+      const section = beatOf(n);
+      expect(section, `beat ${n} background is missing aria-hidden`).toMatch(/aria-hidden="true"/);
+      expect(section, `beat ${n} background is missing pointer-events-none`).toMatch(/pointer-events-none/);
     }
   });
 
-  it("bleeds full-width, not confined to the reading column", () => {
+  it("covers the whole screen, not the reading column or the frame", () => {
     /*
      * Measured on desktop: confined to the ~512px reading column, these
      * backgrounds read as a hard-edged box floating in black — the "panel
      * the band is sitting in" failure band-texture.tsx's own comment
-     * warns about. Same breakout the turn already uses.
+     * warns about. And confined to the beat's frame they left the shell's
+     * 12px top padding as a dark band across the courtroom. Fixed to the
+     * viewport, a beat's ground is the screen's ground.
      */
-    for (const dataReveal of ['data-reveal="0"', 'data-reveal="2"', 'data-reveal="3"']) {
-      const start = grace.indexOf(dataReveal);
-      const sectionTag = grace.slice(start, grace.indexOf(">", start));
-      expect(sectionTag, `${dataReveal} lost its full-bleed breakout`).toMatch(/mx-\[calc\(50%-50vw\)\]/);
+    for (const n of [1, 2, 3, 4]) {
+      const grounds = beatOf(n).match(/<div\s+aria-hidden="true"\s+className="[^"]*"/g) ?? [];
+      expect(grounds.length, `beat ${n} has no ground`).toBeGreaterThan(0);
+      for (const ground of grounds) {
+        expect(ground, `beat ${n}'s ground is not the screen's`).toMatch(/pointer-events-none fixed inset-0/);
+      }
     }
+    // The words stay in the column; only the ground is full width.
+    expect(grace).toMatch(/className="relative mx-auto w-full max-w-lg"/);
   });
 
   it("shields the eyebrow label against the brighter parts of its own background", () => {
@@ -466,12 +475,10 @@ describe("grace's non-hinge movements", () => {
      * claws back real contrast without changing colour or size, which
      * would be a sitewide design change well outside this PR.
      */
-    for (const dataReveal of ['data-reveal="0"', 'data-reveal="2"', 'data-reveal="3"']) {
-      const start = grace.indexOf(dataReveal);
-      const sectionEnd = grace.indexOf("</section>", start);
-      const section = grace.slice(start, sectionEnd);
+    for (const n of [1, 3, 4]) {
+      const section = beatOf(n);
       const eyebrowP = section.slice(section.indexOf("<p"), section.indexOf("</p>"));
-      expect(eyebrowP, `${dataReveal} eyebrow lost its contrast shadow`).toMatch(
+      expect(eyebrowP, `beat ${n} eyebrow lost its contrast shadow`).toMatch(
         /textShadow: "0 1px 3px rgba\(0,0,0,0\.9\)"/,
       );
     }

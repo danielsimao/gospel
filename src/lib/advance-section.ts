@@ -1,10 +1,10 @@
 /**
  * Move the page on by one section.
  *
- * Two callers share this and must not drift apart: the scroll cue's chevron,
- * and grace's full-screen tap surface. They are the same promise — "there is
- * more below, and a tap will take you there" — made by a shape and by an
- * invisible control over the same page.
+ * The scroll cue's chevron is the caller now. Grace's full-screen tap surface
+ * shared this while grace was a scroll, and most of the measurements below
+ * were taken there; grace is a beat sequence now and moves by beats (see
+ * lib/beat-gestures), so it no longer calls this.
  */
 
 /**

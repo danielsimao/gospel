@@ -4,9 +4,11 @@ import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { m } from "framer-motion";
 import { useGameState, useGameDispatch } from "@/components/game-provider";
 import { DeathCounter } from "@/components/eternity/death-counter";
+import { BeatStrip } from "@/components/shared/beat-strip";
 import { trackVerdictReached, trackVerdictRow } from "@/lib/analytics";
 import { splitConfession, type ConfessionTone } from "@/lib/confession";
 import { EASE_OUT_STRONG } from "@/lib/motion";
+import { useBeatGestures } from "@/lib/use-beat-gestures";
 import type { TestMessages } from "@/lib/types";
 
 interface VerdictScreenProps {
@@ -39,11 +41,18 @@ interface VerdictScreenProps {
  *      reader has seen nothing but red for ninety seconds.
  *   4. The last words are a question, alone on a screen.
  *
- * Advanced by tap, not by timer. A timed sequence that removes content the
- * reader is still reading needs a pause control to satisfy WCAG 2.2.2, and the
- * control undercuts the effect it exists to protect. Tap costs nothing and is
- * better rhetoric besides: the reader turns each page of their own sentence,
+ * Advanced by the reader, not by timer. A timed sequence that removes content
+ * the reader is still reading needs a pause control to satisfy WCAG 2.2.2, and
+ * the control undercuts the effect it exists to protect. A tap costs nothing and
+ * is better rhetoric besides: the reader turns each page of their own sentence,
  * which makes the final tap onto grace a decision rather than an arrival.
+ *
+ * A tap, or whatever else the reader reaches for — a swipe, the wheel, Space,
+ * the arrows. Grace advances the same way, beat for beat, and the gestures are
+ * one hook so the two screens cannot disagree about what "go on" means; see
+ * lib/beat-gestures. The hint below has always said "or press space", and for
+ * four of the five beats Space did nothing: focus sat on a beat that was not a
+ * control, and nothing listened for the key.
  *
  * ── Walking back replays the performance ────────────────────────────────────
  *
@@ -141,6 +150,25 @@ export function VerdictScreen({
   }, []);
 
   /*
+   * Back one beat is the mirror of forward, so it is offered wherever forward
+   * is — a swipe down, ↑ or ←. It never leaves the verdict: the first beat is
+   * the floor, and back from GUILTY is Exit, as it has always been.
+   */
+  const { surfaceProps } = useBeatGestures({
+    beat: beatIndex,
+    canNext: true,
+    canPrev: beatIndex > 0,
+    onMove: (direction) => {
+      if (direction === "prev") {
+        setBeatIndex((i) => Math.max(i - 1, 0));
+        return;
+      }
+      if (isLastBeat) handleBridgeClick();
+      else advance();
+    },
+  });
+
+  /*
    * Focus follows the beat, and there is no live region.
    *
    * aria-live was and remains wrong here: the count's text node changes
@@ -150,7 +178,9 @@ export function VerdictScreen({
    * number readable by navigation exactly as it is today.
    *
    * Skipped on mount so arriving at the verdict does not steal focus from
-   * wherever the reader left it.
+   * wherever the reader left it. Not skipped for the first beat any more: a
+   * reader can walk back to it now, and the beat they left is unmounted, so
+   * focus left there would fall to <body>.
    */
   const beatRef = useRef<HTMLDivElement>(null);
   const doorRef = useRef<HTMLButtonElement>(null);
@@ -158,7 +188,7 @@ export function VerdictScreen({
   useEffect(() => {
     const isMount = firstRenderRef.current;
     firstRenderRef.current = false;
-    if (isMount || beatIndex === 0) return;
+    if (isMount) return;
     // On the last beat the stage is empty — the question lives inside the
     // control — so focus goes to the control, which is also the only thing left
     // to activate.
@@ -258,7 +288,7 @@ export function VerdictScreen({
       <button
         type="button"
         ref={doorRef}
-        onClick={isLastBeat ? handleBridgeClick : advance}
+        {...surfaceProps}
         aria-label={isLastBeat ? undefined : testMessages.nextLabel}
         /* The focus ring is the screen edge because the control is the screen —
            that is honest rather than decorative. Thin and inset, though: at 2px
@@ -306,6 +336,7 @@ export function VerdictScreen({
         ref={beatRef}
         tabIndex={-1}
         key={beat}
+        data-beat-words
         className="relative z-10 flex w-full max-w-md flex-col items-center text-center outline-none sm:max-w-2xl lg:max-w-4xl"
       >
         {beat === "charge" && (
@@ -417,54 +448,18 @@ export function VerdictScreen({
 
       {/* Where the reader is, and the first signal that the colour of the flow
           has changed: the last dot is gold, and it turns a beat before the
-          button appears. */}
-      {/* Both of these sit at the bottom edge, which on a first visit belongs
-          to the fixed consent banner and on an iPhone to the home indicator.
-          --consent-h is published by the banner; both terms resolve to 0 for a
-          returning reader on a device without one. */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-0 bottom-[calc(1.75rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] z-10 flex justify-center gap-2"
-      >
-        {BEATS.map((name, i) => (
-          <span
-            key={name}
-            className={`h-[5px] w-[5px] rounded-full transition-colors duration-300 ${
-              i === beatIndex
-                ? isLastBeat
-                  ? "bg-[#D4A843]"
-                  : "bg-red-500"
-                : "bg-white/15"
-            }`}
-          />
-        ))}
-      </div>
-
-      {/*
-       * The affordance, on every beat including the last, and worded for the
-       * device: a thumb taps, a pointer has nothing to aim at.
-       *
-       * The last beat used to go without, on the reasoning that the beats
-       * before it teach the interaction. That had a hole in it, because a
-       * reader could arrive at that beat cold.
-       *
-       * Persistent rather than revealed after an idle timer. A prompt that
-       * appears once the reader stops moving says "you are doing it wrong" or
-       * "hurry up", and this is the one screen in the app built to be sat with:
-       * the count beat exists so that a number climbs while nothing happens.
-       * Nudging there would break the thing the sequence is for. At 9px and 30%
-       * opacity a permanent label costs the last frame almost nothing, and it
-       * cannot arrive at the wrong moment because it never arrives.
-       */}
-      <p className="absolute inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom)+var(--consent-h,0px))] z-10 text-center font-mono text-[9px] uppercase tracking-[2.4px] text-white/30 sm:text-[11px]">
-        {/* Keyed on the pointer, not the width. At sm: a tablet is 768 wide and
-            touch, so it was being told to click anywhere or press space — the
-            wrong instrument, on the device most likely to be held in two hands
-            for something this long. pointer-coarse is the input, which is what
-            the sentence is actually about. */}
-        <span className="pointer-fine:hidden">{testMessages.verdict.advanceHintTouch}</span>
-        <span className="hidden pointer-fine:inline">{testMessages.verdict.advanceHintPointer}</span>
-      </p>
+          button appears. The hint is on every beat including the last, and
+          that is a fix rather than a default: a reader can arrive at the last
+          beat cold, and the beats before it cannot teach what was never seen. */}
+      <BeatStrip
+        count={BEATS.length}
+        current={beatIndex}
+        currentClassName={isLastBeat ? "bg-[#D4A843]" : "bg-red-500"}
+        hint={{
+          touch: testMessages.verdict.advanceHintTouch,
+          pointer: testMessages.verdict.advanceHintPointer,
+        }}
+      />
     </div>
   );
 }

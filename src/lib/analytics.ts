@@ -222,6 +222,12 @@ export function trackVerdictRow() {
   }
 }
 
+/**
+ * `scrollDepth` keeps its name and its event property so existing dashboards
+ * keep reading it, but grace no longer scrolls: it is the deepest beat reached,
+ * as a percentage of the way from the announcement to the record. That is what
+ * scroll depth was standing in for.
+ */
 export function trackGraceViewed(timeSpent: number, scrollDepth: number) {
   safeCapture("grace_viewed", {
     time_spent_ms: timeSpent,

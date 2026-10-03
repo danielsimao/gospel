@@ -278,12 +278,12 @@ describe("the flow's own walk-back is visible, and only where walking back is le
     );
   });
 
-  it("sits above grace's tap surface, or it is decoration", () => {
+  it("sits above grace's tap surface and its dots, or it is decoration", () => {
     /*
-     * Grace's tap surface is `fixed inset-0 z-30` for most of the visit. A
-     * chip below that answers no clicks for exactly as long as the reader
-     * might want it — the affordance would exist and not work, which is worse
-     * than its absence ever was.
+     * Grace's surface covers the screen for every beat but the last, and its
+     * dots sit above that. A chip below either answers no clicks for exactly
+     * as long as the reader might want it — the affordance would exist and not
+     * work, which is worse than its absence ever was.
      */
     const chip = shell.match(/\{state\.phase === "grace" && \([\s\S]*?<\/button>\s*\)\}/)?.[0] ?? "";
     // The z lives on the shared chassis now, so the guard follows it there —
@@ -294,7 +294,11 @@ describe("the flow's own walk-back is visible, and only where walking back is le
       "the edge chips dropped below grace's tap surface",
     ).toContain("z-40");
     const grace = code(read("src", "components", "grace-screen.tsx"));
-    expect(grace).toMatch(/data-slot="grace-tap-surface"[\s\S]*?z-30/);
+    expect(grace).toMatch(/\{\.\.\.surfaceProps\}[\s\S]*?className="absolute inset-0 z-20 /);
+    const strip = code(read("src", "components", "shared", "beat-strip.tsx"));
+    for (const z of strip.match(/\bz-(\d+)\b/g) ?? []) {
+      expect(Number(z.slice(2)), `the strip's ${z} reaches the chips' layer`).toBeLessThan(40);
+    }
   });
 });
 

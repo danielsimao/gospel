@@ -20,6 +20,7 @@ import {
 import { QUESTION_CONFIGS, TOTAL_QUESTIONS } from "@/lib/questions";
 import { readSession } from "@/lib/test-session-storage";
 import { markTestCompleted } from "@/lib/journey-storage";
+import { setConsentBannerDeferred } from "@/lib/consent";
 import { EASE_OUT_STRONG } from "@/lib/motion";
 import { useIsomorphicLayoutEffect } from "@/lib/use-isomorphic-layout-effect";
 import type { Messages } from "@/lib/types";
@@ -173,6 +174,23 @@ export function GameShell({ messages, locale }: GameShellProps) {
     dispatch({ type: "RESUME_SESSION", session: saved });
     trackTestRestored(saved.phase, locale);
   }, [dispatch, locale, state.selfRating]);
+
+  /*
+   * The consent banner waits from the first question until the reader leaves
+   * /test — the Law, grace and the decision are the screens that need every
+   * glance, and a first-time reader is the one who sees all three with the
+   * banner under them. It is asked on the landing, and again on whatever page
+   * comes next. After the decision is answered it still waits: a profession of
+   * faith is followed by two seconds in which nothing is asked, and a banner
+   * sliding up would ask something.
+   *
+   * Before paint, so a session restored straight into grace never shows a
+   * frame of the banner over it.
+   */
+  useIsomorphicLayoutEffect(() => {
+    setConsentBannerDeferred(state.phase !== "landing");
+  }, [state.phase]);
+  useEffect(() => () => setConsentBannerDeferred(false), []);
 
   useEffect(() => {
     Sentry.addBreadcrumb({
@@ -604,9 +622,9 @@ export function GameShell({ messages, locale }: GameShellProps) {
        * link-driven, walk one real history entry, and let popstate dispatch —
        * so the browser stack and the reducer cannot disagree.
        *
-       * z-40, and that is load-bearing rather than styling: grace's tap
-       * surface is fixed at z-30, so anything lower is a chip that ignores
-       * every click for exactly as long as the surface is up.
+       * z-40, and that is load-bearing rather than styling: the beat screens'
+       * full-screen surface sits at z-20 and their dots at z-30, so anything
+       * lower is a chip that ignores every click for as long as they are up.
        */}
       {state.phase === "grace" && (
         <button
@@ -660,9 +678,10 @@ export function GameShell({ messages, locale }: GameShellProps) {
              * CPU throttling at 4× and 6× barely moved those numbers, which is
              * what identified it: this is a wall-clock animation, not work.
              *
-             * Grace is where it bites, because grace is the only screen in the
-             * flow taller than one viewport — everywhere else there is nothing
-             * to scroll, so nobody could feel it.
+             * It was found on grace when grace was a scroll. Grace is a beat
+             * sequence now, but the window has not stopped mattering: a tap or
+             * a swipe that lands while no screen exists is the first gesture of
+             * the new phase, eaten.
              */
             transition={{ duration: 0.2, ease: EASE_OUT_STRONG }}
             /*
@@ -714,6 +733,7 @@ export function GameShell({ messages, locale }: GameShellProps) {
                   touch: messages.test.verdict.advanceHintTouch,
                   pointer: messages.test.verdict.advanceHintPointer,
                 }}
+                nextLabel={messages.test.nextLabel}
                 /* No onBack, as on the decision screen: the walk-back is shell
                    chrome for both phases now, and neither screen renders one
                    among its own content. */

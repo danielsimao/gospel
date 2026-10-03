@@ -4,11 +4,14 @@ import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import {
   hasAnsweredConsent,
+  isConsentBannerDeferred,
   setConsent,
   subscribeToConsentAnswered,
+  subscribeToConsentDeferral,
 } from "@/lib/consent";
 import { initPostHog } from "@/lib/posthog";
 import { EASE_OUT_STRONG } from "@/lib/motion";
+import { useIsomorphicLayoutEffect } from "@/lib/use-isomorphic-layout-effect";
 
 const COPY = {
   en: {
@@ -67,11 +70,18 @@ export function ConsentBanner() {
   // consent is pending. hasAnsweredConsent counts an explicit accept/decline
   // this session, so the banner still dismisses when storage writes fail
   // (private mode).
-  const visible = useSyncExternalStore(
+  const unanswered = useSyncExternalStore(
     subscribeToConsentAnswered,
     () => !hasAnsweredConsent(),
     () => false,
   );
+  // Held back while the test is in progress — see setConsentBannerDeferred.
+  const deferred = useSyncExternalStore(
+    subscribeToConsentDeferral,
+    isConsentBannerDeferred,
+    () => false,
+  );
+  const visible = unanswered && !deferred;
 
   const lang = typeof document !== "undefined" && document.documentElement.lang.startsWith("pt") ? "pt" : "en";
   const copy = COPY[lang];
@@ -112,6 +122,18 @@ export function ConsentBanner() {
   // `visible` instead, the effect would list a dependency it never reads.
   const measureBanner = useCallback((el: HTMLElement | null) => {
     if (!el) return;
+    /*
+     * A banner element mounting is a new showing, and a banner can now be shown
+     * twice in one visit: held back for the test, then asked again after it.
+     * The previous showing's release and its pending tidy-up belong to that
+     * showing — left in place, the release stops this one publishing its
+     * height, and the timer removes the height it does publish.
+     */
+    releasedRef.current = false;
+    if (cleanupTimerRef.current !== null) {
+      window.clearTimeout(cleanupTimerRef.current);
+      cleanupTimerRef.current = null;
+    }
 
     const publish = () => {
       if (releasedRef.current) return;
@@ -152,6 +174,21 @@ export function ConsentBanner() {
       document.documentElement.style.removeProperty("--consent-h-timing");
     };
   }, []);
+
+  /*
+   * Held back mid-visit: the reserve closes at once rather than on the exit
+   * curve. Deferral happens as the test leaves its landing, so the screen that
+   * reserves the space is already on its way out and the first question has
+   * not mounted — snapping now means the question arrives with its buttons
+   * where they will stay, instead of sliding down as it fades in. Before paint,
+   * for the same reason.
+   */
+  useIsomorphicLayoutEffect(() => {
+    if (!deferred || !unanswered) return;
+    releasedRef.current = true;
+    document.documentElement.style.setProperty("--consent-h-timing", "0s");
+    document.documentElement.style.setProperty("--consent-h", "0px");
+  }, [deferred, unanswered]);
 
   function answer(value: "granted" | "denied") {
     // The reserve starts closing here, as the banner starts leaving — not when
