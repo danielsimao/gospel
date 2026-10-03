@@ -39,12 +39,12 @@ export function trackGraceBeatRevealed(beatIndex: number) {
 }
 
 /**
- * A reader moved grace on by tapping rather than scrolling.
+ * A reader moved grace on a beat by tapping.
  *
- * The tap surface exists on a hunch — that five taps through the verdict train
- * a gesture grace then abandons — and it costs text selection on that screen.
- * This is how we find out whether the hunch was right and whether the cost is
- * being paid for something.
+ * Grace answers a tap, a swipe, the wheel and the keyboard alike, one beat per
+ * gesture. Against grace_beat_revealed this says how many of those moves were
+ * taps — which gesture readers actually reach for, and so which one the hint
+ * should keep naming.
  */
 export function trackGraceTapAdvance() {
   safeCapture("grace_tap_advance");

@@ -1,5 +1,6 @@
 "use client";
 
+import { m } from "framer-motion";
 import type { RecordRow } from "@/lib/confession";
 
 interface GraceRecordProps {
@@ -17,6 +18,14 @@ interface GraceRecordProps {
     none: string;
     paid: string;
   };
+  /**
+   * Whether the stamp has landed. Grace holds it back for a moment on a first
+   * arrival so the record is read before it is stamped, then sets this and the
+   * stamp lands; a reader returning to their own record gets it already
+   * stamped. Defaults to stamped, so the record is never shown unpaid by a
+   * caller that does not stage it.
+   */
+  stamped?: boolean;
 }
 
 const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
@@ -55,7 +64,7 @@ const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
  * is the exact instinct the six questions exist to close off — the same reason
  * the reader's self-rating is testimony and never a measurement.
  */
-export function GraceRecord({ rows, messages }: GraceRecordProps) {
+export function GraceRecord({ rows, messages, stamped = true }: GraceRecordProps) {
   return (
     <figure className="m-0">
       <figcaption className="mb-3 font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/70">
@@ -162,17 +171,30 @@ export function GraceRecord({ rows, messages }: GraceRecordProps) {
          * beneath it says in flowing text — so it is hidden from assistive
          * technology rather than announced twice out of order.
          *
-         * Rotated with a transform, which is safe here because nothing framer
-         * animates touches this element; the codebase's margin-not-transform
-         * rule is about elements that are also being animated on `y`.
+         * It lands rather than fades: scaled down onto the record from above,
+         * on a spring that settles with a small overshoot, the way a stamp
+         * strikes paper. Unstamped it is held at opacity 0 in its own place, so
+         * the record does not move when it lands. `initial={false}` means a
+         * record that is already stamped when it mounts — a reader coming back
+         * to it — shows the stamp where it is, with no second strike. Under
+         * reduced motion framer drops the scale and keeps the fade.
+         *
+         * The rotation stays on the inner element. Tailwind's rotate is the
+         * `rotate` property, framer writes `transform`; kept on separate
+         * elements they cannot overwrite each other.
          */}
         <div className="relative mt-5 flex justify-end">
-          <span
+          <m.span
             aria-hidden="true"
-            className="-rotate-[7deg] rounded border-2 border-[#D4A843]/85 bg-[#D4A843]/[0.07] px-3 py-1.5 font-mono text-[13px] font-bold uppercase tracking-[2px] text-[#D4A843] sm:text-[15px]"
+            initial={false}
+            animate={stamped ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.6 }}
+            transition={{ type: "spring", stiffness: 520, damping: 26 }}
+            className="inline-block"
           >
-            {messages.paid}
-          </span>
+            <span className="block -rotate-[7deg] rounded border-2 border-[#D4A843]/85 bg-[#D4A843]/[0.07] px-3 py-1.5 font-mono text-[13px] font-bold uppercase tracking-[2px] text-[#D4A843] sm:text-[15px]">
+              {messages.paid}
+            </span>
+          </m.span>
         </div>
       </div>
 

@@ -43,3 +43,37 @@ export function subscribeToConsentAnswered(callback: () => void): () => void {
 export function hasAnsweredConsent(): boolean {
   return answeredThisSession || getConsent() !== "pending";
 }
+
+/*
+ * Whether the banner is being held back by a screen that asked it to wait.
+ *
+ * The test flow asks, from the first question until the reader leaves /test:
+ * the banner sat under every beat of the Law and of grace for exactly the
+ * readers meeting them for the first time, and after the content it was the
+ * most clickable-looking thing on the screen. It is asked on the test's own
+ * landing instead, and again on whatever page follows the test.
+ *
+ * Nothing is tracked in the meantime — PostHog only starts on an answer — so
+ * holding the question back holds back analytics for those readers, not their
+ * privacy. Module state, because the banner lives in the locale layout and the
+ * test in a page beneath it, with no provider in common.
+ */
+let bannerDeferred = false;
+const deferralListeners = new Set<() => void>();
+
+export function setConsentBannerDeferred(deferred: boolean): void {
+  if (bannerDeferred === deferred) return;
+  bannerDeferred = deferred;
+  for (const listener of deferralListeners) listener();
+}
+
+export function isConsentBannerDeferred(): boolean {
+  return bannerDeferred;
+}
+
+export function subscribeToConsentDeferral(callback: () => void): () => void {
+  deferralListeners.add(callback);
+  return () => {
+    deferralListeners.delete(callback);
+  };
+}

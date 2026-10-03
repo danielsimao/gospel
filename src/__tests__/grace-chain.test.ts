@@ -3,26 +3,54 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 /**
- * Grace is one scroll, and these are the properties that make that safe.
+ * Grace is a beat sequence — the verdict's instrument, in gold — and these are
+ * the properties that make that safe.
  *
- * This file used to pin the accordion — which rung was open, and how long the
- * continue pill waited. Both are gone: the chain was five taps in a flow that
- * already cost five more in the verdict, and every tap is a place to leave. The
- * assertions below replace them rather than sit alongside them, because a test
- * describing a mechanic that no longer exists is worse than no test.
+ * This file has pinned two mechanics before this one. First the accordion: one
+ * rung open, three greyed labels, the argument visibly withheld — the Law's
+ * instrument borrowed for grace. Then a scroll: everything on one long page,
+ * with a tap surface laid over it. The scroll could be skimmed in three
+ * flicks and about five seconds, past "That someone is Jesus Christ", and an
+ * ordinary swipe landed between two movements. The beats replace both, and the
+ * assertions below replace theirs rather than sit alongside them, because a
+ * test describing a mechanic that no longer exists is worse than no test.
  *
  * Source assertions in the idiom of stage-css.test.ts: this is JSX and vitest
- * runs in `environment: "node"`, so there is no layout or observer here.
+ * runs in `environment: "node"`, so there is no layout here to observe.
  */
 const ROOT = join(import.meta.dirname, "..", "..");
 const grace = readFileSync(join(ROOT, "src", "components", "grace-screen.tsx"), "utf8");
+const en = JSON.parse(readFileSync(join(ROOT, "src", "messages", "en.json"), "utf8"));
 
-/** The comments narrate the mechanic that was removed and quote its names, so
-    every assertion reads the file with comments stripped. */
+/** The comments narrate the mechanics that were removed and quote their names,
+    so every assertion reads the file with comments stripped. */
 const code = grace.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
 
-describe("grace is a scroll, not a staircase", () => {
-  it("keeps no gate between the announcement and the decision", () => {
+const BEATS = (code.match(/const BEATS = \[([^\]]*)\]/)?.[1] ?? "").split(",").filter((b) => b.trim());
+
+describe("grace is one beat at a time", () => {
+  it("renders every beat as its own frame, and only the current one", () => {
+    expect(BEATS.length, "the beat list is gone").toBeGreaterThan(0);
+    for (let n = 0; n < BEATS.length; n++) {
+      // One frame per beat, each behind its own condition — two frames for one
+      // beat would put two screens' words on one screen.
+      expect(code.match(new RegExp(`data-beat="${n}"`, "g")) ?? [], `beat ${n}`).toHaveLength(1);
+    }
+    expect(code).toMatch(/\{beat === LAST_BEAT && \(/);
+    for (let n = 0; n < BEATS.length - 1; n++) {
+      expect(code, `beat ${n} is not conditional`).toContain(`{beat === ${n} && (`);
+    }
+  });
+
+  it("carries the announcement, the four movements, the promise and the record", () => {
+    // The four movements map one-to-one onto the copy's beats; the frame adds
+    // the announcement before them and the scripture and the record after.
+    const movements = Number(code.match(/const MOVEMENTS = (\d+)/)?.[1]);
+    expect(movements).toBe(en.grace.beats.length);
+    expect(BEATS.length).toBe(movements + 3);
+  });
+
+  it("keeps no greyed rung — every beat is whole when it arrives", () => {
     // The accordion's whole vocabulary. Any of these coming back means a rung
     // is being withheld again, which is the Law's mechanic borrowed for grace.
     for (const gone of ["allBeatsRevealed", "activeIndex", "revealedCount", "PILL_DELAY_MS"]) {
@@ -30,86 +58,124 @@ describe("grace is a scroll, not a staircase", () => {
     }
   });
 
-  it("leaves exactly one control on the screen, and it goes to the decision", () => {
-    expect(code.match(/onClick=\{handleContinue\}/g) ?? []).toHaveLength(1);
-    expect(code).toContain('dispatch({ type: "SHOW_INVITATION" })');
-  });
-});
-
-describe("the scroll reveal cannot move the page", () => {
-  it("animates opacity and transform only", () => {
-    // A reveal that animated height or max-height would change the length of
-    // the page under a moving thumb. The transition list is the guard.
-    const transition = code.match(/transition-\[[^\]]+\]/g) ?? [];
-    expect(transition.length).toBeGreaterThan(0);
-    for (const t of transition) {
-      expect(t, `${t} animates a layout property`).not.toMatch(/height|width|padding|margin/);
+  it("and no scroll machinery either", () => {
+    // The scroll's own vocabulary: an observer revealing sections, a hop
+    // between them, a chevron saying there is more below.
+    for (const gone of ["IntersectionObserver", "advanceSection", "ScrollCue", "REVEAL_SECTIONS", "svh"]) {
+      expect(code, `"${gone}" is back in grace-screen`).not.toContain(gone);
     }
   });
 
-  it("hides nothing when there is no observer to bring it back", () => {
-    // Server-rendered HTML carries the whole argument, and a reader without JS
-    // — or without IntersectionObserver — must get the gospel, not a blank
-    // page. Sections start visible; only the measured off-screen ones are
-    // hidden, and the bail-out has to come before that measurement.
-    expect(code).toMatch(/useState<boolean\[\]>\(\(\) =>\s*new Array\(REVEAL_SECTIONS\)\.fill\(true\)/);
-    const bailOut = code.indexOf('if (typeof IntersectionObserver === "undefined") return;');
-    const firstHide = code.indexOf("setShown(");
-    expect(bailOut).toBeGreaterThan(-1);
-    expect(bailOut).toBeLessThan(firstHide);
+  it("animates opacity and transform only", () => {
+    // An arriving beat must never change the page's size under the reader.
+    const entrances = code.slice(code.indexOf("const BEAT_ENTRANCE"), code.indexOf("const BEAT_FRAME"));
+    expect(entrances.length, "could not isolate the entrances").toBeGreaterThan(0);
+    expect(entrances).not.toMatch(/height|width|padding|margin|top:|left:/);
+    // The frame itself only fades. A transform on it would make it the
+    // containing block for the beat's fixed ground and pin that ground to the
+    // frame — the dark band across the courtroom, back again.
+    const frame = entrances.slice(0, entrances.indexOf("const WORDS_ENTRANCE"));
+    expect(frame).toMatch(/opacity/);
+    expect(frame).not.toMatch(/\by:|\bx:|scale/);
+  });
+});
+
+describe("the end of grace is a brake, not a slide", () => {
+  it("leaves exactly one forward control at the end, and it goes to the decision", () => {
+    expect(code.match(/onClick=\{handleContinue\}/g) ?? []).toHaveLength(1);
+    expect(code).toContain('dispatch({ type: "SHOW_INVITATION" })');
   });
 
-  it("breaks the turn out of its column with a margin, not a transform", () => {
-    // The codebase's documented idiom: an inline transform on an element framer
-    // also animates silently wins over the animation.
-    expect(code).toContain("mx-[calc(50%-50vw)]");
-    expect(code).not.toMatch(/translateX\(-50%\)|scaleX/);
+  it("drops the tap surface and the hint on the record", () => {
+    // The reader has tapped the middle of the screen for a dozen beats; on the
+    // last one the middle does nothing and the way on has to be found.
+    expect(code).toMatch(/\{beat < LAST_BEAT && \(\s*<button[\s\S]*?\{\.\.\.surfaceProps\}/);
+    expect(code).toMatch(/hint=\{beat < LAST_BEAT \? advanceHint : null\}/);
+    expect(code).toMatch(/canNext: beat < LAST_BEAT/);
+  });
+
+  it("holds the way on until the stamp has landed, by visibility and not opacity alone", () => {
+    const stamp = Number(code.match(/const STAMP_DELAY_MS = (\d+)/)?.[1]);
+    const wayOn = Number(code.match(/const WAY_ON_DELAY_MS = (\d+)/)?.[1]);
+    expect(stamp).toBeGreaterThan(0);
+    expect(wayOn).toBeGreaterThan(stamp);
+    // A button at opacity 0 is an invisible click target.
+    expect(code).toMatch(/recordStage === "open" \? "visible opacity-100" : "invisible opacity-0"/);
+  });
+
+  it("lands the stamp on its own, never on the reader's tap", () => {
+    /*
+     * docs/METHOD.md, "No decisionism": nothing may promise that a tap saves.
+     * A tap that produced "Paid in full" on the reader's record would. The
+     * only step to "stamped" is a timer, and the gesture handler never touches
+     * the record's stage.
+     */
+    expect(code).not.toMatch(/setRecordStage\("stamped"\)/);
+    expect(code).toMatch(/recordStage === "waiting" \? "stamped" : "open"/);
+    expect(code).toMatch(/setTimeout\(\(\) => setRecordStage\(next\), delay\)/);
+    const onMove = code.slice(code.indexOf("onMove: (direction, input) =>"), code.indexOf("});", code.indexOf("onMove: (direction, input) =>")));
+    expect(onMove.length, "could not isolate the gesture handler").toBeGreaterThan(0);
+    expect(onMove).not.toMatch(/setRecordStage/);
+  });
+
+  it("shows a returning reader their record already stamped", () => {
+    // From the decision, or a beat back and forward: no second wait, no second
+    // strike — as the decision screen does for a reader returning to an answer.
+    expect(code).toMatch(/if \(target === LAST_BEAT\) setRecordStage\(firstTime \? "waiting" : "open"\)/);
+  });
+});
+
+describe("re-reading: the dots go back, never past", () => {
+  it("lets a dot reach only a beat already reached", () => {
+    expect(code).toMatch(/function jumpTo\(target: number\) \{\s*if \(target > furthest\) return;/);
+    expect(code).toMatch(/const furthest = Math\.max\(reached - 1, beat\)/);
+    expect(code).toMatch(/onSelect: jumpTo/);
+  });
+
+  it("opens every dot once the decision has been reached", () => {
+    // The decision's "← Grace" chip lands on the first beat with the whole
+    // argument a tap away — and the way back to the decision two taps away.
+    expect(code).toMatch(/const reached = state\.invitationReached \? BEATS\.length : clampReached\(/);
+  });
+
+  it("clamps the persisted count before trusting it", () => {
+    // It comes out of storage. Past the end it would open beats nobody has
+    // seen; corrupted it could be anything.
+    expect(code).toMatch(/Math\.min\(Math\.max\(Math\.trunc\(count\) \|\| 0, 0\), BEATS\.length\)/);
+  });
+
+  it("names the dots with strings that already exist", () => {
+    const navigation = code.slice(code.indexOf("navigation={{"));
+    for (const label of ["messages.label", "messages.beats.map", "messages.scriptureRef", "messages.record.eyebrow"]) {
+      expect(navigation, `${label} no longer names a dot`).toContain(label);
+    }
+  });
+
+  it("starts every arrival at the announcement", () => {
+    expect(code).toMatch(/const \[beat, setBeat\] = useState\(0\)/);
   });
 });
 
 describe("the funnel still reports", () => {
-  it("counts a movement as reached when it is scrolled into view", () => {
-    expect(code).toMatch(/trackGraceBeatRevealed\(index\)/);
-    expect(code).toMatch(/dispatch\(\{ type: "REVEAL_GRACE_BEAT", count: index \+ 1 \}\)/);
+  it("reports a movement the first time it is reached, and never again", () => {
+    // In the handler, not an effect: "first time" is a fact about the moment
+    // of arriving, and an effect that runs twice would decide it twice.
+    const goTo = code.slice(code.indexOf("function goTo("), code.indexOf("function jumpTo("));
+    expect(goTo).toMatch(/const firstTime = target >= reached;/);
+    expect(goTo).toMatch(/if \(firstTime\) \{[\s\S]*trackGraceBeatRevealed\(target - FIRST_MOVEMENT\)/);
+    expect(goTo).toMatch(/dispatch\(\{ type: "REVEAL_GRACE_BEAT", count: target \+ 1 \}\)/);
   });
 
-  it("reports each movement once, however often it re-enters the viewport", () => {
-    // Scrolling up and back down re-fires an IntersectionObserver. The reducer
-    // guard is monotonic so the dispatch is harmless, but the analytics call is
-    // not idempotent.
-    expect(code).toMatch(/reportedRef\.current\.has\(index\)/);
-    expect(code).toMatch(/reportedRef\.current\.add\(index\)/);
+  it("reports only the four movements as beats", () => {
+    expect(code).toMatch(/target >= FIRST_MOVEMENT && target < FIRST_MOVEMENT \+ MOVEMENTS/);
+    expect(Number(code.match(/const FIRST_MOVEMENT = (\d+)/)?.[1])).toBe(1);
   });
 
-  it("reveals every section the page actually renders", () => {
-    // REVEAL_SECTIONS sizes the `shown` array. A section whose index sits past
-    // the end of it is never brought back after the first measurement hides it,
-    // so it stays at opacity 0 for the whole visit — silently, with no error and
-    // no failing assertion anywhere else. The record was added between the
-    // scripture and the way on and this count had to move with it.
-    const revealSections = Number(code.match(/const REVEAL_SECTIONS = (\d+)/)?.[1]);
-    const expected = Array.from({ length: revealSections }, (_, i) => i);
-    const indicesOf = (pattern: RegExp) =>
-      (code.match(pattern) ?? [])
-        .map((m) => Number(m.match(/\d+/)![0]))
-        .sort((a, b) => a - b);
-
-    // The refs are what the observer actually walks — it indexes
-    // sectionRefs.current by position, so a gap here leaves a slot nothing ever
-    // fills and that section stays at opacity 0 for the whole visit.
-    expect(indicesOf(/setSectionRef\((\d+)\)/g)).toEqual(expected);
-    // data-reveal drives nothing at runtime; it exists so a section can be
-    // identified in the inspector. Pinned anyway, because an attribute that has
-    // drifted from its ref is worse than no attribute — it misleads the next
-    // person debugging exactly the failure above.
-    expect(indicesOf(/data-reveal="(\d+)"/g)).toEqual(expected);
+  it("counts a tap only when it was a tap that moved the reader on", () => {
+    expect(code).toMatch(/goTo\(beat \+ 1\);\s*if \(input === "tap"\) trackGraceTapAdvance\(\)/);
   });
 
-  it("covers every beat the copy carries", () => {
-    // BEAT_SECTIONS gates which sections report. If it drifts below the number
-    // of beats, the last movements go dark in the funnel and nothing else fails.
-    const beatSections = Number(code.match(/const BEAT_SECTIONS = (\d+)/)?.[1]);
-    const en = JSON.parse(readFileSync(join(ROOT, "src", "messages", "en.json"), "utf8"));
-    expect(beatSections).toBe(en.grace.beats.length);
+  it("measures how far in the reader got, now that there is no scroll depth", () => {
+    expect(code).toMatch(/trackGraceViewed\(Date\.now\(\) - start, Math\.round\(\(deepest\.current \/ LAST_BEAT\) \* 100\)\)/);
   });
 });

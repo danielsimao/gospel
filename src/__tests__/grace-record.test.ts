@@ -135,7 +135,23 @@ describe("what the record refuses to show", () => {
   it("hides the stamp from assistive technology and says it in text instead", () => {
     // The stamp is a rotated graphic repeating the line beneath it. Announced,
     // it would arrive twice and out of reading order.
-    expect(code).toMatch(/aria-hidden="true"[\s\S]{0,400}messages\.paid/);
+    // The window is wider than the stamp's own markup needs only because the
+    // stamp is now two elements — the one framer lands, and the rotated one
+    // inside it — and the hidden one is the outer.
+    expect(code).toMatch(/<m\.span\s+aria-hidden="true"[\s\S]{0,600}messages\.paid/);
     expect(code).toMatch(/className="sr-only">\{messages\.paid\}/);
+  });
+
+  it("lands the stamp without moving the record, and never shows it unpaid by default", () => {
+    // Held at opacity 0 in its own place until it lands, so the record does
+    // not shift when it does; a caller that does not stage it gets it stamped.
+    expect(code).toMatch(/stamped = true/);
+    expect(code).toMatch(/animate=\{stamped \? \{ opacity: 1, scale: 1 \} : \{ opacity: 0/);
+    // Already stamped on mount means no second strike for a returning reader.
+    expect(code).toMatch(/initial=\{false\}/);
+    // The rotation and the landing on separate elements: Tailwind's rotate and
+    // framer's transform would otherwise contend for one element.
+    const stamp = code.slice(code.indexOf("<m.span"));
+    expect(stamp.indexOf("-rotate-[7deg]")).toBeGreaterThan(stamp.indexOf("<span"));
   });
 });
