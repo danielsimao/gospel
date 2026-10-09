@@ -42,12 +42,38 @@ describe("grace is one beat at a time", () => {
     }
   });
 
-  it("carries the announcement, the four movements, the promise and the record", () => {
-    // The four movements map one-to-one onto the copy's beats; the frame adds
-    // the announcement before them and the scripture and the record after.
-    const movements = Number(code.match(/const MOVEMENTS = (\d+)/)?.[1]);
-    expect(movements).toBe(en.grace.beats.length);
-    expect(BEATS.length).toBe(movements + 3);
+  it("carries every movement exactly once, on five beats", () => {
+    /*
+     * The announcement, the courtroom (Movements I and II, the penalty and the
+     * payment told in one breath, as Living Waters tells it), the payer, the
+     * response with John 3:16 under it, and the record. Fewer beats, not
+     * fewer words: every movement in the copy is still on a screen, and the
+     * map that says which is the same one the funnel reports from.
+     */
+    expect(BEATS.length).toBe(5);
+    const map = code.slice(code.indexOf("const MOVEMENTS_ON_BEAT"), code.indexOf("};", code.indexOf("const MOVEMENTS_ON_BEAT")));
+    const carried = [...map.matchAll(/\d+: \[([\d, ]+)\]/g)].flatMap((m) => m[1]!.split(",").map(Number));
+    expect(carried.sort((a, b) => a - b)).toEqual(Array.from({ length: en.grace.beats.length }, (_, i) => i));
+  });
+
+  it("tells the courtroom penalty first, then the payment, on one screen", () => {
+    // METHOD.md: without the courtroom, "someone pays" has no venue — and on
+    // one screen the venue is literally above the payment.
+    const courtroom = code.slice(code.indexOf('data-beat="1"'), code.indexOf("</m.section>", code.indexOf('data-beat="1"')));
+    const penalty = courtroom.indexOf("{problem?.headline}");
+    const payment = courtroom.indexOf("{payment?.headline}");
+    expect(penalty).toBeGreaterThan(-1);
+    expect(payment).toBeGreaterThan(penalty);
+  });
+
+  it("keeps John 3:16, under Repent and trust, rather than cutting it", () => {
+    // It is the scripture behind that movement's last sentence, and still the
+    // only "perish" and "everlasting" in the flow — METHOD.md, Known gaps.
+    const response = code.slice(code.indexOf('data-beat="3"'), code.indexOf("</m.section>", code.indexOf('data-beat="3"')));
+    expect(response).toContain("{response?.headline}");
+    expect(response).toContain("{messages.scripture}");
+    expect(response.indexOf("{messages.scripture}")).toBeGreaterThan(response.indexOf("{response?.subtitle}"));
+    expect(code.match(/\{messages\.scripture\}/g) ?? []).toHaveLength(1);
   });
 
   it("keeps no greyed rung — every beat is whole when it arrives", () => {
@@ -144,11 +170,13 @@ describe("re-reading: the dots go back, never past", () => {
     expect(code).toMatch(/Math\.min\(Math\.max\(Math\.trunc\(count\) \|\| 0, 0\), BEATS\.length\)/);
   });
 
-  it("names the dots with strings that already exist", () => {
+  it("names the dots with strings that already exist, one per beat", () => {
     const navigation = code.slice(code.indexOf("navigation={{"));
-    for (const label of ["messages.label", "messages.beats.map", "messages.scriptureRef", "messages.record.eyebrow"]) {
+    const labels = ["messages.label", "problem?.label", "payer?.label", "response?.label", "messages.record.eyebrow"];
+    for (const label of labels) {
       expect(navigation, `${label} no longer names a dot`).toContain(label);
     }
+    expect(labels).toHaveLength(BEATS.length);
   });
 
   it("starts every arrival at the announcement", () => {
@@ -162,13 +190,14 @@ describe("the funnel still reports", () => {
     // of arriving, and an effect that runs twice would decide it twice.
     const goTo = code.slice(code.indexOf("function goTo("), code.indexOf("function jumpTo("));
     expect(goTo).toMatch(/const firstTime = target >= reached;/);
-    expect(goTo).toMatch(/if \(firstTime\) \{[\s\S]*trackGraceBeatRevealed\(target - FIRST_MOVEMENT\)/);
+    expect(goTo).toMatch(/if \(firstTime\) \{[\s\S]*for \(const movement of MOVEMENTS_ON_BEAT\[target\] \?\? \[\]\) trackGraceBeatRevealed\(movement\)/);
     expect(goTo).toMatch(/dispatch\(\{ type: "REVEAL_GRACE_BEAT", count: target \+ 1 \}\)/);
   });
 
-  it("reports only the four movements as beats", () => {
-    expect(code).toMatch(/target >= FIRST_MOVEMENT && target < FIRST_MOVEMENT \+ MOVEMENTS/);
-    expect(Number(code.match(/const FIRST_MOVEMENT = (\d+)/)?.[1])).toBe(1);
+  it("reports the four movements, and the courtroom reports two", () => {
+    // `grace_beat_revealed` keeps its four indices, so the funnel stays
+    // comparable with what was measured before the courtroom was merged.
+    expect(code).toMatch(/1: \[0, 1\],\s*2: \[2\],\s*3: \[3\],/);
   });
 
   it("counts a tap only when it was a tap that moved the reader on", () => {

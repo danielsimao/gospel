@@ -31,7 +31,7 @@ const prompts = read("docs", "graphics", "PROMPTS.md");
 
 describe("what is served, and what is not", () => {
   it("ships both formats for everything the pages reference", () => {
-    for (const name of ["paper", "fingerprint", "dock"]) {
+    for (const name of ["paper", "fingerprint"]) {
       for (const ext of ["avif", "webp"]) {
         expect(
           existsSync(join(ROOT, "public", "graphics", `${name}.${ext}`)),
@@ -48,11 +48,14 @@ describe("what is served, and what is not", () => {
      * tally marks joined them when the score band's own texture was retired
      * for the full-bleed red glow (see passed-band.tsx's own comment) — its
      * last caller is gone, so it is parked rather than served unreferenced.
+     * The dock followed when grace went to five beats: Movement I joined
+     * Movement II on the courtroom's own ground, and the dock was the only
+     * thing behind Movement I alone.
      * Parked beside their prompts, not served: an unreferenced file in
      * public/ is an invitation for the next caller to wire it without
      * re-measuring.
      */
-    for (const name of ["stone", "dots", "tally"]) {
+    for (const name of ["stone", "dots", "tally", "dock"]) {
       expect(
         existsSync(join(ROOT, "public", "graphics", `${name}.avif`)),
         `${name} is served but has no approved placement`,
@@ -94,7 +97,7 @@ describe("what is served, and what is not", () => {
     // dropped out of this list when its last caller was retired — see the
     // parked-assets test above. The cap moved 500 -> 600 to hold all three
     // additions: real weight from two real fixes, not drift.
-    const total = ["paper", "fingerprint", "door-decision", "dock"].flatMap((n) => [`${n}.avif`, `${n}.webp`])
+    const total = ["paper", "fingerprint", "door-decision"].flatMap((n) => [`${n}.avif`, `${n}.webp`])
       .concat("door.jpg", "fingerprint.jpg", "courtroom.avif", "courtroom-wide.avif", "door-decision-wide.avif", "door-decision-wide.webp")
       .reduce((sum, f) => sum + kb("public", "graphics", f), 0);
     expect(total, `served graphics total ${total.toFixed(0)} KB`).toBeLessThan(600);
@@ -385,46 +388,48 @@ describe("each graphic stays where its meaning is", () => {
 
 describe("grace's non-hinge movements", () => {
   const grace = strip(read("src", "components", "grace-screen.tsx"));
-  /** One beat's markup. Grace renders one beat at a time now, each its own
-      `data-beat` frame; Movement I is beat 1, III is 3 and IV is 4. */
+  /** One beat's markup. Grace renders one beat at a time, each its own
+      `data-beat` frame: the courtroom (Movements I and II) is beat 1, III is
+      beat 2 and IV is beat 3. */
   const beatOf = (n: number) => {
     const start = grace.indexOf(`data-beat="${n}"`);
     expect(start, `beat ${n} is missing`).toBeGreaterThan(-1);
     return grace.slice(start, grace.indexOf("</m.section>", start));
   };
 
-  it("ships the dock, and only for Movement I", () => {
-    expect(grace).toMatch(/url\(\/graphics\/dock\.avif\)/);
-    // Single-use, same discipline as the courtroom shaft and the decision
-    // door — a background this specific belongs to one screen.
-    for (const name of ["home-shell", "verdict-screen", "invitation-screen", "grace-record"]) {
-      expect(
-        strip(read("src", "components", `${name}.tsx`)),
-        `${name} grew the dock`,
-      ).not.toMatch(/dock\.avif/);
-    }
+  it("no longer serves the dock — the courtroom carries Movement I", () => {
+    expect(grace).not.toMatch(/dock\.(avif|webp)/);
+    // The courtroom is the ground of the merged beat, and of nothing else.
+    expect(beatOf(1)).toMatch(/url\(\/graphics\/courtroom\.avif\)/);
+    expect(beatOf(1)).toMatch(/url\(\/graphics\/courtroom-wide\.avif\)/);
   });
 
-  it("keeps the turn as the one full-strength hinge — I, III and IV stay dimmed", () => {
+  it("keeps the courtroom as the one full-strength hinge — III and IV stay dimmed", () => {
     /*
      * Giving every movement the courtroom's own full-bleed treatment would
-     * flatten the one moment that treatment exists to mark. I, III and IV
-     * are atmosphere: radial-masked, low-opacity, same idiom as the
-     * homepage's band textures — never the turn's unmasked full-bleed cover.
+     * flatten the one moment that treatment exists to mark. III and IV are
+     * atmosphere: radial-masked, low-opacity, same idiom as the homepage's
+     * band textures — never the courtroom's unmasked full-bleed cover.
      */
     const maskCount = grace.match(/maskImage: "radial-gradient/g)?.length ?? 0;
-    expect(maskCount, "expected exactly 3 masked movement backgrounds").toBe(3);
+    expect(maskCount, "expected exactly 2 masked movement backgrounds").toBe(2);
+    expect(beatOf(1), "the courtroom was dimmed like the others").not.toMatch(/maskImage/);
     expect(grace).toMatch(/opacity: 0\.16,\s*\n\s*maskImage/);
   });
 
-  it("colours Movement I red and Movements III/IV gold, never the reverse", () => {
-    // Still the Law in Movement I (see that section's own doc comment) —
-    // gold there would spend grace's colour before the turn has happened.
-    const movementI = beatOf(1);
-    expect(movementI).toMatch(/rgba\(239,68,68,0\.35\)/);
-    expect(movementI).not.toMatch(/rgba\(212,168,67/);
+  it("sets the Law's half of the courtroom in red, its payment in gold, and III/IV in gold", () => {
+    // The courtroom is the one beat where both colours meet — and the Law's
+    // half comes first, in the Law's colour, so gold is not spent before the
+    // turn has happened. Gold first would be grace offered before the Law.
+    const courtroom = beatOf(1);
+    const red = courtroom.indexOf("text-red-400/70");
+    const gold = courtroom.indexOf("text-[#D4A843]");
+    expect(red, "the Law's half lost its red").toBeGreaterThan(-1);
+    expect(gold, "the payment lost its gold").toBeGreaterThan(-1);
+    expect(red, "gold arrives before the Law in the courtroom").toBeLessThan(gold);
+    expect(courtroom.slice(0, gold)).toContain("border-red-500/30");
 
-    for (const movement of [beatOf(3), beatOf(4)]) {
+    for (const movement of [beatOf(2), beatOf(3)]) {
       expect(movement).toMatch(/rgba\(212,168,67,0\.35\)/);
       expect(movement).not.toMatch(/rgba\(239,68,68/);
     }
@@ -439,7 +444,7 @@ describe("grace's non-hinge movements", () => {
   });
 
   it("never takes a click, and carries no meaning a reader needs", () => {
-    for (const n of [1, 3, 4]) {
+    for (const n of [1, 2, 3]) {
       const section = beatOf(n);
       expect(section, `beat ${n} background is missing aria-hidden`).toMatch(/aria-hidden="true"/);
       expect(section, `beat ${n} background is missing pointer-events-none`).toMatch(/pointer-events-none/);
@@ -455,7 +460,7 @@ describe("grace's non-hinge movements", () => {
      * 12px top padding as a dark band across the courtroom. Fixed to the
      * viewport, a beat's ground is the screen's ground.
      */
-    for (const n of [1, 2, 3, 4]) {
+    for (const n of [1, 2, 3]) {
       const grounds = beatOf(n).match(/<div\s+aria-hidden="true"\s+className="[^"]*"/g) ?? [];
       expect(grounds.length, `beat ${n} has no ground`).toBeGreaterThan(0);
       for (const ground of grounds) {
@@ -475,7 +480,7 @@ describe("grace's non-hinge movements", () => {
      * claws back real contrast without changing colour or size, which
      * would be a sitewide design change well outside this PR.
      */
-    for (const n of [1, 3, 4]) {
+    for (const n of [1, 2, 3]) {
       const section = beatOf(n);
       const eyebrowP = section.slice(section.indexOf("<p"), section.indexOf("</p>"));
       expect(eyebrowP, `beat ${n} eyebrow lost its contrast shadow`).toMatch(

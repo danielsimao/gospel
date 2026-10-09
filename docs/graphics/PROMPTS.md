@@ -62,7 +62,7 @@ Style: photographic, high contrast, not illustration. Send it darker and more co
 
 ## 31 · O banco dos réus — the dock (grace, Movement I)
 
-**Ships as:** `public/graphics/dock.avif` + `.webp` — grace's Movement I ("Justice demands death"), dimmed background, red-tinted in code.
+**Ships as:** parked in `docs/graphics/assets/dock.avif` + `.webp`. It served grace's Movement I ("Justice demands death") as a dimmed, red-tinted background until grace went to five beats and Movement I joined Movement II on the courtroom's own ground, which already runs red to gold. Nothing references it now; it is kept so a future placement starts from the measured asset rather than a regeneration.
 
 **Where it goes:** behind grace's first movement — `problem?.headline` in `grace-screen.tsx`, the one movement still in the Law's colour ("Still red, because it is still the Law", see that section's own comment). Movements III and IV already have images (see §32, reusing who-is-jesus and what-is-repentance); this was the one movement with neither an image nor an existing topic cover to borrow, since no learn topic argues specifically "you stand accused and cannot pay." The dock is the plain legal term for where the accused stands — not a decorative choice, the same register as "the reader's own charge sheet" elsewhere on this site. Empty, so the reader supplies themselves, the same move the mirror cover (§9) makes for `am-i-a-good-person`. No gavel, no bench, no judge: those name the scene for someone watching it; this puts the reader inside it.
 
