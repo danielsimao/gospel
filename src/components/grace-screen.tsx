@@ -86,8 +86,23 @@ interface GraceScreenProps {
  * next one. That is pacing, and it is how the courtroom analogy is actually
  * delivered: out loud, one sentence after another. Nobody skims a speaker.
  *
- * The number of taps did not change. A reader who tapped through the scroll
- * tapped six times; they still do. What went is the skim.
+ * ── Five beats, not seven ──────────────────────────────────────────────────
+ *
+ * Measured against how Living Waters delivers the same argument out loud: the
+ * Law slowly — a question, a pause, the listener pronouncing their own
+ * verdict — and the gospel in one breath, the courtroom told straight through.
+ * The verdict already keeps that pace, one tap for each pause. Grace had split
+ * the one story further than they do, so two beats went:
+ *
+ *   - The penalty and the payment share the courtroom. "But someone steps into
+ *     the courtroom" lands while "you can't pay" is still on the screen, which
+ *     is the turn the analogy turns on — and the courtroom's own ground already
+ *     ran red at the top to gold at the bottom.
+ *   - John 3:16 sits under "Repent and trust", whose last sentence it is the
+ *     scripture for. It is still the only "perish" and "everlasting" in the
+ *     flow (METHOD.md, Known gaps), so it moved rather than went.
+ *
+ * Twelve taps from GUILTY to the decision became ten, and no word was cut.
  *
  * ── Re-reading ──────────────────────────────────────────────────────────────
  *
@@ -106,12 +121,20 @@ interface GraceScreenProps {
  * reader never gets past the landing.
  */
 
-const BEATS = ["announcement", "problem", "payment", "payer", "response", "promise", "record"] as const;
+const BEATS = ["announcement", "courtroom", "payer", "response", "record"] as const;
 const LAST_BEAT = BEATS.length - 1;
 
-/** The four movements are beats 1–4, and only they carry beat analytics. */
-const FIRST_MOVEMENT = 1;
-const MOVEMENTS = 4;
+/**
+ * Which of the copy's four movements each beat carries — the only beats that
+ * report to the movement funnel. The courtroom carries the first two, so
+ * reaching it reports both, and `grace_beat_revealed` keeps its four indices
+ * and stays comparable with what was measured before the merge.
+ */
+const MOVEMENTS_ON_BEAT: Readonly<Record<number, readonly number[]>> = {
+  1: [0, 1],
+  2: [2],
+  3: [3],
+};
 
 /**
  * The record's arrival, in three steps.
@@ -213,9 +236,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, nextLabel }:
     if (target === beat || target < 0 || target > LAST_BEAT) return;
     const firstTime = target >= reached;
     if (firstTime) {
-      if (target >= FIRST_MOVEMENT && target < FIRST_MOVEMENT + MOVEMENTS) {
-        trackGraceBeatRevealed(target - FIRST_MOVEMENT);
-      }
+      for (const movement of MOVEMENTS_ON_BEAT[target] ?? []) trackGraceBeatRevealed(movement);
       dispatch({ type: "REVEAL_GRACE_BEAT", count: target + 1 });
     }
     if (target === LAST_BEAT) setRecordStage(firstTime ? "waiting" : "open");
@@ -387,76 +408,19 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, nextLabel }:
       )}
 
       {/*
-       * 1 · Movement I — the problem, in the Law's colour.
+       * 1 · The courtroom — Movements I and II, the penalty and the payment.
        *
-       * Still red, because it is still the Law: a just judge, a penalty, and no
-       * ability to pay. METHOD.md is explicit that this step cannot be cut —
-       * without the courtroom, "someone pays" has no venue and no legal force —
-       * and it is what gives the turn after it something to resolve.
-       */}
-      {beat === 1 && (
-        <m.section
-          ref={beatRef}
-          data-beat="1"
-          tabIndex={-1}
-          {...BEAT_ENTRANCE}
-          className={BEAT_FRAME}
-        >
-          {/*
-           * The dock, dimmed — the empty rail behind the reader's own imagined
-           * standing-there, not a scene to look at. Deliberately quieter than
-           * the turn's full-strength courtroom: that is the screen's one hinge,
-           * and giving every movement the same treatment would flatten it.
-           * Radial-masked and low-opacity like the homepage's band textures,
-           * red-tinted because this is still the Law — no gold here,
-           * docs/graphics/PROMPTS.md §31. The frame is the full width of the
-           * screen, so it never reads as a box floating in black.
-           */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none fixed inset-0 overflow-hidden"
-            style={{
-              opacity: 0.16,
-              maskImage: "radial-gradient(ellipse at 50% 40%, black 30%, transparent 75%)",
-              WebkitMaskImage: "radial-gradient(ellipse at 50% 40%, black 30%, transparent 75%)",
-              backgroundImage:
-                "linear-gradient(rgba(239,68,68,0.35), rgba(239,68,68,0.35)), url(/graphics/dock.avif)",
-              backgroundSize: "cover, cover",
-              backgroundPosition: "center, center",
-              backgroundBlendMode: "color, normal",
-            }}
-          />
-          <m.div {...WORDS_ENTRANCE} className="relative mx-auto w-full max-w-lg">
-            {/*
-             * text-shadow, a contrast fix and not decoration: this eyebrow's
-             * red-400/70 already sits under the 4.5:1 AA floor against pure
-             * black (measured 4.0:1), and the dock behind it pushes that as low
-             * as 2.35:1 at its brightest point. A dark halo holds contrast up
-             * whatever is behind the glyphs.
-             */}
-            <p
-              className="font-mono text-[9px] uppercase tracking-[2.6px] text-red-400/70"
-              style={{ textShadow: "0 1px 3px rgba(0,0,0,0.9)" }}
-            >
-              {problem?.label}
-            </p>
-            <h2 className="mt-4 text-[25px] font-semibold leading-[1.22] tracking-[-0.024em] text-white/95 sm:text-[30px]">
-              {problem?.headline}
-            </h2>
-            <p className="mt-4 border-l border-red-500/30 pl-4 text-[14px] leading-relaxed text-white/55 sm:text-[15px]">
-              {problem?.subtitle}
-            </p>
-          </m.div>
-        </m.section>
-      )}
-
-      {/*
-       * 2 · The turn.
+       * One screen, because that is how the analogy is told: a just judge, a
+       * fine you cannot pay, and then — in the same breath — someone pays it.
+       * METHOD.md is explicit that the first half cannot be cut: without the
+       * courtroom, "someone pays" has no venue and no legal force. On one
+       * screen the venue is literally under the payment.
        *
-       * Full-strength, and the only place in grace where the flow's two colours
-       * meet in one element: the red of the beat before resolves to gold under
-       * the beat where someone pays — the hinge of the analogy given the whole
-       * screen.
+       * The Law's half is still the Law's colour; the payment is gold. This is
+       * the only place in grace where the flow's two colours meet, and it is
+       * the beat the whole analogy turns on — so it is the full-strength hinge,
+       * on the courtroom whose ground already runs red at the top to gold at
+       * the bottom, the Law's words in the red and the payment in the gold.
        *
        * Two background layers, swapped at `sm`, rather than `cover` alone.
        * `courtroom.avif` is portrait, composed against a phone; at desktop
@@ -464,11 +428,14 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, nextLabel }:
        * detail up into a blob overlapping the heading. `courtroom-wide.avif`
        * is the same scene composed landscape, so `cover` asks it for the crop
        * it was made for.
+       *
+       * The dock that sat behind Movement I alone is parked rather than
+       * served — docs/graphics/PROMPTS.md §31.
        */}
-      {beat === 2 && (
+      {beat === 1 && (
         <m.section
           ref={beatRef}
-          data-beat="2"
+          data-beat="1"
           tabIndex={-1}
           {...BEAT_ENTRANCE}
           className={BEAT_FRAME}
@@ -494,27 +461,63 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, nextLabel }:
             }}
           />
           <m.div {...WORDS_ENTRANCE} className="relative mx-auto w-full max-w-lg">
-            <p className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75">
-              {payment?.label}
-            </p>
-            <h2
-              className="mt-4 text-[27px] font-semibold leading-[1.2] tracking-[-0.026em] text-[#D4A843] sm:text-[34px]"
-              style={{ textShadow: "0 0 60px rgba(212,168,67,0.22)" }}
+            {/*
+             * text-shadow, a contrast fix and not decoration: this eyebrow's
+             * red-400/70 already sits under the 4.5:1 AA floor against pure
+             * black (measured 4.0:1), and a lit floor behind it pulls that
+             * lower still. A dark halo holds contrast up whatever is behind
+             * the glyphs.
+             */}
+            <p
+              className="font-mono text-[9px] uppercase tracking-[2.6px] text-red-400/70"
+              style={{ textShadow: "0 1px 3px rgba(0,0,0,0.9)" }}
             >
-              {payment?.headline}
-            </h2>
-            <p className="mt-4 border-l border-[#D4A843]/30 pl-4 text-[14px] leading-relaxed text-white/60 sm:text-[15px]">
-              {payment?.subtitle}
+              {problem?.label}
             </p>
+            <h2 className="mt-3 text-[22px] font-semibold leading-[1.22] tracking-[-0.022em] text-white/95 sm:text-[28px]">
+              {problem?.headline}
+            </h2>
+            <p className="mt-3 border-l border-red-500/30 pl-4 text-[13.5px] leading-relaxed text-white/55 sm:text-[15px]">
+              {problem?.subtitle}
+            </p>
+
+            {/*
+             * The payment rises in a moment after the penalty. Not a gate —
+             * nothing waits on the reader — but gold is the brightest thing on
+             * the screen, and arriving with the rest it pulls the eye past
+             * "you can't pay" to the answer before the problem has been read.
+             */}
+            <m.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.45, ease: EASE_OUT_STRONG }}
+              className="mt-9 sm:mt-12"
+            >
+              <p
+                className="font-mono text-[9px] uppercase tracking-[2.6px] text-[#D4A843]/75"
+                style={{ textShadow: "0 1px 3px rgba(0,0,0,0.9)" }}
+              >
+                {payment?.label}
+              </p>
+              <h2
+                className="mt-3 text-[24px] font-semibold leading-[1.2] tracking-[-0.024em] text-[#D4A843] sm:text-[31px]"
+                style={{ textShadow: "0 0 60px rgba(212,168,67,0.22)" }}
+              >
+                {payment?.headline}
+              </h2>
+              <p className="mt-3 border-l border-[#D4A843]/30 pl-4 text-[13.5px] leading-relaxed text-white/60 sm:text-[15px]">
+                {payment?.subtitle}
+              </p>
+            </m.div>
           </m.div>
         </m.section>
       )}
 
-      {/* 3 · Movement III — the payer, named. */}
-      {beat === 3 && (
+      {/* 2 · Movement III — the payer, named. */}
+      {beat === 2 && (
         <m.section
           ref={beatRef}
-          data-beat="3"
+          data-beat="2"
           tabIndex={-1}
           {...BEAT_ENTRANCE}
           className={BEAT_FRAME}
@@ -560,12 +563,21 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, nextLabel }:
         </m.section>
       )}
 
-      {/* 4 · Movement IV — the response. The imperative, and it arrives last
-          by design: the indicative has had four beats to land first. */}
-      {beat === 4 && (
+      {/*
+       * 3 · Movement IV — the response, and the promise it rests on. The
+       * imperative, and it arrives last by design: the indicative has had three
+       * beats to land first.
+       *
+       * John 3:16 closes it because the movement's last sentence — "God will
+       * forgive you and grant you eternal life" — is that verse's promise, and
+       * a promise reads stronger with its source under it than a screen away.
+       * Italic and unruled, as scripture is everywhere in this app, so it
+       * does not read as a third line of the app's own argument.
+       */}
+      {beat === 3 && (
         <m.section
           ref={beatRef}
-          data-beat="4"
+          data-beat="3"
           tabIndex={-1}
           {...BEAT_ENTRANCE}
           className={BEAT_FRAME}
@@ -606,21 +618,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, nextLabel }:
             <p className="mt-4 border-l border-[#D4A843]/30 pl-4 text-[14px] leading-relaxed text-white/60 sm:text-[15px]">
               {response?.subtitle}
             </p>
-          </m.div>
-        </m.section>
-      )}
-
-      {/* 5 · The promise. */}
-      {beat === 5 && (
-        <m.section
-          ref={beatRef}
-          data-beat="5"
-          tabIndex={-1}
-          {...BEAT_ENTRANCE}
-          className={BEAT_FRAME}
-        >
-          <m.div {...WORDS_ENTRANCE} className="relative mx-auto w-full max-w-lg">
-            <blockquote className="border-l border-[#D4A843]/30 pl-4">
+            <blockquote className="mt-8">
               <p className="text-[15px] italic leading-[1.8] text-white/60 sm:text-base">
                 &ldquo;{messages.scripture}&rdquo;
               </p>
@@ -633,7 +631,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, nextLabel }:
       )}
 
       {/*
-       * 6 · The record, and the way on.
+       * 4 · The record, and the way on.
        *
        * The four movements say what happened in general: a judge, a penalty,
        * someone who paid. This says it about the reader, out of their own six
@@ -654,7 +652,7 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, nextLabel }:
       {beat === LAST_BEAT && (
         <m.section
           ref={beatRef}
-          data-beat="6"
+          data-beat="4"
           tabIndex={-1}
           {...BEAT_ENTRANCE}
           className={BEAT_FRAME}
@@ -686,10 +684,14 @@ export function GraceScreen({ messages, verdictLabels, advanceHint, nextLabel }:
         currentClassName="bg-[#D4A843]"
         hint={beat < LAST_BEAT ? advanceHint : null}
         navigation={{
+          /* A dot is named by what its beat opens on — the courtroom by the
+             penalty, the response by its own label rather than the verse
+             beneath it. Every name is a string the screen already shows. */
           labels: [
             messages.label,
-            ...messages.beats.map((movement) => movement.label),
-            messages.scriptureRef,
+            problem?.label ?? "",
+            payer?.label ?? "",
+            response?.label ?? "",
             messages.record.eyebrow,
           ],
           furthest,
