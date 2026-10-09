@@ -96,6 +96,26 @@ export function initPostHog(): Promise<PostHog | null> {
         person_profiles: "identified_only",
         capture_pageview: false,
         capture_pageleave: true,
+        /*
+         * localStorage only — no cookie. posthog-js defaults `persistence` to
+         * "localStorage+cookie" (verified in its own default config literal,
+         * beside `autocapture` and `token`), which writes a
+         * `ph_<token>_posthog` cookie for every reader who taps Accept.
+         *
+         * The privacy policy says, in both locales, "We do not use cookies."
+         * That was simply false, and falsifiable by anyone who opened
+         * devtools. PostHog was the only thing on the site writing one —
+         * nothing in `src/` touches `document.cookie` or `next/headers`
+         * cookies, `proxy.ts` sets none, and neither Vercel Speed Insights
+         * nor Sentry writes one — so this one option is what makes the
+         * sentence true rather than something to go and reword.
+         *
+         * The cost is accepted and was the owner's call: `distinct_id` moves
+         * to localStorage, so existing readers are counted as new ones once.
+         * Nothing downstream breaks — `getDistinctId()` reads it from the
+         * client either way, which is all the verdict ledger's dedup needs.
+         */
+        persistence: "localStorage",
       });
 
       /*

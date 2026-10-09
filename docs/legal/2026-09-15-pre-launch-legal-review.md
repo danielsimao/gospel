@@ -66,7 +66,7 @@ is `draft: true` per post, plus a re-crawl request — not the flag.
 
 ## Blockers — fix before announcing
 
-### 1. "We do not use cookies" is probably false
+### 1. ~~"We do not use cookies" is probably false~~ — FIXED 2026-10-09
 
 `privacy.sections[1]` (both locales) states flatly: *"We do not use cookies."*
 
@@ -82,17 +82,26 @@ false for every visitor who taps Accept.
 > `ph_<token>_posthog` cookie for every visitor who taps Accept, and the policy
 > says it sets none. No live-site check needed.
 
-Two ways out:
+**Fixed** by adding `persistence: "localStorage"` to `posthog.init()`, rather
+than by rewording the policy. The sentence is now true instead of disclosed-away,
+which is the better outcome: a site that genuinely sets no cookies needs no
+cookie banner, no cookie table, and no ePrivacy Art 5(3) analysis at all.
 
-- **Preferred:** add `persistence: "localStorage"` to the `posthog.init()` call.
-  The claim becomes true, nothing else about the site changes, and the consent
-  posture gets simpler to defend. (It does move `distinct_id` to localStorage —
-  the verdict ledger reads that id via `getDistinctId()`, so confirm the ledger
-  still behaves after the change.)
-- Or amend the policy to disclose the cookie, its name, purpose and lifetime.
+That holds only because PostHog was the **sole** cookie writer on the site, which
+was checked rather than assumed: nothing in `src/` touches `document.cookie` or
+`next/headers` cookies, `proxy.ts` sets none, and neither `@vercel/speed-insights`
+nor `@sentry/browser` writes one. If anything cookie-setting is ever added, this
+sentence in the policy becomes false again — it is now load-bearing.
 
-A false "no cookies" line is the kind of thing that turns a good-faith site into
-a complaint, because it is trivially disprovable by anyone who looks.
+Accepted cost, and the owner's call: `distinct_id` moves to localStorage, so
+existing readers are counted once as new. Nothing downstream breaks —
+`getDistinctId()` reads from the client either way, which is all the verdict
+ledger's dedup needs. Full suite green and `tsc --noEmit` clean after the change,
+the latter also confirming the option against posthog-js's own types.
+
+Worth keeping the general lesson: a false "no cookies" line is the kind of thing
+that turns a good-faith site into a complaint, because it is trivially
+disprovable by anyone who opens devtools.
 
 ### 2. "This data never leaves your device" is false
 
@@ -383,8 +392,9 @@ Recorded so nobody re-audits these.
    setting. Both are five-minute checks that decide the shape of the rewrite.
 3. ~~Move PostHog to EU hosting~~ — done 2026-10-09. Confirm the Vercel env var
    and the project's region, per finding 9.
-4. Rewrite `privacy` in `en.json` and `pt.json` against findings 1–9, 11, 12, 15,
-   16. Fix `terms` against 10 and 13. Re-date both.
+4. Rewrite `privacy` in `en.json` and `pt.json` against findings 2, 3, 5, 7, 8,
+   11, 12, 15, 16 (1 and 9 are fixed in code). Fix `terms` against 10 and 13.
+   Re-date both.
 5. Add the consent-withdrawal link and the policy link on the banner (6, 14).
 6. Enforce the retention period in SQL (8).
 
