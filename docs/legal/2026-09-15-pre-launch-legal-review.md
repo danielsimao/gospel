@@ -75,10 +75,12 @@ posthog-js defaults `persistence` to `"localStorage+cookie"`, which sets a
 `ph_<project_token>_posthog` cookie. If that default holds, the statement is
 false for every visitor who taps Accept.
 
-> Not verified from the package — `node_modules` is empty in this environment,
-> so this rests on posthog-js's documented default rather than on the installed
-> source. **Verify on the live site:** accept the banner, then DevTools →
-> Application → Cookies. One minute of work, and it decides which fix applies.
+> **Confirmed 2026-10-09**, no longer a hypothesis. With dependencies installed,
+> posthog-js's default config literal in `node_modules/posthog-js/dist/main.js`
+> reads `persistence:"localStorage+cookie"` (next to `autocapture:!0` and
+> `token:""` in the same defaults object). The site sets a
+> `ph_<token>_posthog` cookie for every visitor who taps Accept, and the policy
+> says it sets none. No live-site check needed.
 
 Two ways out:
 
@@ -208,19 +210,37 @@ database.
 Pick a period, state it, enforce it in SQL. The ledger's purpose is a running
 count and a city list; it does not need rows from two years ago to serve that.
 
-### 9. Data leaves the EU, undisclosed
+### 9. ~~Data leaves the EU, undisclosed~~ — FIXED 2026-10-09
 
-`POSTHOG_HOST` defaults to `https://us.i.posthog.com` (`src/lib/posthog.ts`, and
-the same default in `.env.example`). EU visitors' analytics data is transferred
-to the United States. GDPR Chapter V requires disclosing the transfer and the
-safeguard relied on — PostHog's DPA/SCCs, or the EU-US Data Privacy Framework.
+**Original finding.** `POSTHOG_HOST` defaulted to `https://us.i.posthog.com`
+(`src/lib/posthog.ts`, and the same value in `.env.example`), which would send EU
+visitors' analytics to the United States and engage GDPR Chapter V.
 
-**Cleanest fix:** switch to PostHog's EU cloud (`https://eu.i.posthog.com`).
-That removes the transfer question rather than documenting it. Worth doing
-*before* announcing, because migrating analytics history afterwards is
-unpleasant.
+**What the fix turned up.** The two halves of the codebase disagreed about the
+region. `src/lib/test-stats.ts` queries
+`https://eu.posthog.com/api/projects/221882/query/` — and a PostHog personal API
+key only answers for a project in the region that issued it. So the query side
+was already EU while the ingest default was US, with only the
+`NEXT_PUBLIC_POSTHOG_HOST` env var deciding which one production actually used.
 
-Also worth stating the Neon region and Sentry's region while you are in there.
+That makes the old default worse than a disclosure gap. It was a latent
+misconfiguration: lose or unset that env var and ingest silently falls back to
+the US host, where an EU project token is simply **rejected** — so the failure
+mode is silent analytics loss, the same class of bug `posthog.ts`'s own
+`POSTHOG_KEY` comment was written about.
+
+**Fixed:** both defaults are now EU (`https://eu.i.posthog.com` for ingest;
+`eu.posthog.com` remains correct for the query API — different endpoints, same
+region, which is why the hostnames differ in shape). Owner accepted the loss of
+analytics history, the site not being announced yet.
+
+**Still worth confirming on Vercel:** that `NEXT_PUBLIC_POSTHOG_HOST` is the EU
+ingest host, and that the project behind the token is EU-region. If the
+homepage's "N stood trial" band has been rendering a real number, the project is
+already EU and no migration or new token is needed — the change above is purely
+a corrected default and nothing is lost.
+
+Still open: state the Neon region and Sentry's region in the policy.
 
 ### 10. The Terms misstate scripture licensing
 
@@ -361,8 +381,8 @@ Recorded so nobody re-audits these.
    address for the Art 13 / DL 7/2004 notice) and **how long verdict rows live**.
 2. Check the live cookie situation and the PostHog session-replay project
    setting. Both are five-minute checks that decide the shape of the rewrite.
-3. Move PostHog to EU hosting, if it is going to move at all — before there is
-   history worth migrating.
+3. ~~Move PostHog to EU hosting~~ — done 2026-10-09. Confirm the Vercel env var
+   and the project's region, per finding 9.
 4. Rewrite `privacy` in `en.json` and `pt.json` against findings 1–9, 11, 12, 15,
    16. Fix `terms` against 10 and 13. Re-date both.
 5. Add the consent-withdrawal link and the policy link on the banner (6, 14).

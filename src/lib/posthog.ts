@@ -31,8 +31,28 @@ export const POSTHOG_KEY =
   process.env.NEXT_PUBLIC_POSTHOG_KEY ??
   process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN;
 
+/**
+ * The ingest host, EU by default.
+ *
+ * It defaulted to `https://us.i.posthog.com` — which contradicted the other
+ * half of the codebase: `test-stats.ts` queries `https://eu.posthog.com` for
+ * project 221882, and a personal API key only answers for a project in the
+ * region it was issued in. Two defaults pointing at two regions, and only the
+ * env var deciding which one was real.
+ *
+ * EU is now the default for both, for two reasons. This site is written for
+ * readers in Portugal, so a lost or unset env var must not silently start
+ * shipping their events to the United States and turn a stale default into a
+ * GDPR Chapter V transfer. And an EU project token posted to the US ingest
+ * host is simply rejected, so the failure mode was silent analytics loss —
+ * exactly the kind this file's own POSTHOG_KEY comment was written about.
+ *
+ * Note the two hostnames are deliberately different in shape: `eu.i.posthog.com`
+ * is ingest (capture), `eu.posthog.com` is the app/query API that
+ * test-stats.ts calls. Same region, different endpoints.
+ */
 export const POSTHOG_HOST =
-  process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com";
+  process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://eu.i.posthog.com";
 
 let client: PostHog | null = null;
 let loading: Promise<PostHog | null> | null = null;
