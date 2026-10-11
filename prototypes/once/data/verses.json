@@ -32,6 +32,9 @@
   "1 John 3:15": [
    "Everyone who hates his brother is a murderer, and you know that eternal life does not reside in a murderer."
   ],
+  "1 John 3:20": [
+   "Even if our hearts condemn us, God is greater than our hearts, and He knows all things."
+  ],
   "1 John 3:9": [
    "Anyone born of God refuses to practice sin, because God’s seed abides in him; he cannot go on sinning, because he has been born of God."
   ],
@@ -49,6 +52,9 @@
   ],
   "2 Corinthians 5:21": [
    "God made Him who knew no sin to be sin on our behalf, so that in Him we might become the righteousness of God."
+  ],
+  "2 Corinthians 7:10": [
+   "Godly sorrow brings repentance that leads to salvation without regret, but worldly sorrow brings death."
   ],
   "Colossians 2:14": [
    "having canceled the debt ascribed to us in the decrees that stood against us. He took it away, nailing it to the cross!"
@@ -81,11 +87,18 @@
   "Genesis 18:25": [
    "Far be it from You to do such a thing—to kill the righteous with the wicked, so that the righteous and the wicked are treated alike. Far be it from You! Will not the Judge of all the earth do what is right?”"
   ],
+  "Hebrews 3:4": [
+   "And every house is built by someone, but God is the builder of everything."
+  ],
   "Hebrews 9:27": [
    "Just as man is appointed to die once, and after that to face judgment,"
   ],
   "Hebrews 9:28": [
    "so also Christ was offered once to bear the sins of many; and He will appear a second time, not to bear sin, but to bring salvation to those who eagerly await Him."
+  ],
+  "Isaiah 53:5-6": [
+   "But He was pierced for our transgressions, He was crushed for our iniquities; the punishment that brought us peace was upon Him, and by His stripes we are healed.",
+   "We all like sheep have gone astray, each one has turned to his own way; and the LORD has laid upon Him the iniquity of us all."
   ],
   "James 1:22": [
    "Be doers of the word, and not hearers only. Otherwise, you are deceiving yourselves."
@@ -232,6 +245,9 @@
    "Everyone who does evil hates the Light, and does not come into the Light for fear that his deeds will be exposed.",
    "But whoever practices the truth comes into the Light, so that it may be seen clearly that what he has done has been accomplished in God.”"
   ],
+  "John 3:16": [
+   "For God so loved the world that He gave His one and only Son, that everyone who believes in Him shall not perish but have eternal life."
+  ],
   "John 5:24": [
    "Truly, truly, I tell you, whoever hears My word and believes Him who sent Me has eternal life and will not come under judgment. Indeed, he has crossed over from death to life."
   ],
@@ -257,6 +273,12 @@
   "John 6:37": [
    "Everyone the Father gives Me will come to Me, and the one who comes to Me I will never drive away."
   ],
+  "John 6:40": [
+   "For it is My Father’s will that everyone who looks to the Son and believes in Him shall have eternal life, and I will raise him up at the last day.”"
+  ],
+  "Luke 6:44": [
+   "For each tree is known by its own fruit. Indeed, figs are not gathered from thornbushes, nor grapes from brambles."
+  ],
   "Mark 10:18": [
    "“Why do you call Me good?” Jesus replied. “No one is good except God alone."
   ],
@@ -266,6 +288,10 @@
   "Mark 4:16-17": [
    "Some are like the seeds sown on rocky ground. They hear the word and at once receive it with joy.",
    "But they themselves have no root, and they remain for only a season. When trouble or persecution comes because of the word, they quickly fall away."
+  ],
+  "Mark 4:18-19": [
+   "Others are like the seeds sown among the thorns. They hear the word,",
+   "but the worries of this life, the deceitfulness of wealth, and the desire for other things come in and choke the word, and it becomes unfruitful."
   ],
   "Mark 5:19": [
    "But Jesus would not allow him. “Go home to your own people,” He said, “and tell them how much the Lord has done for you, and what mercy He has shown you.”"
@@ -314,6 +340,10 @@
   "Psalm 51:17": [
    "The sacrifices of God are a broken spirit; a broken and a contrite heart, O God, You will not despise."
   ],
+  "Psalm 51:3-4": [
+   "For I know my transgressions, and my sin is always before me.",
+   "Against You, You only, have I sinned and done what is evil in Your sight, so that You may be proved right when You speak and blameless when You judge."
+  ],
   "Revelation 21:8": [
    "But to the cowardly and unbelieving and abominable and murderers and sexually immoral and sorcerers and idolaters and all liars, their place will be in the lake that burns with fire and sulfur. This is the second death.”"
   ],
@@ -322,6 +352,9 @@
   ],
   "Romans 1:20": [
    "For since the creation of the world God’s invisible qualities, His eternal power and divine nature, have been clearly seen, being understood from His workmanship, so that men are without excuse."
+  ],
+  "Romans 2:15": [
+   "So they show that the work of the law is written on their hearts, their consciences also bearing witness, and their thoughts either accusing or defending them"
   ],
   "Romans 3:10": [
    "As it is written: “There is no one righteous, not even one."

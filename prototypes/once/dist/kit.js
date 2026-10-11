@@ -364,8 +364,8 @@
 .kit-btn:focus-visible{outline:2px solid var(--kit-fg);outline-offset:3px}
 .kit-copytext{white-space:pre-wrap;font:13px/1.45 var(--kit-sans);background:var(--kit-surface);padding:12px;border-radius:10px;max-height:220px;overflow:auto;margin:0}
 .kit-list{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-variant-numeric:tabular-nums}
-.kit-list li{display:flex;gap:12px}
-.kit-list b{font-weight:600;min-width:7.2em}
+.kit-list li{display:grid;grid-template-columns:9.2em 1fr;gap:10px}
+.kit-list b{font-weight:600;white-space:nowrap}
 .kit-note{font-size:14px;color:var(--kit-muted)}
 .kit-badge{justify-self:start;display:inline-block;padding:3px 9px;border-radius:999px;border:1px dashed var(--kit-muted);font:600 11px/1.4 var(--kit-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kit-muted)}
 .kit-sheet{display:grid;gap:10px;padding:16px;border-radius:14px;background:var(--kit-surface)}

@@ -41,7 +41,7 @@
 			{
 				id: "never",
 				q: "What about people who never heard?",
-				a: "No one is judged for not hearing about Jesus. People are judged by what they already knew. Creation tells everyone there is a God, and conscience tells everyone right from wrong.",
+				a: "No one is judged for what they never heard. People are judged by what they already knew. Creation tells everyone there is a God, and conscience tells everyone right from wrong.",
 				verse: V("Romans 1:20", "{{BSB:Romans 1:20}}"),
 			},
 			{

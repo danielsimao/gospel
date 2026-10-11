@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Once · Conversation</title>
+<meta name="description" content="A scripted conversation, about six minutes, the way a street evangelist would have it with you. Your answers stay on this phone.">
+<meta name="theme-color" content="#0e1322">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&display=swap">
+<style>
+/* Layout: a single message column with the reply chips docked at the bottom. Night until the cross; the sky turns once. */
+:root {
+	--night: #0e1322;
+	--paper: #ece7dd;
+	--paper-dim: #a9adbb;
+	--night-line: rgba(236, 231, 221, 0.2);
+	--night-bubble: rgba(236, 231, 221, 0.09);
+	--sky: #d2dce8;
+	--peach: #efdccb;
+	--glow: #f4c29a;
+	--ink: #161b2a;
+	--ink-dim: #4b5368;
+	--dawn-line: rgba(22, 27, 42, 0.2);
+	--dawn-bubble: rgba(255, 255, 255, 0.62);
+	--sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
+	--serif: "Newsreader", Georgia, "Times New Roman", serif;
+	--ease: cubic-bezier(0.16, 1, 0.3, 1);
+	color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--night); color: var(--paper); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+body::before, body::after { content: ""; position: fixed; pointer-events: none; z-index: 0; }
+body::before { inset: 0; background: linear-gradient(180deg, var(--sky) 0%, var(--peach) 60%, var(--glow) 100%); opacity: 0; transition: opacity 1.6s var(--ease); }
+body::after {
+	left: -30%; right: -30%; bottom: -55vh; height: 110vh;
+	background: radial-gradient(closest-side, rgba(255, 221, 182, 0.95), rgba(255, 221, 182, 0));
+	opacity: 0; transform: translateY(45vh);
+	transition: transform 2.4s var(--ease), opacity 1.8s var(--ease);
+}
+html.dawn { color-scheme: light; }
+html.dawn body { color: var(--ink); }
+html.dawn body::before { opacity: 1; }
+html.dawn body::after { opacity: 0.8; transform: translateY(0); }
+
+.app {
+	position: relative; z-index: 1; height: 100%;
+	max-width: 640px; margin: 0 auto; display: flex; flex-direction: column;
+	--fg: var(--paper); --dim: var(--paper-dim); --line: var(--night-line); --bubble: var(--night-bubble); --bg: var(--night);
+}
+html.dawn .app { --fg: var(--ink); --dim: var(--ink-dim); --line: var(--dawn-line); --bubble: var(--dawn-bubble); --bg: #f6ebe1; }
+
+.head {
+	display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px;
+	padding: calc(12px + env(safe-area-inset-top, 0px)) 16px 12px;
+	border-bottom: 1px solid var(--line);
+}
+.who { display: grid; gap: 3px; }
+.wordmark { margin: 0; font: 800 13px/1 var(--sans); font-stretch: 125%; letter-spacing: 0.42em; }
+.scripted { margin: 0; font: 500 12px/1.3 var(--sans); color: var(--dim); }
+.close { width: 44px; height: 44px; display: grid; place-items: center; color: var(--fg); text-decoration: none; font: 400 26px/1 var(--sans); border-radius: 50%; }
+.close:focus-visible, .chip:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+
+.log { flex: 1; min-height: 0; overflow-y: auto; padding: 20px 16px 8px; display: flex; flex-direction: column; gap: 10px; overscroll-behavior: contain; }
+.log p, .log figure { margin: 0; }
+.msg { max-width: 86%; animation: pop 0.32s var(--ease) both; }
+@keyframes pop { from { opacity: 0; transform: translateY(6px); } }
+.bot { align-self: flex-start; background: var(--bubble); padding: 11px 15px; border-radius: 18px 18px 18px 6px; font: 400 17px/1.45 var(--sans); }
+.me { align-self: flex-end; background: var(--fg); color: var(--bg); padding: 11px 15px; border-radius: 18px 18px 6px 18px; font: 500 17px/1.4 var(--sans); }
+.verse { align-self: flex-start; margin: 2px 0 4px; padding: 2px 0 2px 14px; border-left: 2px solid var(--line); max-width: 92%; }
+.verse p { margin: 0; font: italic 400 19px/1.4 var(--serif); text-wrap: pretty; }
+.verse cite { display: block; margin-top: 6px; font: 600 10.5px/1 var(--sans); font-style: normal; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.verse.hang p { font-size: 24px; line-height: 1.25; }
+.quote { align-self: flex-start; font: 400 15px/1.45 var(--sans); color: var(--dim); max-width: 92%; }
+.note { align-self: center; text-align: center; font: 600 11px/1.3 var(--sans); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); padding: 8px 0 2px; max-width: 92%; }
+.note.plain { text-transform: none; letter-spacing: 0; font: italic 400 16px/1.4 var(--serif); }
+.listmsg { align-self: stretch; max-width: none; background: var(--bubble); border-radius: 16px; padding: 14px 16px; }
+.listmsg ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 14px; }
+.listmsg b { display: block; font: 600 16px/1.35 var(--sans); }
+.listmsg span { display: block; margin-top: 4px; font: italic 400 16px/1.4 var(--serif); color: var(--dim); }
+.kitmsg { align-self: stretch; max-width: none; background: var(--bubble); border-radius: 18px; padding: 18px; }
+.kitmsg .kit-host {
+	--kit-fg: var(--fg); --kit-muted: var(--dim); --kit-line: var(--line); --kit-surface: var(--bubble);
+	--kit-accent: var(--fg); --kit-accent-fg: var(--bg); --kit-sans: var(--sans); --kit-serif: var(--serif);
+}
+.typing { align-self: flex-start; background: var(--bubble); border-radius: 18px 18px 18px 6px; padding: 14px 16px; display: flex; gap: 5px; }
+.typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--dim); animation: blink 1.2s infinite both; }
+.typing i:nth-child(2) { animation-delay: 0.15s; }
+.typing i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes blink { 0%, 60%, 100% { opacity: 0.25; } 30% { opacity: 1; } }
+
+.dock:focus { outline: none; }
+.dock { padding: 10px 16px calc(14px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); min-height: 72px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+.chips.stack { flex-direction: column; align-items: stretch; }
+.chip {
+	min-height: 46px; padding: 10px 16px; border-radius: 999px;
+	border: 1px solid var(--fg); background: transparent; color: var(--fg);
+	font: 600 16px/1.2 var(--sans); cursor: pointer; text-decoration: none;
+	display: inline-flex; align-items: center; justify-content: center; text-align: center;
+	animation: pop 0.3s var(--ease) both;
+}
+/* Exits get no hover state at all: a resting pointer must not make one answer look chosen. */
+@media (hover: hover) { .chips:not(.stack) .chip:hover { background: var(--fg); color: var(--bg); } }
+.chip.ghost { border-color: var(--line); color: var(--dim); }
+.chips.stack .chip { border-radius: 14px; min-height: 52px; }
+.dock-note { margin: 0 0 8px; font: 500 12px/1.3 var(--sans); color: var(--dim); text-align: right; }
+
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+	<header class="head">
+		<div class="who">
+			<p class="wordmark">ONCE</p>
+			<p class="scripted">Scripted conversation. Every reply is written in advance, and your answers stay on this phone.</p>
+		</div>
+		<a class="close" href="index.html" aria-label="Close">×</a>
+	</header>
+	<main class="log" id="log" role="log" aria-live="polite" aria-label="Conversation"></main>
+	<section class="dock" id="dock" tabindex="-1" aria-label="Your reply"></section>
+</div>
+<script src="content.js"></script>
+<script src="objections.js"></script>
+<script src="kit.js"></script>
+<script src="chat-graph.js"></script>
+<script>
+(() => {
+	const G = window.ONCE_CHAT;
+	const OB = window.ONCE_OBJECTIONS;
+	const KEY = "once-chat-v1";
+	const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+	const log = document.getElementById("log");
+	const dock = document.getElementById("dock");
+
+	const blank = () => ({ node: G.start, history: [], law: {}, parked: [], dawn: false });
+	let S = blank();
+	try {
+		const saved = JSON.parse(sessionStorage.getItem(KEY) || "null");
+		if (saved && G.nodes[saved.node]) S = Object.assign(blank(), saved);
+	} catch { /* start fresh */ }
+	const save = () => { try { sessionStorage.setItem(KEY, JSON.stringify(S)); } catch { /* fine */ } };
+
+	function h(tag, attrs, ...kids) {
+		const el = document.createElement(tag);
+		for (const [k, v] of Object.entries(attrs || {})) {
+			if (v == null || v === false) continue;
+			if (k === "class") el.className = v;
+			else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+			else el.setAttribute(k, v === true ? "" : v);
+		}
+		for (const c of kids.flat()) if (c != null && c !== false) el.append(typeof c === "string" ? document.createTextNode(c) : c);
+		return el;
+	}
+
+	/* Messages are stored as plain data so a reload can replay the log instantly. */
+	function render(m) {
+		if (m.who === "me") return h("div", { class: "msg me" }, m.text);
+		if (typeof m.text === "string") return h("div", { class: "msg bot" }, m.text);
+		if (m.verse) return h("figure", { class: `msg verse${m.verse.ref === "Hebrews 9:27" ? " hang" : ""}` }, h("p", {}, m.verse.text), h("cite", {}, m.verse.ref));
+		if (m.quote) return h("p", { class: "msg quote" }, m.quote);
+		if (m.note) return h("p", { class: `msg note${m.note.length > 40 ? " plain" : ""}` }, m.note);
+		if (m.list) return h("div", { class: "msg listmsg" }, h("ul", {}, m.list.map((x) => h("li", {}, h("b", {}, x.t), h("span", {}, `“${x.v.text}” ${x.v.ref}`)))));
+		if (m.kit) {
+			const host = h("div", { class: "kit-host" });
+			window.OnceKit.mount(host);
+			return h("div", { class: "msg kitmsg" }, host);
+		}
+		return h("div", { class: "msg bot" }, String(m.text ?? ""));
+	}
+	const toData = (m) => (typeof m === "string" ? { who: "bot", text: m } : { who: "bot", ...m });
+
+	function scrollDown() {
+		log.scrollTo({ top: log.scrollHeight, behavior: reduced ? "auto" : "smooth" });
+	}
+
+	const wait = (ms) => new Promise((r) => setTimeout(r, reduced ? 0 : ms));
+	let token = 0;
+
+	async function say(messages) {
+		const my = ++token;
+		for (const raw of messages) {
+			if (raw == null) continue;
+			const m = toData(raw);
+			const text = typeof raw === "string" ? raw : raw.verse?.text || raw.quote || raw.note || "";
+			if (!m.kit) {
+				const typing = h("div", { class: "typing", "aria-hidden": "true" }, h("i"), h("i"), h("i"));
+				log.append(typing);
+				scrollDown();
+				await wait(Math.min(1500, 380 + text.length * 9));
+				typing.remove();
+			}
+			if (my !== token) return false;
+			S.history.push(m);
+			log.append(render(m));
+			scrollDown();
+			await wait(160);
+		}
+		save();
+		return true;
+	}
+
+	function apply(set) {
+		for (const [k, v] of Object.entries(set || {})) {
+			if (k === "law") Object.assign(S.law, v);
+			else S[k] = v;
+		}
+	}
+
+	async function enter(id, { replay = false } = {}) {
+		const node = G.nodes[id];
+		S.node = id;
+		/* The order actually walked, for scripts/verify-ui.mjs. */
+		window.__onceTrail = window.__onceTrail || [];
+		window.__onceTrail.push(`${id}:${node.tag}`);
+		document.body.dataset.node = id;
+		dock.replaceChildren();
+		if (node.dawn) { S.dawn = true; document.documentElement.classList.add("dawn"); }
+		save();
+		if (!replay) {
+			const msgs = typeof node.say === "function" ? node.say(S) : node.say;
+			const ok = await say(msgs);
+			if (!ok) return;
+		}
+		if (node.next) {
+			const nextId = typeof node.next === "function" ? node.next(S) : node.next;
+			await wait(260);
+			return enter(nextId);
+		}
+		showChips(node);
+	}
+
+	function phaseOf(node) {
+		if (node.tag === "law") return "law";
+		if (node.tag === "verdict" || node.tag === "mortality") return "verdict";
+		return "grace";
+	}
+
+	function showChips(node) {
+		const chips = typeof node.chips === "function" ? node.chips(S) : node.chips || [];
+		const row = h("div", { class: `chips${node.exits ? " stack" : ""}`, role: "group", "aria-label": "Your reply" });
+		for (const c of chips) {
+			if (c.href) { row.append(h("a", { class: "chip", href: c.href }, c.label)); continue; }
+			row.append(h("button", { class: "chip", type: "button", onclick: () => choose(c) }, c.label));
+		}
+		if (node.but) row.append(h("button", { class: "chip ghost", type: "button", onclick: () => but(node) }, "But…"));
+		const kids = [];
+		if (node.exits) kids.push(h("p", { class: "dock-note" }, "Each answer is respected, and each one leads to something to take with you."));
+		kids.push(row);
+		dock.replaceChildren(...kids);
+		focusDock();
+	}
+
+	/* Focus lands on the reply area, never on one option: no answer should look chosen. */
+	function focusDock() {
+		if (document.activeElement && dock.contains(document.activeElement)) return;
+		if (document.activeElement && document.activeElement !== document.body && !dock.contains(document.activeElement)) return;
+		dock.focus({ preventScroll: true });
+	}
+
+	function choose(c) {
+		if (c.reset) { S = blank(); save(); document.documentElement.classList.remove("dawn"); log.replaceChildren(); enter(S.node); return; }
+		apply(c.set);
+		S.history.push({ who: "me", text: c.label });
+		log.append(render({ who: "me", text: c.label }));
+		scrollDown();
+		enter(c.to);
+	}
+
+	/* "But…": parked during the Law, answered in place after it. */
+	function but(node) {
+		const phase = phaseOf(node);
+		const set = phase === "grace" ? [...OB.grace, ...OB.law] : OB.law;
+		const row = h("div", { class: "chips stack", role: "group", "aria-label": "Your objection" });
+		for (const o of set) {
+			row.append(h("button", { class: "chip", type: "button", onclick: async () => {
+				S.history.push({ who: "me", text: o.q });
+				log.append(render({ who: "me", text: o.q }));
+				dock.replaceChildren();
+				if (phase === "law") {
+					if (!S.parked.includes(o.id)) S.parked.push(o.id);
+					await say([OB.parkLine]);
+				} else {
+					await say([o.a, { verse: o.verse }]);
+				}
+				showChips(node);
+			} }, o.q));
+		}
+		row.append(h("button", { class: "chip ghost", type: "button", onclick: () => showChips(node) }, "Never mind"));
+		dock.replaceChildren(row);
+		focusDock();
+	}
+
+	/* Resume within the same tab, or start. */
+	if (S.history.length) {
+		if (S.dawn) document.documentElement.classList.add("dawn");
+		for (const m of S.history) log.append(render(m));
+		log.scrollTop = log.scrollHeight;
+		enter(S.node, { replay: true });
+	} else {
+		enter(S.node);
+	}
+})();
+</script>
+</body>
+</html>

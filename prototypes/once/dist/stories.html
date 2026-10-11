@@ -116,7 +116,8 @@ html.dawn .app { --fg: var(--ink); --dim: var(--ink-dim); --line: var(--dawn-lin
 	font: 600 18px/1.25 var(--sans); text-align: left; cursor: pointer;
 	transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
-.choice:hover { border-color: var(--fg); }
+/* Exits (.same) get no hover state: a resting pointer must not make one answer look chosen. */
+@media (hover: hover) { .choices:not(.same) .choice:hover { border-color: var(--fg); } }
 .choice[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
 .choices.same .choice { text-align: center; }
 

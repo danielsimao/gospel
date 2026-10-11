@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Once · A Letter</title>
+<meta name="description" content="A letter to someone I'll probably never meet. About fifteen minutes, with a few questions to answer as you read. Your answers stay on this device.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&display=swap">
+<style>
+/* Layout: one column at letter measure. A thin rail tracks the chapter you're in. The page stays ink-on-paper until chapter IV, where a single band of dawn breaks across it and warms every rule after. */
+:root {
+	--page: #edf0f4;
+	--text: #171c2b;
+	--dim: #59617a;
+	--line: rgba(23, 28, 43, 0.15);
+	--tap: #ffffff;
+	--tap-on: #171c2b;
+	--tap-on-fg: #edf0f4;
+	--warm: #a2531f;
+	--accent: var(--text);
+	--sky: #d2dce8;
+	--peach: #efdccb;
+	--glow: #f4c29a;
+	--dawn-ink: #161b2a;
+	--sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
+	--serif: "Newsreader", Georgia, "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme="light"]) { --page: #0e1322; --text: #e6e1d7; --dim: #9ca1b1; --line: rgba(230, 225, 215, 0.15); --tap: rgba(230, 225, 215, 0.06); --tap-on: #e6e1d7; --tap-on-fg: #0e1322; --warm: #f4c29a; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --page: #0e1322; --text: #e6e1d7; --dim: #9ca1b1; --line: rgba(230, 225, 215, 0.15); --tap: rgba(230, 225, 215, 0.06); --tap-on: #e6e1d7; --tap-on-fg: #0e1322; --warm: #f4c29a; color-scheme: dark; }
+html.dawn { --accent: var(--warm); }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--page); color: var(--text); font-family: var(--serif); -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+
+.rail {
+	position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+	background: var(--page); border-bottom: 1px solid var(--line);
+}
+.rail-inner { max-width: 36rem; margin: 0 auto; padding: 10px 20px 8px; display: grid; gap: 8px; }
+.rail-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; font: 600 12px/1.2 var(--sans); }
+.rail-top .where { letter-spacing: 0.04em; }
+.where-num { color: var(--accent); font-weight: 700; margin-right: 6px; }
+.rail-top a { text-decoration: none; color: var(--dim); font-size: 20px; line-height: 1; padding: 4px 6px; }
+.ticks { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; margin: 0; padding: 0; list-style: none; }
+.ticks li { height: 3px; border-radius: 2px; background: var(--line); }
+.ticks li.done { background: var(--accent); }
+
+.letter { max-width: 36rem; margin: 0 auto; padding-inline: 20px; padding-block: 40px 96px; }
+.letter p { margin: 0 0 1em; font: 400 20px/1.62 var(--serif); text-wrap: pretty; }
+.letter p.small { font-size: 16px; color: var(--dim); }
+.sign { font-style: italic; }
+.chapter { padding-top: 56px; }
+.chapter:first-of-type { padding-top: 8px; }
+.chapter header { display: grid; gap: 6px; margin-bottom: 24px; }
+.num { font: 700 12px/1 var(--sans); letter-spacing: 0.24em; color: var(--accent); }
+.chapter h2 { margin: 0; font: 400 clamp(32px, 7vw, 44px)/1.08 var(--serif); letter-spacing: -0.01em; text-wrap: balance; }
+.mins { font: 500 13px/1 var(--sans); color: var(--dim); }
+.letter p.wordmark { font: 800 13px/1 var(--sans); font-stretch: 125%; letter-spacing: 0.42em; color: var(--dim); margin: 0 0 28px; }
+.privacy { font: 500 14px/1.4 var(--sans) !important; color: var(--dim); }
+
+blockquote.v { margin: 0 0 1.2em; padding-left: 18px; border-left: 2px solid var(--accent); }
+blockquote.v p { margin: 0; font: italic 400 20px/1.5 var(--serif); }
+blockquote.v cite { display: block; margin-top: 6px; font: 600 11px/1 var(--sans); font-style: normal; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+blockquote.v.big p { font-size: clamp(26px, 6vw, 34px); line-height: 1.25; }
+.ask { margin: 1.4em 0 1.4em; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--tap); display: grid; gap: 12px; }
+.ask .q { margin: 0; font: 600 18px/1.35 var(--sans); }
+.taps { display: flex; flex-wrap: wrap; gap: 8px; }
+.tap {
+	min-height: 44px; padding: 9px 16px; border-radius: 999px;
+	border: 1px solid var(--line); background: transparent; color: var(--text);
+	font: 600 15px/1.2 var(--sans); cursor: pointer; text-align: left;
+}
+@media (hover: hover) { .taps:not(.same) .tap:hover { border-color: var(--text); } }
+.tap[aria-pressed="true"] { background: var(--tap-on); color: var(--tap-on-fg); border-color: var(--tap-on); }
+.taps.same { flex-direction: column; }
+.taps.same .tap { text-align: center; min-height: 52px; border-radius: 12px; }
+.answer { margin: 0 !important; font: 400 18px/1.5 var(--sans) !important; }
+.answer.dim { color: var(--dim); font-style: italic !important; font-family: var(--serif) !important; }
+.readback { font: 600 clamp(22px, 5vw, 28px)/1.3 var(--serif) !important; }
+.evaded { font-style: italic; color: var(--dim); }
+.testimony q { font-style: italic; }
+.parked { margin: 1.4em 0; padding-top: 1em; border-top: 1px solid var(--line); }
+.parked h3, .chapter h3 { margin: 0 0 0.6em; font: 700 12px/1.2 var(--sans); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.parked .oq { font-weight: 600; }
+details.but { border-bottom: 1px solid var(--line); padding: 10px 0; }
+details.but summary { cursor: pointer; font: 600 17px/1.4 var(--sans); list-style-position: outside; }
+details.but[open] summary { margin-bottom: 10px; }
+.continue { display: flex; justify-content: center; padding: 28px 0 0; }
+.btn { min-height: 48px; padding: 12px 22px; border-radius: 999px; border: 1px solid var(--text); background: var(--text); color: var(--page); font: 600 16px/1 var(--sans); cursor: pointer; }
+.waiting { font: 500 14px/1.4 var(--sans) !important; color: var(--dim); text-align: center; }
+
+/* The one band of colour in the whole letter. Set explicitly: dawn looks the same in either theme. */
+.horizon {
+	margin: 8px calc(50% - 50vw) 40px; padding: 56px max(20px, calc(50vw - 18rem));
+	background: linear-gradient(180deg, var(--sky), var(--peach) 58%, var(--glow));
+	color: var(--dawn-ink);
+	animation: rise 1.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes rise { from { opacity: 0; background-position: 0 40px; } }
+.horizon .eyebrow { margin: 0 0 14px; font: 600 11px/1.2 var(--sans); letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7; }
+.horizon blockquote { margin: 0; }
+.horizon blockquote p { margin: 0; font: italic 400 clamp(30px, 7vw, 44px)/1.18 var(--serif); }
+.horizon blockquote cite { display: block; margin-top: 10px; font: 600 11px/1 var(--sans); font-style: normal; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.7; }
+.drop::first-letter { float: left; font: 400 68px/0.86 var(--serif); padding: 6px 10px 0 0; color: var(--accent); }
+
+.tests { margin: 0 0 1.2em; padding: 0; list-style: none; display: grid; gap: 16px; counter-reset: t; }
+.tests li { display: grid; gap: 4px; padding-left: 34px; position: relative; }
+.tests li::before { counter-increment: t; content: counter(t); position: absolute; left: 0; top: 2px; font: 700 13px/1 var(--sans); color: var(--accent); }
+.tests b { font: 600 18px/1.35 var(--sans); }
+.tests span { font: italic 400 17px/1.45 var(--serif); color: var(--dim); }
+.essentials { margin: 0 0 1.4em; padding-left: 1.3em; display: grid; gap: 12px; font: 400 18px/1.45 var(--sans); }
+.essentials small { display: block; color: var(--dim); font: italic 400 16px/1.4 var(--serif); }
+.kit-host {
+	margin-top: 1.6em;
+	--kit-fg: var(--text); --kit-muted: var(--dim); --kit-line: var(--line); --kit-surface: var(--tap);
+	--kit-accent: var(--text); --kit-accent-fg: var(--page); --kit-sans: var(--sans); --kit-serif: var(--serif);
+}
+.after-links { display: grid; gap: 6px; margin-top: 32px; font: 500 15px/1.4 var(--sans); }
+.after-links a { color: var(--dim); text-underline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<nav class="rail" aria-label="Where you are in the letter">
+	<div class="rail-inner">
+		<div class="rail-top"><span class="where" id="where"><span class="where-num">0</span>To someone I'll probably never meet</span><a href="index.html" aria-label="Close">×</a></div>
+		<ol class="ticks" id="ticks"></ol>
+	</div>
+</nav>
+
+<main class="letter" id="letter">
+
+<section class="chapter" id="ch0" data-step="you" data-title="To someone I'll probably never meet">
+	<p class="wordmark">ONCE</p>
+	<header><span class="num">0</span><h2>To someone I'll probably never meet</h2><span class="mins">1 minute</span></header>
+	<p>I'm writing this on the assumption that we'll never meet, and that you'll read it once. So I won't waste your time, and I won't pretend it's light reading. It's about the one appointment nobody misses.</p>
+	<p>I'm going to ask you a few questions on the way. Tap your answers. They stay on this device. Nobody sees them, me included.</p>
+	<p class="privacy">Your answers stay on this device.</p>
+	<div class="ask" data-ask="after"></div>
+	<div id="builder" hidden>
+		<p>Then let me ask you something first. If you saw a building, how would you know someone built it? You wouldn't need to meet the builder. The building is the proof.</p>
+		<blockquote class="v"><p>And every house is built by someone, but God is the builder of everything.</p><cite>Hebrews 3:4</cite></blockquote>
+		<p>A painting tells you there's a painter. Creation tells you there's a Creator, and the Bible says that is plain enough to leave all of us without an excuse.</p>
+		<blockquote class="v"><p>For since the creation of the world God’s invisible qualities, His eternal power and divine nature, have been clearly seen, being understood from His workmanship, so that men are without excuse.</p><cite>Romans 1:20</cite></blockquote>
+		<p>If you're not persuaded, read on anyway. You have a conscience, and that is where this letter goes next.</p>
+	</div>
+</section>
+
+<section class="chapter" id="ch1" data-step="you" data-title="Your answer">
+	<header><span class="num">I</span><h2>Your answer</h2><span class="mins">1 minute</span></header>
+	<p>Say there is a heaven, and you're standing at its door. If God asked why He should let you in, what would you say?</p>
+	<div class="ask" data-ask="why"></div>
+	<p>Hold onto that answer. I'll come back to it at the end.</p>
+	<p>One more, and it's the one this whole letter hangs on.</p>
+	<div class="ask" data-ask="good"></div>
+</section>
+
+<section class="chapter" id="ch2" data-step="law" data-title="The standard">
+	<header><span class="num">II</span><h2>The standard</h2><span class="mins">4 minutes</span></header>
+	<p>Most of us measure ourselves against other people, and by that measure we usually come out fine. God doesn't use that measure. He gave us His Law, and He wrote the point of it on every conscience. You already know some things are wrong without being told.</p>
+	<blockquote class="v"><p>So they show that the work of the law is written on their hearts, their consciences also bearing witness, and their thoughts either accusing or defending them</p><cite>Romans 2:15</cite></blockquote>
+	<p>Here are six of the Ten Commandments. Answer each one honestly. Nobody is keeping score but you.</p>
+	<div id="law"></div>
+</section>
+
+<section class="chapter" id="ch3" data-step="verdict" data-title="By your own answers">
+	<header><span class="num">III</span><h2>By your own answers</h2><span class="mins">2 minutes</span></header>
+	<div id="readback"></div>
+	<p>Here is half a sentence from the book of Hebrews. I'll give you the other half later.</p>
+	<blockquote class="v big" data-step="mortality"><p>Just as man is appointed to die once, and after that to face judgment,</p><cite>Hebrews 9:27</cite></blockquote>
+	<div class="ask" data-ask="verdict"></div>
+	<div id="where-wrap" hidden><div class="ask" data-ask="where"></div><div id="where-after"></div></div>
+	<div id="concern-wrap" hidden><div class="ask" data-ask="concern"></div><div id="concern-after"></div></div>
+	<div id="parked"></div>
+	<div class="continue" id="to4"><p class="waiting" id="to4-wait">Answer the three questions above to go on.</p></div>
+</section>
+
+<section class="chapter" id="ch4" data-step="grace" data-title="But God" hidden>
+	<header><span class="num">IV</span><h2>But God</h2><span class="mins">2 minutes</span></header>
+	<div class="horizon">
+		<p class="eyebrow">The sentence doesn't end at judgment</p>
+		<blockquote><p>Just as man is appointed to die once, and after that to face judgment, so also Christ was offered once to bear the sins of many.</p><cite>Hebrews 9:27–28</cite></blockquote>
+	</div>
+	<p class="drop">Picture a courtroom. You are standing before a judge, guilty, and the fine is far more than you could ever pay.</p>
+	<blockquote class="v"><p>For the wages of sin is death</p><cite>Romans 6:23</cite></blockquote>
+	<p>The judge is good, and that is the problem. A good judge can't look at a guilty person and let them walk free. A judge who did that would be corrupt.</p>
+	<blockquote class="v"><p>Acquitting the guilty and condemning the righteous— both are detestable to the LORD.</p><cite>Proverbs 17:15</cite></blockquote>
+	<p>Then someone you've never met steps forward and pays your fine in full. Now the judge can dismiss your case, and do it legally, because justice has been done.</p>
+	<blockquote class="v"><p>having canceled the debt ascribed to us in the decrees that stood against us. He took it away, nailing it to the cross!</p><cite>Colossians 2:14</cite></blockquote>
+	<p>That someone is Jesus.</p>
+	<blockquote class="v big"><p>But God proves His love for us in this: While we were still sinners, Christ died for us.</p><cite>Romans 5:8</cite></blockquote>
+	<p>God became a man. He lived the life you couldn't live, died the death you deserved, and rose from the dead on the third day. The punishment you were owed fell on Him.</p>
+	<blockquote class="v"><p>But He was pierced for our transgressions, He was crushed for our iniquities; the punishment that brought us peace was upon Him, and by His stripes we are healed. We all like sheep have gone astray, each one has turned to his own way; and the LORD has laid upon Him the iniquity of us all.</p><cite>Isaiah 53:5–6</cite></blockquote>
+	<blockquote class="v"><p>God made Him who knew no sin to be sin on our behalf, so that in Him we might become the righteousness of God.</p><cite>2 Corinthians 5:21</cite></blockquote>
+	<blockquote class="v"><p>For what I received I passed on to you as of first importance: that Christ died for our sins according to the Scriptures, that He was buried, that He was raised on the third day according to the Scriptures.</p><cite>1 Corinthians 15:3–4</cite></blockquote>
+	<p>Why would He do that? Scripture gives one reason.</p>
+	<blockquote class="v"><p>For God so loved the world that He gave His one and only Son, that everyone who believes in Him shall not perish but have eternal life.</p><cite>John 3:16</cite></blockquote>
+</section>
+
+<section class="chapter" id="ch5" data-step="response" data-title="Turn, and put Him on" hidden>
+	<header><span class="num">V</span><h2>Turn, and put Him on</h2><span class="mins">2 minutes</span></header>
+	<p>God asks two things of you, and neither of them earns anything. They receive what He already paid.</p>
+	<p>The first is to repent. That means turning from your sin. Feeling bad about it isn't the same thing. You can regret something and keep doing it.</p>
+	<blockquote class="v"><p>Repent and believe in the gospel!</p><cite>Mark 1:15</cite></blockquote>
+	<blockquote class="v"><p>He who conceals his sins will not prosper, but whoever confesses and renounces them will find mercy.</p><cite>Proverbs 28:13</cite></blockquote>
+	<blockquote class="v"><p>Godly sorrow brings repentance that leads to salvation without regret, but worldly sorrow brings death.</p><cite>2 Corinthians 7:10</cite></blockquote>
+	<p>The second is to trust Jesus alone. Think of a parachute. You can believe everything about it, that it is well made and that it works, and still not be wearing it. Trust means putting it on.</p>
+	<blockquote class="v"><p>clothe yourselves with the Lord Jesus Christ</p><cite>Romans 13:14</cite></blockquote>
+	<blockquote class="v"><p>For it is by grace you have been saved through faith, and this not from yourselves; it is the gift of God, not by works, so that no one can boast.</p><cite>Ephesians 2:8–9</cite></blockquote>
+	<p>There are no special words. After his adultery, King David prayed like this. You don't have to use his words, but you might find they say what you mean.</p>
+	<blockquote class="v"><p>Have mercy on me, O God, according to Your loving devotion; according to Your great compassion, blot out my transgressions. Wash me clean of my iniquity and cleanse me from my sin.</p><cite>Psalm 51:1–2</cite></blockquote>
+	<blockquote class="v"><p>For I know my transgressions, and my sin is always before me. Against You, You only, have I sinned and done what is evil in Your sight, so that You may be proved right when You speak and blameless when You judge.</p><cite>Psalm 51:3–4</cite></blockquote>
+	<blockquote class="v"><p>Create in me a clean heart, O God, and renew a right spirit within me.</p><cite>Psalm 51:10</cite></blockquote>
+	<blockquote class="v"><p>The sacrifices of God are a broken spirit; a broken and a contrite heart, O God, You will not despise.</p><cite>Psalm 51:17</cite></blockquote>
+	<p>Use your own words. He hears them.</p>
+	<div id="buts"></div>
+	<p>So I'll ask you plainly, and every answer here is a real one.</p>
+	<div class="ask" data-ask="exit" data-step="exit"></div>
+</section>
+
+<section class="chapter" id="ch6" data-step="kit" data-title="Examine yourself" hidden>
+	<header><span class="num">VI</span><h2>Examine yourself</h2><span class="mins">2 minutes</span></header>
+	<div id="examine-open"></div>
+	<p>Paul wrote this to people in a church, not to outsiders. Checking yourself is a normal part of the Christian life. It isn't suspicion.</p>
+	<blockquote class="v"><p>Examine yourselves to see whether you are in the faith; test yourselves. Can’t you see for yourselves that Jesus Christ is in you—unless you actually fail the test?</p><cite>2 Corinthians 13:5</cite></blockquote>
+	<p>Jesus said many people will stand before Him pointing to what they did for Him. What they lacked was Him.</p>
+	<blockquote class="v"><p>Not everyone who says to Me, ‘Lord, Lord,’ will enter the kingdom of heaven, but only he who does the will of My Father in heaven. Many will say to Me on that day, ‘Lord, Lord, did we not prophesy in Your name, and in Your name drive out demons and perform many miracles?’ Then I will tell them plainly, ‘I never knew you; depart from Me, you workers of lawlessness!’</p><cite>Matthew 7:21–23</cite></blockquote>
+	<p>And He tells us what the Father's will is. It isn't a list of achievements.</p>
+	<blockquote class="v"><p>For it is My Father’s will that everyone who looks to the Son and believes in Him shall have eternal life</p><cite>John 6:40</cite></blockquote>
+	<p>In the parable of the sower, some seed lands on rocky ground. It springs up at once, with joy, and then withers. Some lands among thorns and gets choked. Only the good soil bears fruit. A joyful moment was never the evidence.</p>
+	<blockquote class="v"><p>Some are like the seeds sown on rocky ground. They hear the word and at once receive it with joy. But they themselves have no root, and they remain for only a season. When trouble or persecution comes because of the word, they quickly fall away.</p><cite>Mark 4:16–17</cite></blockquote>
+	<blockquote class="v"><p>Others are like the seeds sown among the thorns. They hear the word, but the worries of this life, the deceitfulness of wealth, and the desire for other things come in and choke the word, and it becomes unfruitful.</p><cite>Mark 4:18–19</cite></blockquote>
+	<p>John wrote a whole letter so that believers could know where they stand. These are the marks he gives.</p>
+	<ol class="tests" id="tests"></ol>
+	<p>None of this is a call to be perfect. The same letter says so.</p>
+	<blockquote class="v"><p>If we say we have no sin, we deceive ourselves, and the truth is not in us. If we confess our sins, He is faithful and just to forgive us our sins and to cleanse us from all unrighteousness.</p><cite>1 John 1:8–9</cite></blockquote>
+	<blockquote class="v"><p>But if anyone does sin, we have an advocate before the Father—Jesus Christ, the Righteous One.</p><cite>1 John 2:1</cite></blockquote>
+	<p>John isn't asking whether you still sin. He is asking whether you defend your sin or confess it. Christ is what saves you. A changed life is the evidence that He has.</p>
+	<blockquote class="v"><p>He saved us, not by the righteous deeds we had done, but according to His mercy</p><cite>Titus 3:5</cite></blockquote>
+	<blockquote class="v"><p>For each tree is known by its own fruit.</p><cite>Luke 6:44</cite></blockquote>
+	<p>If you read this and aren't sure, you don't have to stay unsure. The answer is not to try harder. It is to turn and trust Him today. He doesn't turn away anyone who comes.</p>
+	<blockquote class="v"><p>Everyone the Father gives Me will come to Me, and the one who comes to Me I will never drive away.</p><cite>John 6:37</cite></blockquote>
+	<blockquote class="v"><p>Even if our hearts condemn us, God is greater than our hearts, and He knows all things.</p><cite>1 John 3:20</cite></blockquote>
+</section>
+
+<section class="chapter" id="ch7" data-step="kit" data-title="If we never meet again" hidden>
+	<header><span class="num">VII</span><h2>If we never meet again</h2><span class="mins">1½ minutes</span></header>
+	<div id="ending"></div>
+	<p class="sign">Thank you for reading this far.</p>
+	<div class="kit-host" id="kit"></div>
+	<div class="after-links">
+		<a href="john.html">Read the whole Gospel of John</a>
+		<a href="stories.html">The one-minute version</a>
+		<a href="conversation.html">The conversation version</a>
+	</div>
+</section>
+
+</main>
+
+<script src="content.js"></script>
+<script src="objections.js"></script>
+<script src="kit.js"></script>
+<script>
+(() => {
+	const O = window.ONCE;
+	const OB = window.ONCE_OBJECTIONS;
+	const KEY = "once-letter-v1";
+	const fmt = new Intl.ListFormat("en", { style: "long", type: "conjunction" });
+
+	const blank = () => ({ after: null, why: null, good: null, law: {}, lawPath: {}, verdict: null, innocent: 0, where: null, whyHeaven: null, concern: null, parked: [], exit: null });
+	let S = blank();
+	try { const saved = JSON.parse(sessionStorage.getItem(KEY) || "null"); if (saved) S = Object.assign(blank(), saved); } catch { /* fresh */ }
+	const save = () => { try { sessionStorage.setItem(KEY, JSON.stringify(S)); } catch { /* fine */ } };
+
+	function h(tag, attrs, ...kids) {
+		const el = document.createElement(tag);
+		for (const [k, v] of Object.entries(attrs || {})) {
+			if (v == null || v === false) continue;
+			if (k === "class") el.className = v;
+			else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+			else el.setAttribute(k, v === true ? "" : v);
+		}
+		for (const c of kids.flat()) if (c != null && c !== false) el.append(typeof c === "string" ? document.createTextNode(c) : c);
+		return el;
+	}
+	const verse = (v, cls = "") => h("blockquote", { class: `v ${cls}` }, h("p", {}, v.text), h("cite", {}, v.ref));
+	const ans = (t, cls = "") => h("p", { class: `answer ${cls}` }, t);
+	function taps(key, options, picked, onPick, same = false) {
+		return h("div", { class: `taps${same ? " same" : ""}`, role: "group" },
+			options.map((o) => h("button", { class: "tap", type: "button", "data-key": `${key}:${o.id}`, "aria-pressed": String(picked === o.id), onclick: () => onPick(o.id) }, o.label)));
+	}
+
+	/* Re-render keeps keyboard focus on the same answer. */
+	function update() {
+		const focused = document.activeElement?.dataset?.key;
+		save();
+		render();
+		if (focused) document.querySelector(`[data-key="${CSS.escape(focused)}"]`)?.focus({ preventScroll: true });
+	}
+
+	const AFTER = [
+		{ id: "heavenhell", label: "Heaven or hell" },
+		{ id: "something", label: "Something. Not sure what" },
+		{ id: "never", label: "Never really thought about it" },
+		{ id: "nothing", label: "Nothing. You just stop" },
+	];
+
+	function ask(name, ...kids) {
+		const el = document.querySelector(`[data-ask="${name}"]`);
+		el.replaceChildren(...kids.flat().filter(Boolean));
+	}
+
+	function renderLaw() {
+		const wrap = document.getElementById("law");
+		wrap.replaceChildren(...O.law.map((l) => {
+			const st = S.law[l.id];
+			const path = S.lawPath[l.id];
+			const box = h("div", { class: "ask" },
+				h("p", { class: "small" }, `“${l.commandment.text}” ${l.commandment.ref}`),
+				h("p", { class: "q" }, l.q),
+				taps(`law-${l.id}`, [{ id: "honest", label: l.honest }, { id: "evade", label: l.evade }],
+					path === "direct" ? "honest" : path === "press" ? "evade" : null,
+					(id) => { if (id === "honest") { S.lawPath[l.id] = "direct"; S.law[l.id] = "admit"; } else { S.lawPath[l.id] = "press"; S.law[l.id] = "press"; } update(); }));
+			if (path === "press") {
+				box.append(ans(l.press), taps(`press-${l.id}`, [{ id: "admit", label: l.pressYes }, { id: "evade", label: l.pressNo }],
+					st === "admit" || st === "evade" ? st : null, (id) => { S.law[l.id] = id; update(); }));
+			}
+			if (st === "admit") { box.append(ans(l.named)); if (l.standard) box.append(verse(l.standard)); }
+			if (st === "evade") box.append(ans("Noted. That's your answer, and it stays yours.", "dim"));
+			return box;
+		}));
+	}
+
+	function renderReadback() {
+		const el = document.getElementById("readback");
+		const admitted = O.law.filter((l) => S.law[l.id] === "admit");
+		const evaded = O.law.filter((l) => S.law[l.id] === "evade");
+		const kids = [h("p", {}, "Let me read back what you told me.")];
+		if (admitted.length) kids.push(h("p", { class: "readback" }, `${O.readBack.admitted} ${fmt.format(admitted.map((l) => l.name))}.`));
+		if (evaded.length) kids.push(h("p", { class: "evaded" }, O.readBack.evaded(fmt.format(evaded.map((l) => l.denied)))));
+		if (!admitted.length) {
+			kids.push(h("p", {}, evaded.length ? O.readBack.noneAdmitted : "You haven't answered the questions above, and that is your right. Scripture says this about all of us:"), verse(O.readBack.noneVerse));
+		}
+		const why = O.why.options.find((o) => o.id === S.why);
+		if (S.good) kids.push(h("p", { class: "testimony" }, "When I asked if you're a good person, you said ", h("q", {}, O.good.quote[S.good]), " ", why ? "And you said God should let you in because " : "", why ? h("q", {}, `${why.label}.`) : ""));
+		kids.push(h("p", {}, "The Law doesn't grade on a curve. Break one part of it and you've broken the whole."), verse(O.readBack.law));
+		el.replaceChildren(...kids);
+	}
+
+	function renderVerdict() {
+		const opts = [{ id: "guilty", label: "Guilty" }, { id: "innocent", label: "Innocent" }];
+		const kids = [h("p", { class: "q" }, O.verdict.q)];
+		if (S.innocent === 0) {
+			kids.push(taps("verdict", opts, S.verdict, (id) => { if (id === "innocent") { S.innocent = 1; S.verdict = null; } else S.verdict = "guilty"; update(); }));
+		} else {
+			kids.push(taps("verdict-first", opts, "innocent", () => {}), ans(O.verdict.innocentPress), verse(O.verdict.innocentVerse),
+				taps("verdict2", [{ id: "guilty", label: "Guilty" }, { id: "innocent", label: "Still innocent" }], S.verdict, (id) => { S.verdict = id; update(); }));
+		}
+		if (S.verdict === "guilty") kids.push(ans("Those are your words. Your answers say the same."));
+		if (S.verdict === "innocent") kids.push(ans(O.verdict.stillInnocent));
+		ask("verdict", kids);
+
+		document.getElementById("where-wrap").hidden = !S.verdict;
+		ask("where", h("p", { class: "q" }, O.where.q), taps("where", O.where.options, S.where, (id) => { S.where = id; S.whyHeaven = null; update(); }));
+		const wa = document.getElementById("where-after");
+		const w = [];
+		let whereDone = !!S.where;
+		if (S.where === "heaven") {
+			const wh = O.where.whyHeaven;
+			w.push(h("div", { class: "ask" }, h("p", { class: "q" }, wh.q), taps("whyheaven", wh.options, S.whyHeaven, (id) => { S.whyHeaven = id; update(); })));
+			whereDone = !!S.whyHeaven;
+			if (S.whyHeaven) { const o = wh.options.find((x) => x.id === S.whyHeaven); w.push(h("p", {}, o.reply)); if (o.verse) w.push(verse(o.verse)); }
+		}
+		if (whereDone) w.push(h("p", {}, O.where.lead[S.where]), ...O.where.verses.map((v) => verse(v)));
+		wa.replaceChildren(...w);
+
+		document.getElementById("concern-wrap").hidden = !whereDone;
+		ask("concern", h("p", { class: "q" }, O.concern.q), taps("concern", O.concern.options, S.concern, (id) => { S.concern = id; update(); }),
+			S.concern && ans(O.concern.reply[S.concern]));
+		document.getElementById("concern-after").replaceChildren(...(S.concern === "no" ? [verse(O.concern.noVerse)] : []));
+
+		const parked = document.getElementById("parked");
+		parked.replaceChildren();
+		if (S.concern && S.parked.length) {
+			parked.className = "parked";
+			parked.append(h("h3", {}, "You asked"));
+			for (const id of S.parked) {
+				const o = OB.law.find((x) => x.id === id);
+				if (o) parked.append(h("p", { class: "oq" }, o.q), h("p", {}, o.a), verse(o.verse));
+			}
+		}
+
+		const ready = !!S.verdict && whereDone && !!S.concern;
+		const to4 = document.getElementById("to4");
+		to4.replaceChildren(ready
+			? (S.reached4 ? h("p", { class: "waiting" }, "↓ Keep reading") : h("button", { class: "btn", type: "button", onclick: () => { S.reached4 = true; update(); document.getElementById("ch4").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); } }, "Keep reading"))
+			: h("p", { class: "waiting" }, "Answer the three questions above to go on."));
+		return ready;
+	}
+
+	function renderButs() {
+		const el = document.getElementById("buts");
+		if (el.childElementCount) return;
+		el.className = "parked";
+		el.append(h("h3", {}, "Still have a “but”?"));
+		for (const o of [...OB.grace, ...OB.law]) {
+			el.append(h("details", { class: "but" }, h("summary", {}, o.q), h("p", {}, o.a), verse(o.verse)));
+		}
+	}
+
+	function renderExit() {
+		ask("exit", h("p", { class: "q" }, O.exits.q), taps("exit", O.exits.options, S.exit, (id) => { S.exit = id; update(); }, true),
+			h("p", { class: "small" }, "Each answer is respected, and each one leads to something to take with you."));
+	}
+
+	function renderExamine() {
+		const E = O.ending;
+		const open = document.getElementById("examine-open");
+		const d = E[S.why];
+		const kids = [];
+		if (S.exit === "now") kids.push(h("p", {}, E.examineNowIntro));
+		if (d?.examine) kids.push(h("p", {}, d.lead));
+		else kids.push(h("p", {}, "This chapter is for anyone who already calls themselves a Christian, or might one day."));
+		open.replaceChildren(...kids);
+		document.getElementById("tests").replaceChildren(...E.christ.tests.map((t) => h("li", {}, h("b", {}, t.t), h("span", {}, `“${t.v.text}” ${t.v.ref}`))));
+	}
+
+	function renderEnding() {
+		const el = document.getElementById("ending");
+		const E = O.ending;
+		const a = O.after[S.exit];
+		const kids = [];
+		if (S.exit === "now") {
+			kids.push(h("p", {}, O.after.now.pause), h("p", {}, a.promiseLead), verse(a.promise));
+		}
+		if (S.exit === "think") kids.push(h("p", {}, a.line), ...a.verses.map((v) => verse(v)));
+		if (S.exit === "no") kids.push(h("p", {}, a.line));
+		const key = S.after === "nothing" && !S.why ? "none" : S.why;
+		const d = E[key];
+		if (d && !d.examine) {
+			kids.push(h("p", {}, d.lead), ...d.verses.map((v) => verse(v)));
+			if (d.tail) kids.push(h("p", {}, d.tail));
+			if (d.tailVerse) kids.push(verse(d.tailVerse));
+		}
+		if (d?.examine) {
+			const because = S.why === "christ"
+				? "what Jesus paid. Chapter VI is there to help you make sure that's true of you."
+				: "church, baptism, or a prayer. Chapter VI is for you, then. Read it slowly.";
+			kids.push(h("p", {}, `You said you'd get in because of ${because}`));
+		}
+		if (S.exit === "now") {
+			kids.push(h("h3", {}, "For the days ahead"), h("ol", { class: "essentials" }, O.essentials.map((x) => h("li", {}, x.t, h("small", {}, `“${x.v.text}” ${x.v.ref}`)))));
+		}
+		el.replaceChildren(...kids);
+	}
+
+	let kitMounted = false;
+	function render() {
+		ask("after", h("p", { class: "q" }, "What do you think happens when someone dies?"),
+			taps("after", AFTER, S.after, (id) => { S.after = id; update(); }));
+		document.getElementById("builder").hidden = S.after !== "nothing";
+		ask("why", h("p", { class: "q" }, O.why.q), taps("why", O.why.options, S.why, (id) => { S.why = id; update(); }), S.why && ans(O.why.hold));
+		ask("good", h("p", { class: "q" }, O.good.q), taps("good", O.good.options, S.good, (id) => { S.good = id; update(); }), S.good && ans(O.good.reply[S.good]));
+		renderLaw();
+		renderReadback();
+		const ready = renderVerdict();
+		const open4 = ready && S.reached4;
+		const wasDawn = document.documentElement.classList.contains("dawn");
+		document.getElementById("ch4").hidden = !open4;
+		document.getElementById("ch5").hidden = !open4;
+		document.documentElement.classList.toggle("dawn", open4);
+		if (open4 && !wasDawn) document.querySelector(".horizon").style.animation = "";
+		if (open4) renderButs();
+		renderExit();
+		const done = open4 && !!S.exit;
+		document.getElementById("ch6").hidden = !done;
+		document.getElementById("ch7").hidden = !done;
+		if (done) {
+			renderExamine();
+			renderEnding();
+			if (!kitMounted) { window.OnceKit.mount(document.getElementById("kit")); kitMounted = true; }
+		}
+		track();
+		paintRail();
+	}
+
+	/* The rail: where you are, never a shortcut past the Law. */
+	const chapters = [...document.querySelectorAll(".chapter")];
+	const ticks = document.getElementById("ticks");
+	ticks.append(...chapters.map(() => h("li", {})));
+	let currentIdx = 0;
+	function paintRail() {
+		chapters.forEach((c, i) => { ticks.children[i].className = i <= currentIdx && !c.hidden ? "done" : ""; });
+		const c = chapters[currentIdx];
+		document.getElementById("where").replaceChildren(h("span", { class: "where-num" }, c.querySelector(".num").textContent), c.dataset.title);
+	}
+	/* The chapter you're in is the last one whose top has passed a third of the way down the screen. */
+	let raf = 0;
+	function track() {
+		raf = 0;
+		const line = window.innerHeight * 0.34;
+		let idx = 0;
+		chapters.forEach((c, i) => { if (!c.hidden && c.getBoundingClientRect().top <= line) idx = i; });
+		if (idx !== currentIdx) { currentIdx = idx; paintRail(); }
+	}
+	window.addEventListener("scroll", () => { if (!raf) raf = requestAnimationFrame(track); }, { passive: true });
+	window.addEventListener("resize", track);
+
+	/* "But…" in the Law half: the reader can raise it; it is parked and answered after the verdict. */
+	document.getElementById("law").before(h("p", { class: "small" }, "If an objection comes to mind as you answer, ",
+		h("button", { class: "tap", type: "button", style: "min-height:32px;padding:4px 12px", onclick: (e) => openBut(e.currentTarget) }, "But…"),
+		" Note it here. I'll answer it once we've been through the Law."));
+	function openBut(btn) {
+		const holder = btn.closest("p");
+		const box = h("div", { class: "ask" }, h("p", { class: "q" }, "What's the objection?"),
+			h("div", { class: "taps" }, OB.law.map((o) => h("button", { class: "tap", type: "button", "aria-pressed": String(S.parked.includes(o.id)), onclick: () => {
+				if (!S.parked.includes(o.id)) S.parked.push(o.id);
+				save();
+				box.replaceChildren(h("p", { class: "q" }, o.q), ans(OB.parkLine), h("div", { class: "taps" }, h("button", { class: "tap", type: "button", onclick: () => box.remove() }, "Back to the questions")));
+				render();
+			} }, o.q))),
+			h("div", { class: "taps" }, h("button", { class: "tap", type: "button", onclick: () => box.remove() }, "Never mind")));
+		holder.after(box);
+		box.querySelector("button")?.focus();
+	}
+
+	render();
+})();
+</script>
+</body>
+</html>

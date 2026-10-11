@@ -41,7 +41,7 @@
 			{
 				id: "never",
 				q: "What about people who never heard?",
-				a: "No one is judged for not hearing about Jesus. People are judged by what they already knew. Creation tells everyone there is a God, and conscience tells everyone right from wrong.",
+				a: "No one is judged for what they never heard. People are judged by what they already knew. Creation tells everyone there is a God, and conscience tells everyone right from wrong.",
 				verse: V("Romans 1:20", "For since the creation of the world God’s invisible qualities, His eternal power and divine nature, have been clearly seen, being understood from His workmanship, so that men are without excuse."),
 			},
 			{
