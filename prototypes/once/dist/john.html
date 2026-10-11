@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Gospel of John</title>
+<meta name="description" content="The whole Gospel of John in the Berean Standard Bible, to read here or print.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&display=swap">
+<style>
+/* Layout: a single reading column at book measure; chapter rail on top; seven mornings marked in the margin. */
+:root {
+	--page: #edf0f4;
+	--text: #1c2130;
+	--dim: #5f6678;
+	--line: rgba(28, 33, 48, 0.16);
+	--mark: rgba(239, 196, 158, 0.45);
+	--sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
+	--serif: "Newsreader", Georgia, "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme="light"]) { --page: #0e1322; --text: #e6e1d7; --dim: #9ca1b1; --line: rgba(230, 225, 215, 0.16); --mark: rgba(244, 194, 154, 0.16); color-scheme: dark; }
+}
+:root[data-theme="dark"] { --page: #0e1322; --text: #e6e1d7; --dim: #9ca1b1; --line: rgba(230, 225, 215, 0.16); --mark: rgba(244, 194, 154, 0.16); color-scheme: dark; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-padding-top: 76px; }
+body { margin: 0; background: var(--page); color: var(--text); font-family: var(--serif); -webkit-font-smoothing: antialiased; }
+a:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+.wrap { max-width: 40rem; margin: 0 auto; padding-inline: 20px; padding-block: 0 64px; }
+.top {
+	position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2;
+	background: var(--page); border-bottom: 1px solid var(--line);
+}
+.top-inner { max-width: 40rem; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; gap: 14px; }
+.back { font: 600 14px/1 var(--sans); color: var(--text); text-decoration: none; padding: 10px 0; white-space: nowrap; }
+.rail { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; padding: 4px 0; }
+.rail a {
+	flex: none; min-width: 34px; height: 34px; display: grid; place-items: center;
+	border-radius: 8px; font: 600 13px/1 var(--sans); font-variant-numeric: tabular-nums;
+	color: var(--dim); text-decoration: none;
+}
+.rail a:hover, .rail a:focus-visible { color: var(--text); background: var(--mark); outline: none; }
+header.title { padding-block: 48px 8px; display: grid; gap: 10px; }
+.eyebrow { margin: 0; font: 600 11px/1.2 var(--sans); letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); }
+h1 { margin: 0; font: 400 clamp(40px, 10vw, 64px)/1 var(--serif); letter-spacing: -0.01em; }
+.lede { margin: 0; font: 400 18px/1.5 var(--serif); color: var(--dim); max-width: 34rem; }
+.mornings { margin: 24px 0 8px; padding: 16px 0; border-block: 1px solid var(--line); display: grid; gap: 8px; }
+.mornings ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; font: 400 15px/1.4 var(--sans); }
+.mornings a { color: var(--text); text-decoration: none; display: flex; gap: 12px; padding: 4px 0; }
+.mornings a b { font-weight: 600; min-width: 7.6em; font-variant-numeric: tabular-nums; }
+.mornings a span { color: var(--dim); }
+.mornings a:hover b, .mornings a:focus-visible b { text-decoration: underline; text-underline-offset: 3px; }
+h2.ch { margin: 56px 0 14px; font: 600 12px/1 var(--sans); letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
+h2.ch span { display: block; margin-top: 8px; font: 400 44px/1 var(--serif); letter-spacing: 0; color: var(--text); text-transform: none; }
+.text p { margin: 0 0 0.9em; font: 400 19px/1.62 var(--serif); text-wrap: pretty; }
+.v { font: 600 11px/1 var(--sans); vertical-align: 0.5em; color: var(--dim); margin-right: 3px; font-variant-numeric: tabular-nums; }
+.reading { background: var(--mark); box-decoration-break: clone; -webkit-box-decoration-break: clone; padding: 0 2px; border-radius: 2px; }
+.note { font: italic 400 15px/1.5 var(--serif); color: var(--dim); border-left: 2px solid var(--line); padding-left: 12px; margin: 1em 0; }
+.credit { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); font: 400 13px/1.5 var(--sans); color: var(--dim); }
+@media print {
+	.top, .mornings { display: none; }
+	body { background: #fff; color: #000; }
+	.wrap { max-width: none; padding: 0; }
+	.text { column-count: 2; column-gap: 8mm; }
+	.text p { font-size: 10pt; line-height: 1.4; }
+	h2.ch { break-after: avoid; margin-top: 14pt; column-span: all; }
+	h2.ch span { font-size: 18pt; }
+	.reading { background: none; }
+	@page { margin: 14mm; }
+}
+</style>
+</head>
+<body>
+<nav class="top" aria-label="Chapters">
+	<div class="top-inner">
+		<a class="back" href="stories.html" id="back">← Once</a>
+		<div class="rail" id="rail"></div>
+	</div>
+</nav>
+<main class="wrap">
+	<header class="title">
+		<p class="eyebrow">The Gospel according to</p>
+		<h1>John</h1>
+		<p class="lede">John wrote this so that readers could weigh the evidence for themselves and believe. Reading it straight through takes about an hour and a half. Start with the seven mornings if you'd rather go one passage at a time.</p>
+		<section class="mornings" aria-label="Seven mornings">
+			<p class="eyebrow">Seven mornings</p>
+			<ol id="mornings"></ol>
+		</section>
+	</header>
+	<div class="text" id="text"><p>Loading the text…</p></div>
+	<p class="credit">Scripture: Berean Standard Bible. The Berean Bible text was dedicated to the public domain in 2023. Verse numbers follow the traditional numbering; where the earliest manuscripts lack a passage, it is marked rather than removed.</p>
+</main>
+<script src="john-data.js"></script>
+<script>
+(() => {
+	if (document.referrer && history.length > 1) {
+		document.getElementById("back").addEventListener("click", (e) => { e.preventDefault(); history.back(); });
+	}
+	const J = window.ONCE_JOHN;
+	const text = document.getElementById("text");
+	if (!J) { text.textContent = "The text could not be loaded."; return; }
+	const rail = document.getElementById("rail");
+	const mornings = document.getElementById("mornings");
+	const inReading = (c, v) => J.readings.findIndex((r) => r.chapter === c && v >= r.from && v <= r.to);
+	const frag = document.createDocumentFragment();
+	J.chapters.forEach((verses, ci) => {
+		const c = ci + 1;
+		const a = document.createElement("a");
+		a.href = `#c${c}`;
+		a.textContent = String(c);
+		a.setAttribute("aria-label", `Chapter ${c}`);
+		rail.append(a);
+		const h = document.createElement("h2");
+		h.className = "ch";
+		h.id = `c${c}`;
+		h.append("Chapter", Object.assign(document.createElement("span"), { textContent: String(c) }));
+		frag.append(h);
+		let p = document.createElement("p");
+		verses.forEach((t, vi) => {
+			const v = vi + 1;
+			if (c === 7 && v === 53) {
+				frag.append(p);
+				frag.append(Object.assign(document.createElement("p"), { className: "note", textContent: "The earliest manuscripts do not include John 7:53–8:11." }));
+				p = document.createElement("p");
+			}
+			const r = inReading(c, v);
+			if (r >= 0 && v === J.readings[r].from) {
+				frag.append(p);
+				p = document.createElement("p");
+				p.id = `d${r + 1}`;
+			}
+			const num = Object.assign(document.createElement("span"), { className: "v", textContent: String(v) });
+			p.append(num);
+			if (t == null) {
+				p.append(Object.assign(document.createElement("em"), { textContent: "This verse is not in the earliest manuscripts. " }));
+				return;
+			}
+			if (r >= 0) p.append(Object.assign(document.createElement("span"), { className: "reading", textContent: t }), " ");
+			else p.append(`${t} `);
+			if (r >= 0 && v === J.readings[r].to) {
+				frag.append(p);
+				p = document.createElement("p");
+			}
+		});
+		frag.append(p);
+	});
+	text.replaceChildren(frag);
+	J.readings.forEach((r, i) => {
+		const li = document.createElement("li");
+		const a = document.createElement("a");
+		a.href = `#d${i + 1}`;
+		a.append(Object.assign(document.createElement("b"), { textContent: `${i + 1} · ${r.ref}` }), Object.assign(document.createElement("span"), { textContent: r.title }));
+		li.append(a);
+		mornings.append(li);
+	});
+})();
+</script>
+</body>
+</html>
