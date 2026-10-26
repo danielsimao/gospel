@@ -378,3 +378,141 @@
 		],
 	};
 })();
+
+/*
+ * Stories copy: one beat per card. At most about 25 words of ours and one short
+ * verse fragment per card, so nothing on a phone ever needs scrolling.
+ * Conversation and Letter keep the fuller spine above.
+ */
+(() => {
+	const V = (ref, text) => ({ ref, text });
+	window.ONCE.stories = {
+		privacy: "Your answers stay on this phone.",
+		goodReply: {
+			yes: "Most people say that. Let's test it.",
+			mostly: "Compared to whom? Let's see God's standard.",
+			no: "Let's see what God's standard says.",
+		},
+		whyQ: "If God asked why He should let you in, what would you say?",
+		law: {
+			lie: { press: "A white lie is still a lie. Ever told one?", name: "A liar." },
+			steal: { press: "Value isn't the question. A download? Change you kept?", name: "A thief." },
+			name: {
+				/* The result below quotes the second half of Exodus 20:7, so the card only states the first. */
+				cmd: V("Exodus 20:7", "{{BSB:Exodus 20:7|You shall not take the name of the LORD your God in vain}}"),
+				press: "Would you use your mother's name that way?",
+				name: "A blasphemer.",
+				verse: V("Exodus 20:7", "{{BSB:Exodus 20:7|the LORD will not leave anyone unpunished who takes His name in vain.}}"),
+			},
+			lust: {
+				press: "That's a yes. Jesus drew the line at the look.",
+				name: "An adulterer at heart.",
+				verse: V(
+					"Matthew 5:28",
+					"{{BSB:Matthew 5:28|anyone who looks at a woman to lust after her has already committed adultery with her in his heart.}}",
+				),
+			},
+		},
+		yourAnswer: "Your answer, not my word.",
+		held: "Noted. That's your answer.",
+		admitted: "By your own admission:",
+		evaded: (list) => `You said ${list}.`,
+		noneAdmitted: "You said no to all four. Scripture says:",
+		testimony: { good: "Asked if you're good, you said", why: "And that God should let you in because" },
+		verdict: {
+			guilty: "Your words. Your answers agree.",
+			press: "From your own answers?",
+			stillInnocent: "Then it's your word against God's Law.",
+		},
+		whyHeaven: {
+			goodgod: "He is. So He can't let the guilty go.",
+			moregood: "Good deeds don't erase crimes.",
+			jesus: "Hold onto that. There's a word for you at the end.",
+		},
+		penalty: {
+			lead: { hell: "Scripture agrees:", heaven: "Scripture is plain:", unsure: "Scripture is plain:" },
+			verses: [
+				V("Revelation 21:8", "{{BSB:Revelation 21:8|all liars, their place will be in the lake that burns with fire and sulfur.}}"),
+				V("Matthew 25:46", "{{BSB:Matthew 25:46|they will go away into eternal punishment}}"),
+			],
+		},
+		concern: {
+			yes: "It concerns me too.",
+			no: "Then think what your soul is worth.",
+			unsure: "That's honest. Keep listening.",
+			noVerse: V("Mark 8:36", "{{BSB:Mark 8:36}}"),
+		},
+		court: [
+			{ line: "You're guilty, and the fine is more than you could ever pay.", verse: V("Romans 6:23", "{{BSB:Romans 6:23|For the wages of sin is death}}") },
+			{ line: "A good judge can't just let you go.", verse: V("Proverbs 17:15", "{{BSB:Proverbs 17:15}}") },
+			{
+				line: "Then someone pays your fine in full. Now you can go free, legally.",
+				verse: V("Colossians 2:14", "{{BSB:Colossians 2:14|He took it away, nailing it to the cross!}}"),
+			},
+		],
+		jesus: {
+			line: "That someone is Jesus, God in flesh. He died the death you deserved, and rose.",
+			verse: V("1 Corinthians 15:4", "{{BSB:1 Corinthians 15:4|He was raised on the third day according to the Scriptures}}"),
+		},
+		repent: {
+			line: "Repent: turn from your sin. Feeling sorry isn't the same.",
+			verse: V("Proverbs 28:13", "{{BSB:Proverbs 28:13|whoever confesses and renounces them will find mercy.}}"),
+		},
+		trust: {
+			line: "Trust Jesus alone. Like a parachute: don't just believe in it. Put it on.",
+			verse: V("Romans 13:14", "{{BSB:Romans 13:14|clothe yourselves with the Lord Jesus Christ}}"),
+		},
+		pray: { line: "No formula. Use your own words. David prayed:", verse: V("Psalm 51:10", "{{BSB:Psalm 51:10}}") },
+		exitsNote: "Every answer is respected.",
+		pause: "Then talk to Him, not to me. Take as long as you need.",
+		ready: "I'm ready",
+		answer: {
+			now: {
+				line: "If you've turned and trusted Him, this is His promise:",
+				verse: V("John 5:24", "{{BSB:John 5:24|whoever hears My word and believes Him who sent Me has eternal life}}"),
+			},
+			think: {
+				line: "That's honest. Weigh it at the source:",
+				verse: V("John 20:31", "{{BSB:John 20:31|these are written so that you may believe that Jesus is the Christ, the Son of God}}"),
+			},
+			no: { line: "Thank you for being straight with me. You were free to say that, and you still are." },
+		},
+		ending: {
+			heading: "If we never meet again",
+			good: { line: "You said you're good enough for heaven. Jesus said:", verse: V("Mark 10:18", "{{BSB:Mark 10:18|No one is good except God alone.}}") },
+			believe: {
+				line: "Believing God exists isn't trusting Him. James puts it bluntly:",
+				verse: V("James 2:19", "{{BSB:James 2:19|Even the demons believe that—and shudder.}}"),
+			},
+			church: {
+				line: "Church, baptism, a prayer: good things. None of them is the parachute.",
+				verse: V("Matthew 7:21", "{{BSB:Matthew 7:21|Not everyone who says to Me, ‘Lord, Lord,’ will enter the kingdom of heaven}}"),
+			},
+			christ: {
+				line: "That's the right answer. Make sure it's true of you.",
+				verse: V("2 Corinthians 13:5", "{{BSB:2 Corinthians 13:5|Examine yourselves to see whether you are in the faith; test yourselves.}}"),
+			},
+		},
+		marks: {
+			heading: "Five marks John gives",
+			lines: [
+				{ t: "You trust the Son, not yourself.", ref: "1 John 5:12" },
+				{ t: "Obeying Him is your direction.", ref: "1 John 2:3" },
+				{ t: "You love other believers.", ref: "1 John 3:14" },
+				{ t: "The world has lost its grip.", ref: "1 John 2:15" },
+				{ t: "You fight sin instead of keeping it.", ref: "1 John 3:9" },
+			],
+			balance: "Not perfect. Confessing.",
+			balanceRef: "1 John 1:9",
+		},
+		days: {
+			heading: "For the days ahead",
+			lines: [
+				{ t: "Read John, a chapter a day.", ref: "James 1:22" },
+				{ t: "Talk to God every day.", ref: "Philippians 4:6" },
+				{ t: "Find a church that teaches the Bible. Be baptized.", ref: "Matthew 28:19" },
+				{ t: "When you sin, confess it.", ref: "1 John 1:9" },
+			],
+		},
+	};
+})();

@@ -94,63 +94,108 @@ async function finish(page, label) {
 
 /* ---------- Stories ---------- */
 const STORIES = {
-	honest: { good: "Yes", why: "I'm a good person", law: ["honest", "honest", "honest", "honest"], verdict: ["Guilty"], where: ["Hell"], concern: "Yes", exit: "I'm turning to Him now" },
+	honest: { good: "Yes", why: "I'm a good person", law: ["h", "h", "h", "h"], verdict: ["Guilty"], where: ["Hell"], concern: "Yes", exit: "I'm turning to Him now" },
 	evasive: {
-		good: "Mostly", why: "Church, baptism, or a prayer I prayed", law: ["evade", "evade", "evade", "evade-yes"], park: "God is love. He'll just forgive.",
+		good: "Mostly", why: "Church, baptism, or a prayer I prayed", law: ["e", "e", "e", "ey"], park: "God is love. He'll just forgive.",
 		verdict: ["Innocent", "Still innocent"], where: ["Heaven", "I've done more good than bad"], concern: "No", exit: "I need to think",
 	},
-	believer: { good: "No", why: "Jesus paid for my sins", law: ["honest", "evade-yes", "honest", "honest"], verdict: ["Guilty"], where: ["Heaven", "Jesus paid for me"], concern: "Not sure", exit: "I don't believe this" },
+	believer: { good: "No", why: "Jesus paid for my sins", law: ["h", "ey", "h", "h"], verdict: ["Guilty"], where: ["Heaven", "Jesus paid for me"], concern: "Not sure", exit: "I don't believe this" },
 };
+const STORY_SIZES = [[360, 640], [375, 667], [390, 844], [1280, 800]];
+const WORD_BUDGET = 60;
 
-async function walkStories(browser, width, name, p) {
-	const label = `stories/${name}@${width}`;
-	const page = await newPage(browser, width);
+/*
+ * Every state of every card is inspected: it must not scroll, must stay within
+ * the word budget, and on a 375×667 phone must fit without leaning on the
+ * type-scaling safety net.
+ */
+async function walkStories(browser, [width, height], name, p) {
+	const label = `stories/${name}@${width}x${height}`;
+	const ctx = await browser.newContext({ viewport: { width, height }, reducedMotion: "reduce" });
+	const page = await ctx.newPage();
+	page.errors = [];
+	page.on("pageerror", (e) => page.errors.push(String(e)));
 	await page.goto(`file://${DIST}stories.html`);
 	const steps = [];
 	let n = 0;
-	const btn = (t) => page.locator(".card").getByRole("button", { name: t, exact: true });
-	const step = async () => {
-		steps.push(await page.locator(".card").getAttribute("data-step"));
-		await page.screenshot({ path: join(SHOTS, `${label.replace(/[/@]/g, "-")}-${String(n++).padStart(2, "0")}.png`) });
+	const inspect = async (tag = "") => {
+		const c = await page.evaluate(() => {
+			const el = document.querySelector(".card");
+			return { id: el.dataset.card, step: el.dataset.step, over: el.scrollHeight - el.clientHeight, fit: Number(el.dataset.fit), words: (el.innerText.match(/\S+/g) || []).length };
+		});
+		if (steps.at(-1)?.id !== c.id) steps.push(c);
+		if (c.over > 1) fail(`${label}: card "${c.id}${tag}" scrolls by ${c.over}px`);
+		if (c.words > WORD_BUDGET) fail(`${label}: card "${c.id}${tag}" has ${c.words} words (budget ${WORD_BUDGET})`);
+		if (width === 375 && c.fit < 0.9) fail(`${label}: card "${c.id}${tag}" needed its type scaled to ${c.fit}`);
+		if (width === 375) await page.screenshot({ path: join(SHOTS, `${label.replace(/[/@]/g, "-")}-${String(n++).padStart(2, "0")}-${c.id}${tag.replace(/\W+/g, "-")}.png`) });
 	};
-	const go = () => page.getByRole("button", { name: "Continue", exact: true }).click();
-	await step(); await btn(p.good).click(); await go();
-	await step(); await btn(p.why).click(); await go();
+	const btn = (t) => page.locator(".card").getByRole("button", { name: t, exact: true }).first();
+	const go = () => page.locator("#foot").getByRole("button", { name: "Continue", exact: true }).click();
+	const auto = () => page.waitForTimeout(650);
+
+	await inspect(); await btn(p.good).click(); await inspect("+answer"); await go();
+	await inspect(); await btn(p.why).click(); await auto();
 	for (const [i, a] of p.law.entries()) {
-		await step();
-		const choices = page.locator(".card .choices").first().locator(".choice");
-		if (a === "honest") await choices.nth(0).click();
+		await inspect();
+		if (a === "h") await page.locator(".card .choice").nth(0).click();
 		else {
-			await choices.nth(1).click();
-			await page.locator(".card .choices").nth(1).locator(".choice").nth(a === "evade-yes" ? 0 : 1).click();
+			await page.locator(".card .choice").nth(1).click();
+			await inspect("+press");
+			await page.locator(".card .choice").nth(a === "ey" ? 0 : 1).click();
 		}
+		await inspect("+result");
 		if (i === 1 && p.park) {
-			await page.getByRole("button", { name: "But…" }).click();
+			await page.locator("#foot").getByRole("button", { name: "But…" }).click();
 			await page.locator(".sheet").getByRole("button", { name: p.park, exact: true }).click();
 			await page.getByRole("button", { name: "Back to the question" }).click();
 		}
 		await go();
 	}
-	await step(); await go(); // read-back
-	await step(); await go(); // Hebrews 9:27
-	await step(); for (const v of p.verdict) await btn(v).click(); await go();
-	await step(); for (const v of p.where) await btn(v).click(); await go();
-	await step(); await btn(p.concern).click(); await go();
-	if (p.park) { await step(); await go(); }
-	await step(); await go(); // dawn
-	await step();
-	while (await page.getByRole("button", { name: "More", exact: true }).count()) await page.getByRole("button", { name: "More", exact: true }).click();
-	await go();
-	await step(); await go(); // Jesus
-	await step(); await go(); // respond
-	await step(); await go(); // Psalm 51
-	await step();
+	for (let i = 0; i < 3; i++) { await inspect(); await go(); } // admitted, testimony, Hebrews 9:27
+	await inspect(); for (const v of p.verdict) { await btn(v).click(); await inspect(`+${v}`); } await go();
+	await inspect(); for (const v of p.where) { await btn(v).click(); await inspect(`+${v}`); }
+	if (p.where[0] === "Heaven") await go(); else await auto();
+	await inspect(); await go(); // penalty
+	await inspect(); await btn(p.concern).click(); await inspect("+answer"); await go();
+	if (p.park) { await inspect(); await go(); }
+	for (let i = 0; i < 9; i++) { await inspect(); await go(); } // dawn → Psalm 51
+	await inspect();
 	if (width < 500) await exitsOnScreen(page, label, ".card .choices .choice");
 	await btn(p.exit).click();
-	if (p.exit === "I'm turning to Him now") { await step(); await page.getByRole("button", { name: "I'm ready to go on" }).click(); }
-	await step();
-	checkOrder(label, steps);
+	if (p.exit.startsWith("I'm turning")) { await inspect(); await page.locator(".card").getByRole("button", { name: "I'm ready" }).click(); }
+	while (await page.locator("#foot").getByRole("button", { name: "Continue", exact: true }).count()) { await inspect(); await go(); }
+	await inspect();
+	if ((await page.locator(".card").getAttribute("data-card")) !== "kit") fail(`${label}: did not end on the take-away`);
+	await page.getByRole("button", { name: "Seven mornings in John" }).click();
+	const sheetOver = await page.evaluate(() => { const s = document.querySelector(".kit-pop"); return s ? s.scrollHeight - s.clientHeight : -1; });
+	if (sheetOver < 0) fail(`${label}: "Seven mornings" did not open a sheet`);
+	else if (width <= 390 && height >= 667 && sheetOver > 1) fail(`${label}: the "Seven mornings" sheet scrolls by ${sheetOver}px`);
+	checkOrder(label, steps.map((s) => s.step));
 	await finish(page, label);
+}
+
+/* The prototype's night colours: each one applies, and paper text stays readable on it. */
+const NIGHTS = { navy: "#0e1322", violet: "#1c1631", charcoal: "#1d1b1a", ink: "#0b0b0c" };
+const lum = (hex) => {
+	const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+	return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+const contrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((m, k) => k - m); return (x + 0.05) / (y + 0.05); };
+async function checkNights(browser) {
+	for (const [id, hex] of Object.entries(NIGHTS)) {
+		const label = `stories/night-${id}`;
+		for (const [fg, what] of [["#ece7dd", "text"], ["#aeacbb", "dim text"]]) {
+			if (contrast(fg, hex) < 4.5) fail(`${label}: ${what} contrast ${contrast(fg, hex).toFixed(2)} is under 4.5`);
+		}
+		const ctx = await browser.newContext({ viewport: { width: 375, height: 667 }, reducedMotion: "reduce" });
+		const page = await ctx.newPage();
+		await page.goto(`file://${DIST}stories.html#${id}`);
+		const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+		const want = `rgb(${[1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(", ")})`;
+		if (bg !== want) fail(`${label}: background is ${bg}, expected ${want}`);
+		await page.screenshot({ path: join(SHOTS, `${label.replace(/[/@]/g, "-")}.png`) });
+		await ctx.close();
+	}
 }
 
 /* ---------- Conversation ---------- */
@@ -279,8 +324,9 @@ async function checkGallery(browser, width, scheme) {
 }
 
 const browser = await playwright.chromium.launch(CHROME ? { executablePath: CHROME } : {});
+for (const size of STORY_SIZES) for (const [name, p] of Object.entries(STORIES)) await walkStories(browser, size, name, p);
+await checkNights(browser);
 for (const w of [390, 1280]) {
-	for (const [name, p] of Object.entries(STORIES)) await walkStories(browser, w, name, p);
 	for (const [name, s] of Object.entries(CHAT)) await walkChat(browser, w, name, s);
 	for (const scheme of ["light", "dark"]) await walkLetter(browser, w, scheme);
 	for (const scheme of ["light", "dark"]) await checkGallery(browser, w, scheme);
@@ -293,4 +339,4 @@ if (failures.length) {
 	for (const f of failures) console.error(`  - ${f}`);
 	process.exit(1);
 }
-console.log(`✓ every variant walked at 390px and 1280px; kit checked. Screenshots: ${SHOTS}`);
+console.log(`✓ Stories walked at ${STORY_SIZES.map((s) => s.join("×")).join(", ")} with no card scrolling; other variants at 390px and 1280px; kit and night colours checked. Screenshots: ${SHOTS}`);

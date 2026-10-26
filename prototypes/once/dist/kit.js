@@ -76,7 +76,7 @@
 			button.textContent = "Copied";
 		} catch {
 			button.textContent = "Select the text below to copy";
-			const pre = button.parentElement.parentElement.querySelector(".kit-copytext");
+			const pre = button.closest(".kit")?.querySelector(".kit-copytext");
 			if (pre) {
 				pre.hidden = false;
 				const range = document.createRange();
@@ -370,6 +370,21 @@
 .kit-badge{justify-self:start;display:inline-block;padding:3px 9px;border-radius:999px;border:1px dashed var(--kit-muted);font:600 11px/1.4 var(--kit-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--kit-muted)}
 .kit-sheet{display:grid;gap:10px;padding:16px;border-radius:14px;background:var(--kit-surface)}
 .kit-card-preview{max-width:min(260px,70%);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.kit-compact{gap:14px}
+.kit-stack{display:grid;gap:10px}
+.kit-btn.big{min-height:54px;width:100%;font-size:17px}
+.kit-links{display:flex;flex-wrap:wrap;gap:4px 18px}
+.kit-link{appearance:none;background:none;border:0;padding:8px 0;color:var(--kit-muted);font:500 15px/1.3 var(--kit-sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.kit-link:focus-visible{outline:2px solid var(--kit-fg);outline-offset:3px}
+.kit-backdrop{position:fixed;inset:0;background:rgba(8,8,14,.5);z-index:40}
+.kit-pop{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(560px,100%);max-height:88vh;overflow:auto;z-index:41;background:var(--kit-sheet-bg,#fff);padding:16px 20px calc(20px + env(safe-area-inset-bottom,0px));border-radius:20px 20px 0 0;gap:14px}
+.kit-pop-head{display:flex;justify-content:space-between;align-items:center}
+.kit-x{width:44px;height:44px;border:0;background:none;color:var(--kit-fg);font:400 26px/1 var(--kit-sans);cursor:pointer;border-radius:50%}
+.kit-x:focus-visible{outline:2px solid var(--kit-fg)}
+.kit-pop .kit-card-preview{max-height:52vh;width:auto}
+.kit-pop .kit-list{gap:4px;font-size:15px}
+.kit-pop .kit-list li{grid-template-columns:8.6em 1fr;gap:8px}
+.kit-pop .kit-row .kit-btn{min-height:44px;padding:10px 14px;font-size:15px}
 .kit-print{display:none}
 @media print{
   html.kit-printing body > *:not(.kit-print){display:none!important}
@@ -390,7 +405,7 @@
 
 	/* ---------- mount ---------- */
 
-	function mount(root) {
+	function mount(root, opts = {}) {
 		injectCss();
 		const text = summaryText();
 		let cardBlob = null;
@@ -464,6 +479,8 @@
 				"Nothing you answered here is passed on. You start the conversation, and only if you want to. No one is on the other end yet.",
 			),
 		);
+
+		if (opts.compact) return mountCompact(root, opts, { text, saveCard, preview, status, person });
 
 		const kit = h(
 			"section",
@@ -561,5 +578,100 @@
 		return kit;
 	}
 
-	window.OnceKit = { mount, summaryText, buildIcs, loadJohn, drawCard, framed };
+	/* ---------- compact: three actions, everything else in a sheet ---------- */
+
+	const SHEET_VARS = ["--kit-fg", "--kit-muted", "--kit-line", "--kit-surface", "--kit-accent", "--kit-accent-fg", "--kit-sans", "--kit-serif", "--kit-sheet-bg"];
+	let openSheetEls = null;
+
+	function closeSheet() {
+		if (!openSheetEls) return;
+		const [, , opener] = openSheetEls;
+		for (const el of openSheetEls.slice(0, 2)) el.remove();
+		openSheetEls = null;
+		document.removeEventListener("keydown", onSheetKey);
+		opener?.focus?.({ preventScroll: true });
+	}
+	function onSheetKey(e) {
+		if (e.key === "Escape") closeSheet();
+	}
+	/* The sheet lives on <body>, so it copies the host's kit colours onto itself. */
+	function openSheet(root, title, kids) {
+		closeSheet();
+		const vars = getComputedStyle(root);
+		const style = SHEET_VARS.map((v) => `${v}:${vars.getPropertyValue(v)}`).join(";");
+		const backdrop = h("div", { class: "kit-backdrop", onclick: closeSheet });
+		const sheet = h(
+			"div",
+			{ class: "kit kit-pop", role: "dialog", "aria-modal": "true", "aria-label": title, style },
+			h("div", { class: "kit-pop-head" }, h("h3", {}, title), h("button", { class: "kit-x", type: "button", "aria-label": "Close", onclick: closeSheet }, "×")),
+			kids,
+		);
+		const opener = document.activeElement;
+		document.body.append(backdrop, sheet);
+		openSheetEls = [backdrop, sheet, opener];
+		document.addEventListener("keydown", onSheetKey);
+		sheet.querySelector(".kit-x")?.focus({ preventScroll: true });
+	}
+
+	function mountCompact(root, opts, { text, saveCard, preview, status, person }) {
+		const copyText = h("pre", { class: "kit-copytext", hidden: true }, text);
+		const mornings = () =>
+			openSheet(root, "Seven mornings in John", [
+				h("p", { class: "kit-note" }, "One passage a day, about ten minutes."),
+				h("ol", { class: "kit-list" }, READINGS.map((r, i) => h("li", {}, h("b", {}, `${i + 1} · ${r.ref}`), h("span", {}, r.title)))),
+				h(
+					"div",
+					{ class: "kit-row" },
+					h("a", { class: "kit-btn primary", href: googleCalendarUrl(), target: "_blank", rel: "noopener" }, "Add to Google Calendar"),
+					!framed &&
+						h(
+							"button",
+							{
+								class: "kit-btn",
+								type: "button",
+								onclick: async () => {
+									await loadJohn();
+									saveBlob(new Blob([buildIcs()], { type: "text/calendar" }), "once-john-7-mornings.ics");
+								},
+							},
+							"Calendar file (.ics)",
+						),
+					h("a", { class: "kit-btn", href: "john.html" }, "Read John here"),
+				),
+			]);
+		const card = () => {
+			preview.hidden = true;
+			status.textContent = "";
+			openSheet(root, "The card", [preview, status]);
+			saveCard();
+		};
+		const talk = () => {
+			person.hidden = false;
+			openSheet(root, "Talk to a real person", [person]);
+		};
+		const kit = h(
+			"section",
+			{ class: "kit kit-compact", "aria-label": "Take it with you" },
+			h("h3", {}, "Take it with you"),
+			h("div", { class: "kit-stack" },
+				h("a", { class: "kit-btn primary big", href: `https://wa.me/?text=${encodeURIComponent(text)}`, target: "_blank", rel: "noopener" }, "Send to myself on WhatsApp"),
+				h("button", { class: "kit-btn big", type: "button", onclick: card }, "Save the card"),
+				h("button", { class: "kit-btn big", type: "button", onclick: mornings }, "Seven mornings in John"),
+			),
+			h("div", { class: "kit-links" },
+				h("button", { class: "kit-link", type: "button", onclick: talk }, "Talk to a real person"),
+				h("button", { class: "kit-link", type: "button", onclick: (e) => copy(text, e.currentTarget) }, "Copy the text"),
+				h("a", { class: "kit-link", href: "john.html" }, "Read John"),
+				(opts.links || []).map((l) =>
+					l.href ? h("a", { class: "kit-link", href: l.href }, l.label) : h("button", { class: "kit-link", type: "button", onclick: l.onclick }, l.label),
+				),
+			),
+			copyText,
+			h("p", { class: "kit-note" }, "Your answers stayed on this device."),
+		);
+		root.replaceChildren(kit);
+		return kit;
+	}
+
+	window.OnceKit = { mount, summaryText, buildIcs, loadJohn, drawCard, framed, closeSheet };
 })();

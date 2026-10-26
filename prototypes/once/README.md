@@ -7,7 +7,7 @@ of the Next.js app**, and nothing in `src/` imports it.
 
 | page | what it is |
 |---|---|
-| `dist/stories.html` | **1 minute.** The default front door: the landing page *is* the first question. Four commandments, tap-through cards. |
+| `dist/stories.html` | **3 minutes.** The default front door: the landing page *is* the first question. Four commandments, one beat per card, and no card ever scrolls. |
 | `dist/conversation.html` | **6 minutes.** A scripted (not AI) conversation in Comfort's street order, with an atheist branch and the false-believer diagnostic. |
 | `dist/letter.html` | **15 minutes.** "To someone I'll probably never meet." A long read with the answers tapped inline, plus "Examine yourself". |
 | `dist/john.html` | The whole Gospel of John, readable and printable. |
@@ -30,6 +30,24 @@ They follow `docs/METHOD.md`:
 - **Mortality appears in the Law half only.** Nothing about death or deadlines
   appears from repent-and-trust onwards.
 - **Nothing leaves the device.** sessionStorage only, and no backend.
+
+## Stories: one beat per card
+
+Stories is the default front door, built for a phone and a short attention span:
+
+- **No card ever scrolls.** `verify-ui.mjs` walks three paths at 360×640, 375×667,
+  390×844 and 1280×800 and fails if any card, in any answered state, overflows.
+  A small `fitCard()` step can scale type down to 0.8 as a safety net, but at
+  375×667 no card is allowed to need it.
+- **Answers replace, never stack.** Choosing swaps the buttons for the reply in
+  the same place.
+- **At most 60 words per card**, buttons and references included, with at most
+  one short verse fragment. The short copy lives in `ONCE.stories` (`content.js`)
+  and `ONCE_OBJECTIONS.short` (`objections.js`).
+- **Prototype: night colour.** A labelled switch above the first cards compares
+  navy, blue-hour violet, warm charcoal and ink black, and disappears at dawn.
+  `stories.html#violet`, `#charcoal`, `#ink` or `#navy` opens with that colour.
+  Once one is chosen, it replaces the switch everywhere.
 
 ## Scripture
 

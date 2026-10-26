@@ -4,19 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Once</title>
-<meta name="description" content="Would you say you're a good person? One minute, one question at a time. Your answers stay on this phone.">
-<meta name="theme-color" content="#0e1322">
+<meta name="description" content="Would you say you're a good person? Three minutes, one question at a time. Your answers stay on this phone.">
+<meta name="theme-color" content="#1c1631">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&display=swap">
 <style>
-/* Layout: one full-height deck, one beat per card. Night until the cross; dawn arrives once, at Hebrews 9:28. */
+/* Layout: bar, one card, pinned footer. One beat per card, and a card never scrolls. Night until the cross; dawn arrives once, at Hebrews 9:28. */
 :root {
-	--night: #0e1322;
+	--night: #1c1631;
 	--paper: #ece7dd;
-	--paper-dim: #a9adbb;
-	--night-line: rgba(236, 231, 221, 0.2);
-	--night-surface: rgba(236, 231, 221, 0.07);
+	--paper-dim: #aeacbb;
+	--night-line: rgba(236, 231, 221, 0.22);
+	--night-surface: rgba(236, 231, 221, 0.08);
 	--sky: #d2dce8;
 	--peach: #efdccb;
 	--glow: #f4c29a;
@@ -24,11 +24,19 @@
 	--ink-dim: #4b5368;
 	--dawn-line: rgba(22, 27, 42, 0.22);
 	--dawn-surface: rgba(255, 255, 255, 0.5);
+	--dawn-sheet: #f7eee6;
 	--sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
 	--serif: "Newsreader", Georgia, "Times New Roman", serif;
 	--ease: cubic-bezier(0.16, 1, 0.3, 1);
+	--fit: 1;
 	color-scheme: dark;
 }
+/* Prototype: the night colours under comparison. */
+html[data-night="navy"] { --night: #0e1322; }
+html[data-night="violet"] { --night: #1c1631; }
+html[data-night="charcoal"] { --night: #1d1b1a; }
+html[data-night="ink"] { --night: #0b0b0c; }
+
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html, body { height: 100%; margin: 0; }
@@ -38,6 +46,7 @@ body {
 	font-family: var(--sans);
 	-webkit-font-smoothing: antialiased;
 	-webkit-tap-highlight-color: transparent;
+	transition: background-color 0.5s var(--ease);
 }
 /* The dawn: a sky that fades in and a light that rises from below. */
 body::before, body::after { content: ""; position: fixed; pointer-events: none; z-index: 0; }
@@ -63,14 +72,14 @@ html.dawn body::after { opacity: 0.85; transform: translateY(0); }
 	position: relative; z-index: 1;
 	height: 100%;
 	max-width: 560px; margin: 0 auto;
-	display: flex; flex-direction: column;
-	--fg: var(--paper); --dim: var(--paper-dim); --line: var(--night-line); --surface: var(--night-surface); --bg: var(--night);
+	display: grid; grid-template-rows: auto auto 1fr auto;
+	--fg: var(--paper); --dim: var(--paper-dim); --line: var(--night-line); --surface: var(--night-surface); --bg: var(--night); --sheet: var(--night);
 }
-html.dawn .app { --fg: var(--ink); --dim: var(--ink-dim); --line: var(--dawn-line); --surface: var(--dawn-surface); --bg: var(--peach); }
+html.dawn .app { --fg: var(--ink); --dim: var(--ink-dim); --line: var(--dawn-line); --surface: var(--dawn-surface); --bg: var(--peach); --sheet: var(--dawn-sheet); }
 
 .bar {
 	display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; gap: 8px;
-	padding: calc(10px + env(safe-area-inset-top, 0px)) 12px 6px;
+	padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 4px;
 }
 .icon-btn {
 	width: 44px; height: 44px; display: grid; place-items: center;
@@ -78,42 +87,61 @@ html.dawn .app { --fg: var(--ink); --dim: var(--ink-dim); --line: var(--dawn-lin
 	font: 400 26px/1 var(--sans); text-decoration: none; cursor: pointer;
 }
 .icon-btn:disabled { opacity: 0.25; cursor: default; }
-.icon-btn:focus-visible, .choice:focus-visible, .ghost:focus-visible, .link:focus-visible, .sheet button:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
 .segments { display: flex; gap: 5px; margin: 0; padding: 0; list-style: none; }
 .segments li { flex: 1; height: 3px; border-radius: 2px; background: var(--line); overflow: hidden; }
 .segments li span { display: block; height: 100%; width: 0; background: var(--fg); transition: width 0.4s var(--ease); }
 
-.deck { position: relative; flex: 1; min-height: 0; }
+/* Prototype control: compare night colours. Disappears at dawn. */
+.night-pick { display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding: 0 16px 2px; min-height: 30px; }
+.night-label { font: 600 10px/1 var(--sans); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.swatch { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--line); cursor: pointer; padding: 0; }
+.swatch[aria-pressed="true"] { border-color: var(--paper); box-shadow: 0 0 0 2px var(--night); }
+html.dawn .night-pick { visibility: hidden; }
+
+.deck { position: relative; min-height: 0; }
 .card {
 	position: absolute; inset: 0;
-	display: flex; flex-direction: column;
-	padding: 8px 24px calc(18px + env(safe-area-inset-bottom, 0px));
-	overflow-y: auto; overscroll-behavior: contain;
+	display: flex; flex-direction: column; justify-content: center;
+	padding: 4px 24px;
+	overflow: hidden;
 	animation: card-in 0.36s var(--ease) both;
 }
-@keyframes card-in { from { opacity: 0; transform: translateY(10px); } }
-.card-inner { margin: auto 0; display: grid; gap: 22px; padding: 12px 0; }
+@keyframes card-in { from { opacity: 0; transform: translateY(8px); } }
 .card:focus { outline: none; }
+.card-inner { display: grid; gap: calc(var(--fit) * 20px); }
+.slot { display: grid; gap: calc(var(--fit) * 14px); }
 
-.wordmark { font: 800 13px/1 var(--sans); font-stretch: 125%; letter-spacing: 0.42em; color: var(--dim); margin: 0; }
-.eyebrow { font: 600 11px/1.2 var(--sans); letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); margin: 0; }
-.privacy { font: 500 14px/1.4 var(--sans); color: var(--dim); margin: 0; display: flex; gap: 8px; align-items: center; }
+.wordmark { margin: 0; font: 800 13px/1 var(--sans); font-stretch: 125%; letter-spacing: 0.42em; color: var(--dim); }
+.eyebrow { margin: 0; font: 600 11px/1.2 var(--sans); letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); }
+.privacy { margin: 0; font: 500 14px/1.4 var(--sans); color: var(--dim); display: flex; gap: 8px; align-items: center; }
 .privacy::before { content: ""; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; flex: none; }
 .q {
 	margin: 0;
-	font: 800 clamp(32px, 8.6vw, 54px)/1.03 var(--sans); font-stretch: 112%;
+	font-weight: 800; font-family: var(--sans); font-stretch: 112%;
+	font-size: calc(var(--fit) * clamp(28px, min(8.4vw, 5.4vh), 52px)); line-height: 1.04;
 	letter-spacing: -0.015em; text-wrap: balance;
 }
-.q.sm { font-size: clamp(26px, 6.6vw, 40px); }
-.law-text { margin: 0; font: italic 400 18px/1.35 var(--serif); color: var(--dim); }
-.law-text cite { font: 600 10px/1 var(--sans); font-style: normal; letter-spacing: 0.16em; text-transform: uppercase; margin-left: 6px; }
+.line {
+	margin: 0;
+	font-weight: 700; font-family: var(--sans); font-stretch: 106%;
+	font-size: calc(var(--fit) * clamp(23px, min(6.4vw, 4vh), 36px)); line-height: 1.16;
+	text-wrap: balance;
+}
+.name {
+	margin: 0; font-weight: 800; font-family: var(--sans); font-stretch: 118%;
+	font-size: calc(var(--fit) * clamp(38px, min(11vw, 7vh), 68px)); line-height: 1; letter-spacing: -0.02em;
+}
+.law-text { margin: 0; font: italic 400 calc(var(--fit) * 17px)/1.35 var(--serif); color: var(--dim); }
+.reply { margin: 0; font: 400 calc(var(--fit) * clamp(18px, min(4.8vw, 2.8vh), 21px))/1.4 var(--sans); text-wrap: pretty; }
+.reply.dim, .dim { color: var(--dim); }
+.reply q { font-family: var(--serif); font-style: italic; }
 
-.choices { display: grid; gap: 10px; }
+.choices { display: grid; gap: calc(var(--fit) * 10px); }
 .choice {
-	min-height: 56px; padding: 14px 18px;
+	min-height: calc(var(--fit) * 54px); padding: calc(var(--fit) * 12px) 18px;
 	border: 1px solid var(--line); border-radius: 14px;
 	background: transparent; color: var(--fg);
-	font: 600 18px/1.25 var(--sans); text-align: left; cursor: pointer;
+	font: 600 calc(var(--fit) * 18px)/1.25 var(--sans); text-align: left; cursor: pointer;
 	transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 /* Exits (.same) get no hover state: a resting pointer must not make one answer look chosen. */
@@ -121,67 +149,49 @@ html.dawn .app { --fg: var(--ink); --dim: var(--ink-dim); --line: var(--dawn-lin
 .choice[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
 .choices.same .choice { text-align: center; }
 
-.reply { margin: 0; font: 400 19px/1.45 var(--sans); text-wrap: pretty; }
-.reply.strong { font-weight: 600; }
 .verse { margin: 0; }
-.verse p { margin: 0; font: italic 400 clamp(20px, 5vw, 25px)/1.38 var(--serif); text-wrap: pretty; }
-.verse cite {
-	display: block; margin-top: 8px;
-	font: 600 11px/1 var(--sans); font-style: normal; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim);
-}
-.verse.big p { font-size: clamp(30px, 7.6vw, 46px); line-height: 1.16; }
-.verse.small p { font-size: 18px; }
-.stack { display: grid; gap: 18px; }
+.verse p { margin: 0; font: italic 400 calc(var(--fit) * clamp(19px, min(5vw, 3vh), 25px))/1.36 var(--serif); text-wrap: pretty; }
+.verse cite { display: block; margin-top: 7px; font: 600 11px/1 var(--sans); font-style: normal; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.verse.big p { font-size: calc(var(--fit) * clamp(28px, min(7.6vw, 4.8vh), 46px)); line-height: 1.16; }
 
-.rb-admitted { margin: 0; font: 800 clamp(26px, 6.8vw, 40px)/1.08 var(--sans); font-stretch: 108%; text-wrap: balance; }
-.rb-evaded { margin: 0; font: italic 400 20px/1.4 var(--serif); color: var(--dim); }
-.rb-quote { margin: 0; font: 400 17px/1.45 var(--sans); color: var(--dim); }
-.rb-quote q { color: var(--fg); font-style: italic; font-family: var(--serif); font-size: 19px; }
+.list { margin: 0; padding: 0; list-style: none; display: grid; gap: calc(var(--fit) * 12px); }
+.list li { display: grid; gap: 2px; }
+.list b { font: 600 calc(var(--fit) * 19px)/1.3 var(--sans); }
+.list small { font: 600 11px/1 var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
 
-.steps { display: grid; gap: 22px; }
-.step { animation: card-in 0.5s var(--ease) both; }
+.links { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.link { justify-self: start; text-align: left; color: var(--dim); font: 500 15px/1.6 var(--sans); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; background: none; border: 0; padding: 0; cursor: pointer; }
 
-.foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 44px; padding-top: 14px; }
+.foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 64px; padding: 8px 20px calc(12px + env(safe-area-inset-bottom, 0px)); }
 .ghost {
-	min-height: 40px; padding: 8px 16px; border-radius: 999px;
+	min-height: 44px; padding: 10px 18px; border-radius: 999px;
 	border: 1px solid var(--line); background: transparent; color: var(--fg);
 	font: 500 15px/1 var(--sans); cursor: pointer;
 }
-.ghost.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-.hint { font: 500 13px/1 var(--sans); color: var(--dim); margin-left: auto; }
-.links { display: grid; gap: 4px; }
-.link { color: var(--dim); font: 500 15px/1.6 var(--sans); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.ghost.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); margin-left: auto; }
+.icon-btn:focus-visible, .choice:focus-visible, .ghost:focus-visible, .link:focus-visible, .swatch:focus-visible, .sheet button:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
 
-.ending { display: grid; gap: 28px; padding-bottom: 24px; }
-.ending h2 { margin: 0; font: 800 clamp(28px, 7vw, 40px)/1.05 var(--sans); font-stretch: 112%; }
-.ending h3 { margin: 0; font: 600 12px/1.2 var(--sans); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
-.block { display: grid; gap: 14px; }
-.tests { margin: 0; padding: 0; list-style: none; display: grid; gap: 16px; }
-.tests li { display: grid; gap: 6px; }
-.tests b { font: 600 17px/1.35 var(--sans); }
-.essentials { margin: 0; padding-left: 1.2em; display: grid; gap: 12px; font: 400 17px/1.45 var(--sans); }
-.essentials small { display: block; color: var(--dim); font: italic 400 16px/1.4 var(--serif); }
 .kit-host {
 	--kit-fg: var(--fg); --kit-muted: var(--dim); --kit-line: var(--line); --kit-surface: var(--surface);
-	--kit-accent: var(--fg); --kit-accent-fg: var(--bg); --kit-sans: var(--sans); --kit-serif: var(--serif);
+	--kit-accent: var(--fg); --kit-accent-fg: var(--bg); --kit-sans: var(--sans); --kit-serif: var(--serif); --kit-sheet-bg: var(--sheet);
 }
 
 /* "But…" */
-.sheet-backdrop { position: fixed; inset: 0; background: rgba(5, 8, 15, 0.55); z-index: 10; }
+.sheet-backdrop { position: fixed; inset: 0; background: rgba(8, 8, 14, 0.5); z-index: 10; }
 .sheet {
 	position: fixed; left: 50%; bottom: 0; transform: translateX(-50%);
-	width: min(560px, 100%); max-height: 82vh; overflow-y: auto;
-	padding: 20px 22px calc(22px + env(safe-area-inset-bottom, 0px));
+	width: min(560px, 100%); max-height: 86vh; overflow-y: auto;
+	padding: 18px 22px calc(22px + env(safe-area-inset-bottom, 0px));
 	border-radius: 20px 20px 0 0; z-index: 11;
 	background: var(--night); color: var(--paper); border-top: 1px solid var(--night-line);
 	display: grid; gap: 14px;
-	--fg: var(--paper); --dim: var(--paper-dim); --line: var(--night-line); --bg: var(--night);
+	--fg: var(--paper); --dim: var(--paper-dim); --line: var(--night-line); --bg: var(--night); --fit: 1;
 	animation: sheet-in 0.32s var(--ease) both;
 }
-html.dawn .sheet { background: #f7eee6; color: var(--ink); border-color: var(--dawn-line); --fg: var(--ink); --dim: var(--ink-dim); --line: var(--dawn-line); --bg: #f7eee6; }
+html.dawn .sheet { background: var(--dawn-sheet); color: var(--ink); border-color: var(--dawn-line); --fg: var(--ink); --dim: var(--ink-dim); --line: var(--dawn-line); --bg: var(--dawn-sheet); }
 @keyframes sheet-in { from { transform: translate(-50%, 24px); opacity: 0; } }
 .sheet h2 { margin: 0; font: 700 22px/1.2 var(--sans); }
-.sheet .choice { font-size: 17px; min-height: 50px; }
+.sheet .choice { font-size: 17px; min-height: 48px; }
 
 @media (min-width: 700px) {
 	.card { padding-left: 40px; padding-right: 40px; }
@@ -198,7 +208,9 @@ html.dawn .sheet { background: #f7eee6; color: var(--ink); border-color: var(--d
 		<ol class="segments" id="segments" aria-label="Progress"></ol>
 		<a class="icon-btn" href="index.html" aria-label="Close">×</a>
 	</header>
+	<div class="night-pick" id="night-pick"><span class="night-label">Prototype · night</span></div>
 	<main class="deck" id="deck"></main>
+	<footer class="foot" id="foot"></footer>
 </div>
 <script src="content.js"></script>
 <script src="objections.js"></script>
@@ -206,10 +218,11 @@ html.dawn .sheet { background: #f7eee6; color: var(--ink); border-color: var(--d
 <script>
 (() => {
 	const O = window.ONCE;
+	const T = O.stories;
 	const OB = window.ONCE_OBJECTIONS;
 	const LAW = O.law.slice(0, 4);
-	const KEY = "once-stories-v1";
-	const list = new Intl.ListFormat("en", { style: "long", type: "conjunction" });
+	const KEY = "once-stories-v2";
+	const listFmt = new Intl.ListFormat("en", { style: "long", type: "conjunction" });
 
 	const PHASES = [
 		{ id: "you", label: "You" },
@@ -219,10 +232,29 @@ html.dawn .sheet { background: #f7eee6; color: var(--ink); border-color: var(--d
 		{ id: "answer", label: "Your answer" },
 	];
 
+	/* ---------- prototype: night colour ---------- */
+	const NIGHTS = [
+		{ id: "navy", label: "Navy (current)", hex: "#0e1322" },
+		{ id: "violet", label: "Blue-hour violet", hex: "#1c1631" },
+		{ id: "charcoal", label: "Warm charcoal", hex: "#1d1b1a" },
+		{ id: "ink", label: "Ink black", hex: "#0b0b0c" },
+	];
+	let night = "violet";
+	try { night = sessionStorage.getItem("once-night") || night; } catch { /* default */ }
+	const fromHash = location.hash.slice(1);
+	if (NIGHTS.some((n) => n.id === fromHash)) night = fromHash;
+	function setNight(id) {
+		night = id;
+		document.documentElement.dataset.night = id;
+		document.querySelector('meta[name="theme-color"]').content = NIGHTS.find((n) => n.id === id).hex;
+		try { sessionStorage.setItem("once-night", id); } catch { /* fine */ }
+		for (const b of document.querySelectorAll(".swatch")) b.setAttribute("aria-pressed", String(b.dataset.night === id));
+	}
+
+	/* ---------- state ---------- */
 	const blank = () => ({
-		good: null, why: null, law: {}, lawPath: {}, verdict: null, innocent: 0,
-		where: null, whyHeaven: null, concern: null, parked: [],
-		court: 1, exit: null, index: 0,
+		good: null, why: null, law: {}, lawPath: {}, verdict: null, innocent: false,
+		where: null, whyHeaven: null, concern: null, parked: [], exit: null, index: 0,
 	});
 	let S = blank();
 	try {
@@ -243,8 +275,10 @@ html.dawn .sheet { background: #f7eee6; color: var(--ink); border-color: var(--d
 		for (const c of kids.flat()) if (c != null && c !== false) el.append(typeof c === "string" ? document.createTextNode(c) : c);
 		return el;
 	}
-	const verse = (v, cls = "") => h("figure", { class: `verse ${cls}` }, h("p", {}, v.text), h("cite", {}, v.ref));
+	const verse = (v, cls = "", { before = "", after = "" } = {}) =>
+		h("figure", { class: `verse ${cls}` }, h("p", {}, `${before}${v.text}${after}`), h("cite", {}, v.ref));
 	const reply = (t, cls = "") => h("p", { class: `reply ${cls}` }, t);
+	const line = (t) => h("p", { class: "line" }, t);
 	function choices(options, picked, onPick, cls = "") {
 		return h("div", { class: `choices ${cls}`, role: "group" },
 			options.map((o) => h("button", {
@@ -254,6 +288,7 @@ html.dawn .sheet { background: #f7eee6; color: var(--ink); border-color: var(--d
 	}
 
 	/* ---------- the deck ---------- */
+	const examines = () => (S.why === "church" || S.why === "christ") && S.exit !== "no";
 	function cards() {
 		const c = [
 			{ id: "good", phase: "you", step: "you", render: rGood, done: () => !!S.good },
@@ -262,35 +297,52 @@ html.dawn .sheet { background: #f7eee6; color: var(--ink); border-color: var(--d
 				id: `law-${l.id}`, phase: "law", step: "law", but: "law",
 				render: (el) => rLaw(el, l, i), done: () => S.law[l.id] === "admit" || S.law[l.id] === "evade",
 			})),
-			{ id: "readback", phase: "verdict", step: "verdict", but: "verdict", render: rReadback, done: () => true },
-			{ id: "once", phase: "verdict", step: "mortality", but: "verdict", render: rOnce, done: () => true },
+			{ id: "admitted", phase: "verdict", step: "verdict", but: "verdict", render: rAdmitted, done: () => true },
+			{ id: "testimony", phase: "verdict", step: "verdict", but: "verdict", render: rTestimony, done: () => true },
+			{ id: "once", phase: "verdict", step: "mortality", render: (el) => el.append(verse(O.once, "big")), done: () => true },
 			{ id: "verdict", phase: "verdict", step: "verdict", but: "verdict", render: rVerdict, done: () => !!S.verdict },
 			{ id: "where", phase: "verdict", step: "verdict", but: "verdict", render: rWhere,
 				done: () => !!S.where && (S.where !== "heaven" || !!S.whyHeaven) },
+			{ id: "penalty", phase: "verdict", step: "verdict", render: rPenalty, done: () => true },
 			{ id: "concern", phase: "verdict", step: "verdict", but: "verdict", render: rConcern, done: () => !!S.concern },
-		];
-		if (S.parked.length) c.push({ id: "parked", phase: "verdict", step: "verdict", render: rParked, done: () => true });
-		c.push(
+			...S.parked.map((id) => ({ id: `parked-${id}`, phase: "verdict", step: "verdict", render: (el) => rParked(el, id), done: () => true })),
 			{ id: "dawn", phase: "cross", step: "grace", dawn: true, render: rDawn, done: () => true },
-			{ id: "court", phase: "cross", step: "grace", but: "grace", render: rCourt, done: () => S.court >= 3, reveal: true },
-			{ id: "jesus", phase: "cross", step: "grace", but: "grace", render: rJesus, done: () => true },
-			{ id: "respond", phase: "answer", step: "response", but: "grace", render: rRespond, done: () => true },
-			{ id: "psalm", phase: "answer", step: "response", but: "grace", render: rPsalm, done: () => true },
+			...T.court.map((s, i) => ({ id: `court-${i + 1}`, phase: "cross", step: "grace", but: "grace", render: (el) => el.append(line(s.line), verse(s.verse)), done: () => true })),
+			{ id: "butgod", phase: "cross", step: "grace", but: "grace", render: (el) => el.append(verse(O.court[3].verses[0], "big")), done: () => true },
+			{ id: "jesus", phase: "cross", step: "grace", but: "grace", render: (el) => el.append(line(T.jesus.line), verse(T.jesus.verse)), done: () => true },
+			{ id: "repent", phase: "answer", step: "response", but: "grace", render: (el) => el.append(line(T.repent.line), verse(T.repent.verse)), done: () => true },
+			{ id: "trust", phase: "answer", step: "response", but: "grace", render: (el) => el.append(line(T.trust.line), verse(T.trust.verse)), done: () => true },
+			{ id: "pray", phase: "answer", step: "response", but: "grace", render: (el) => el.append(line(T.pray.line), verse(T.pray.verse)), done: () => true },
 			{ id: "exits", phase: "answer", step: "exit", render: rExits, done: () => false, noTap: true },
-		);
+		];
 		if (S.exit === "now") c.push({ id: "pause", phase: "answer", step: "exit", render: rPause, done: () => false, noTap: true });
-		if (S.exit) c.push({ id: "ending", phase: "answer", step: "kit", render: rEnding, done: () => false, noTap: true });
+		if (S.exit) {
+			c.push({ id: "answer", phase: "answer", step: "kit", render: rAnswer, done: () => true });
+			if (T.ending[S.why]) c.push({ id: "ending", phase: "answer", step: "kit", render: rEnding, done: () => true });
+			if (examines()) c.push({ id: "marks", phase: "answer", step: "kit", render: rMarks, done: () => true });
+			if (S.exit === "now") c.push({ id: "days", phase: "answer", step: "kit", render: rDays, done: () => true });
+			c.push({ id: "kit", phase: "answer", step: "kit", render: rKit, done: () => false, noTap: true });
+		}
 		return c;
 	}
 
 	const deck = document.getElementById("deck");
+	const foot = document.getElementById("foot");
 	const back = document.getElementById("back");
 	const segs = document.getElementById("segments");
 	segs.append(...PHASES.map((p) => h("li", { "aria-label": p.label }, h("span", {}))));
+	const pick = document.getElementById("night-pick");
+	pick.append(...NIGHTS.map((n) => h("button", {
+		class: "swatch", type: "button", "data-night": n.id, title: n.label, "aria-label": `Prototype night colour: ${n.label}`,
+		style: `background:${n.hex}`, onclick: () => setNight(n.id),
+	})));
+	setNight(night);
 
 	let current = null;
+	let autoTimer = 0;
 
 	function show(i, { focus = true } = {}) {
+		clearTimeout(autoTimer);
 		const list = cards();
 		S.index = Math.max(0, Math.min(i, list.length - 1));
 		save();
@@ -302,25 +354,38 @@ html.dawn .sheet { background: #f7eee6; color: var(--ink); border-color: var(--d
 		const inner = h("div", { class: "card-inner" });
 		el.append(inner);
 		card.render(inner);
-		const foot = h("div", { class: "foot" });
-		if (card.but) foot.append(h("button", { class: "ghost", type: "button", onclick: (e) => { e.stopPropagation(); openBut(card.but); } }, "But…"));
-		const more = card.reveal && S.court < 3;
-		if (!card.noTap && (more || card.done())) {
-			foot.append(h("button", { class: "ghost primary", type: "button", style: "margin-left:auto", onclick: (e) => { e.stopPropagation(); next(); } }, more ? "More" : "Continue"));
-		}
-		el.append(foot);
 		deck.replaceChildren(el);
+		paintFoot(card);
 		back.disabled = S.index === 0;
 		paintProgress(list);
+		fitCard(el);
 		if (focus) el.focus({ preventScroll: true });
 	}
 
-	function rerender() { show(S.index, { focus: false }); }
-	function next() {
-		const c = current;
-		if (c?.reveal && S.court < 3) { S.court++; rerender(); return; }
-		if (c && !c.noTap && c.done()) show(S.index + 1);
+	/* A card never scrolls: if the words don't fit this screen, the type steps down a little. */
+	function fitCard(el) {
+		let f = 1;
+		el.style.setProperty("--fit", f);
+		while (el.scrollHeight > el.clientHeight + 1 && f > 0.8) {
+			f = Math.round((f - 0.04) * 100) / 100;
+			el.style.setProperty("--fit", f);
+		}
+		el.dataset.fit = String(f);
 	}
+	const refit = () => { const el = deck.querySelector(".card"); if (el) fitCard(el); };
+	window.addEventListener("resize", refit);
+	document.fonts?.ready.then(refit);
+
+	function paintFoot(card) {
+		foot.replaceChildren();
+		if (card.but) foot.append(h("button", { class: "ghost", type: "button", onclick: () => openBut(card.but) }, "But…"));
+		if (!card.noTap && card.done()) foot.append(h("button", { class: "ghost primary", type: "button", onclick: next }, "Continue"));
+	}
+
+	function rerender() { show(S.index, { focus: false }); }
+	function next() { if (current && !current.noTap && current.done()) show(S.index + 1); }
+	/* Questions whose answer needs no reply move on by themselves. */
+	function advanceSoon() { clearTimeout(autoTimer); autoTimer = setTimeout(() => show(S.index + 1), 420); }
 
 	function paintProgress(list) {
 		PHASES.forEach((p, pi) => {
@@ -330,222 +395,197 @@ html.dawn .sheet { background: #f7eee6; color: var(--ink); border-color: var(--d
 		});
 	}
 
-	deck.addEventListener("click", (e) => {
-		if (e.target.closest("button, a")) return;
-		next();
-	});
+	deck.addEventListener("click", (e) => { if (!e.target.closest("button, a")) next(); });
 	back.addEventListener("click", () => { if (S.index > 0) show(S.index - 1); });
 	document.addEventListener("keydown", (e) => {
-		if (document.querySelector(".sheet")) { if (e.key === "Escape") closeBut(); return; }
+		if (document.querySelector(".sheet, .kit-pop")) { if (e.key === "Escape") closeBut(); return; }
 		if (e.target.closest?.("button, a, input")) return;
 		if (e.key === "ArrowRight" || e.key === " " || e.key === "Enter") { e.preventDefault(); next(); }
 		if (e.key === "ArrowLeft" && S.index > 0) show(S.index - 1);
 	});
 
-	/* ---------- cards ---------- */
+	/* ---------- cards: answers replace the choices, they never stack ---------- */
 	function rGood(el) {
-		el.append(
-			h("p", { class: "wordmark" }, "ONCE"),
-			h("p", { class: "privacy" }, "Your answers stay on this phone."),
-			h("h1", { class: "q" }, O.good.q),
-			choices(O.good.options, S.good, (id) => { S.good = id; rerender(); }),
-		);
-		if (S.good) el.append(reply(O.good.reply[S.good]));
-		else el.append(h("div", { class: "links" },
-			h("a", { class: "link", href: "conversation.html" }, "or talk it through · 6 min"),
-			h("a", { class: "link", href: "letter.html" }, "or read it all · 15 min")));
+		el.append(h("p", { class: "wordmark" }, "ONCE"), h("p", { class: "privacy" }, T.privacy), h("h1", { class: "q" }, O.good.q));
+		if (!S.good) {
+			el.append(
+				choices(O.good.options, null, (id) => { S.good = id; rerender(); }),
+				h("div", { class: "links" },
+					h("a", { class: "link", href: "conversation.html" }, "or talk it through · 6 min"),
+					h("a", { class: "link", href: "letter.html" }, "or read it all · 15 min")),
+			);
+		} else {
+			el.append(h("div", { class: "slot" }, reply(T.goodReply[S.good]),
+				h("button", { class: "link", type: "button", onclick: (e) => { e.stopPropagation(); S.good = null; rerender(); } }, "Change my answer")));
+		}
 	}
 
 	function rWhy(el) {
-		el.append(
-			h("h2", { class: "q sm" }, O.why.q),
-			choices(O.why.options, S.why, (id) => { S.why = id; rerender(); }),
-		);
-		if (S.why) el.append(reply(O.why.hold));
+		el.append(h("h2", { class: "q" }, T.whyQ), choices(O.why.options, S.why, (id) => { S.why = id; rerender(); advanceSoon(); }));
 	}
 
 	function rLaw(el, l, i) {
 		const st = S.law[l.id];
-		const path = S.lawPath[l.id];
+		const t = T.law[l.id];
 		el.append(
 			h("p", { class: "eyebrow" }, `The Law · ${i + 1} of ${LAW.length}`),
-			h("p", { class: "law-text" }, `“${l.commandment.text}”`, h("cite", {}, l.commandment.ref)),
+			h("p", { class: "law-text" }, `“${(t.cmd || l.commandment).text}” ${l.commandment.ref}`),
 			h("h2", { class: "q" }, l.q),
 		);
 		const set = (p, v) => { S.lawPath[l.id] = p; S.law[l.id] = v; rerender(); };
-		el.append(choices(
-			[{ id: "honest", label: l.honest }, { id: "evade", label: l.evade }],
-			path === "direct" ? "honest" : path === "press" ? "evade" : null,
-			(id) => (id === "honest" ? set("direct", "admit") : set("press", "press")),
-		));
-		if (path === "press") {
-			el.append(reply(l.press, "strong"));
-			el.append(choices(
-				[{ id: "admit", label: l.pressYes }, { id: "evade", label: l.pressNo }],
-				st === "admit" ? "admit" : st === "evade" ? "evade" : null,
-				(id) => set("press", id),
-			));
+		const slot = h("div", { class: "slot" });
+		if (!st) {
+			slot.append(choices([{ id: "honest", label: l.honest }, { id: "evade", label: l.evade }], null,
+				(id) => (id === "honest" ? set("direct", "admit") : set("press", "press"))));
+		} else if (st === "press") {
+			slot.append(reply(t.press), choices([{ id: "admit", label: l.pressYes }, { id: "evade", label: l.pressNo }], null, (id) => set("press", id)));
+		} else if (st === "admit") {
+			slot.append(h("p", { class: "name" }, t.name), reply(T.yourAnswer, "dim"));
+			if (t.verse) slot.append(verse(t.verse));
+		} else {
+			slot.append(reply(T.held, "dim"));
 		}
-		if (st === "admit") {
-			el.append(reply(l.named));
-			if (l.standard) el.append(verse(l.standard, "small"));
+		if (st === "admit" || st === "evade") {
+			slot.append(h("button", { class: "link", type: "button", onclick: (e) => { e.stopPropagation(); S.law[l.id] = undefined; S.lawPath[l.id] = undefined; rerender(); } }, "Change my answer"));
 		}
-		if (st === "evade") el.append(reply("Noted. That's your answer, and it stays yours."));
+		el.append(slot);
 	}
 
-	function rReadback(el) {
+	function rAdmitted(el) {
 		const admitted = LAW.filter((l) => S.law[l.id] === "admit");
 		const evaded = LAW.filter((l) => S.law[l.id] === "evade");
 		el.append(h("p", { class: "eyebrow" }, "What you said"));
-		if (admitted.length) el.append(h("p", { class: "rb-admitted" }, `${O.readBack.admitted} ${list.format(admitted.map((l) => l.name))}.`));
-		if (evaded.length) el.append(h("p", { class: "rb-evaded" }, O.readBack.evaded(list.format(evaded.map((l) => l.denied)))));
-		if (!admitted.length) el.append(reply(O.readBack.noneAdmitted), verse(O.readBack.noneVerse));
-		const goodQuote = O.good.quote[S.good];
-		const why = O.why.options.find((o) => o.id === S.why);
-		el.append(h("div", { class: "stack" },
-			goodQuote && h("p", { class: "rb-quote" }, "Asked if you're a good person, you said ", h("q", {}, goodQuote)),
-			why && h("p", { class: "rb-quote" }, `${O.readBack.whyQuote} `, h("q", {}, `${why.label}.`)),
-		));
-		el.append(verse(O.readBack.law));
+		if (admitted.length) {
+			el.append(reply(T.admitted, "dim"), h("p", { class: "line" }, `${listFmt.format(admitted.map((l) => l.name))}.`.replace(/^./, (c) => c.toUpperCase())));
+		} else {
+			el.append(line(T.noneAdmitted), verse(O.readBack.noneVerse));
+		}
+		if (evaded.length && admitted.length) el.append(reply(T.evaded(listFmt.format(evaded.map((l) => l.denied))), "dim"));
 	}
 
-	function rOnce(el) {
-		el.append(verse(O.once, "big"));
+	function rTestimony(el) {
+		const why = O.why.options.find((o) => o.id === S.why);
+		el.append(
+			S.good && h("p", { class: "reply" }, `${T.testimony.good} `, h("q", {}, O.good.quote[S.good])),
+			why && h("p", { class: "reply" }, `${T.testimony.why} `, h("q", {}, `${why.label}.`)),
+			verse(O.readBack.law),
+		);
 	}
 
 	function rVerdict(el) {
 		el.append(h("h2", { class: "q" }, O.verdict.q));
-		if (S.innocent === 0) {
-			el.append(choices([{ id: "guilty", label: "Guilty" }, { id: "innocent", label: "Innocent" }], S.verdict, (id) => {
-				if (id === "innocent") { S.innocent = 1; S.verdict = null; } else S.verdict = "guilty";
+		const slot = h("div", { class: "slot" });
+		if (!S.innocent && !S.verdict) {
+			slot.append(choices([{ id: "guilty", label: "Guilty" }, { id: "innocent", label: "Innocent" }], null, (id) => {
+				if (id === "innocent") S.innocent = true; else S.verdict = "guilty";
 				rerender();
 			}));
-			if (S.verdict === "guilty") el.append(reply("Those are your words. Your answers say the same."));
-			return;
+		} else if (S.innocent && !S.verdict) {
+			slot.append(reply(T.verdict.press), verse(O.verdict.innocentVerse),
+				choices([{ id: "guilty", label: "Guilty" }, { id: "innocent", label: "Still innocent" }], null, (id) => { S.verdict = id; rerender(); }));
+		} else {
+			slot.append(reply(S.verdict === "guilty" ? T.verdict.guilty : T.verdict.stillInnocent),
+				h("button", { class: "link", type: "button", onclick: (e) => { e.stopPropagation(); S.verdict = null; S.innocent = false; rerender(); } }, "Change my answer"));
 		}
-		el.append(h("div", { class: "choices" }, h("button", { class: "choice", type: "button", "aria-pressed": "true", onclick: (e) => e.stopPropagation() }, "Innocent")));
-		el.append(reply(O.verdict.innocentPress, "strong"), verse(O.verdict.innocentVerse, "small"));
-		el.append(choices([{ id: "guilty", label: "Guilty" }, { id: "innocent", label: "Still innocent" }], S.verdict, (id) => { S.verdict = id; rerender(); }));
-		if (S.verdict === "innocent") el.append(reply(O.verdict.stillInnocent));
-		if (S.verdict === "guilty") el.append(reply("Those are your words. Your answers say the same."));
+		el.append(slot);
 	}
 
 	function rWhere(el) {
-		el.append(h("h2", { class: "q" }, O.where.q), choices(O.where.options, S.where, (id) => { S.where = id; S.whyHeaven = null; rerender(); }));
-		if (!S.where) return;
-		if (S.where === "heaven") {
-			const w = O.where.whyHeaven;
-			el.append(h("p", { class: "reply strong" }, w.q), choices(w.options, S.whyHeaven, (id) => { S.whyHeaven = id; rerender(); }));
-			if (!S.whyHeaven) return;
-			const o = w.options.find((x) => x.id === S.whyHeaven);
-			el.append(reply(o.reply));
-			if (o.verse) el.append(verse(o.verse, "small"));
+		const slot = h("div", { class: "slot" });
+		if (S.where !== "heaven") {
+			el.append(h("h2", { class: "q" }, O.where.q));
+			slot.append(choices(O.where.options, S.where, (id) => {
+				S.where = id; S.whyHeaven = null; rerender();
+				if (id !== "heaven") advanceSoon();
+			}));
+		} else {
+			el.append(h("h2", { class: "q" }, O.where.whyHeaven.q));
+			if (!S.whyHeaven) {
+				slot.append(choices(O.where.whyHeaven.options, null, (id) => { S.whyHeaven = id; rerender(); }));
+			} else {
+				slot.append(reply(T.whyHeaven[S.whyHeaven]));
+			}
+			slot.append(h("button", { class: "link", type: "button", onclick: (e) => { e.stopPropagation(); S.where = null; S.whyHeaven = null; rerender(); } }, "Change my answer"));
 		}
-		el.append(reply(O.where.lead[S.where], "strong"), ...O.where.verses.map((v) => verse(v, "small")));
+		el.append(slot);
+	}
+
+	function rPenalty(el) {
+		const [rev, matt] = T.penalty.verses;
+		el.append(line(T.penalty.lead[S.where] || T.penalty.lead.unsure),
+			verse(rev, "", { before: "…" }), verse(matt, "", { before: "…", after: "." }));
 	}
 
 	function rConcern(el) {
-		el.append(h("h2", { class: "q" }, O.concern.q), choices(O.concern.options, S.concern, (id) => { S.concern = id; rerender(); }));
-		if (S.concern) {
-			el.append(reply(O.concern.reply[S.concern]));
-			if (S.concern === "no") el.append(verse(O.concern.noVerse, "small"));
+		el.append(h("h2", { class: "q" }, O.concern.q));
+		const slot = h("div", { class: "slot" });
+		if (!S.concern) slot.append(choices(O.concern.options, null, (id) => { S.concern = id; rerender(); }));
+		else {
+			slot.append(reply(T.concern[S.concern]));
+			if (S.concern === "no") slot.append(verse(T.concern.noVerse));
+			slot.append(h("button", { class: "link", type: "button", onclick: (e) => { e.stopPropagation(); S.concern = null; rerender(); } }, "Change my answer"));
 		}
+		el.append(slot);
 	}
 
-	function rParked(el) {
-		el.append(h("p", { class: "eyebrow" }, OB.parkedHeading), h("p", { class: "reply" }, "You asked these while we were going through the Law. Here are the answers."));
-		for (const id of S.parked) {
-			const o = OB.law.find((x) => x.id === id);
-			if (!o) continue;
-			el.append(h("div", { class: "block" }, h("p", { class: "reply strong" }, o.q), reply(o.a), verse(o.verse, "small")));
-		}
+	function rParked(el, id) {
+		const o = OB.law.find((x) => x.id === id);
+		const s = OB.short[id];
+		el.append(h("p", { class: "eyebrow" }, "You asked"), line(o.q), reply(s.a), verse(s.verse));
 	}
 
 	function rDawn(el) {
 		el.append(h("p", { class: "eyebrow" }, O.dawnLine), verse(O.dawn, "big"));
 	}
 
-	function rCourt(el) {
-		const steps = O.court.slice(0, 3);
-		el.append(h("p", { class: "eyebrow" }, "The courtroom"));
-		el.append(h("div", { class: "steps" }, steps.slice(0, S.court).map((s) => h("div", { class: "step stack" }, h("p", { class: "reply strong" }, s.line), ...s.verses.map((v) => verse(v, "small"))))));
-	}
-
-	function rJesus(el) {
-		const s = O.court[3];
-		el.append(verse(s.verses[0], "big"), h("p", { class: "reply strong" }, s.line), ...s.verses.slice(1).map((v) => verse(v, "small")));
-	}
-
-	function rRespond(el) {
-		const r = O.respond;
-		el.append(
-			h("p", { class: "eyebrow" }, "What God asks"),
-			h("p", { class: "q sm" }, r.repent),
-			...r.repentVerses.map((v) => verse(v, "small")),
-			h("p", { class: "q sm" }, r.trust),
-			verse(r.trustVerse, "small"),
-		);
-	}
-
-	function rPsalm(el) {
-		const r = O.respond;
-		el.append(reply(r.psalmLead, "strong"), ...r.psalm.map((v) => verse(v)), reply(r.psalmTail));
-	}
-
 	function rExits(el) {
 		el.append(h("h2", { class: "q" }, O.exits.q),
 			choices(O.exits.options, S.exit, (id) => { S.exit = id; save(); show(S.index + 1); }, "same"),
-			h("p", { class: "rb-quote" }, "Each answer is respected. Each one leads to something to take with you."));
+			reply(T.exitsNote, "dim"));
 	}
 
 	function rPause(el) {
-		el.append(h("p", { class: "q sm" }, O.after.now.pause),
-			h("button", { class: "ghost primary", type: "button", onclick: (e) => { e.stopPropagation(); show(S.index + 1); } }, O.after.now.ready));
+		el.append(line(T.pause), h("div", {}, h("button", { class: "ghost primary", type: "button", onclick: (e) => { e.stopPropagation(); show(S.index + 1); } }, T.ready)));
+	}
+
+	function rAnswer(el) {
+		const a = T.answer[S.exit];
+		el.append(line(a.line));
+		if (a.verse) el.append(verse(a.verse));
 	}
 
 	function rEnding(el) {
-		const E = O.ending;
-		const wrap = h("div", { class: "ending" });
-		wrap.append(h("h2", {}, "If we never meet again"));
-		const a = O.after[S.exit];
-		if (S.exit === "now") wrap.append(h("div", { class: "block" }, reply(a.promiseLead, "strong"), verse(a.promise)));
-		if (S.exit === "think") wrap.append(h("div", { class: "block" }, reply(a.line), ...a.verses.map((v) => verse(v, "small"))));
-		if (S.exit === "no") wrap.append(h("div", { class: "block" }, reply(a.line)));
+		const d = T.ending[S.why];
+		el.append(h("p", { class: "eyebrow" }, T.ending.heading), line(d.line), verse(d.verse));
+	}
 
-		const d = E[S.why];
-		if (d && !(d.examine && S.exit === "no")) {
-			const b = h("div", { class: "block" });
-			if (d.examine) b.append(h("h3", {}, "Examine yourself"));
-			if (d.examine && S.exit === "now") b.append(reply(E.examineNowIntro));
-			b.append(reply(d.lead), ...d.verses.map((v) => verse(v, "small")));
-			if (d.tests) {
-				b.append(h("ul", { class: "tests" }, d.tests.map((t) => h("li", {}, h("b", {}, t.t), verse(t.v, "small")))));
-				b.append(reply(d.balance), ...d.balanceVerses.map((v) => verse(v, "small")));
-			}
-			if (d.tail) b.append(reply(d.tail));
-			if (d.tailVerse) b.append(verse(d.tailVerse, "small"));
-			wrap.append(b);
-		}
+	function rMarks(el) {
+		el.append(h("p", { class: "eyebrow" }, T.marks.heading),
+			h("ul", { class: "list" }, T.marks.lines.map((x) => h("li", {}, h("b", {}, x.t), h("small", {}, x.ref)))),
+			h("p", { class: "reply" }, `${T.marks.balance} `, h("span", { class: "dim" }, T.marks.balanceRef)));
+	}
 
-		if (S.exit === "now") {
-			wrap.append(h("div", { class: "block" }, h("h3", {}, "For the days ahead"),
-				h("ol", { class: "essentials" }, O.essentials.map((x) => h("li", {}, x.t, h("small", {}, `“${x.v.text}” ${x.v.ref}`))))));
-		}
+	function rDays(el) {
+		el.append(h("p", { class: "eyebrow" }, T.days.heading),
+			h("ol", { class: "list" }, T.days.lines.map((x) => h("li", {}, h("b", {}, x.t), h("small", {}, x.ref)))));
+	}
 
+	function rKit(el) {
 		const host = h("div", { class: "kit-host" });
-		wrap.append(host);
-		window.OnceKit.mount(host);
-		wrap.append(h("div", { class: "links" },
-			h("a", { class: "link", href: "conversation.html" }, "Talk it through instead · 6 min"),
-			h("a", { class: "link", href: "letter.html" }, "Read the long version · 15 min"),
-			h("button", { class: "link", type: "button", style: "background:none;border:0;padding:0;text-align:left;cursor:pointer",
-				onclick: () => { S = blank(); save(); show(0); } }, "Start over")));
-		el.append(wrap);
+		el.append(host);
+		window.OnceKit.mount(host, {
+			compact: true,
+			links: [
+				{ label: "Start over", onclick: () => { window.OnceKit.closeSheet(); S = blank(); save(); show(0); } },
+				{ label: "The longer versions", href: "index.html" },
+			],
+		});
 	}
 
 	/* ---------- But… ---------- */
 	let sheetEls = null;
 	function closeBut() {
+		window.OnceKit?.closeSheet?.();
 		if (!sheetEls) return;
 		for (const x of sheetEls) x.remove();
 		sheetEls = null;
@@ -555,24 +595,25 @@ html.dawn .sheet { background: #f7eee6; color: var(--ink); border-color: var(--d
 		closeBut();
 		const backdrop = h("div", { class: "sheet-backdrop", onclick: closeBut });
 		const sheet = h("div", { class: "sheet", role: "dialog", "aria-modal": "true", "aria-label": "Objections" });
-		const sets = phase === "grace" ? [...OB.grace, ...OB.law] : OB.law;
+		const sets = phase === "grace" ? OB.grace : OB.law;
 		const menu = () => {
 			sheet.replaceChildren(
 				h("h2", {}, "But…"),
-				h("div", { class: "choices" }, sets.map((o) => h("button", { class: "choice", type: "button", onclick: () => pick(o) }, o.q))),
+				h("div", { class: "choices" }, sets.map((o) => h("button", { class: "choice", type: "button", onclick: () => pickIt(o) }, o.q))),
 				h("button", { class: "ghost", type: "button", onclick: closeBut }, "Back"),
 			);
 			sheet.querySelector("button")?.focus();
 		};
-		const pick = (o) => {
+		const pickIt = (o) => {
 			if (phase === "law") {
 				if (!S.parked.includes(o.id)) S.parked.push(o.id);
 				save();
 				sheet.replaceChildren(h("h2", {}, o.q), reply(OB.parkLine),
 					h("button", { class: "ghost primary", type: "button", onclick: () => { closeBut(); rerender(); } }, "Back to the question"));
 			} else {
-				sheet.replaceChildren(h("h2", {}, o.q), reply(o.a), verse(o.verse, "small"),
-					h("div", { class: "foot" }, h("button", { class: "ghost", type: "button", onclick: menu }, "Another question"),
+				const s = OB.short[o.id];
+				sheet.replaceChildren(h("h2", {}, o.q), reply(s.a), verse(s.verse),
+					h("div", { class: "foot", style: "padding:0;min-height:0" }, h("button", { class: "ghost", type: "button", onclick: menu }, "Another question"),
 						h("button", { class: "ghost primary", type: "button", onclick: closeBut }, "Back")));
 			}
 			sheet.querySelector("button")?.focus();

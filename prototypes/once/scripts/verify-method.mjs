@@ -60,7 +60,14 @@ collectVerses(OB, "objections.js");
 for (const o of OB.law) {
 	check(!GRACE_WORDS.test(o.a), `objections.js: law-phase answer "${o.q}" contains grace content`);
 	check(!GRACE_WORDS.test(o.verse.text), `objections.js: law-phase verse ${o.verse.ref} contains grace content`);
+	const s = OB.short?.[o.id];
+	check(!!s, `objections.js: no short answer for "${o.q}"`);
+	if (s) {
+		check(!GRACE_WORDS.test(s.a), `objections.js: short law-phase answer "${o.q}" contains grace content`);
+		check(!GRACE_WORDS.test(s.verse.text), `objections.js: short law-phase verse ${s.verse.ref} contains grace content`);
+	}
 }
+for (const o of OB.grace) check(!!OB.short?.[o.id], `objections.js: no short answer for "${o.q}"`);
 
 /* ---------- conversation graph ---------- */
 const N = G.nodes;
@@ -146,6 +153,14 @@ const postExit = [
 	...Object.values(O.after).flatMap((a) => [a.pause, a.ready, a.promiseLead, a.line].filter(Boolean)),
 	...Object.values(O.ending).flatMap((d) => (typeof d === "string" ? [d] : [d.lead, d.tail, d.balance, ...(d.tests || []).map((t) => t.t)].filter(Boolean))),
 	...O.essentials.map((e) => e.t),
+	/* Stories' own short copy after the exits. */
+	O.stories.pause,
+	O.stories.ready,
+	...Object.values(O.stories.answer).map((a) => a.line),
+	...["good", "believe", "church", "christ"].map((k) => O.stories.ending[k].line),
+	...O.stories.marks.lines.map((x) => x.t),
+	O.stories.marks.balance,
+	...O.stories.days.lines.map((x) => x.t),
 ];
 for (const t of postExit) {
 	check(!DECISIONISM.test(t), `content.js: decisionist copy after the exits: "${t}"`);

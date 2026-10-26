@@ -92,3 +92,48 @@
 		],
 	};
 })();
+
+/* Stories: one short answer per objection, sized to fit a card without scrolling. */
+(() => {
+	const V = (ref, text) => ({ ref, text });
+	window.ONCE_OBJECTIONS.short = {
+		perfect: { a: "True, and that's the problem. God measures you by His Law, not by other people.", verse: V("James 2:10", "Whoever keeps the whole law but stumbles at just one point is guilty of breaking all of it.") },
+		love: { a: "He is love. He is also just. A judge who lets the guilty go isn't good.", verse: V("Proverbs 17:15", "Acquitting the guilty and condemning the righteous— both are detestable to the LORD.") },
+		balance: {
+			a: "Good deeds don't cancel crimes. The Law shows what you've done. It can't make you right.",
+			verse: V("Romans 3:20", "no one will be justified in His sight by works of the law."),
+		},
+		never: {
+			a: "No one is judged for what they never heard. Creation and conscience already speak.",
+			verse: V("Romans 1:20", "so that men are without excuse."),
+		},
+		fair: {
+			a: "A crime's weight depends on who it's against. Every sin is against a holy God.",
+			verse: V("Genesis 18:25", "Will not the Judge of all the earth do what is right?"),
+		},
+		justforgive: {
+			a: "Because He's just. At the cross the penalty was paid, so He can forgive and stay just.",
+			verse: V("Romans 3:26", "so as to be just and to justify the one who has faith in Jesus."),
+		},
+		religions: {
+			a: "Every other way says: do enough. The gospel says you can't, and Someone did.",
+			verse: V("John 14:6", "No one comes to the Father except through Me."),
+		},
+		rose: {
+			a: "More than five hundred people saw Him alive at once. Most were still alive to be asked.",
+			verse: V("1 Corinthians 15:6", "He appeared to more than five hundred brothers at once"),
+		},
+		toobad: {
+			a: "Paul hunted Christians and called himself the worst. No sin is bigger than the payment.",
+			verse: V("1 Timothy 1:15", "Christ Jesus came into the world to save sinners, of whom I am the worst."),
+		},
+		kid: {
+			a: "Then look at what has grown since. If you're unsure, turn and trust Him today.",
+			verse: V("2 Corinthians 13:5", "Examine yourselves to see whether you are in the faith; test yourselves."),
+		},
+		religious: {
+			a: "Religion is people reaching for God. The gospel is God reaching people.",
+			verse: V("Ephesians 2:8", "it is by grace you have been saved through faith"),
+		},
+	};
+})();
