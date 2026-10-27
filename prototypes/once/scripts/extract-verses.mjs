@@ -6,23 +6,27 @@
  * of John are written out, so the pages can be rebuilt without a network call.
  *
  * Run: node prototypes/once/scripts/extract-verses.mjs <path/to/BSB.json>
+ * Other prototypes and translations, e.g. Bíblia Livre for prototypes/volta:
+ *   node prototypes/once/scripts/extract-verses.mjs PorBLivre.json --prefix BLV --root prototypes/volta --no-john --license "…"
  */
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { indexBible, KIT_READINGS, PLACEHOLDER, resolve } from "./refs.mjs";
+import { indexBible, KIT_READINGS, options, placeholder, resolve } from "./refs.mjs";
 
-const bsbPath = process.argv[2];
+const opt = options(process.argv.slice(2), new URL("../", import.meta.url));
+const bsbPath = opt.args[0];
 if (!bsbPath) {
 	console.error("Usage: node extract-verses.mjs <path/to/BSB.json>");
 	process.exit(1);
 }
 
-const SRC = new URL("../src/", import.meta.url);
-const OUT = new URL("../data/verses.json", import.meta.url);
+const SRC = new URL("src/", opt.root);
+const OUT = new URL("data/verses.json", opt.root);
+const PLACEHOLDER = placeholder(opt.prefix);
 
 const bsb = JSON.parse(readFileSync(bsbPath, "utf8"));
 const index = indexBible(bsb);
 
-const refs = new Set(KIT_READINGS.map((r) => r.ref));
+const refs = new Set(opt.john ? KIT_READINGS.map((r) => r.ref) : []);
 for (const file of readdirSync(SRC)) {
 	if (!/\.(html|js)$/.test(file)) continue;
 	const text = readFileSync(new URL(file, SRC), "utf8");
@@ -46,7 +50,7 @@ for (const ref of [...refs].sort()) {
  */
 const johnChapters = index.get("John");
 const john = [];
-for (let c = 1; c <= johnChapters.size; c++) {
+for (let c = 1; opt.john && c <= johnChapters.size; c++) {
 	const ch = johnChapters.get(c);
 	const out = [];
 	for (let v = 1; v <= ch.size; v++) {
@@ -66,9 +70,9 @@ writeFileSync(
 	OUT,
 	`${JSON.stringify(
 		{
-			translation: "Berean Standard Bible (BSB)",
-			license: "Public domain (dedicated 2023-04-30, berean.bible/terms.htm)",
-			source: "github.com/scrollmapper/bible_databases formats/json/BSB.json",
+			translation: opt.prefix === "BSB" ? "Berean Standard Bible (BSB)" : bsb.translation,
+			license: opt.license ?? "Public domain (dedicated 2023-04-30, berean.bible/terms.htm)",
+			source: `github.com/scrollmapper/bible_databases formats/json/${bsbPath.split("/").pop()}`,
 			verses,
 			john,
 		},

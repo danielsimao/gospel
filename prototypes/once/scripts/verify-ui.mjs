@@ -174,8 +174,8 @@ async function walkStories(browser, [width, height], name, p) {
 	await finish(page, label);
 }
 
-/* The prototype's night colours: each one applies, and paper text stays readable on it. */
-const NIGHTS = { navy: "#0e1322", violet: "#1c1631", charcoal: "#1d1b1a", ink: "#0b0b0c" };
+/* The chosen night colour applies, and paper text stays readable on it. */
+const NIGHTS = { violet: "#1c1631" };
 const lum = (hex) => {
 	const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
 	return 0.2126 * r + 0.7152 * g + 0.0722 * b;
@@ -189,7 +189,7 @@ async function checkNights(browser) {
 		}
 		const ctx = await browser.newContext({ viewport: { width: 375, height: 667 }, reducedMotion: "reduce" });
 		const page = await ctx.newPage();
-		await page.goto(`file://${DIST}stories.html#${id}`);
+		await page.goto(`file://${DIST}stories.html`);
 		const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
 		const want = `rgb(${[1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(", ")})`;
 		if (bg !== want) fail(`${label}: background is ${bg}, expected ${want}`);

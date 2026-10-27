@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tem volta?</title>
+<meta name="description" content="A máquina só aceita embalagens intactas. E tu? Eras aceite? As tuas respostas ficam neste telemóvel.">
+<meta name="theme-color" content="#1c1631">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&display=swap">
+<style>
+/* Layout: bar, one card, pinned footer. One beat per card; a card never scrolls. Blue-hour night until Isaiah 44:22, then dawn. The Law's verdict is a thermal receipt. */
+:root {
+	--night: #1c1631;
+	--paper: #ece7dd;
+	--paper-dim: #aeacbb;
+	--night-line: rgba(236, 231, 221, 0.22);
+	--night-surface: rgba(236, 231, 221, 0.08);
+	--receipt: #f3f2ee;
+	--receipt-ink: #1d1c22;
+	--sky: #d2dce8;
+	--peach: #efdccb;
+	--glow: #f4c29a;
+	--ink: #161b2a;
+	--ink-dim: #4b5368;
+	--dawn-line: rgba(22, 27, 42, 0.22);
+	--dawn-surface: rgba(255, 255, 255, 0.5);
+	--dawn-sheet: #f7eee6;
+	--sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
+	--serif: "Newsreader", Georgia, "Times New Roman", serif;
+	--mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+	--ease: cubic-bezier(0.16, 1, 0.3, 1);
+	--fit: 1;
+	color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--night); color: var(--paper); font-family: var(--sans); -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+body::before, body::after { content: ""; position: fixed; pointer-events: none; z-index: 0; }
+body::before { inset: 0; background: linear-gradient(180deg, var(--sky) 0%, var(--peach) 60%, var(--glow) 100%); opacity: 0; transition: opacity 1.6s var(--ease); }
+body::after {
+	left: -30%; right: -30%; bottom: -55vh; height: 110vh;
+	background: radial-gradient(closest-side, rgba(255, 221, 182, 0.95), rgba(255, 221, 182, 0));
+	opacity: 0; transform: translateY(45vh);
+	transition: transform 2.4s var(--ease), opacity 1.8s var(--ease);
+}
+html.dawn { color-scheme: light; }
+html.dawn body { color: var(--ink); }
+html.dawn body::before { opacity: 1; }
+html.dawn body::after { opacity: 0.85; transform: translateY(0); }
+
+.app {
+	position: relative; z-index: 1; height: 100%;
+	max-width: 560px; margin: 0 auto;
+	display: grid; grid-template-rows: auto 1fr auto;
+	--fg: var(--paper); --dim: var(--paper-dim); --line: var(--night-line); --surface: var(--night-surface); --bg: var(--night); --sheet: var(--night);
+}
+html.dawn .app { --fg: var(--ink); --dim: var(--ink-dim); --line: var(--dawn-line); --surface: var(--dawn-surface); --bg: var(--peach); --sheet: var(--dawn-sheet); }
+
+.bar { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; gap: 8px; padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 4px; }
+.icon-btn { width: 44px; height: 44px; display: grid; place-items: center; border: 0; background: none; color: var(--fg); border-radius: 50%; font: 400 26px/1 var(--sans); text-decoration: none; cursor: pointer; }
+.icon-btn:disabled { opacity: 0.25; cursor: default; }
+.segments { display: flex; gap: 5px; margin: 0; padding: 0; list-style: none; }
+.segments li { flex: 1; height: 3px; border-radius: 2px; background: var(--line); overflow: hidden; }
+.segments li span { display: block; height: 100%; width: 0; background: var(--fg); transition: width 0.4s var(--ease); }
+
+.deck { position: relative; min-height: 0; }
+.card { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 4px 24px; overflow: hidden; animation: card-in 0.36s var(--ease) both; }
+@keyframes card-in { from { opacity: 0; transform: translateY(8px); } }
+.card:focus { outline: none; }
+.card-inner { display: grid; gap: calc(var(--fit) * 20px); }
+.slot { display: grid; gap: calc(var(--fit) * 14px); }
+
+.brand { margin: 0; font-weight: 800; font-family: var(--sans); font-stretch: 116%; font-size: calc(var(--fit) * clamp(44px, min(13vw, 8.4vh), 76px)); line-height: 0.96; letter-spacing: -0.025em; }
+.eyebrow { margin: 0; font: 600 11px/1.2 var(--sans); letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); }
+.privacy { margin: 0; font: 500 14px/1.4 var(--sans); color: var(--dim); display: flex; gap: 8px; align-items: center; }
+.privacy::before { content: ""; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; flex: none; }
+.q { margin: 0; font-weight: 800; font-family: var(--sans); font-stretch: 112%; font-size: calc(var(--fit) * clamp(27px, min(8vw, 5.2vh), 50px)); line-height: 1.05; letter-spacing: -0.015em; text-wrap: balance; }
+.line { margin: 0; font-weight: 700; font-family: var(--sans); font-stretch: 106%; font-size: calc(var(--fit) * clamp(22px, min(6.2vw, 3.9vh), 34px)); line-height: 1.17; text-wrap: balance; }
+.name { margin: 0; font-weight: 800; font-family: var(--sans); font-stretch: 118%; font-size: calc(var(--fit) * clamp(34px, min(10vw, 6.4vh), 62px)); line-height: 1.02; letter-spacing: -0.02em; text-wrap: balance; }
+.law-text { margin: 0; font: italic 400 calc(var(--fit) * 17px)/1.35 var(--serif); color: var(--dim); }
+.reply { margin: 0; font: 400 calc(var(--fit) * clamp(18px, min(4.8vw, 2.8vh), 21px))/1.4 var(--sans); text-wrap: pretty; }
+.reply.dim, .dim { color: var(--dim); }
+.reply q { font-family: var(--serif); font-style: italic; }
+
+.choices { display: grid; gap: calc(var(--fit) * 10px); }
+.choice { min-height: calc(var(--fit) * 54px); padding: calc(var(--fit) * 12px) 18px; border: 1px solid var(--line); border-radius: 14px; background: transparent; color: var(--fg); font: 600 calc(var(--fit) * 18px)/1.25 var(--sans); text-align: left; cursor: pointer; transition: background 0.2s, color 0.2s, border-color 0.2s; }
+/* Exits (.same) get no hover state: a resting pointer must not make one answer look chosen. */
+@media (hover: hover) { .choices:not(.same) .choice:hover { border-color: var(--fg); } }
+.choice[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.choices.same .choice { text-align: center; }
+.choice.go { background: var(--fg); color: var(--bg); border-color: var(--fg); text-align: center; }
+
+.verse { margin: 0; }
+.verse p { margin: 0; font: italic 400 calc(var(--fit) * clamp(19px, min(5vw, 3vh), 25px))/1.36 var(--serif); text-wrap: pretty; }
+.verse cite { display: block; margin-top: 7px; font: 600 11px/1 var(--sans); font-style: normal; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.verse.big p { font-size: calc(var(--fit) * clamp(27px, min(7.4vw, 4.6vh), 44px)); line-height: 1.17; }
+
+/* The receipt: the only playful object in the Law half, and it prints the reader's own words. */
+.receipt {
+	justify-self: center; width: min(100%, 330px);
+	background: var(--receipt); color: var(--receipt-ink);
+	font: 500 calc(var(--fit) * 14px)/1.5 var(--mono);
+	padding: 18px 18px 16px; position: relative;
+	transform: rotate(-1.2deg); box-shadow: 0 18px 44px rgba(0, 0, 0, 0.38);
+	animation: print 0.9s var(--ease) both;
+}
+@keyframes print { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 -12px 0); } }
+.receipt::after {
+	content: ""; position: absolute; left: 0; right: 0; bottom: -8px; height: 8px;
+	background: linear-gradient(135deg, var(--receipt) 33%, transparent 33%) 0 0 / 12px 8px, linear-gradient(225deg, var(--receipt) 33%, transparent 33%) 0 0 / 12px 8px;
+}
+.receipt .row { display: flex; justify-content: space-between; gap: 12px; }
+.receipt .row span:last-child { text-align: right; }
+.receipt .rule { border: 0; border-top: 1.5px dashed rgba(29, 28, 34, 0.45); margin: 8px 0; }
+.receipt .head { font-weight: 600; letter-spacing: 0.08em; }
+.receipt .reason { padding-left: 1.2em; }
+.receipt .muted { color: rgba(29, 28, 34, 0.62); }
+.receipt .status { font-weight: 600; font-size: 1.15em; }
+.receipt .r-foot { margin-top: 6px; font-size: 0.9em; color: rgba(29, 28, 34, 0.7); }
+
+.list { margin: 0; padding: 0; list-style: none; display: grid; gap: calc(var(--fit) * 12px); }
+.list li { display: grid; gap: 2px; }
+.list b { font: 600 calc(var(--fit) * 19px)/1.3 var(--sans); }
+.list small { font: 600 11px/1 var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+
+.links { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.link { justify-self: start; text-align: left; color: var(--dim); font: 500 15px/1.6 var(--sans); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; background: none; border: 0; padding: 0; cursor: pointer; }
+
+.foot { display: grid; gap: 4px; padding: 8px 20px calc(10px + env(safe-area-inset-bottom, 0px)); }
+.foot-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 48px; }
+.disclaimer { margin: 0; font: 500 10.5px/1.3 var(--sans); color: var(--dim); text-align: center; letter-spacing: 0.02em; }
+.ghost { min-height: 44px; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--fg); font: 500 15px/1 var(--sans); cursor: pointer; }
+.ghost.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); margin-left: auto; }
+.icon-btn:focus-visible, .choice:focus-visible, .ghost:focus-visible, .link:focus-visible, .sheet button:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+
+.kit-host { --kit-fg: var(--fg); --kit-muted: var(--dim); --kit-line: var(--line); --kit-surface: var(--surface); --kit-accent: var(--fg); --kit-accent-fg: var(--bg); --kit-sans: var(--sans); --kit-sheet-bg: var(--sheet); }
+
+.sheet-backdrop { position: fixed; inset: 0; background: rgba(8, 8, 14, 0.5); z-index: 10; }
+.sheet {
+	position: fixed; left: 50%; bottom: 0; transform: translateX(-50%);
+	width: min(560px, 100%); max-height: 86vh; overflow-y: auto;
+	padding: 18px 22px calc(22px + env(safe-area-inset-bottom, 0px));
+	border-radius: 20px 20px 0 0; z-index: 11;
+	background: var(--night); color: var(--paper); border-top: 1px solid var(--night-line);
+	display: grid; gap: 14px;
+	--fg: var(--paper); --dim: var(--paper-dim); --line: var(--night-line); --bg: var(--night); --fit: 1;
+	animation: sheet-in 0.32s var(--ease) both;
+}
+html.dawn .sheet { background: var(--dawn-sheet); color: var(--ink); border-color: var(--dawn-line); --fg: var(--ink); --dim: var(--ink-dim); --line: var(--dawn-line); --bg: var(--dawn-sheet); }
+@keyframes sheet-in { from { transform: translate(-50%, 24px); opacity: 0; } }
+.sheet h2 { margin: 0; font: 700 22px/1.2 var(--sans); }
+.sheet .choice { font-size: 17px; min-height: 48px; }
+
+@media (min-width: 700px) { .card { padding-left: 40px; padding-right: 40px; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+	<header class="bar">
+		<button class="icon-btn" id="back" type="button" aria-label="Voltar atrás">‹</button>
+		<ol class="segments" id="segments" aria-label="Progresso"></ol>
+		<a class="icon-btn" href="index.html" aria-label="Fechar">×</a>
+	</header>
+	<main class="deck" id="deck"></main>
+	<footer class="foot"><div class="foot-row" id="foot"></div><p class="disclaimer" id="disclaimer"></p></footer>
+</div>
+<script src="content.js"></script>
+<script src="kit.js"></script>
+<script>
+(() => {
+	const T = window.TV;
+	const OB = window.TV_OBJECTIONS;
+	const KEY = "tem-volta-v1";
+	const PHASES = [
+		{ id: "you", label: "Tu" },
+		{ id: "law", label: "A Lei" },
+		{ id: "verdict", label: "O veredicto" },
+		{ id: "cross", label: "A cruz" },
+		{ id: "answer", label: "A tua resposta" },
+	];
+
+	const blank = () => ({ reveal: null, why: null, law: {}, lawPath: {}, verdict: null, innocent: false, where: null, whyHeaven: null, concern: null, parked: [], exit: null, index: 0 });
+	let S = blank();
+	try { const saved = JSON.parse(sessionStorage.getItem(KEY) || "null"); if (saved && typeof saved === "object") S = Object.assign(blank(), saved); } catch { /* fresh */ }
+	const save = () => { try { sessionStorage.setItem(KEY, JSON.stringify(S)); } catch { /* fine */ } };
+
+	function h(tag, attrs, ...kids) {
+		const el = document.createElement(tag);
+		for (const [k, v] of Object.entries(attrs || {})) {
+			if (v == null || v === false) continue;
+			if (k === "class") el.className = v;
+			else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+			else el.setAttribute(k, v === true ? "" : v);
+		}
+		for (const c of kids.flat()) if (c != null && c !== false) el.append(typeof c === "string" ? document.createTextNode(c) : c);
+		return el;
+	}
+	const verse = (v, cls = "", { before = "", after = "" } = {}) => h("figure", { class: `verse ${cls}` }, h("p", {}, `${before}${v.text}${after}`), h("cite", {}, v.ref));
+	const reply = (t, cls = "") => h("p", { class: `reply ${cls}` }, t);
+	const line = (t) => h("p", { class: "line" }, t);
+	const change = (reset) => h("button", { class: "link", type: "button", onclick: (e) => { e.stopPropagation(); reset(); rerender(); } }, "Mudar a resposta");
+	function choices(options, picked, onPick, cls = "") {
+		return h("div", { class: `choices ${cls}`, role: "group" }, options.map((o) => h("button", {
+			class: "choice", type: "button", "aria-pressed": String(picked === o.id), onclick: (e) => { e.stopPropagation(); onPick(o.id); },
+		}, o.label)));
+	}
+
+	/* ---------- the deck ---------- */
+	function cards() {
+		const c = [
+			{ id: "hook", phase: "you", step: "you", render: rHook, done: () => false, noTap: true },
+			{ id: "reveal", phase: "you", step: "you", render: rReveal, done: () => !!S.reveal },
+			{ id: "why", phase: "you", step: "you", render: rWhy, done: () => !!S.why },
+			{ id: "examine", phase: "law", step: "law", render: (el) => el.append(line(T.examine.line), verse(T.examine.verse)), done: () => true },
+			...T.law.map((l, i) => ({ id: `law-${l.id}`, phase: "law", step: "law", but: "law", render: (el) => rLaw(el, l, i), done: () => S.law[l.id] === "admit" || S.law[l.id] === "evade" })),
+			{ id: "receipt", phase: "verdict", step: "verdict", but: "verdict", render: rReceipt, done: () => true },
+			{ id: "testimony", phase: "verdict", step: "verdict", but: "verdict", render: rTestimony, done: () => true },
+			{ id: "once", phase: "verdict", step: "mortality", render: (el) => el.append(verse(T.once, "big")), done: () => true },
+			{ id: "verdict", phase: "verdict", step: "verdict", but: "verdict", render: rVerdict, done: () => !!S.verdict },
+			{ id: "where", phase: "verdict", step: "verdict", but: "verdict", render: rWhere, done: () => !!S.where && (S.where !== "heaven" || !!S.whyHeaven) },
+			{ id: "penalty", phase: "verdict", step: "verdict", render: rPenalty, done: () => true },
+			{ id: "concern", phase: "verdict", step: "verdict", but: "verdict", render: rConcern, done: () => !!S.concern },
+			...S.parked.map((id) => ({ id: `parked-${id}`, phase: "verdict", step: "verdict", render: (el) => rParked(el, id), done: () => true })),
+			{ id: "dawn", phase: "cross", step: "grace", dawn: true, render: (el) => el.append(h("p", { class: "eyebrow" }, T.dawn.eyebrow), verse(T.dawn.verse, "big")), done: () => true },
+			...T.court.map((s, i) => ({ id: `court-${i + 1}`, phase: "cross", step: "grace", but: "grace", render: (el) => el.append(line(s.line), verse(s.verse)), done: () => true })),
+			{ id: "jesus", phase: "cross", step: "grace", but: "grace", render: (el) => el.append(verse(T.butGod), line(T.jesus.line), verse(T.jesus.verse)), done: () => true },
+			{ id: "breaks", phase: "cross", step: "grace", but: "grace", render: (el) => el.append(h("p", { class: "eyebrow" }, T.breaks.eyebrow), line(T.breaks.line), verse(T.breaks.verses[0], "", { before: "…", after: "…" }), verse(T.breaks.verses[1])), done: () => true },
+			{ id: "dented", phase: "cross", step: "grace", but: "grace", render: (el) => el.append(line(T.dented.line), verse(T.dented.verses[0]), verse(T.dented.verses[1], "", { before: "…" })), done: () => true },
+			{ id: "repent", phase: "answer", step: "response", but: "grace", render: (el) => el.append(line(T.repent.line), verse(T.repent.verse)), done: () => true },
+			{ id: "trust", phase: "answer", step: "response", but: "grace", render: (el) => el.append(line(T.trust.line), verse(T.trust.verse)), done: () => true },
+			{ id: "pray", phase: "answer", step: "response", but: "grace", render: (el) => el.append(line(T.pray.line), verse(T.pray.verse, "", { before: "…" })), done: () => true },
+			{ id: "exits", phase: "answer", step: "exit", render: rExits, done: () => false, noTap: true },
+		];
+		if (S.exit === "now") c.push({ id: "pause", phase: "answer", step: "exit", render: rPause, done: () => false, noTap: true });
+		if (S.exit) {
+			c.push({ id: "answer", phase: "answer", step: "kit", render: rAnswer, done: () => true });
+			if (T.ending[S.why] && !(S.exit === "no" && (S.why === "church" || S.why === "christ"))) c.push({ id: "ending", phase: "answer", step: "kit", render: rEnding, done: () => true });
+			if (S.exit === "now") c.push({ id: "days", phase: "answer", step: "kit", render: rDays, done: () => true });
+			c.push({ id: "kit", phase: "answer", step: "kit", render: rKit, done: () => false, noTap: true });
+		}
+		return c;
+	}
+
+	const deck = document.getElementById("deck");
+	const foot = document.getElementById("foot");
+	const back = document.getElementById("back");
+	const segs = document.getElementById("segments");
+	document.getElementById("disclaimer").textContent = T.footer;
+	segs.append(...PHASES.map((p) => h("li", { "aria-label": p.label }, h("span", {}))));
+	let current = null;
+	let autoTimer = 0;
+
+	function show(i, { focus = true } = {}) {
+		clearTimeout(autoTimer);
+		const list = cards();
+		S.index = Math.max(0, Math.min(i, list.length - 1));
+		save();
+		const card = list[S.index];
+		current = card;
+		document.documentElement.classList.toggle("dawn", S.index >= list.findIndex((x) => x.dawn));
+		const el = h("section", { class: "card", "data-step": card.step, "data-card": card.id, tabindex: "-1" });
+		const inner = h("div", { class: "card-inner" });
+		el.append(inner);
+		card.render(inner);
+		deck.replaceChildren(el);
+		paintFoot(card);
+		back.disabled = S.index === 0;
+		paintProgress(list);
+		fitCard(el);
+		if (focus) el.focus({ preventScroll: true });
+	}
+	/* A card never scrolls: if the words don't fit this screen, the type steps down a little. */
+	function fitCard(el) {
+		let f = 1;
+		el.style.setProperty("--fit", f);
+		while (el.scrollHeight > el.clientHeight + 1 && f > 0.8) { f = Math.round((f - 0.04) * 100) / 100; el.style.setProperty("--fit", f); }
+		el.dataset.fit = String(f);
+	}
+	const refit = () => { const el = deck.querySelector(".card"); if (el) fitCard(el); };
+	window.addEventListener("resize", refit);
+	document.fonts?.ready.then(refit);
+
+	function paintFoot(card) {
+		foot.replaceChildren();
+		if (card.but) foot.append(h("button", { class: "ghost", type: "button", onclick: () => openBut(card.but) }, "Mas…"));
+		if (!card.noTap && card.done()) foot.append(h("button", { class: "ghost primary", type: "button", onclick: next }, "Continuar"));
+	}
+	function rerender() { show(S.index, { focus: false }); }
+	function next() { if (current && !current.noTap && current.done()) show(S.index + 1); }
+	function advanceSoon() { clearTimeout(autoTimer); autoTimer = setTimeout(() => show(S.index + 1), 420); }
+	function paintProgress(list) {
+		PHASES.forEach((p, pi) => {
+			const inPhase = list.map((c, i) => ({ c, i })).filter((x) => x.c.phase === p.id);
+			const done = inPhase.filter((x) => x.i < S.index || (x.i === S.index && x.c.done())).length;
+			segs.children[pi].firstChild.style.width = `${inPhase.length ? (done / inPhase.length) * 100 : 0}%`;
+		});
+	}
+	deck.addEventListener("click", (e) => { if (!e.target.closest("button, a")) next(); });
+	back.addEventListener("click", () => { if (S.index > 0) show(S.index - 1); });
+	document.addEventListener("keydown", (e) => {
+		if (document.querySelector(".sheet, .kit-pop")) { if (e.key === "Escape") closeBut(); return; }
+		if (e.target.closest?.("button, a, input")) return;
+		if (e.key === "ArrowRight" || e.key === " " || e.key === "Enter") { e.preventDefault(); next(); }
+		if (e.key === "ArrowLeft" && S.index > 0) show(S.index - 1);
+	});
+
+	/* ---------- cards ---------- */
+	function rHook(el) {
+		el.append(
+			h("h1", { class: "brand" }, T.brand),
+			line(T.hook.line),
+			h("p", { class: "q" }, T.hook.q),
+			h("div", { class: "choices" }, h("button", { class: "choice go", type: "button", onclick: (e) => { e.stopPropagation(); show(S.index + 1); } }, T.hook.go)),
+			h("p", { class: "privacy" }, T.privacy),
+		);
+	}
+
+	function rReveal(el) {
+		el.append(h("p", { class: "eyebrow" }, T.reveal.eyebrow), h("h2", { class: "q" }, T.reveal.q));
+		if (!S.reveal) el.append(choices(T.reveal.options, null, (id) => { S.reveal = id; rerender(); }));
+		else el.append(h("div", { class: "slot" }, reply(T.reveal.reply[S.reveal]), change(() => { S.reveal = null; })));
+	}
+
+	function rWhy(el) {
+		el.append(h("h2", { class: "q" }, T.why.q), choices(T.why.options, S.why, (id) => { S.why = id; rerender(); advanceSoon(); }));
+	}
+
+	function rLaw(el, l, i) {
+		const st = S.law[l.id];
+		el.append(h("p", { class: "eyebrow" }, `A Lei · ${i + 1} de ${T.law.length}`), h("p", { class: "law-text" }, `“${l.cmd.text}” ${l.cmd.ref}`), h("h2", { class: "q" }, l.q));
+		const set = (p, v) => { S.lawPath[l.id] = p; S.law[l.id] = v; rerender(); };
+		const slot = h("div", { class: "slot" });
+		if (!st) slot.append(choices([{ id: "honest", label: l.honest }, { id: "evade", label: l.evade }], null, (id) => (id === "honest" ? set("direct", "admit") : set("press", "press"))));
+		else if (st === "press") slot.append(reply(l.press), choices([{ id: "admit", label: T.pressYes }, { id: "evade", label: T.pressNo }], null, (id) => set("press", id)));
+		else if (st === "admit") {
+			slot.append(h("p", { class: "name" }, l.result), reply(T.yourAnswer, "dim"));
+			if (l.verse) slot.append(verse(l.verse, "", { before: "…" }));
+		} else slot.append(reply(T.held, "dim"));
+		if (st === "admit" || st === "evade") slot.append(change(() => { S.law[l.id] = undefined; S.lawPath[l.id] = undefined; }));
+		el.append(slot);
+	}
+
+	/* The receipt prints the reader's own admissions. Its status is left for the reader to fill in. */
+	function rReceipt(el) {
+		const R = T.receipt;
+		const admitted = T.law.filter((l) => S.law[l.id] === "admit");
+		const evaded = T.law.filter((l) => S.law[l.id] === "evade");
+		const rows = [
+			h("div", { class: "row head" }, h("span", {}, R.title), h("span", {}, "temvolta.pt")),
+			h("hr", { class: "rule" }),
+			h("div", { class: "row" }, h("span", {}, R.item), h("span", {}, R.itemValue)),
+			h("div", {}, `${R.reasons}:`),
+			...(admitted.length ? admitted.map((l) => h("div", { class: "row reason" }, h("span", {}, l.reason), h("span", { class: "muted" }, l.short))) : [h("div", { class: "reason muted" }, R.none)]),
+			...evaded.map((l) => h("div", { class: "row muted" }, h("span", {}, R.denied), h("span", {}, l.reason))),
+			h("hr", { class: "rule" }),
+			h("div", { class: "row status" }, h("span", {}, R.status), h("span", {}, R.statusValue)),
+			h("div", { class: "r-foot" }, R.foot),
+		];
+		el.append(h("div", { class: "receipt", role: "img", "aria-label": `Talão. Motivos: ${admitted.map((l) => l.reason).join(", ") || R.none}. Estado por decidir.` }, rows));
+		if (!admitted.length) el.append(verse(R.noneVerse));
+	}
+
+	function rTestimony(el) {
+		const why = T.why.options.find((o) => o.id === S.why);
+		el.append(
+			S.reveal && h("p", { class: "reply" }, `${T.testimony.reveal} `, h("q", {}, T.reveal.quote[S.reveal])),
+			why && h("p", { class: "reply" }, `${T.testimony.why} `, h("q", {}, `${why.label}.`)),
+			verse(T.testimony.law),
+		);
+	}
+
+	function rVerdict(el) {
+		const V = T.verdict;
+		el.append(h("h2", { class: "q" }, V.q));
+		const slot = h("div", { class: "slot" });
+		if (!S.innocent && !S.verdict) slot.append(choices([{ id: "guilty", label: V.guilty }, { id: "innocent", label: V.innocent }], null, (id) => { if (id === "innocent") S.innocent = true; else S.verdict = "guilty"; rerender(); }));
+		else if (S.innocent && !S.verdict) slot.append(reply(V.press), verse(V.pressVerse), choices([{ id: "guilty", label: V.guilty }, { id: "innocent", label: V.stillInnocent }], null, (id) => { S.verdict = id; rerender(); }));
+		else slot.append(reply(S.verdict === "guilty" ? V.replyGuilty : V.replyInnocent), change(() => { S.verdict = null; S.innocent = false; }));
+		el.append(slot);
+	}
+
+	function rWhere(el) {
+		const W = T.where;
+		const slot = h("div", { class: "slot" });
+		if (S.where !== "heaven") {
+			el.append(h("h2", { class: "q" }, W.q));
+			slot.append(choices(W.options, S.where, (id) => { S.where = id; S.whyHeaven = null; rerender(); if (id !== "heaven") advanceSoon(); }));
+		} else {
+			el.append(h("h2", { class: "q" }, W.whyQ));
+			if (!S.whyHeaven) slot.append(choices(W.why, null, (id) => { S.whyHeaven = id; rerender(); }));
+			else slot.append(reply(W.why.find((x) => x.id === S.whyHeaven).reply));
+			slot.append(change(() => { S.where = null; S.whyHeaven = null; }));
+		}
+		el.append(slot);
+	}
+
+	function rPenalty(el) {
+		const [rev, matt] = T.penalty.verses;
+		el.append(line(T.penalty.lead[S.where] || T.penalty.lead.unsure), verse(rev, "", { before: "…", after: "…" }), verse(matt, "", { after: "…" }));
+	}
+
+	function rConcern(el) {
+		const C = T.concern;
+		el.append(h("h2", { class: "q" }, C.q));
+		const slot = h("div", { class: "slot" });
+		if (!S.concern) slot.append(choices(C.options, null, (id) => { S.concern = id; rerender(); }));
+		else {
+			slot.append(reply(C.reply[S.concern]));
+			if (S.concern === "no") slot.append(verse(C.noVerse));
+			slot.append(change(() => { S.concern = null; }));
+		}
+		el.append(slot);
+	}
+
+	function rParked(el, id) {
+		const o = OB.law.find((x) => x.id === id);
+		el.append(h("p", { class: "eyebrow" }, OB.parkedHeading), line(o.q), reply(o.a), verse(o.verse));
+	}
+
+	function rExits(el) {
+		el.append(h("h2", { class: "q" }, T.exits.q), choices(T.exits.options, S.exit, (id) => { S.exit = id; save(); show(S.index + 1); }, "same"), reply(T.exits.note, "dim"));
+	}
+	function rPause(el) {
+		el.append(line(T.pause), h("div", {}, h("button", { class: "ghost primary", type: "button", onclick: (e) => { e.stopPropagation(); show(S.index + 1); } }, T.ready)));
+	}
+	function rAnswer(el) {
+		const a = T.answer[S.exit];
+		el.append(line(a.line));
+		if (a.verse) el.append(verse(a.verse));
+	}
+	function rEnding(el) {
+		const d = T.ending[S.why];
+		el.append(h("p", { class: "eyebrow" }, T.ending.heading), line(d.line), verse(d.verse));
+	}
+	function rDays(el) {
+		el.append(h("p", { class: "eyebrow" }, T.days.heading), h("ol", { class: "list" }, T.days.lines.map((x) => h("li", {}, h("b", {}, x.t), h("small", {}, x.ref)))), verse(T.days.tell, "", { before: "“", after: "…”" }));
+	}
+	function rKit(el) {
+		const host = h("div", { class: "kit-host" });
+		el.append(host);
+		window.TVKit.mount(host, { links: [{ label: "Recomeçar", onclick: () => { window.TVKit.closeSheet(); S = blank(); save(); show(0); } }] });
+	}
+
+	/* ---------- Mas… ---------- */
+	let sheetEls = null;
+	function closeBut() {
+		window.TVKit?.closeSheet?.();
+		if (!sheetEls) return;
+		for (const x of sheetEls) x.remove();
+		sheetEls = null;
+		deck.querySelector(".card")?.focus({ preventScroll: true });
+	}
+	function openBut(phase) {
+		closeBut();
+		const backdrop = h("div", { class: "sheet-backdrop", onclick: closeBut });
+		const sheet = h("div", { class: "sheet", role: "dialog", "aria-modal": "true", "aria-label": "Objeções" });
+		const sets = phase === "grace" ? OB.grace : OB.law;
+		const menu = () => {
+			sheet.replaceChildren(h("h2", {}, "Mas…"), h("div", { class: "choices" }, sets.map((o) => h("button", { class: "choice", type: "button", onclick: () => pickIt(o) }, o.q))), h("button", { class: "ghost", type: "button", onclick: closeBut }, "Voltar"));
+			sheet.querySelector("button")?.focus();
+		};
+		const pickIt = (o) => {
+			if (phase === "law") {
+				if (!S.parked.includes(o.id)) S.parked.push(o.id);
+				save();
+				sheet.replaceChildren(h("h2", {}, o.q), reply(OB.parkLine), h("button", { class: "ghost primary", type: "button", onclick: () => { closeBut(); rerender(); } }, "Voltar à pergunta"));
+			} else {
+				sheet.replaceChildren(h("h2", {}, o.q), reply(o.a), verse(o.verse), h("div", { class: "foot-row" }, h("button", { class: "ghost", type: "button", onclick: menu }, "Outra pergunta"), h("button", { class: "ghost primary", type: "button", onclick: closeBut }, "Voltar")));
+			}
+			sheet.querySelector("button")?.focus();
+		};
+		menu();
+		document.body.append(backdrop, sheet);
+		sheetEls = [backdrop, sheet];
+	}
+
+	show(S.index);
+})();
+</script>
+</body>
+</html>

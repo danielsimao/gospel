@@ -44,10 +44,9 @@ Stories is the default front door, built for a phone and a short attention span:
 - **At most 60 words per card**, buttons and references included, with at most
   one short verse fragment. The short copy lives in `ONCE.stories` (`content.js`)
   and `ONCE_OBJECTIONS.short` (`objections.js`).
-- **Prototype: night colour.** A labelled switch above the first cards compares
-  navy, blue-hour violet, warm charcoal and ink black, and disappears at dawn.
-  `stories.html#violet`, `#charcoal`, `#ink` or `#navy` opens with that colour.
-  Once one is chosen, it replaces the switch everywhere.
+- **Night colour: blue-hour violet `#1c1631`,** chosen by the owner after a live
+  comparison with navy, warm charcoal and ink black. Stories, Conversation, the
+  gallery's thesis band and the take-away card all use it.
 
 ## Scripture
 

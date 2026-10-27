@@ -1,0 +1,261 @@
+<title>Tem volta?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&display=swap">
+<style>
+/* Layout: the owner's concept board. The idea first, then the three ways in as real mock-ups, then the guardrails. */
+:root {
+	--page: #edf0f4;
+	--text: #161b2a;
+	--dim: #565e72;
+	--line: rgba(22, 27, 42, 0.14);
+	--card: #ffffff;
+	--night: #1c1631;
+	--paper: #ece7dd;
+	--paper-dim: #aeacbb;
+	--receipt: #f3f2ee;
+	--receipt-ink: #1d1c22;
+	--dawn-a: #d2dce8;
+	--dawn-b: #efdccb;
+	--dawn-c: #f4c29a;
+	--sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
+	--serif: "Newsreader", Georgia, "Times New Roman", serif;
+	--mono: "IBM Plex Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme="light"]) { --page: #0d0b17; --text: #e6e1d7; --dim: #a19fae; --line: rgba(230, 225, 215, 0.14); --card: #15121f; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --page: #0d0b17; --text: #e6e1d7; --dim: #a19fae; --line: rgba(230, 225, 215, 0.14); --card: #15121f; color-scheme: dark; }
+body { background: var(--page); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 80px; display: grid; gap: 64px; }
+a { color: inherit; }
+a:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; border-radius: 4px; }
+section { display: grid; gap: 20px; }
+.eyebrow { margin: 0; font: 600 11px/1.2 var(--sans); letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); }
+h2 { margin: 0; font: 800 clamp(26px, 4.4vw, 36px)/1.08 var(--sans); font-stretch: 110%; letter-spacing: -0.01em; text-wrap: balance; }
+h3 { margin: 0; font: 700 17px/1.3 var(--sans); }
+p { margin: 0; line-height: 1.55; }
+.lede { font-size: 17px; color: var(--dim); max-width: 64ch; }
+.small { font-size: 14px; color: var(--dim); }
+
+/* Hero */
+.hero { border-radius: 22px; overflow: hidden; display: grid; grid-template-columns: 1.2fr 1fr; }
+.hero-night { background: var(--night); color: var(--paper); padding: clamp(24px, 5vw, 48px); display: grid; gap: 16px; align-content: center; }
+.hero-dawn { background: linear-gradient(170deg, var(--dawn-a), var(--dawn-b) 60%, var(--dawn-c)); color: #161b2a; padding: clamp(24px, 5vw, 48px); display: grid; gap: 12px; align-content: center; }
+.brand { margin: 0; font: 800 clamp(48px, 9vw, 84px)/0.95 var(--sans); font-stretch: 116%; letter-spacing: -0.025em; }
+.hero-night p { color: var(--paper-dim); font-size: 17px; }
+.hero-dawn blockquote { margin: 0; font: italic 400 clamp(22px, 3.2vw, 30px)/1.25 var(--serif); }
+.hero-dawn cite { font: 600 11px/1 var(--sans); font-style: normal; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.7; }
+.go { justify-self: start; display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 12px 22px; border-radius: 999px; background: var(--paper); color: var(--night); font: 600 16px/1 var(--sans); text-decoration: none; }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
+
+/* Bridge table */
+.bridge { display: grid; border-top: 1px solid var(--line); }
+.brow { display: grid; grid-template-columns: 1fr 1.2fr 0.8fr; gap: 20px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 15px; line-height: 1.5; }
+.brow > div { min-width: 0; }
+.brow.head div { font: 600 11px/1.2 var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.brow .ref { color: var(--dim); font-family: var(--mono); font-size: 13px; }
+.brow.breaks { background: linear-gradient(90deg, transparent, rgba(244, 194, 154, 0.22), transparent); }
+@media (max-width: 680px) { .brow { grid-template-columns: 1fr; gap: 4px; } .brow.head { display: none; } }
+
+/* Mock-ups */
+.mocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: start; }
+.mock { display: grid; gap: 12px; justify-items: center; min-width: 0; }
+.mock figcaption { font-size: 14px; color: var(--dim); text-align: center; max-width: 34ch; }
+.receipt {
+	width: min(100%, 290px); background: var(--receipt); color: var(--receipt-ink);
+	font: 500 13px/1.5 var(--mono); padding: 18px 18px 16px; position: relative;
+	box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+}
+.receipt::after {
+	content: ""; position: absolute; left: 0; right: 0; bottom: -8px; height: 8px;
+	background: linear-gradient(135deg, var(--receipt) 33%, transparent 33%) 0 0 / 12px 8px, linear-gradient(225deg, var(--receipt) 33%, transparent 33%) 0 0 / 12px 8px;
+}
+.receipt .row { display: flex; justify-content: space-between; gap: 10px; }
+.receipt .rule { border: 0; border-top: 1.5px dashed rgba(29, 28, 34, 0.45); margin: 8px 0; }
+.receipt .big { font: 700 22px/1.15 var(--sans); font-stretch: 110%; margin: 10px 0 6px; }
+.receipt .qr { display: block; width: 112px; height: 112px; margin: 10px auto 6px; }
+.receipt .center { text-align: center; }
+.receipt .muted { color: rgba(29, 28, 34, 0.62); font-size: 11px; }
+.receipt .serif { font: italic 400 17px/1.35 var(--serif); margin: 4px 0; }
+
+.phone { width: min(100%, 240px); aspect-ratio: 9 / 16; border-radius: 26px; overflow: hidden; position: relative; background: var(--night); color: var(--paper); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28); display: grid; align-content: center; gap: 10px; padding: 22px; }
+.phone.dawn { background: linear-gradient(180deg, var(--dawn-a), var(--dawn-b) 60%, var(--dawn-c)); color: #161b2a; }
+.phone .slot-img { position: absolute; inset: 10px; border: 1.5px dashed rgba(236, 231, 221, 0.25); border-radius: 18px; display: grid; place-items: end center; padding-bottom: 12px; font: 500 10px/1.3 var(--mono); color: rgba(236, 231, 221, 0.45); text-align: center; background-size: cover; background-position: center; }
+.phone .t-big { position: relative; margin: 0; font: 800 26px/1.05 var(--sans); font-stretch: 112%; }
+.phone .t { position: relative; margin: 0; font: 600 15px/1.3 var(--sans); }
+.phone .t-dim { position: relative; margin: 0; font: 500 12px/1.3 var(--sans); color: var(--paper-dim); }
+.phone .sticker { position: relative; justify-self: start; padding: 8px 12px; border-radius: 10px; background: var(--paper); color: var(--night); font: 700 13px/1 var(--sans); }
+.phone .btn { position: relative; padding: 10px; border-radius: 10px; background: var(--paper); color: var(--night); font: 600 13px/1 var(--sans); text-align: center; }
+.frames { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.frames .phone { width: min(100%, 180px); padding: 16px; }
+.frames .t-big { font-size: 21px; }
+
+/* Lists */
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.box { padding: 18px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); display: grid; gap: 6px; align-content: start; }
+.box p { font-size: 15px; color: var(--dim); }
+.flow { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+.flow li { font: 500 14px/1 var(--sans); padding: 9px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); }
+.flow li.night { background: var(--night); color: var(--paper); border-color: var(--night); }
+.flow li.receipt-pill { background: var(--receipt); color: var(--receipt-ink); border-color: var(--receipt); font-family: var(--mono); }
+.flow li.dawn { background: linear-gradient(170deg, var(--dawn-a), var(--dawn-c)); color: #161b2a; border-color: transparent; }
+</style>
+
+<div class="wrap">
+	<header class="hero">
+		<div class="hero-night">
+			<p class="eyebrow" style="color:var(--paper-dim)">temvolta.pt · campaign concept</p>
+			<h1 class="brand">Tem volta?</h1>
+			<p>Everyone in Portugal now asks it at the bottle bin. Asked of a person, it means: is there a way back? The machine only accepts what is empty, intact and has the symbol. So, would <em>you</em> be accepted?</p>
+			<a class="go" href="tem-volta.html">Open the experience →</a>
+		</div>
+		<div class="hero-dawn">
+			<blockquote>“[[BLV:Isaiah 44:22]]”</blockquote>
+			<cite>Isaías 44:22 · Bíblia Livre</cite>
+			<p class="small" style="color:#4b5368">The verse the whole idea turns on: <em>volta</em> and <em>resgate</em> (return and ransom) in one sentence. In the experience it appears only after the reader's own verdict.</p>
+		</div>
+	</header>
+
+	<section aria-labelledby="how">
+		<p class="eyebrow">How it runs</p>
+		<h2 id="how">About 30 one-beat cards, the Living Waters order unchanged</h2>
+		<ol class="flow">
+			<li class="night">Tem volta?</li>
+			<li class="night">"Por Deus, quero dizer."</li>
+			<li class="night">Porque te aceitaria?</li>
+			<li class="night">Lamentações 3:40</li>
+			<li class="night">Four commandments</li>
+			<li class="receipt-pill">TALÃO · motivos</li>
+			<li class="night">Aceite ou rejeitado?</li>
+			<li class="night">Hebreus 9:27</li>
+			<li class="night">Céu ou inferno?</li>
+			<li class="night">Preocupa-te?</li>
+			<li class="dawn">Isaías 44:22</li>
+			<li class="dawn">The courtroom, the debt paid</li>
+			<li class="dawn">"Aqui a comparação falha"</li>
+			<li class="dawn">God doesn't reject the dented who return</li>
+			<li class="dawn">Voltar = repent and trust</li>
+			<li class="dawn">Three equal exits</li>
+			<li class="dawn">Take-away → Se Morresses Hoje</li>
+		</ol>
+		<p class="small">PT-PT with <em>tu</em>. God is named on card 2, so curiosity buys one tap and nobody feels tricked. Answers stay on the phone. After the exits it hands off to Se Morresses Hoje's reading plan, questions and find-a-church, and never to its next-steps page, which sends strangers home.</p>
+	</section>
+
+	<section aria-labelledby="bridge">
+		<p class="eyebrow">The bridge</p>
+		<h2 id="bridge">The ritual carries the question, not the doctrine</h2>
+		<p class="lede">The metaphor is a light touch: the hook, the receipt, and one deliberate break at the cross. The Law, the Judge and the debt stay in the method's own words, because a dented bottle is damage and sin is guilt.</p>
+		<div class="bridge">
+			<div class="brow head"><div>The machine</div><div>The gospel</div><div>Scripture</div></div>
+			<div class="brow"><div>Only accepts what is empty, intact, with the symbol.</div><div>God's standard is perfect. Would you be accepted?</div><div class="ref">Lm 3:40 · Tg 2:10</div></div>
+			<div class="brow"><div>Prints a receipt.</div><div>The reader's own admissions print as the reasons. The status is left blank for the reader to fill in.</div><div class="ref">Êx 20 · Mt 5:28</div></div>
+			<div class="brow"><div>Volta: you return the container.</div><div>Repentance is turning back.</div><div class="ref">Ml 3:7</div></div>
+			<div class="brow"><div>Ten cents were paid on every bottle.</div><div>You were ransomed, not with silver or gold.</div><div class="ref">1 Pe 1:18–19</div></div>
+			<div class="brow breaks"><div><strong>The machine pays you for returning.</strong></div><div><strong>Here the comparison breaks:</strong> God doesn't pay you. He paid for you.</div><div class="ref">1 Pe 1:19</div></div>
+			<div class="brow"><div>Dented containers are refused.</div><div>God doesn't reject the dented who come back to Him.</div><div class="ref">Is 42:3 · Sl 51:17</div></div>
+			<div class="brow"><div>"Tem volta?"</div><div>"volta a mim, pois eu já te resgatei."</div><div class="ref">Is 44:22</div></div>
+		</div>
+	</section>
+
+	<section aria-labelledby="ways">
+		<p class="eyebrow">Three ways in</p>
+		<h2 id="ways">What people actually meet first</h2>
+		<div class="mocks">
+			<figure class="mock">
+				<div class="receipt">
+					<div class="row"><span>TALÃO</span><span>DEVOLUÇÃO</span></div>
+					<hr class="rule">
+					<div class="row"><span>Embalagem</span><span>1</span></div>
+					<div class="row"><span>Estado</span><span>REJEITADA</span></div>
+					<div class="row"><span>Motivo</span><span>amolgada</span></div>
+					<hr class="rule">
+					<p class="big">E tu? Eras aceite?</p>
+					<img class="qr" src="qr-temvolta.svg" alt="Código QR para temvolta.pt">
+					<p class="center">temvolta.pt</p>
+					<p class="center muted">Não é válido em loja.</p>
+				</div>
+				<figcaption><strong>Tract, front.</strong> Receipt-sized, handed to people near return points, never left on machines.</figcaption>
+			</figure>
+			<figure class="mock">
+				<div class="receipt">
+					<div class="row"><span>VERSO</span><span>temvolta.pt</span></div>
+					<hr class="rule">
+					<p>A máquina das garrafas avalia embalagens.</p>
+					<p class="serif">No dia em que Deus te avaliar, eras aceite?</p>
+					<p>Algumas perguntas, uns minutos. As respostas ficam no teu telemóvel.</p>
+					<hr class="rule">
+					<p class="center">temvolta.pt</p>
+					<p class="center muted">Sem ligação ao sistema Volta de embalagens.</p>
+				</div>
+				<figcaption><strong>Tract, back.</strong> God is named here, before anyone scans. The tract is honest the moment it's turned over.</figcaption>
+			</figure>
+			<figure class="mock">
+				<div class="phone">
+					<p class="t-big" style="font-size:34px">Tem volta?</p>
+					<p class="t">A máquina só aceita embalagens vazias, intactas e com o símbolo.</p>
+					<p class="t-big">E tu? Eras aceite?</p>
+					<p class="btn">Vamos ver</p>
+					<p class="t-dim">As tuas respostas ficam neste telemóvel.</p>
+				</div>
+				<figcaption><strong>Web landing, first screen.</strong> The question is the page. <a href="tem-volta.html">Try it</a>.</figcaption>
+			</figure>
+		</div>
+		<figure class="mock">
+			<div class="frames">
+				<div class="phone">
+					<div class="slot-img">image 1 · the slot</div>
+					<p class="t-big">A máquina rejeitou a minha lata.</p>
+					<p class="t">Outra vez.</p>
+				</div>
+				<div class="phone">
+					<div class="slot-img">image 2 · dented can</div>
+					<p class="t">Amolgada. Rejeitada.</p>
+					<p class="t-big">E se fosse contigo?</p>
+				</div>
+				<div class="phone">
+					<div class="slot-img">image 3 · receipt</div>
+					<p class="t-big">Tem volta?</p>
+					<p class="sticker">temvolta.pt</p>
+					<p class="t-dim">Sem ligação ao sistema Volta de embalagens.</p>
+				</div>
+			</div>
+			<figcaption><strong>Social clip, three frames.</strong> Starts from the shared frustration and turns it on the viewer. The dashed slots take the images in <code>PROMPTS.md</code>.</figcaption>
+		</figure>
+	</section>
+
+	<section aria-labelledby="why-name">
+		<p class="eyebrow">Why this name</p>
+		<h2 id="why-name">"Tem volta?" over "Volta Jesus"</h2>
+		<div class="cols">
+			<div class="box"><h3>It's a question</h3><p>Questions pull people in, and this one is already said every week at the bin. It promises nothing, so no grace is offered before the Law.</p></div>
+			<div class="box"><h3>It doesn't filter people out</h3><p>"Volta Jesus" reads as a church banner before anyone is curious. Written "Volta, Jesus", it means "Come back, Jesus!".</p></div>
+			<div class="box"><h3>It isn't the brand</h3><p>volta.com.pt is SDR Portugal's official site and Volta® is registered. We use an everyday phrase, our own look and a visible disclaimer.</p></div>
+		</div>
+	</section>
+
+	<section aria-labelledby="guard">
+		<p class="eyebrow">Guardrails</p>
+		<h2 id="guard">What keeps it honest</h2>
+		<div class="cols">
+			<div class="box"><h3>Never pass as the system</h3><p>No Volta logo, "V" mark, colours or domain anywhere. Every card and the tract carry: "Sem ligação ao sistema Volta de embalagens."</p></div>
+			<div class="box"><h3>No bait-and-switch</h3><p>God is named on card 2 and on the tract's back. A page that tricked you can't then ask whether you've ever lied.</p></div>
+			<div class="box"><h3>Sin is guilt, not a dent</h3><p>The receipt lists what the reader did, in their own answers. Judgment stays with the Judge and the debt, never with a sensor.</p></div>
+			<div class="box"><h3>Respect for Catholic Portugal</h3><p>"O batismo, a missa, as orações" is answered with "São coisas boas. Nenhuma delas é o paraquedas." Confession is "a Deus".</p></div>
+			<div class="box"><h3>No fake vouchers</h3><p>The tract says "Não é válido em loja" on the front. It is handed to people, never left on machines or store property.</p></div>
+			<div class="box"><h3>The method, unchanged</h3><p>The reader gives the verdict. Grace only after it. Three identical exits. No "you're saved". Mortality only in the Law half.</p></div>
+		</div>
+	</section>
+
+	<section aria-labelledby="open">
+		<p class="eyebrow">Before it goes public</p>
+		<h2 id="open">Open items for you</h2>
+		<div class="cols">
+			<div class="box"><h3>Portuguese review</h3><p>All copy is mine. The idiom, the wit on the hook and the receipt, and the Catholic tone are yours to judge.</p></div>
+			<div class="box"><h3>Bíblia Livre edition</h3><p>CC BY asks for the version date in the credit. I couldn't confirm which edition this copy is.</p></div>
+			<div class="box"><h3>Images</h3><p>Three prompts are ready in <code>PROMPTS.md</code>. Codex isn't available in this session: add an <code>OPENAI_API_KEY</code> secret and install Codex in the setup script, or generate locally.</p></div>
+			<div class="box"><h3>Baptism on "next days"</h3><p>The short list for a new believer leaves baptism out, to avoid an infant-baptism argument on a tiny card. Say if you want it in.</p></div>
+		</div>
+		<p class="small">Scripture: Bíblia Livre (Diego Santos, Mario Sérgio, Marco Teles), Creative Commons Atribuição (CC BY). Prototype only; temvolta.pt isn't live.</p>
+	</section>
+</div>

@@ -14,13 +14,39 @@
  * typed by hand.
  */
 
+import { resolve as resolvePath } from "node:path";
+import { pathToFileURL } from "node:url";
+
 /*
  * JS sources use {{BSB:…}}. HTML sources use [[BSB:…]] instead, because
  * Biome's HTML parser reads {{…}} as a template expression and refuses it.
  */
-export const PLACEHOLDER = /(?:\{\{|\[\[)BSB:([^}\]|]+?)(?:\|([^}\]]+))?(?:\}\}|\]\])/g;
+export function placeholder(prefix = "BSB") {
+	return new RegExp(`(?:\\{\\{|\\[\\[)${prefix}:([^}\\]|]+?)(?:\\|([^}\\]]+))?(?:\\}\\}|\\]\\])`, "g");
+}
+export const PLACEHOLDER = placeholder("BSB");
 
-/* Display name → book name in scrollmapper's BSB.json. */
+/*
+ * Shared command-line options, so the same scripts serve every prototype:
+ *   --prefix BLV            placeholder prefix (default BSB)
+ *   --root prototypes/volta folder holding src/, data/ and dist/ (default: this prototype)
+ *   --no-john               skip the Gospel of John bundle
+ *   --license "…"           licence line written into data/verses.json
+ */
+export function options(argv, defaultRoot) {
+	const o = { prefix: "BSB", root: defaultRoot, john: true, license: null, args: [] };
+	for (let i = 0; i < argv.length; i++) {
+		const a = argv[i];
+		if (a === "--prefix") o.prefix = argv[++i];
+		else if (a === "--root") o.root = pathToFileURL(`${resolvePath(argv[++i])}/`);
+		else if (a === "--no-john") o.john = false;
+		else if (a === "--license") o.license = argv[++i];
+		else o.args.push(a);
+	}
+	return o;
+}
+
+/* Display name → book name in scrollmapper's JSON (the same names in every translation). */
 const BOOKS = {
 	Genesis: "Genesis",
 	Exodus: "Exodus",
@@ -29,6 +55,8 @@ const BOOKS = {
 	Proverbs: "Proverbs",
 	Ecclesiastes: "Ecclesiastes",
 	Isaiah: "Isaiah",
+	Lamentations: "Lamentations",
+	Malachi: "Malachi",
 	Jeremiah: "Jeremiah",
 	Nahum: "Nahum",
 	Matthew: "Matthew",

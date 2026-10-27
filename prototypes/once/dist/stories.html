@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&display=swap">
 <style>
-/* Layout: bar, one card, pinned footer. One beat per card, and a card never scrolls. Night until the cross; dawn arrives once, at Hebrews 9:28. */
+/* Layout: bar, one card, pinned footer. One beat per card, and a card never scrolls. Blue-hour night until the cross; dawn arrives once, at Hebrews 9:28. */
 :root {
 	--night: #1c1631;
 	--paper: #ece7dd;
@@ -31,11 +31,6 @@
 	--fit: 1;
 	color-scheme: dark;
 }
-/* Prototype: the night colours under comparison. */
-html[data-night="navy"] { --night: #0e1322; }
-html[data-night="violet"] { --night: #1c1631; }
-html[data-night="charcoal"] { --night: #1d1b1a; }
-html[data-night="ink"] { --night: #0b0b0c; }
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -72,7 +67,7 @@ html.dawn body::after { opacity: 0.85; transform: translateY(0); }
 	position: relative; z-index: 1;
 	height: 100%;
 	max-width: 560px; margin: 0 auto;
-	display: grid; grid-template-rows: auto auto 1fr auto;
+	display: grid; grid-template-rows: auto 1fr auto;
 	--fg: var(--paper); --dim: var(--paper-dim); --line: var(--night-line); --surface: var(--night-surface); --bg: var(--night); --sheet: var(--night);
 }
 html.dawn .app { --fg: var(--ink); --dim: var(--ink-dim); --line: var(--dawn-line); --surface: var(--dawn-surface); --bg: var(--peach); --sheet: var(--dawn-sheet); }
@@ -91,12 +86,6 @@ html.dawn .app { --fg: var(--ink); --dim: var(--ink-dim); --line: var(--dawn-lin
 .segments li { flex: 1; height: 3px; border-radius: 2px; background: var(--line); overflow: hidden; }
 .segments li span { display: block; height: 100%; width: 0; background: var(--fg); transition: width 0.4s var(--ease); }
 
-/* Prototype control: compare night colours. Disappears at dawn. */
-.night-pick { display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding: 0 16px 2px; min-height: 30px; }
-.night-label { font: 600 10px/1 var(--sans); letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
-.swatch { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--line); cursor: pointer; padding: 0; }
-.swatch[aria-pressed="true"] { border-color: var(--paper); box-shadow: 0 0 0 2px var(--night); }
-html.dawn .night-pick { visibility: hidden; }
 
 .deck { position: relative; min-height: 0; }
 .card {
@@ -169,7 +158,7 @@ html.dawn .night-pick { visibility: hidden; }
 	font: 500 15px/1 var(--sans); cursor: pointer;
 }
 .ghost.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); margin-left: auto; }
-.icon-btn:focus-visible, .choice:focus-visible, .ghost:focus-visible, .link:focus-visible, .swatch:focus-visible, .sheet button:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+.icon-btn:focus-visible, .choice:focus-visible, .ghost:focus-visible, .link:focus-visible, .sheet button:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
 
 .kit-host {
 	--kit-fg: var(--fg); --kit-muted: var(--dim); --kit-line: var(--line); --kit-surface: var(--surface);
@@ -208,7 +197,6 @@ html.dawn .sheet { background: var(--dawn-sheet); color: var(--ink); border-colo
 		<ol class="segments" id="segments" aria-label="Progress"></ol>
 		<a class="icon-btn" href="index.html" aria-label="Close">×</a>
 	</header>
-	<div class="night-pick" id="night-pick"><span class="night-label">Prototype · night</span></div>
 	<main class="deck" id="deck"></main>
 	<footer class="foot" id="foot"></footer>
 </div>
@@ -231,25 +219,6 @@ html.dawn .sheet { background: var(--dawn-sheet); color: var(--ink); border-colo
 		{ id: "cross", label: "The cross" },
 		{ id: "answer", label: "Your answer" },
 	];
-
-	/* ---------- prototype: night colour ---------- */
-	const NIGHTS = [
-		{ id: "navy", label: "Navy (current)", hex: "#0e1322" },
-		{ id: "violet", label: "Blue-hour violet", hex: "#1c1631" },
-		{ id: "charcoal", label: "Warm charcoal", hex: "#1d1b1a" },
-		{ id: "ink", label: "Ink black", hex: "#0b0b0c" },
-	];
-	let night = "violet";
-	try { night = sessionStorage.getItem("once-night") || night; } catch { /* default */ }
-	const fromHash = location.hash.slice(1);
-	if (NIGHTS.some((n) => n.id === fromHash)) night = fromHash;
-	function setNight(id) {
-		night = id;
-		document.documentElement.dataset.night = id;
-		document.querySelector('meta[name="theme-color"]').content = NIGHTS.find((n) => n.id === id).hex;
-		try { sessionStorage.setItem("once-night", id); } catch { /* fine */ }
-		for (const b of document.querySelectorAll(".swatch")) b.setAttribute("aria-pressed", String(b.dataset.night === id));
-	}
 
 	/* ---------- state ---------- */
 	const blank = () => ({
@@ -331,12 +300,6 @@ html.dawn .sheet { background: var(--dawn-sheet); color: var(--ink); border-colo
 	const back = document.getElementById("back");
 	const segs = document.getElementById("segments");
 	segs.append(...PHASES.map((p) => h("li", { "aria-label": p.label }, h("span", {}))));
-	const pick = document.getElementById("night-pick");
-	pick.append(...NIGHTS.map((n) => h("button", {
-		class: "swatch", type: "button", "data-night": n.id, title: n.label, "aria-label": `Prototype night colour: ${n.label}`,
-		style: `background:${n.hex}`, onclick: () => setNight(n.id),
-	})));
-	setNight(night);
 
 	let current = null;
 	let autoTimer = 0;

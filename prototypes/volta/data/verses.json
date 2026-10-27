@@ -1,0 +1,134 @@
+{
+ "translation": "PorBLivre: Bíblia Livre",
+ "license": "Bíblia Livre (Diego Santos, Mario Sérgio, Marco Teles), Creative Commons Atribuição (CC BY). Confirm the edition date before public use.",
+ "source": "github.com/scrollmapper/bible_databases formats/json/PorBLivre.json",
+ "verses": {
+  "1 Corinthians 15:4": [
+   "E que foi sepultado, e que ressuscitou ao terceiro dia, segundo as Escrituras;"
+  ],
+  "1 Corinthians 15:6": [
+   "Depois foi visto de uma fez por mais de quinhentos irmãos, dos quais a maioria ainda vive, e também alguns já dormem."
+  ],
+  "1 Peter 1:18": [
+   "e sabei que não foi por coisas destrutíveis, como prata ou ouro, que fostes resgatados do vosso vão comportamento que recebestes de vossos pais,"
+  ],
+  "1 Peter 1:19": [
+   "mas sim pelo sangue precioso, como de um cordeiro sem falha e sem contaminação: o sangue de Cristo."
+  ],
+  "1 Timothy 1:15": [
+   "Esta é uma palavra fiel e digna de toda aceitação: que Cristo Jesus veio ao mundo para salvar os pecadores, dos quais eu sou o principal."
+  ],
+  "2 Corinthians 13:5": [
+   "Examinai-vos a vós mesmos, se estais na fé; provai-vos a vós mesmos. Ou não conheceis a vós mesmos, que Jesus Cristo está em vós? A menos que vós estejais reprovados."
+  ],
+  "Colossians 2:14": [
+   "Ele riscou a certidão de nossa dívida em ordenanças, a qual era contra nós, e a removeu, cravando-a na cruz;"
+  ],
+  "Ecclesiastes 7:20": [
+   "Verdadeiramente não há homem justo sobre a terra, que faça o bem, e nunca peque."
+  ],
+  "Ephesians 2:8": [
+   "Porque pela graça sois salvos, por meio da fé; e isto não vem de vós; é dom de Deus;"
+  ],
+  "Exodus 20:14": [
+   "Não cometerás adultério."
+  ],
+  "Exodus 20:15": [
+   "Não furtarás."
+  ],
+  "Exodus 20:16": [
+   "Não falarás contra teu próximo falso testemunho."
+  ],
+  "Exodus 20:7": [
+   "Não tomarás o nome do SENHOR teu Deus em vão; porque não dará por inocente o SENHOR ao que tomar seu nome em vão."
+  ],
+  "Genesis 18:25": [
+   "Longe de ti o fazer tal, que faças morrer ao justo com o ímpio e que seja o justo tratado como o ímpio; nunca faças tal. O juiz de toda a terra, não há de fazer o que é justo?"
+  ],
+  "Hebrews 9:27": [
+   "E, como está ordenado aos seres humanos morrerem uma vez, e depois disso, o juízo,"
+  ],
+  "Isaiah 42:3": [
+   "A cana esmagada ele não quebrará, nem apagará o pavio que fumega; com a verdade ele trará justiça."
+  ],
+  "Isaiah 44:22": [
+   "Eu elimino tuas transgressões como a névoa, e teus pecados como a nuvem; volta a mim, pois eu já te resgatei."
+  ],
+  "James 2:10": [
+   "Pois quem guarda toda a lei, mas falha em um item, tornou-se culpado de todos."
+  ],
+  "James 2:19": [
+   "Tu crês que há um só Deus? Fazes bem; os demônios também creem, e estremecem."
+  ],
+  "John 14:6": [
+   "Jesus lhe disse: Eu sou o caminho, e a verdade, e a vida. Ninguém vem ao Pai, a não ser por mim."
+  ],
+  "John 20:31": [
+   "Porém estes estão escritos, para que creiais que Jesus é o Cristo, o Filho de Deus; e para que crendo, tenhais vida em seu nome."
+  ],
+  "John 5:24": [
+   "Em verdade, em verdade vos digo, que quem ouve minha palavra, e crê ao que me enviou, tem vida eterna, e não virá em condenação, mas passou da morte para a vida."
+  ],
+  "Lamentations 3:40": [
+   "Examinemos nossos caminhos, investiguemos, e nos voltemos ao SENHOR."
+  ],
+  "Luke 8:39": [
+   "“Volta para tua casa, e conta como foram grandes as coisas que Deus te fez”. Ele se foi, e pregou por toda a cidade, como foram grandes as coisas que Jesus lhe tinha feito."
+  ],
+  "Malachi 3:7": [
+   "Desde os dias de vossos pais vos desviastes de minhas leis, e não as guardastes. Voltai-vos a mim, e eu me voltarei a vós,diz o SENHOR dos exércitos. Mas vós dizeis: Em que temos de voltar?"
+  ],
+  "Mark 10:18": [
+   "E Jesus lhe disse: Por que me chamas bom? Ninguém é bom, a não ser um: Deus."
+  ],
+  "Mark 8:36": [
+   "Pois que proveito teria alguém, se ganhasse o mundo todo, e perdesse a sua alma?"
+  ],
+  "Matthew 25:46": [
+   "E estes irão ao tormento eterno, porém os justos à vida eterna."
+  ],
+  "Matthew 5:28": [
+   "Porém eu vos digo que qualquer um que olhar para uma mulher para a cobiçar, em seu coração já adulterou com ela."
+  ],
+  "Matthew 7:21": [
+   "Não é qualquer um que me diz: “Senhor, Senhor” que entrará no Reino dos céus; mas sim aquele que faz a vontade do meu Pai que está nos céus."
+  ],
+  "Proverbs 17:15": [
+   "Quem absolve ao perverso e quem condena ao justo, ambos são abomináveis ao SENHOR."
+  ],
+  "Proverbs 28:13": [
+   "Quem encobre suas transgressões nunca prosperará, mas aquele que as confessa e as abandona alcançará misericórdia."
+  ],
+  "Psalm 51:17": [
+   "Os sacrifícios a Deus são um espírito quebrado em arrependimento; tu não desprezarás um coração quebrado e triste."
+  ],
+  "Revelation 21:8": [
+   "Mas quanto aos covardes, e aos incrédulos, e aos abomináveis, e aos homicidas, e aos pecadores sexuais, e aos feiticeiros, e aos idólatras, e a todos os mentirosos, a parte deles será no lago que queima com fogo e enxofre, que é a segunda morte."
+  ],
+  "Romans 13:14": [
+   "Em vez disso, revesti-vos do Senhor Jesus Cristo, e não fiqueis pensando em realizar os desejos da carne."
+  ],
+  "Romans 1:20": [
+   "Pois as suas características invisíveis, inclusive o seu eterno poder e divindade, desde a criação do mundo são entendidas e claramente vistas por meio das coisas criadas, para que não tenham desculpa;"
+  ],
+  "Romans 3:10": [
+   "como está escrito: Não há justo, nem um sequer."
+  ],
+  "Romans 3:20": [
+   "Assim, ninguém será justificado diante dele pelas obras da Lei, porque o que vem pela Lei é o conhecimento do pecado."
+  ],
+  "Romans 3:23": [
+   "porque todos pecaram, e estão destituídos da glória de Deus;"
+  ],
+  "Romans 3:26": [
+   "para demonstrar a sua justiça neste presente tempo, a fim de que ele seja justo, e justificador daquele que tem fé em Jesus."
+  ],
+  "Romans 5:8": [
+   "Mas Deus prova o seu amor por nós através de Cristo haver morrido por nós, quando ainda éramos pecadores."
+  ],
+  "Romans 6:23": [
+   "porque o salário do pecado é a morte, mas o dom gratuito de Deus é a vida eterna em Cristo Jesus nosso Senhor."
+  ]
+ },
+ "john": []
+}
